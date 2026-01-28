@@ -32,6 +32,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "CutWood",
+                    "type": "Button",
+                    "id": "44663c2e-ccd1-42e9-932a-e27f31dc1cc6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -208,6 +217,28 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Discard",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b474d408-c658-4edb-9163-32a0dae26381",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CutWood",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "89988f32-cd04-41d7-8de5-a1a76fe1b2fc",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CutWood",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
