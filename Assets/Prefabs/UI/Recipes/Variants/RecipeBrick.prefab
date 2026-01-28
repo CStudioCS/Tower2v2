@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: -1572391234087474867, guid: 6afbdbc7023b0c54cab9322df07aff09, type: 3}
     - target: {fileID: 7959850080090337080, guid: a92ef83830325384fa35406c670165ea, type: 3}
       propertyPath: type
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7959850080090337080, guid: a92ef83830325384fa35406c670165ea, type: 3}
       propertyPath: resourceType

@@ -22,11 +22,11 @@ public class Furnace : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.heldItem == Player.HeldItem.Dirt;
+                return player.isHolding && player.heldItem == Resources.Type.Clay;
             case State.Cooking:
                 return false;
             case State.Cooked:
-                return player.heldItem == Player.HeldItem.Nothing;
+                return !player.isHolding;
             default:
                 throw new UnityException("Furnace state not handled in CanInteract");
         }
@@ -38,13 +38,14 @@ public class Furnace : Interactable
         {
             StartCoroutine(Cook());
 
-            player.heldItem = Player.HeldItem.Nothing;
+            player.isHolding = false;
             Destroy(player.heldItemGameobject);
             player.heldItemGameobject = null;
         }
         else if(state == State.Cooked)
         {
-            player.heldItem = Player.HeldItem.Brick;
+            player.heldItem = Resources.Type.Brick;
+            player.isHolding = true;
             player.heldItemGameobject = Instantiate(brickPiecePrefab, player.transform);
             state = State.Empty;
             ResetProgressBar();

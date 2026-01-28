@@ -5,7 +5,8 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public Interactable insideInteractable;
-    public HeldItem heldItem;
+    public bool isHolding = false;
+    public Resources.Type heldItem;
     public GameObject heldItemGameobject;
 
     [SerializeField] private float speed = 7;
@@ -21,7 +22,6 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private float maxProgressBarFill;
     private bool interacting;
-    public enum HeldItem { Nothing, Wood, Brick, Cement, Dirt, WoodCrafted }
 
     private void Awake()
     {
@@ -158,9 +158,14 @@ public class Player : MonoBehaviour
     //Discards the item currently held
     private void DiscardHeldItem()
     {
-        heldItem = HeldItem.Nothing;
+        isHolding = false;
         if (heldItemGameobject != null)
             Destroy(heldItemGameobject);
         heldItemGameobject = null;
+    }
+
+    public void Drop()
+    {
+        throw new System.NotImplementedException();
     }
 }

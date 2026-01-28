@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+
 public class Workbench : Interactable
 {
     [SerializeField] private int craftTime;
@@ -9,18 +9,18 @@ public class Workbench : Interactable
     
     private float maxProgressBarFill;
 
-    enum State { Empty, Crafted, AsWood}
+    enum State { Empty, Crafted, HasWoodLog}
 
     public override bool CanInteract(Player player)
     {
         switch (state)
         {
             case State.Empty:
-                return player.heldItem == Player.HeldItem.Wood;
-            case State.AsWood:
-                return player.heldItem == Player.HeldItem.Nothing;
+                return player.isHolding && player.heldItem == Resources.Type.WoodLog;
+            case State.HasWoodLog:
+                return !player.isHolding;
             case State.Crafted:
-                return player.heldItem == Player.HeldItem.Nothing;
+                return !player.isHolding;
             default:
                 throw new UnityException("Workbench state not handled in CanInteract");
         }
@@ -30,15 +30,16 @@ public class Workbench : Interactable
     {
         if (state == State.Empty)
         {
-            state = State.AsWood;
+            state = State.HasWoodLog;
             GetComponent<SpriteRenderer>().color = Color.red;
-            player.heldItem = Player.HeldItem.Nothing;
+            player.isHolding = false;
             Destroy(player.heldItemGameobject);
             player.heldItemGameobject = null;
         }
         else if (state == State.Crafted)
         {
-            player.heldItem = Player.HeldItem.WoodCrafted;
+            player.isHolding = true;
+            player.heldItem = Resources.Type.WoodPlank;
             state = State.Empty;
 
             GetComponent<SpriteRenderer>().color = Color.white;
@@ -50,7 +51,7 @@ public class Workbench : Interactable
 
     public override void InteractA(Player player)
     {
-        if( state == State.AsWood)
+        if( state == State.HasWoodLog)
         {
             state = State.Crafted;
             GetComponent<SpriteRenderer>().color = Color.blue;

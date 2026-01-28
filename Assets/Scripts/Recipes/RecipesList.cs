@@ -34,6 +34,8 @@ public class RecipesList : MonoBehaviour
             AddRecipe(ResourceRandomizer.GetAt(randomIndex++));
         }
     }
+    
+    public Resources.Type CurrentNeededResourceType => queue.Peek().Type;
 
     private void AddRecipe(Resources.Type type)
     {
