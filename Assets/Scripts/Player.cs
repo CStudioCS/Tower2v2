@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public Interactable insideInteractable;
     public HeldItem heldItem;
     public GameObject heldItemGameobject;
+    private Collector heldItemCollector;
 
     [SerializeField] private float speed = 7;
     [SerializeField] private RectTransform ProgressBar;
@@ -105,8 +106,10 @@ public class Player : MonoBehaviour
     private void DiscardHeldItem()
     {
         heldItem = HeldItem.Nothing;
-        if (heldItemGameobject != null)
-            Destroy(heldItemGameobject);
+        if (heldItemGameobject != null) 
+        {
+            heldItemGameobject.GetComponent<Item>().Drop();
+        }
         heldItemGameobject = null;
     }
 }
