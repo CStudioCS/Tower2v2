@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5270320571875375237}
   - component: {fileID: 3599087220505950698}
   m_Layer: 0
-  m_Name: cementPiece
+  m_Name: strawPiece
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

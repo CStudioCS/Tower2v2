@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3182141801264269950}
   - component: {fileID: 6290347245293609478}
   m_Layer: 0
-  m_Name: DirtCollector
+  m_Name: ClayCollector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTime: 0.3
+  interactionTimeA: 0
   givenItem: 4
   itemPrefab: {fileID: 7540418405550796417, guid: 7f7c8e544f2ac904fb808964ec3fd811, type: 3}
 --- !u!212 &3182141801264269950

@@ -13,6 +13,7 @@ public class Collector : Interactable
 
     public override void Interact(Player player)
     {
+        player.isHolding = true;
         player.heldItem = givenItem;
         player.heldItemGameobject = Instantiate(itemPrefab, player.transform);
     }

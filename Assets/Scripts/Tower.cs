@@ -53,6 +53,7 @@ public class Tower : Interactable
         Destroy(player.heldItemGameobject);
         player.heldItemGameobject = null;
         UpdateText();
+        recipesList.OnRecipeCompleted();
     }
 
     private void UpdateText()

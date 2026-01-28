@@ -51,7 +51,7 @@ public class RecipesList : MonoBehaviour
 
     private void AddRandomRecipe() => AddRecipe(ResourceRandomizer.GetAt(randomIndex++));
     
-    private void OnRecipeCompleted()
+    public void OnRecipeCompleted()
     {
         if (queue.Count > 0)
         {
