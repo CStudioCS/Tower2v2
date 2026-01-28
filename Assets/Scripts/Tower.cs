@@ -5,6 +5,7 @@ public class Tower : Interactable
 {
     public int height = 0; //The actual height of the tower (doesn't augment when placing cement)
 
+    public float lastPlacedTime = float.MaxValue;
     [SerializeField] private Vector3 blockOffset;
 
     [SerializeField] private TMP_Text heightText;
@@ -47,6 +48,7 @@ public class Tower : Interactable
         }
 
         trueHeight++;
+        lastPlacedTime = LevelManager.instance.levelTimer;
         player.heldItem = Player.HeldItem.Nothing;
         Destroy(player.heldItemGameobject);
         player.heldItemGameobject = null;
