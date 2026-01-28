@@ -159,8 +159,8 @@ public class Player : MonoBehaviour
     private void DiscardHeldItem()
     {
         heldItem = HeldItem.Nothing;
-        if (heldItemGameobject != null)
-            Destroy(heldItemGameobject);
+        if (heldItemGameobject != null) 
+            heldItemGameobject.GetComponent<Item>().Drop();
         heldItemGameobject = null;
     }
 }
