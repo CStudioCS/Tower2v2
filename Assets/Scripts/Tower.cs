@@ -18,17 +18,18 @@ public class Tower : Interactable
     private BlockType lastBlockType = BlockType.Cement;
 
     public enum BlockType { Wood, Cement, Brick }
+    
     public override bool CanInteract(Player player)
     {
         //check if the order of BlockTypes is correct (Wood => Cement => Wood or Brick => Cement => ...)
-        return (lastBlockType == BlockType.Cement && (player.heldItem == Player.HeldItem.Wood || player.heldItem == Player.HeldItem.Brick)) || (player.heldItem == Player.HeldItem.Cement && lastBlockType != BlockType.Cement);
+        return (lastBlockType == BlockType.Cement && (player.heldItem == Player.HeldItem.WoodCrafted || player.heldItem == Player.HeldItem.Brick)) || (player.heldItem == Player.HeldItem.Cement && lastBlockType != BlockType.Cement);
     }
 
     public override void Interact(Player player)
     {
         //The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime, and with the way
         //unity handles rendering, the new object is rendered on top of the old one
-        if (player.heldItem == Player.HeldItem.Wood)
+        if (player.heldItem == Player.HeldItem.WoodCrafted)
         {
             Instantiate(woodTowerPiecePrefab, transform.position + blockOffset * trueHeight, Quaternion.identity, transform);
             height++;

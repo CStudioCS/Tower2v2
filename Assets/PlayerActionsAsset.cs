@@ -118,6 +118,15 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CutWood"",
+                    ""type"": ""Button"",
+                    ""id"": ""44663c2e-ccd1-42e9-932a-e27f31dc1cc6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -294,6 +303,28 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""Discard"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b474d408-c658-4edb-9163-32a0dae26381"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CutWood"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""89988f32-cd04-41d7-8de5-a1a76fe1b2fc"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CutWood"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -884,6 +915,7 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Discard = m_Player.FindAction("Discard", throwIfNotFound: true);
+        m_Player_CutWood = m_Player.FindAction("CutWood", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -980,6 +1012,7 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Discard;
+    private readonly InputAction m_Player_CutWood;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1003,6 +1036,10 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Discard".
         /// </summary>
         public InputAction @Discard => m_Wrapper.m_Player_Discard;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/CutWood".
+        /// </summary>
+        public InputAction @CutWood => m_Wrapper.m_Player_CutWood;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1038,6 +1075,9 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
             @Discard.started += instance.OnDiscard;
             @Discard.performed += instance.OnDiscard;
             @Discard.canceled += instance.OnDiscard;
+            @CutWood.started += instance.OnCutWood;
+            @CutWood.performed += instance.OnCutWood;
+            @CutWood.canceled += instance.OnCutWood;
         }
 
         /// <summary>
@@ -1058,6 +1098,9 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
             @Discard.started -= instance.OnDiscard;
             @Discard.performed -= instance.OnDiscard;
             @Discard.canceled -= instance.OnDiscard;
+            @CutWood.started -= instance.OnCutWood;
+            @CutWood.performed -= instance.OnCutWood;
+            @CutWood.canceled -= instance.OnCutWood;
         }
 
         /// <summary>
@@ -1379,6 +1422,13 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDiscard(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "CutWood" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCutWood(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
