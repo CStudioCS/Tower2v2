@@ -10,12 +10,12 @@ public class Furnace : Interactable
     [SerializeField] private GameObject brickPiecePrefab;
 
     private State state;
-    private float maxProgressBarFill;
+    private float maxFill;
     private enum State { Empty, Cooking, Cooked }
 
     private void Awake()
     {
-        maxProgressBarFill = ProgressBarFill.sizeDelta.x;
+        maxFill = ProgressBarFill.sizeDelta.x;
         ResetProgressBar();
     }
 
@@ -62,13 +62,13 @@ public class Furnace : Interactable
 
         while (t < cookTime)
         {
-            ProgressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxProgressBarFill, t / cookTime), ProgressBarFill.sizeDelta.y);
+            ProgressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxFill, t / cookTime), ProgressBarFill.sizeDelta.y);
 
             t += Time.deltaTime * Time.timeScale;
             yield return null;
         }
 
-        ProgressBarFill.sizeDelta = new Vector2(maxProgressBarFill, ProgressBarFill.sizeDelta.y);
+        ProgressBarFill.sizeDelta = new Vector2(maxFill, ProgressBarFill.sizeDelta.y);
         state = State.Cooked;
     }
 

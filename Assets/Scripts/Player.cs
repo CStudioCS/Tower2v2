@@ -18,20 +18,19 @@ public class Player : MonoBehaviour
     private InputAction interactAction;
     private InputAction discardAction;
     private Rigidbody2D rb;
-    private float maxProgressBarFill;
+    private float maxFill;
     private bool interacting;
     public enum HeldItem { Nothing, Wood, Brick, Cement, Dirt }
 
     private void Awake()
     {
-        playerInput = GetComponent<PlayerInput>(); //Using unity's new input system
+        playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions.FindAction("Player/Move");
         interactAction = playerInput.actions.FindAction("Player/Interact");
         discardAction = playerInput.actions.FindAction("Player/Discard");
-
         rb = GetComponent<Rigidbody2D>();
 
-        maxProgressBarFill = ProgressBarFill.sizeDelta.x;
+        maxFill = ProgressBarFill.sizeDelta.x;
         ResetProgressBar();
     }
 
@@ -46,20 +45,15 @@ public class Player : MonoBehaviour
 
         if (interactAction.WasPressedThisFrame())
             StartInteracting();
-
-        //Pressing A to discard an item
-        //Would be nice to remove this and make a trashcan interactable instead.
         if (discardAction.WasPressedThisFrame())
-            DiscardHeldItem();
+            DiscardItem();
     }
 
     void StartInteracting()
     {
-        //we check whether we're inside an interactable object and if yes if we can interact with it
         if (insideInteractable == null || !insideInteractable.CanInteract(this))
             return;
 
-        //If we can interact instantly, we do it, else we need to wait for the interaction time
         if (insideInteractable.interactionTime > 0)
             StartCoroutine(InteractTimer(insideInteractable.interactionTime));
         else
@@ -74,7 +68,6 @@ public class Player : MonoBehaviour
         
         while(t < time)
         {
-            //if at any point the player stop holding the interact button -> stop interacting
             if (!interactAction.IsPressed())
             {
                 ResetProgressBar();
@@ -82,14 +75,11 @@ public class Player : MonoBehaviour
                 yield break;
             }
 
-            //fill progress bar
-            ProgressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxProgressBarFill, t / time), ProgressBarFill.sizeDelta.y);
+            ProgressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxFill, t / time), ProgressBarFill.sizeDelta.y);
 
             t += Time.deltaTime * Time.timeScale;
             yield return null;
         }
-
-        //We interacted with the object -> Reset everything and call the interact function
 
         interacting = false;
         ResetProgressBar();
@@ -102,8 +92,7 @@ public class Player : MonoBehaviour
         ProgressBarFill.sizeDelta = new Vector2(0, ProgressBarFill.sizeDelta.y);
     }
 
-    //Discards the item currently held
-    private void DiscardHeldItem()
+    private void DiscardItem()
     {
         heldItem = HeldItem.Nothing;
         if (heldItemGameobject != null)
