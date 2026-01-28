@@ -13,6 +13,8 @@
 *.log
 .vscode
 Tower2v2.slnx
+ProjectSettings/TimelineSettings.asset
+ProjectSettings/ShaderGraphSettings.asset
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
