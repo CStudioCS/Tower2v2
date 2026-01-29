@@ -13,7 +13,7 @@ public static class ResourceRandomizer
         if (initialized) return;
 
         random = new Random();
-        values = (Resources.Type[])Enum.GetValues(typeof(Resources.Type));
+        values = new[] { Resources.Type.Straw, Resources.Type.WoodPlank, Resources.Type.Brick };
         initialized = true;
     }
 

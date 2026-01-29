@@ -6,14 +6,14 @@ using UnityEngine;
 /// </summary>
 public class Collector : Interactable
 {
-    [SerializeField] private Player.HeldItem givenItem;
+    [SerializeField] private Resources.Type givenItem;
     [SerializeField] private GameObject itemPrefab;
 
-    public override bool CanInteract(Player player)
-        => player.heldItem == Player.HeldItem.Nothing;
+    public override bool CanInteract(Player player) => !player.isHolding;
 
     public override void Interact(Player player)
     {
+        player.isHolding = true;
         player.heldItem = givenItem;
         player.heldItemGameobject = Instantiate(itemPrefab, player.transform);
     }

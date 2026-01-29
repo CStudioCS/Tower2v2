@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -10,49 +11,49 @@ public class Tower : Interactable
 
     [SerializeField] private TMP_Text heightText;
 
+    [SerializeField] private GameObject strawTowerPiecePrefab;
     [SerializeField] private GameObject woodTowerPiecePrefab;
     [SerializeField] private GameObject brickTowerPiecePrefab;
-    [SerializeField] private GameObject cementTowerPiecePrefab;
 
+    private Dictionary<Resources.Type, GameObject> towerPieceMap = new();
+    
     private int trueHeight; //The height of the tower if adding cement is included as a height increase
-    private BlockType lastBlockType = BlockType.Cement;
-
-    public enum BlockType { Wood, Cement, Brick }
+    private Resources.Type lastBlockType;
+    
+    [SerializeField] private RecipesList recipesList;
+    
+    private void Awake()
+    {
+        towerPieceMap = new Dictionary<Resources.Type, GameObject>
+        {
+            { Resources.Type.Straw, strawTowerPiecePrefab },
+            { Resources.Type.WoodLog, woodTowerPiecePrefab },
+            { Resources.Type.Brick, brickTowerPiecePrefab },
+        };
+    }
+    
     public override bool CanInteract(Player player)
     {
-        //check if the order of BlockTypes is correct (Wood => Cement => Wood or Brick => Cement => ...)
-        return (lastBlockType == BlockType.Cement && (player.heldItem == Player.HeldItem.Wood || player.heldItem == Player.HeldItem.Brick)) || (player.heldItem == Player.HeldItem.Cement && lastBlockType != BlockType.Cement);
+        //check if the player is holding the correct item for the recipe
+        return recipesList.CurrentNeededResourceType == player.heldItem;
     }
 
     public override void Interact(Player player)
     {
         //The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime, and with the way
         //unity handles rendering, the new object is rendered on top of the old one
-        if (player.heldItem == Player.HeldItem.Wood)
-        {
-            Instantiate(woodTowerPiecePrefab, transform.position + blockOffset * trueHeight, Quaternion.identity, transform);
-            height++;
-            lastBlockType = BlockType.Wood;
-        }
-        else if (player.heldItem == Player.HeldItem.Brick)
-        {
-            Instantiate(brickTowerPiecePrefab, transform.position + blockOffset * trueHeight, Quaternion.identity, transform);
-            height++;
-            lastBlockType = BlockType.Brick;
-            
-        }
-        else if (player.heldItem == Player.HeldItem.Cement)
-        {
-            Instantiate(cementTowerPiecePrefab, transform.position + blockOffset * trueHeight, Quaternion.identity, transform);
-            lastBlockType = BlockType.Cement;
-        }
+        
+        Instantiate(towerPieceMap[player.heldItem], transform.position + blockOffset * trueHeight, Quaternion.identity, transform);
+        height++;
+        lastBlockType = player.heldItem;
 
         trueHeight++;
         lastPlacedTime = LevelManager.instance.levelTimer;
-        player.heldItem = Player.HeldItem.Nothing;
+        player.isHolding = false;
         Destroy(player.heldItemGameobject);
         player.heldItemGameobject = null;
         UpdateText();
+        recipesList.OnRecipeCompleted();
     }
 
     private void UpdateText()

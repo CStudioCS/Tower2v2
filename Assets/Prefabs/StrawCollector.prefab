@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7177215030695489216}
   - component: {fileID: 8122058454346053111}
   m_Layer: 0
-  m_Name: CementCollector
+  m_Name: StrawCollector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTime: 1
-  givenItem: 3
+  interactionTimeA: 0
+  givenItem: 0
   itemPrefab: {fileID: 2585688832917479558, guid: 32677b31fc7ed234f95fcad7cc73ebb0, type: 3}
 --- !u!212 &7177215030695489216
 SpriteRenderer:

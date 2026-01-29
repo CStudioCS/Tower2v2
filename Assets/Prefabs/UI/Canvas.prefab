@@ -251,7 +251,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2577086032196429468, guid: 5bb4dd11674733c44a875ab81a81db68, type: 3}
       propertyPath: m_Name
-      value: RecipesListLayout
+      value: LeftRecipesListLayout
       objectReference: {fileID: 0}
     - target: {fileID: 2929851731547073392, guid: 5bb4dd11674733c44a875ab81a81db68, type: 3}
       propertyPath: m_Pivot.x
@@ -353,7 +353,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2577086032196429468, guid: 5bb4dd11674733c44a875ab81a81db68, type: 3}
       propertyPath: m_Name
-      value: RecipesListLayout (1)
+      value: RightRecipesListLayout
       objectReference: {fileID: 0}
     - target: {fileID: 2929851731547073392, guid: 5bb4dd11674733c44a875ab81a81db68, type: 3}
       propertyPath: m_Pivot.x

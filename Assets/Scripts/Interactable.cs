@@ -7,8 +7,12 @@ using UnityEngine;
 public abstract class Interactable : MonoBehaviour
 {
     public float interactionTime;
+    
+    public float interactionTimeA;
 
     public abstract void Interact(Player player);
+    
+    public virtual void InteractA(Player player) {}
     public virtual bool CanInteract(Player player) => true;
 
     //When the player walks inside the interactable, we tell it that it is inside
