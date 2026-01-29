@@ -1,3 +1,5 @@
+using System;
+using TMPro;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
@@ -6,6 +8,7 @@ public class LevelManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Tower TowerRight;
     [SerializeField] private Tower TowerLeft;
+    [SerializeField] private TMP_Text timerDisplay;
     public float timerLimit = 120f;
     public float levelTimer;
     private Team winner;
@@ -36,6 +39,11 @@ public class LevelManager : MonoBehaviour
         if (isLevelActive)
         {
             levelTimer += Time.deltaTime;
+            float timeRemaining = timerLimit - levelTimer;
+            int minutes = Mathf.FloorToInt(timeRemaining / 60);
+            int seconds = Mathf.FloorToInt(timeRemaining % 60);
+            timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
+
             if(levelTimer >= timerLimit)
             {
                 if (TowerRight.height == TowerLeft.height)
