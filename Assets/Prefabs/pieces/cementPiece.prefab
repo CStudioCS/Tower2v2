@@ -102,6 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTime: 0
+  givenItem: 3
 --- !u!61 &-256997523848646438
 BoxCollider2D:
   m_ObjectHideFlags: 0
