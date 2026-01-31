@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -286,12 +287,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTime: 0
+  interactionTimeA: 0
   height: 0
+  lastPlacedTime: 3.4028235e+38
   blockOffset: {x: 0, y: 0.25, z: -0.1}
   heightText: {fileID: 312890316318916640}
-  woodTowerPiecePrefab: {fileID: 7406187175304900994, guid: 839f032857830444086f055e411aa993, type: 3}
-  brickTowerPiecePrefab: {fileID: 6603308688472601615, guid: dde56a3f668baeb4a8d84b68f5b7e806, type: 3}
-  cementTowerPiecePrefab: {fileID: 5160598494590161531, guid: 5b5670e392d8c0641b0781a46d71e592, type: 3}
+  strawTowerPiecePrefab: {fileID: 6828945417408229614, guid: 50c8ea5a07072f24393c6bd798ddc9dc, type: 3}
+  woodTowerPiecePrefab: {fileID: 1104166184276824648, guid: 768e3f708f781a849b5f398d919c5071, type: 3}
+  brickTowerPiecePrefab: {fileID: 7086032503934932409, guid: d29e198529ac9e842ad823191db288ea, type: 3}
+  recipesList: {fileID: 0}
 --- !u!212 &3057022071700541621
 SpriteRenderer:
   m_ObjectHideFlags: 0

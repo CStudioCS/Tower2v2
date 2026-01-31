@@ -50,9 +50,7 @@ public class Player : MonoBehaviour
             StartInteracting();
 
         if(interactActionA.WasPressedThisFrame())
-        {
             StartInteractingA();
-        }
 
         //Pressing A to discard an item
         //Would be nice to remove this and make a trashcan interactable instead.
@@ -71,6 +69,21 @@ public class Player : MonoBehaviour
             StartCoroutine(InteractTimer(insideInteractable.interactionTime));
         else
             insideInteractable.Interact(this);
+    }
+
+    void StartInteractingA()
+    {
+
+        //we check  we're inside an interactable object and if yes if we can interact with it
+        if (insideInteractable == null || !insideInteractable.CanInteract(this))
+            return;
+
+        if (insideInteractable.interactionTimeA > 0)
+        {
+            StartCoroutine(InteractTimerA(insideInteractable.interactionTimeA));
+        }
+        else
+            insideInteractable.InteractA(this);
     }
 
     private IEnumerator InteractTimer(float time)
@@ -103,20 +116,7 @@ public class Player : MonoBehaviour
         insideInteractable.Interact(this);
     }
 
-    void StartInteractingA()
-    {
-        
-        //we check whether we're inside an interactable object and if yes if we can interact with it
-        if (insideInteractable == null || !insideInteractable.CanInteract(this))
-            return;
-
-        //If we can interact instantly, we do it, else we need to wait for the interaction time
-        if (insideInteractable.interactionTimeA > 0){
-            StartCoroutine(InteractTimerA(insideInteractable.interactionTimeA));
-        }
-        else
-            insideInteractable.InteractA(this);
-    }
+    
     private IEnumerator InteractTimerA(float time)
     {
         

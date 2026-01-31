@@ -2,14 +2,10 @@ using UnityEngine;
 
 public class Workbench : Interactable
 {
-    [SerializeField] private int craftTime;
-    [SerializeField] private RectTransform ProgressBarFill;
-    [SerializeField] private GameObject woodCraftedPrefab;
-    private State state;
+    [SerializeField] private GameObject woodPlankItemPrefab;
     
-    private float maxProgressBarFill;
-
-    enum State { Empty, Crafted, HasWoodLog}
+    private State state;
+    private enum State { Empty, Crafted, HasWoodLog}
 
     public override bool CanInteract(Player player)
     {
@@ -44,7 +40,7 @@ public class Workbench : Interactable
 
             GetComponent<SpriteRenderer>().color = Color.white;
             // Assume tablePrefab is defined elsewhere
-            player.heldItemGameobject = Instantiate(woodCraftedPrefab, player.transform);
+            player.heldItemGameobject = Instantiate(woodPlankItemPrefab, player.transform);
             state = State.Empty;
         }
     }

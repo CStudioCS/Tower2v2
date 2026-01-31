@@ -6,7 +6,7 @@ public class Tower : Interactable
 {
     public int height = 0; //The actual height of the tower (doesn't augment when placing cement)
 
-    public float lastPlacedTime = float.MaxValue;
+    [HideInInspector] public float lastPlacedTime = float.MaxValue;
     [SerializeField] private Vector3 blockOffset;
 
     [SerializeField] private TMP_Text heightText;
@@ -17,7 +17,6 @@ public class Tower : Interactable
 
     private Dictionary<Resources.Type, GameObject> towerPieceMap = new();
     
-    private int trueHeight; //The height of the tower if adding cement is included as a height increase
     private Resources.Type lastBlockType;
     
     [SerializeField] private RecipesList recipesList;
@@ -27,7 +26,7 @@ public class Tower : Interactable
         towerPieceMap = new Dictionary<Resources.Type, GameObject>
         {
             { Resources.Type.Straw, strawTowerPiecePrefab },
-            { Resources.Type.WoodLog, woodTowerPiecePrefab },
+            { Resources.Type.WoodPlank, woodTowerPiecePrefab },
             { Resources.Type.Brick, brickTowerPiecePrefab },
         };
     }
@@ -43,15 +42,22 @@ public class Tower : Interactable
         //The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime, and with the way
         //unity handles rendering, the new object is rendered on top of the old one
         
-        Instantiate(towerPieceMap[player.heldItem], transform.position + blockOffset * trueHeight, Quaternion.identity, transform);
+        if(!towerPieceMap.TryGetValue(player.heldItem, out GameObject towerPiece))
+        {
+            Debug.LogError("Could not find tower piece associated with " + player.heldItem + " held item");
+            return;
+        }
+
+        Instantiate(towerPiece, transform.position + blockOffset * height, Quaternion.identity, transform);
         height++;
         lastBlockType = player.heldItem;
 
-        trueHeight++;
         lastPlacedTime = LevelManager.instance.levelTimer;
+
         player.isHolding = false;
         Destroy(player.heldItemGameobject);
         player.heldItemGameobject = null;
+
         UpdateText();
         recipesList.OnRecipeCompleted();
     }

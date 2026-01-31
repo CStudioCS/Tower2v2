@@ -48,9 +48,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTime: 0
+  interactionTimeA: 0
   cookTime: 4
   ProgressBarFill: {fileID: 5070048619954780330}
-  brickPiecePrefab: {fileID: 5676127194083207186, guid: d8b092eee7d429941b1f898ae5ab311e, type: 3}
+  brickPiecePrefab: {fileID: 7175106358961479617, guid: d8b092eee7d429941b1f898ae5ab311e, type: 3}
 --- !u!212 &2483626925094657194
 SpriteRenderer:
   m_ObjectHideFlags: 0
