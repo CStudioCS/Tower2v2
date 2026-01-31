@@ -1,60 +1,55 @@
 using UnityEngine;
-using System.Collections;
+
 public class Workbench : Interactable
 {
-    [SerializeField] private int craftTime;
-    [SerializeField] private RectTransform ProgressBarFill;
-    [SerializeField] private GameObject woodCraftedPrefab;
-    private State state;
+    [SerializeField] private GameObject woodPlankItemPrefab;
     
-    private float maxProgressBarFill;
-
-    enum State { Empty, Crafted, AsWood}
+    private State state;
+    private enum State { Empty, HasWoodLog, HasWoodPlank}
 
     public override bool CanInteract(Player player)
     {
         switch (state)
         {
             case State.Empty:
-                return player.heldItem == Player.HeldItem.Wood;
-            case State.AsWood:
-                return player.heldItem == Player.HeldItem.Nothing;
-            case State.Crafted:
-                return player.heldItem == Player.HeldItem.Nothing;
+                return player.isHolding && player.heldItem.itemType == Resources.Type.WoodLog;
+            case State.HasWoodLog:
+                return false;
+            case State.HasWoodPlank:
+                return !player.isHolding;
             default:
                 throw new UnityException("Workbench state not handled in CanInteract");
         }
     }
 
+    public override bool CanInteractA(Player player)
+        => state == State.HasWoodLog && !player.isHolding;
+
     public override void Interact(Player player)
     {
         if (state == State.Empty)
         {
-            state = State.AsWood;
+            state = State.HasWoodLog;
+
+            player.ConsumeCurrentItem();
+
             GetComponent<SpriteRenderer>().color = Color.red;
-            player.heldItem = Player.HeldItem.Nothing;
-            Destroy(player.heldItemGameobject);
-            player.heldItemGameobject = null;
         }
-        else if (state == State.Crafted)
+        else if (state == State.HasWoodPlank) //Could just write else here, but ig this is clearer
         {
-            player.heldItem = Player.HeldItem.WoodCrafted;
             state = State.Empty;
 
+            player.isHolding = true;
+            player.heldItem = Instantiate(woodPlankItemPrefab, player.transform).GetComponent<Item>();
+
             GetComponent<SpriteRenderer>().color = Color.white;
-            // Assume tablePrefab is defined elsewhere
-            player.heldItemGameobject = Instantiate(woodCraftedPrefab, player.transform);
-            state = State.Empty;
         }
     }
 
     public override void InteractA(Player player)
     {
-        if( state == State.AsWood)
-        {
-            state = State.Crafted;
-            GetComponent<SpriteRenderer>().color = Color.blue;
-        }
+        state = State.HasWoodPlank;
+        GetComponent<SpriteRenderer>().color = Color.blue;
     }
 
 }

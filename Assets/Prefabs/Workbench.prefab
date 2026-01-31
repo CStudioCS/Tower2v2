@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4912289950411926326}
+  - component: {fileID: 6151044016105498136}
   - component: {fileID: 2862079642628240185}
   - component: {fileID: 8837958186719799260}
-  - component: {fileID: 6151044016105498136}
   m_Layer: 0
   m_Name: Workbench
   m_TagString: Untagged
@@ -34,6 +34,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6151044016105498136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511365595929979999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3919466a342310f4d8578b0c1cb29e32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionTime: 0
+  interactionTimeA: 1.5
+  woodPlankItemPrefab: {fileID: 8930447777740200761, guid: 41bd7609910bc2e4383d0234046cf75a, type: 3}
 --- !u!212 &2862079642628240185
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -119,11 +134,11 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0901137, y: -0.00000011920929}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -133,22 +148,5 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.4205297, y: 1.915704}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &6151044016105498136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511365595929979999}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3919466a342310f4d8578b0c1cb29e32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactionTime: 1
-  interactionTimeA: 5
-  craftTime: 0
-  ProgressBarFill: {fileID: 0}
-  woodCraftedPrefab: {fileID: 3518268394670792145, guid: 9f1e09a8222ef5344a1a05d6c9278e32, type: 3}

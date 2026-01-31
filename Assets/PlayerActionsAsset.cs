@@ -287,7 +287,7 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""75ee8003-980f-433a-bc6a-1d54593f2a26"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""path"": ""<Keyboard>/r"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -309,7 +309,7 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b474d408-c658-4edb-9163-32a0dae26381"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -320,7 +320,7 @@ public partial class @PlayerActionsAsset: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""89988f32-cd04-41d7-8de5-a1a76fe1b2fc"",
-                    ""path"": """",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

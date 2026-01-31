@@ -5,8 +5,9 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public Interactable insideInteractable;
-    public HeldItem heldItem;
-    public GameObject heldItemGameobject;
+    public bool isHolding = false;
+    
+    public Item heldItem;
 
     [SerializeField] private float speed = 7;
     [SerializeField] private RectTransform ProgressBar;
@@ -21,7 +22,6 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private float maxProgressBarFill;
     private bool interacting;
-    public enum HeldItem { Nothing, Wood, Brick, Cement, Dirt, WoodCrafted }
 
     private void Awake()
     {
@@ -47,30 +47,44 @@ public class Player : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
 
         if (interactAction.WasPressedThisFrame())
-            StartInteracting();
+            StartInteracting(true);
 
         if(interactActionA.WasPressedThisFrame())
-        {
-            StartInteractingA();
-        }
+            StartInteracting(false);
 
-        //Pressing A to discard an item
-        //Would be nice to remove this and make a trashcan interactable instead.
+        //Pressing A to drop an item
         if (discardAction.WasPressedThisFrame())
-            DiscardHeldItem();
+            DropHeldItem();
     }
 
-    void StartInteracting()
+    void StartInteracting(bool interactingWithE)
     {
         //we check whether we're inside an interactable object and if yes if we can interact with it
-        if (insideInteractable == null || !insideInteractable.CanInteract(this))
+        if (insideInteractable == null)
             return;
 
         //If we can interact instantly, we do it, else we need to wait for the interaction time
-        if (insideInteractable.interactionTime > 0)
-            StartCoroutine(InteractTimer(insideInteractable.interactionTime));
+        if (interactingWithE)
+        {
+            if (!insideInteractable.CanInteract(this))
+                return;
+
+            if (insideInteractable.interactionTime > 0)
+                StartCoroutine(InteractTimer(insideInteractable.interactionTime));
+            else
+                insideInteractable.Interact(this);
+        }
         else
-            insideInteractable.Interact(this);
+        {
+            if (!insideInteractable.CanInteractA(this))
+                return;
+
+            if (insideInteractable.interactionTimeA > 0)
+                StartCoroutine(InteractTimerA(insideInteractable.interactionTimeA));
+            else
+                insideInteractable.InteractA(this);
+        }
+        
     }
 
     private IEnumerator InteractTimer(float time)
@@ -103,20 +117,7 @@ public class Player : MonoBehaviour
         insideInteractable.Interact(this);
     }
 
-    void StartInteractingA()
-    {
-        
-        //we check whether we're inside an interactable object and if yes if we can interact with it
-        if (insideInteractable == null || !insideInteractable.CanInteract(this))
-            return;
-
-        //If we can interact instantly, we do it, else we need to wait for the interaction time
-        if (insideInteractable.interactionTimeA > 0){
-            StartCoroutine(InteractTimerA(insideInteractable.interactionTimeA));
-        }
-        else
-            insideInteractable.InteractA(this);
-    }
+    
     private IEnumerator InteractTimerA(float time)
     {
         
@@ -155,12 +156,21 @@ public class Player : MonoBehaviour
         ProgressBarFill.sizeDelta = new Vector2(0, ProgressBarFill.sizeDelta.y);
     }
 
-    //Discards the item currently held
-    private void DiscardHeldItem()
+    public void ConsumeCurrentItem()
     {
-        heldItem = HeldItem.Nothing;
-        if (heldItemGameobject != null) 
-            heldItemGameobject.GetComponent<Item>().Drop(this);
-        heldItemGameobject = null;
+        isHolding = false;
+        Destroy(heldItem.gameObject);
+        heldItem = null;
+    }
+
+    //Discards the item currently held
+    private void DropHeldItem()
+    {
+        if (!isHolding)
+            return;
+
+        isHolding = false;
+        heldItem.Drop();
+        heldItem = null;
     }
 }

@@ -1,4 +1,4 @@
 public static class Resources
 {
-    public enum Type { Straw, Wood, Brick }
+    public enum Type { Straw, WoodLog, WoodPlank, Clay, Brick }
 }

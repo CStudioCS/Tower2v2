@@ -5,7 +5,7 @@ public class Furnace : Interactable
 {
     [SerializeField] private float cookTime;
     [SerializeField] private RectTransform ProgressBarFill;
-    [SerializeField] private GameObject brickPiecePrefab;
+    [SerializeField] private Item brickItem;
 
     private State state;
     private float maxProgressBarFill;
@@ -22,11 +22,11 @@ public class Furnace : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.heldItem == Player.HeldItem.Dirt;
+                return player.isHolding && player.heldItem.itemType == Resources.Type.Clay;
             case State.Cooking:
                 return false;
             case State.Cooked:
-                return player.heldItem == Player.HeldItem.Nothing;
+                return !player.isHolding;
             default:
                 throw new UnityException("Furnace state not handled in CanInteract");
         }
@@ -38,14 +38,12 @@ public class Furnace : Interactable
         {
             StartCoroutine(Cook());
 
-            player.heldItem = Player.HeldItem.Nothing;
-            Destroy(player.heldItemGameobject);
-            player.heldItemGameobject = null;
+            player.ConsumeCurrentItem();
         }
         else if(state == State.Cooked)
         {
-            player.heldItem = Player.HeldItem.Brick;
-            player.heldItemGameobject = Instantiate(brickPiecePrefab, player.transform);
+            player.isHolding = true;
+            player.heldItem = Instantiate(brickItem.gameObject, player.transform).GetComponent<Item>();
             state = State.Empty;
             ResetProgressBar();
         }

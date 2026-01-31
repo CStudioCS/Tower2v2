@@ -3,7 +3,7 @@ using UnityEngine;
 public class Item : Interactable
 {
     private Collider2D collider2d;
-    [SerializeField] private Player.HeldItem givenItem;
+    public Resources.Type itemType;
 
     private void Awake()
     {
@@ -12,24 +12,20 @@ public class Item : Interactable
     }
 
     public override bool CanInteract(Player player)
-        => player.heldItem == Player.HeldItem.Nothing;
+        => !player.isHolding;
 
     public override void Interact(Player player)
     {
         collider2d.enabled = false;
-        player.heldItemGameobject = this.gameObject;
-        player.heldItem = givenItem;
+        player.isHolding = true;
+        player.heldItem = this;
         this.transform.SetParent(player.transform);
         this.transform.position = player.transform.position;
-        
     }
 
-    public void Drop(Player player)
+    public void Drop()
     {
-        player.heldItem = Player.HeldItem.Nothing;
         this.gameObject.transform.SetParent(null);
         collider2d.enabled = true;
-
     }
-
 }
