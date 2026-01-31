@@ -160,7 +160,7 @@ public class Player : MonoBehaviour
     {
         heldItem = HeldItem.Nothing;
         if (heldItemGameobject != null) 
-            heldItemGameobject.GetComponent<Item>().Drop();
+            heldItemGameobject.GetComponent<Item>().Drop(this);
         heldItemGameobject = null;
     }
 }
