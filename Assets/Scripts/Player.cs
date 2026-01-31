@@ -52,10 +52,10 @@ public class Player : MonoBehaviour
         if(interactActionA.WasPressedThisFrame())
             StartInteracting(false);
 
-        //Pressing Q to discard an item
-        //Removed as trashcan now exists
-        /*if (discardAction.WasPressedThisFrame())
-            DiscardHeldItem();*/
+        //Pressing A to discard an item
+        //Would be nice to remove this and make a trashcan interactable instead.
+        if (discardAction.WasPressedThisFrame())
+            DiscardHeldItem();
     }
 
     void StartInteracting(bool interactingWithE)
@@ -160,14 +160,9 @@ public class Player : MonoBehaviour
     //Discards the item currently held
     private void DiscardHeldItem()
     {
-        isHolding = false;
-        if (heldItemGameobject != null)
-            Destroy(heldItemGameobject);
+        heldItem = HeldItem.Nothing;
+        if (heldItemGameobject != null) 
+            heldItemGameobject.GetComponent<Item>().Drop();
         heldItemGameobject = null;
-    }
-
-    public void Drop()
-    {
-        throw new System.NotImplementedException();
     }
 }
