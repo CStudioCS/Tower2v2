@@ -47,43 +47,45 @@ public class Player : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
 
         if (interactAction.WasPressedThisFrame())
-            StartInteracting();
+            StartInteracting(true);
 
         if(interactActionA.WasPressedThisFrame())
-            StartInteractingA();
+            StartInteracting(false);
 
-        //Pressing A to discard an item
-        //Would be nice to remove this and make a trashcan interactable instead.
-        if (discardAction.WasPressedThisFrame())
-            DiscardHeldItem();
+        //Pressing Q to discard an item
+        //Removed as trashcan now exists
+        /*if (discardAction.WasPressedThisFrame())
+            DiscardHeldItem();*/
     }
 
-    void StartInteracting()
+    void StartInteracting(bool interactingWithE)
     {
         //we check whether we're inside an interactable object and if yes if we can interact with it
-        if (insideInteractable == null || !insideInteractable.CanInteract(this))
+        if (insideInteractable == null)
             return;
 
         //If we can interact instantly, we do it, else we need to wait for the interaction time
-        if (insideInteractable.interactionTime > 0)
-            StartCoroutine(InteractTimer(insideInteractable.interactionTime));
-        else
-            insideInteractable.Interact(this);
-    }
-
-    void StartInteractingA()
-    {
-
-        //we check  we're inside an interactable object and if yes if we can interact with it
-        if (insideInteractable == null || !insideInteractable.CanInteract(this))
-            return;
-
-        if (insideInteractable.interactionTimeA > 0)
+        if (interactingWithE)
         {
-            StartCoroutine(InteractTimerA(insideInteractable.interactionTimeA));
+            if (!insideInteractable.CanInteract(this))
+                return;
+
+            if (insideInteractable.interactionTime > 0)
+                StartCoroutine(InteractTimer(insideInteractable.interactionTime));
+            else
+                insideInteractable.Interact(this);
         }
         else
-            insideInteractable.InteractA(this);
+        {
+            if (!insideInteractable.CanInteractA(this))
+                return;
+
+            if (insideInteractable.interactionTimeA > 0)
+                StartCoroutine(InteractTimerA(insideInteractable.interactionTimeA));
+            else
+                insideInteractable.InteractA(this);
+        }
+        
     }
 
     private IEnumerator InteractTimer(float time)

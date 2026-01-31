@@ -5,7 +5,7 @@ public class Workbench : Interactable
     [SerializeField] private GameObject woodPlankItemPrefab;
     
     private State state;
-    private enum State { Empty, Crafted, HasWoodLog}
+    private enum State { Empty, HasWoodLog, HasWoodPlank}
 
     public override bool CanInteract(Player player)
     {
@@ -14,44 +14,45 @@ public class Workbench : Interactable
             case State.Empty:
                 return player.isHolding && player.heldItem == Resources.Type.WoodLog;
             case State.HasWoodLog:
-                return !player.isHolding;
-            case State.Crafted:
+                return false;
+            case State.HasWoodPlank:
                 return !player.isHolding;
             default:
                 throw new UnityException("Workbench state not handled in CanInteract");
         }
     }
 
+    public override bool CanInteractA(Player player)
+        => state == State.HasWoodLog && !player.isHolding;
+
     public override void Interact(Player player)
     {
         if (state == State.Empty)
         {
             state = State.HasWoodLog;
-            GetComponent<SpriteRenderer>().color = Color.red;
+
             player.isHolding = false;
             Destroy(player.heldItemGameobject);
             player.heldItemGameobject = null;
+
+            GetComponent<SpriteRenderer>().color = Color.red;
         }
-        else if (state == State.Crafted)
+        else if (state == State.HasWoodPlank) //Could just write else here, but ig this is clearer
         {
-            player.isHolding = true;
-            player.heldItem = Resources.Type.WoodPlank;
             state = State.Empty;
 
-            GetComponent<SpriteRenderer>().color = Color.white;
-            // Assume tablePrefab is defined elsewhere
+            player.isHolding = true;
+            player.heldItem = Resources.Type.WoodPlank;
             player.heldItemGameobject = Instantiate(woodPlankItemPrefab, player.transform);
-            state = State.Empty;
+
+            GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
 
     public override void InteractA(Player player)
     {
-        if( state == State.HasWoodLog)
-        {
-            state = State.Crafted;
-            GetComponent<SpriteRenderer>().color = Color.blue;
-        }
+        state = State.HasWoodPlank;
+        GetComponent<SpriteRenderer>().color = Color.blue;
     }
 
 }

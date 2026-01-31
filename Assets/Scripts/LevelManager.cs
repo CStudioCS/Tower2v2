@@ -18,9 +18,7 @@ public class LevelManager : MonoBehaviour
     public void Awake()
     {
         if(instance != null)
-        {
             Destroy(instance);
-        }
 
         instance = this;
     }
@@ -31,10 +29,10 @@ public class LevelManager : MonoBehaviour
         isLevelActive = true;  
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (TowerRight == null || TowerLeft == null) return;
+        if (TowerRight == null || TowerLeft == null)
+            return;
 
         if (isLevelActive)
         {
@@ -47,16 +45,18 @@ public class LevelManager : MonoBehaviour
             if(levelTimer >= timerLimit)
             {
                 if (TowerRight.height == TowerLeft.height)
-                {
                     winner = (TowerRight.lastPlacedTime < TowerLeft.lastPlacedTime)? Team.Right : Team.Left;
-                }
                 else
-                { 
                     winner = (TowerRight.height > TowerLeft.height)? Team.Right : Team.Left;
-                }
+
                 isLevelActive = false;
-                Debug.Log(winner);
+                EndLevel(winner);
             }
         }
+    }
+
+    private void EndLevel(Team winner)
+    {
+        Debug.Log($"Level has ended with winner {winner}");
     }
 }
