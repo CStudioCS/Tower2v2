@@ -6,8 +6,8 @@ public class Player : MonoBehaviour
 {
     public Interactable insideInteractable;
     public bool isHolding = false;
-    public Resources.Type heldItem;
-    public GameObject heldItemGameobject;
+    
+    public Item heldItem;
 
     [SerializeField] private float speed = 7;
     [SerializeField] private RectTransform ProgressBar;
@@ -52,10 +52,9 @@ public class Player : MonoBehaviour
         if(interactActionA.WasPressedThisFrame())
             StartInteracting(false);
 
-        //Pressing A to discard an item
-        //Would be nice to remove this and make a trashcan interactable instead.
+        //Pressing A to drop an item
         if (discardAction.WasPressedThisFrame())
-            DiscardHeldItem();
+            DropHeldItem();
     }
 
     void StartInteracting(bool interactingWithE)
@@ -157,12 +156,21 @@ public class Player : MonoBehaviour
         ProgressBarFill.sizeDelta = new Vector2(0, ProgressBarFill.sizeDelta.y);
     }
 
-    //Discards the item currently held
-    private void DiscardHeldItem()
+    public void ConsumeCurrentItem()
     {
-        heldItem = HeldItem.Nothing;
-        if (heldItemGameobject != null) 
-            heldItemGameobject.GetComponent<Item>().Drop();
-        heldItemGameobject = null;
+        isHolding = false;
+        Destroy(heldItem.gameObject);
+        heldItem = null;
+    }
+
+    //Discards the item currently held
+    private void DropHeldItem()
+    {
+        if (!isHolding)
+            return;
+
+        isHolding = false;
+        heldItem.Drop();
+        heldItem = null;
     }
 }

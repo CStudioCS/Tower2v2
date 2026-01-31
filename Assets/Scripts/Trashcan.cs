@@ -2,12 +2,7 @@ public class Trashcan : Interactable
 {   
     public override void Interact(Player player)
     {
-        player.isHolding = false;
-
-        if (player.heldItemGameobject != null)
-            Destroy(player.heldItemGameobject);
-
-        player.heldItemGameobject = null;
+        player.ConsumeCurrentItem();
     }
 
     public override bool CanInteract(Player player)

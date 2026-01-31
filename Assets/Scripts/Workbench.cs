@@ -12,7 +12,7 @@ public class Workbench : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.isHolding && player.heldItem == Resources.Type.WoodLog;
+                return player.isHolding && player.heldItem.itemType == Resources.Type.WoodLog;
             case State.HasWoodLog:
                 return false;
             case State.HasWoodPlank:
@@ -31,9 +31,7 @@ public class Workbench : Interactable
         {
             state = State.HasWoodLog;
 
-            player.isHolding = false;
-            Destroy(player.heldItemGameobject);
-            player.heldItemGameobject = null;
+            player.ConsumeCurrentItem();
 
             GetComponent<SpriteRenderer>().color = Color.red;
         }
@@ -42,8 +40,7 @@ public class Workbench : Interactable
             state = State.Empty;
 
             player.isHolding = true;
-            player.heldItem = Resources.Type.WoodPlank;
-            player.heldItemGameobject = Instantiate(woodPlankItemPrefab, player.transform);
+            player.heldItem = Instantiate(woodPlankItemPrefab, player.transform).GetComponent<Item>();
 
             GetComponent<SpriteRenderer>().color = Color.white;
         }

@@ -34,7 +34,7 @@ public class Tower : Interactable
     public override bool CanInteract(Player player)
     {
         //check if the player is holding the correct item for the recipe
-        return recipesList.CurrentNeededResourceType == player.heldItem;
+        return recipesList.CurrentNeededResourceType == player.heldItem.itemType;
     }
 
     public override void Interact(Player player)
@@ -42,21 +42,19 @@ public class Tower : Interactable
         //The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime, and with the way
         //unity handles rendering, the new object is rendered on top of the old one
         
-        if(!towerPieceMap.TryGetValue(player.heldItem, out GameObject towerPiece))
+        if(!towerPieceMap.TryGetValue(player.heldItem.itemType, out GameObject towerPiece))
         {
-            Debug.LogError("Could not find tower piece associated with " + player.heldItem + " held item");
+            Debug.LogError("Could not find tower piece associated with " + player.heldItem.itemType + " held item");
             return;
         }
 
         Instantiate(towerPiece, transform.position + blockOffset * height, Quaternion.identity, transform);
         height++;
-        lastBlockType = player.heldItem;
+        lastBlockType = player.heldItem.itemType;
 
         lastPlacedTime = LevelManager.instance.levelTimer;
 
-        player.isHolding = false;
-        Destroy(player.heldItemGameobject);
-        player.heldItemGameobject = null;
+        player.ConsumeCurrentItem();
 
         UpdateText();
         recipesList.OnRecipeCompleted();

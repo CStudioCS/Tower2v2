@@ -22,7 +22,7 @@ public class Furnace : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.isHolding && player.heldItem == Resources.Type.Clay;
+                return player.isHolding && player.heldItem.itemType == Resources.Type.Clay;
             case State.Cooking:
                 return false;
             case State.Cooked:
@@ -38,15 +38,12 @@ public class Furnace : Interactable
         {
             StartCoroutine(Cook());
 
-            player.isHolding = false;
-            Destroy(player.heldItemGameobject);
-            player.heldItemGameobject = null;
+            player.ConsumeCurrentItem();
         }
         else if(state == State.Cooked)
         {
-            player.heldItem = Resources.Type.Brick;
             player.isHolding = true;
-            player.heldItemGameobject = Instantiate(brickPiecePrefab, player.transform);
+            player.heldItem = Instantiate(brickPiecePrefab, player.transform).GetComponent<Item>();
             state = State.Empty;
             ResetProgressBar();
         }
