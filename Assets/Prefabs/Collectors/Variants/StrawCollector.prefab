@@ -15,14 +15,14 @@ PrefabInstance:
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: itemPrefab
       value: 
-      objectReference: {fileID: 6899687915793865257, guid: 32677b31fc7ed234f95fcad7cc73ebb0, type: 3}
+      objectReference: {fileID: 778211752214434399, guid: 32677b31fc7ed234f95fcad7cc73ebb0, type: 3}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: interactionTime
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1423934274109864873, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Name
-      value: strawCollector 1
+      value: StrawCollector
       objectReference: {fileID: 0}
     - target: {fileID: 2633276174023478187, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_LocalPosition.x

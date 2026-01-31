@@ -15,14 +15,14 @@ PrefabInstance:
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: itemPrefab
       value: 
-      objectReference: {fileID: 5998326889863388542, guid: 2e900ac2d5a92804a9c0b03180a5dfab, type: 3}
+      objectReference: {fileID: 446428572069877000, guid: 2e900ac2d5a92804a9c0b03180a5dfab, type: 3}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: interactionTime
       value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 1423934274109864873, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Name
-      value: woodCollector 1
+      value: WoodCollector
       objectReference: {fileID: 0}
     - target: {fileID: 2633276174023478187, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_LocalPosition.x

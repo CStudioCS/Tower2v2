@@ -5,7 +5,7 @@ public class Furnace : Interactable
 {
     [SerializeField] private float cookTime;
     [SerializeField] private RectTransform ProgressBarFill;
-    [SerializeField] private GameObject brickPiecePrefab;
+    [SerializeField] private Item brickItem;
 
     private State state;
     private float maxProgressBarFill;
@@ -43,7 +43,7 @@ public class Furnace : Interactable
         else if(state == State.Cooked)
         {
             player.isHolding = true;
-            player.heldItem = Instantiate(brickPiecePrefab, player.transform).GetComponent<Item>();
+            player.heldItem = Instantiate(brickItem.gameObject, player.transform).GetComponent<Item>();
             state = State.Empty;
             ResetProgressBar();
         }

@@ -15,14 +15,14 @@ PrefabInstance:
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: itemPrefab
       value: 
-      objectReference: {fileID: 2920293551898192202, guid: ff195b21e2e2dc849ae9e1c4ef98a5f4, type: 3}
+      objectReference: {fileID: 9046229091504955708, guid: ff195b21e2e2dc849ae9e1c4ef98a5f4, type: 3}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: interactionTime
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 1423934274109864873, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Name
-      value: clayCollector 1
+      value: ClayCollector
       objectReference: {fileID: 0}
     - target: {fileID: 2633276174023478187, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_LocalPosition.x
