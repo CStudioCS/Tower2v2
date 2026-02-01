@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 7812098230573369185}
   - component: {fileID: 6789088484169991368}
   m_Layer: 5
-  m_Name: Right
+  m_Name: RightText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -272,6 +272,8 @@ GameObject:
   - component: {fileID: 2828558726226557837}
   - component: {fileID: 6903101786615910173}
   - component: {fileID: 4836940015255426636}
+  - component: {fileID: 1885976317804985541}
+  - component: {fileID: 3895623661270033655}
   m_Layer: 5
   m_Name: PlayerControllerBadge
   m_TagString: Untagged
@@ -338,6 +340,62 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1885976317804985541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777358524332453278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 1
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Gameplay
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
+--- !u!114 &3895623661270033655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777358524332453278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb95e0100984b56bf602c33956c3c80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  readyKey: {fileID: 8326511394360499217}
+  readyGamepadA: {fileID: 5309453904940665509}
+  readyCtrl: {fileID: 7437948822101210429}
+  readyGenericInteractKey: {fileID: 1306481334988066537}
+  readyGenericInteractKeyText: {fileID: 6097907941955235373}
+  readyCheck: {fileID: 350535946810898002}
+  gamepad: {fileID: 7615261420674204204}
+  arrowKeys: {fileID: 311872216489952383}
+  genericKeys: {fileID: 4551392757767355221}
+  genericInteractKeyText: {fileID: 2937135306106374417}
+  genericUpKeyText: {fileID: 8906598395005279321}
+  genericDownKeyText: {fileID: 6293068474661927225}
+  genericLeftKeyText: {fileID: 9084840873976542053}
+  genericRightKeyText: {fileID: 6789088484169991368}
 --- !u!1 &1957006551524067562
 GameObject:
   m_ObjectHideFlags: 0
@@ -575,7 +633,7 @@ GameObject:
   - component: {fileID: 972323903910159473}
   - component: {fileID: 9084840873976542053}
   m_Layer: 5
-  m_Name: Left
+  m_Name: LeftText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -731,8 +789,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6464270987908834105}
-  - {fileID: 8271983598563008240}
   - {fileID: 825586938183161258}
+  - {fileID: 8271983598563008240}
   m_Father: {fileID: 2828558726226557837}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -1022,7 +1080,7 @@ GameObject:
   - component: {fileID: 1888056383405338772}
   - component: {fileID: 6293068474661927225}
   m_Layer: 5
-  m_Name: Down
+  m_Name: DownText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1159,7 +1217,7 @@ GameObject:
   - component: {fileID: 9101279776704172224}
   - component: {fileID: 8906598395005279321}
   m_Layer: 5
-  m_Name: Up
+  m_Name: UpText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1705,9 +1763,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3536580158309205870}
-  - {fileID: 813532282835599880}
   - {fileID: 8002112377108374137}
+  - {fileID: 813532282835599880}
+  - {fileID: 3536580158309205870}
   m_Father: {fileID: 633610853135955996}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2000,6 +2058,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70b5e74b3f6b0f1459b28c214557bc52, type: 3}
+--- !u!114 &2937135306106374417 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2019096066890920310, guid: 70b5e74b3f6b0f1459b28c214557bc52, type: 3}
+  m_PrefabInstance: {fileID: 3803159949867055207}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5581832279229718610 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8768841838520604725, guid: 70b5e74b3f6b0f1459b28c214557bc52, type: 3}
@@ -2106,8 +2175,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70b5e74b3f6b0f1459b28c214557bc52, type: 3}
+--- !u!1 &1306481334988066537 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6522573464124641714, guid: 70b5e74b3f6b0f1459b28c214557bc52, type: 3}
+  m_PrefabInstance: {fileID: 5234691141452799835}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &3536580158309205870 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8768841838520604725, guid: 70b5e74b3f6b0f1459b28c214557bc52, type: 3}
   m_PrefabInstance: {fileID: 5234691141452799835}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6097907941955235373 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2019096066890920310, guid: 70b5e74b3f6b0f1459b28c214557bc52, type: 3}
+  m_PrefabInstance: {fileID: 5234691141452799835}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

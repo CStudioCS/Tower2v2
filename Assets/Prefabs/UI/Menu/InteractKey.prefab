@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5880534691008849459}
   - component: {fileID: 2019096066890920310}
   m_Layer: 5
-  m_Name: Interact
+  m_Name: InteractText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
