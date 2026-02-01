@@ -50,7 +50,7 @@ MonoBehaviour:
   interactionTime: 0
   interactionTimeA: 0
   cookTime: 4
-  ProgressBarFill: {fileID: 5070048619954780330}
+  progressBarFill: {fileID: 5070048619954780330}
   brickItem: {fileID: 3935943603334928311, guid: d8b092eee7d429941b1f898ae5ab311e, type: 3}
 --- !u!212 &2483626925094657194
 SpriteRenderer:

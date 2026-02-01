@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class Tower : Interactable
 {
-    public int height = 0;
+    public int height;
 
     [HideInInspector] public float lastPlacedTime = float.MaxValue;
     [SerializeField] private Vector3 blockOffset;
@@ -16,7 +15,7 @@ public class Tower : Interactable
     [SerializeField] private GameObject woodTowerPiecePrefab;
     [SerializeField] private GameObject brickTowerPiecePrefab;
 
-    private List<GameObject> towerPieces = new();
+    private readonly List<GameObject> towerPieces = new();
     
     private Dictionary<Resources.Type, GameObject> towerPieceMap;
     private Dictionary<Resources.Type, GameObject> TowerPieceMap
@@ -37,23 +36,23 @@ public class Tower : Interactable
 
     private void OnEnable()
     {
-        LevelManager.Instance.GameStarted += OnGameStarted;
+        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
     }
 
-    private void OnGameStarted() => ResetTower();
+    private void OnGameAboutToStart() => ResetTower();
 
     public override bool CanInteract(Player player)
     {
-        //check if the player is holding the correct item for the recipe
+        // Check if the player is holding the correct item for the recipe
         return player.isHolding && recipesList.CurrentNeededResourceType == player.heldItem.itemType;
     }
 
     public override void Interact(Player player)
     {
-        //The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime, and with the way
-        //unity handles rendering, the new object is rendered on top of the old one
+        // The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime,
+        // and with the way Unity handles rendering, the new object is rendered on top of the old one
         
-        if(!TowerPieceMap.TryGetValue(player.heldItem.itemType, out GameObject towerPiece))
+        if (!TowerPieceMap.TryGetValue(player.heldItem.itemType, out GameObject towerPiece))
         {
             Debug.LogError("Could not find tower piece associated with " + player.heldItem.itemType + " held item");
             return;
@@ -85,6 +84,6 @@ public class Tower : Interactable
 
     private void OnDestroy()
     {
-        LevelManager.Instance.GameStarted -= OnGameStarted;
+        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
     }
 }

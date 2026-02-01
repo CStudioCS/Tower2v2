@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerTeam: MonoBehaviour
+public class PlayerTeam : MonoBehaviour
 {
     public LevelManager.Team CurrentTeam { get; private set; } = LevelManager.Team.Left;
     

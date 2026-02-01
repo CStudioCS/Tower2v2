@@ -31,19 +31,17 @@ public class Player : MonoBehaviour
             return teamColors;
         }
     }
-    
-    [Header("Interactables")]
-    public Interactable insideInteractable;
-    public bool isHolding = false;
-    
-    public Item heldItem;
+
+    [HideInInspector] public Interactable insideInteractable;
+    public bool isHolding { get; private set; }
+    public Item heldItem { get; private set; }
 
     [Header("Speed")]
     [SerializeField] private float speed = 7;
     
     [Header("Progress")]
-    [SerializeField] private RectTransform ProgressBar;
-    [SerializeField] private RectTransform ProgressBarFill;
+    [SerializeField] private RectTransform progressBar;
+    [SerializeField] private RectTransform progressBarFill;
 
     private PlayerInput playerInput;
     private InputAction moveAction;
@@ -52,20 +50,19 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private float maxProgressBarFill;
     private bool interacting;
-    
 
     private void Awake()
     {
         playerTeam.TeamChanged += OnTeamChanged;
         UpdateColor();
-        playerInput = GetComponent<PlayerInput>(); //Using unity's new input system
+        playerInput = GetComponent<PlayerInput>(); // Using Unity's new input system
         moveAction = playerInput.actions.FindAction("Gameplay/Move");
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
         cutWoodAction = playerInput.actions.FindAction("Gameplay/CutWood");
 
         rb = GetComponent<Rigidbody2D>();
 
-        maxProgressBarFill = ProgressBarFill.sizeDelta.x;
+        maxProgressBarFill = progressBarFill.sizeDelta.x;
         ResetProgressBar();
     }
 
@@ -102,7 +99,7 @@ public class Player : MonoBehaviour
             switch (LevelManager.Instance.GameState)
             {
                 case LevelManager.State.Game:
-                    StartInteracting(false);;
+                    StartInteracting(false);
                     break;
             }
         }
@@ -110,11 +107,11 @@ public class Player : MonoBehaviour
 
     void StartInteracting(bool interactingWithE)
     {
-        //we check whether we're inside an interactable object and if yes if we can interact with it
+        // We check whether we're inside an interactable object and if yes if we can interact with it
         if (insideInteractable == null)
             return;
 
-        //If we can interact instantly, we do it, else we need to wait for the interaction time
+        // If we can interact instantly, we do it, else we need to wait for the interaction time
         if (interactingWithE)
         {
             if (!insideInteractable.CanInteract(this))
@@ -141,12 +138,12 @@ public class Player : MonoBehaviour
     private IEnumerator InteractTimer(float time)
     {
         interacting = true;
-        ProgressBar.gameObject.SetActive(true);
+        progressBar.gameObject.SetActive(true);
         float t = 0;
         
         while(t < time)
         {
-            //if at any point the player stop holding the interact button -> stop interacting
+            // If at any point the player stop holding the interact button -> stop interacting
             if (!interactAction.IsPressed())
             {
                 ResetProgressBar();
@@ -154,31 +151,29 @@ public class Player : MonoBehaviour
                 yield break;
             }
 
-            //fill progress bar
-            ProgressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxProgressBarFill, t / time), ProgressBarFill.sizeDelta.y);
+            // Fill progress bar
+            progressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxProgressBarFill, t / time), progressBarFill.sizeDelta.y);
 
             t += Time.deltaTime * Time.timeScale;
             yield return null;
         }
 
-        //We interacted with the object -> Reset everything and call the interact function
+        // We interacted with the object -> Reset everything and call the interact function
 
         interacting = false;
         ResetProgressBar();
         insideInteractable.Interact(this);
     }
-
     
     private IEnumerator InteractTimerA(float time)
     {
-        
         interacting = true;
-        ProgressBar.gameObject.SetActive(true);
+        progressBar.gameObject.SetActive(true);
         float t = 0;
         
-        while(t < time)
+        while (t < time)
         {
-            //if at any point the player stop holding the interact button -> stop interacting
+            // If at any point the player stop holding the interact button -> stop interacting
             if (!cutWoodAction.IsPressed())
             {
                 ResetProgressBar();
@@ -186,36 +181,37 @@ public class Player : MonoBehaviour
                 yield break;
             }
 
-            //fill progress bar
-            ProgressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxProgressBarFill, t / time), ProgressBarFill.sizeDelta.y);
+            // Fill progress bar
+            progressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxProgressBarFill, t / time), progressBarFill.sizeDelta.y);
 
             t += Time.deltaTime * Time.timeScale;
             yield return null;
         }
 
-        //We interacted with the object -> Reset everything and call the interact function
+        // We interacted with the object -> Reset everything and call the interact function
 
         interacting = false;
         ResetProgressBar();
         insideInteractable.InteractA(this);
     }
 
-
     private void ResetProgressBar()
     {
-        ProgressBar.gameObject.SetActive(false);
-        ProgressBarFill.sizeDelta = new Vector2(0, ProgressBarFill.sizeDelta.y);
+        progressBar.gameObject.SetActive(false);
+        progressBarFill.sizeDelta = new Vector2(0, progressBarFill.sizeDelta.y);
     }
 
+    // Discards the item currently held
     public void ConsumeCurrentItem()
     {
         isHolding = false;
-        Destroy(heldItem.gameObject);
+        if (heldItem != null)
+            Destroy(heldItem.gameObject);
         heldItem = null;
     }
 
-    //Discards the item currently held
-    public void DiscardHeldItem()
+    // Drops to the ground the item currently held
+    public void DropItem()
     {
         if (!isHolding)
             return;
@@ -223,6 +219,16 @@ public class Player : MonoBehaviour
         isHolding = false;
         heldItem.Drop();
         heldItem = null;
+    }
+
+    public void GrabNewItem(Item itemPrefab) => GrabItem(Instantiate(itemPrefab, transform));
+    
+    public void GrabNewItem(GameObject itemPrefab) => GrabItem(Instantiate(itemPrefab, transform).GetComponent<Item>());
+    
+    public void GrabItem(Item item)
+    {
+        isHolding = true;
+        heldItem = item;
     }
     
     private void OnDestroy()

@@ -59,8 +59,8 @@ MonoBehaviour:
   isHolding: 0
   heldItem: {fileID: 0}
   speed: 7
-  ProgressBar: {fileID: 3250288505987409907}
-  ProgressBarFill: {fileID: 5849208130573298161}
+  progressBar: {fileID: 3250288505987409907}
+  progressBarFill: {fileID: 5849208130573298161}
 --- !u!114 &4720667436485828352
 MonoBehaviour:
   m_ObjectHideFlags: 0

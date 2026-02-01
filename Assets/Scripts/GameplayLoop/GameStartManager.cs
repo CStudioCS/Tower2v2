@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GameStartManager: MonoBehaviour
+public class GameStartManager : MonoBehaviour
 {
     public enum WaitState
     {
@@ -75,7 +75,7 @@ public class GameStartManager: MonoBehaviour
         foreach (PlayerInput playerInput in players)
         {
             Player player = playerInput.GetComponent<Player>();
-            player.DiscardHeldItem();
+            player.ConsumeCurrentItem();
             player.PlayerTeam.LobbyUpdate();
             player.PlayerControlBadge.SetUnready();
         }

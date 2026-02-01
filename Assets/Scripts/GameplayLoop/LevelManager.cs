@@ -6,14 +6,14 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
-    [SerializeField] private Tower TowerRight;
-    [SerializeField] private Tower TowerLeft;
+    [SerializeField] private Tower towerRight;
+    [SerializeField] private Tower towerLeft;
     [SerializeField] private TMP_Text timerDisplay;
     [SerializeField] private float timerLimit = 120f;
     [SerializeField] private TextMeshProUGUI winnerText;
     
-    public float LevelTimer { get; private set; } = 0;
-    private Team winner;
+    public float LevelTimer { get; private set; }
+    private Team winningTeam;
 
     public enum Team { Right, Left }
     
@@ -24,13 +24,14 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject[] activateOnlyInGame;
     [SerializeField] private Animator countdown;
     private static readonly int CountdownString = Animator.StringToHash("Countdown");
-    
+
+    public event Action GameAboutToStart;
     public event Action GameStarted;
     public event Action GameEnded;
 
     public void Awake()
     {
-        if(Instance != null)
+        if (Instance != null)
             Destroy(Instance);
 
         Instance = this;
@@ -38,21 +39,21 @@ public class LevelManager : MonoBehaviour
         ActivateInGameObjects(false);
     }
 
-    void ActivateLobbyObjects(bool on = true)
+    private void ActivateLobbyObjects(bool active = true)
     {
         foreach (GameObject go in activateOnlyInLobby)
-            go.SetActive(on);
+            go.SetActive(active);
     }
     
-    void ActivateInGameObjects(bool on = true)
+    private void ActivateInGameObjects(bool active = true)
     {
         foreach (GameObject go in activateOnlyInGame)
-            go.SetActive(on);
+            go.SetActive(active);
     }
 
-    void Update()
+    private void Update()
     {
-        if (TowerRight == null || TowerLeft == null)
+        if (towerRight == null || towerLeft == null)
             return;
 
         if (GameState == State.Game)
@@ -63,15 +64,15 @@ public class LevelManager : MonoBehaviour
             int seconds = Mathf.FloorToInt(timeRemaining % 60);
             timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
 
-            if(LevelTimer >= timerLimit)
+            if (LevelTimer >= timerLimit)
             {
-                if (TowerRight.height == TowerLeft.height)
-                    winner = (TowerRight.lastPlacedTime < TowerLeft.lastPlacedTime)? Team.Right : Team.Left;
+                if (towerRight.height == towerLeft.height)
+                    winningTeam = towerRight.lastPlacedTime < towerLeft.lastPlacedTime ? Team.Right : Team.Left;
                 else
-                    winner = (TowerRight.height > TowerLeft.height)? Team.Right : Team.Left;
+                    winningTeam = towerRight.height > towerLeft.height ? Team.Right : Team.Left;
 
                 GameState = State.Lobby;
-                EndLevel(winner);
+                EndLevel(winningTeam);
             }
         }
     }
@@ -81,11 +82,12 @@ public class LevelManager : MonoBehaviour
         StartCoroutine(StartGameDelayedRoutine());
     }
 
-    public IEnumerator StartGameDelayedRoutine()
+    private IEnumerator StartGameDelayedRoutine()
     {
         GameState = State.Starting;
         ActivateLobbyObjects(false);
         countdown.SetTrigger(CountdownString);
+        GameAboutToStart?.Invoke();
         yield return new WaitForSeconds(3); 
         GameState = State.Game;
         LevelTimer = 0;
@@ -102,7 +104,7 @@ public class LevelManager : MonoBehaviour
         Debug.Log($"Level has ended with winner {winner}");
         
         winnerText.gameObject.SetActive(true);
-        winnerText.text = (winner == Team.Left? "Left": "Right") + " team wins!";
+        winnerText.text = (winner == Team.Left ? "Left" : "Right") + " team wins!";
         GameEnded?.Invoke();
     }
 }

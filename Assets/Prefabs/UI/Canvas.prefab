@@ -189,7 +189,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3142647054671603722
 RectTransform:
   m_ObjectHideFlags: 0
@@ -740,6 +740,10 @@ PrefabInstance:
     - target: {fileID: 4986191846153511038, guid: 70be191e09c8bad40bc5d36471301154, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5890055403849865847, guid: 70be191e09c8bad40bc5d36471301154, type: 3}
+      propertyPath: m_text
+      value: Tower 2v2
       objectReference: {fileID: 0}
     - target: {fileID: 7348590339991076208, guid: 70be191e09c8bad40bc5d36471301154, type: 3}
       propertyPath: m_Pivot.x

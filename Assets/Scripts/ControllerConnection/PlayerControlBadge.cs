@@ -38,7 +38,7 @@ public class PlayerControlBadge : MonoBehaviour
     [SerializeField] private TextMeshProUGUI genericLeftKeyText;
     [SerializeField] private TextMeshProUGUI genericRightKeyText;
 
-    public bool IsReady { get; private set; } = false;
+    public bool IsReady { get; private set; }
     public event Action ReadyChanged;
     
     public void Initialize(int playerIndex, string controlScheme)
