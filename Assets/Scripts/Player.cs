@@ -62,6 +62,8 @@ public class Player : MonoBehaviour
         //we check whether we're inside an interactable object and if yes if we can interact with it
         if (insideInteractable == null)
             return;
+        if (insideInteractable.isAlreadyInteractedWith)//I do not set isAlreadyInteractedWith to true in an else statement because it only applies to interactables with interaction time
+            return;
 
         //If we can interact instantly, we do it, else we need to wait for the interaction time
         if (interactingWithE)
@@ -70,7 +72,10 @@ public class Player : MonoBehaviour
                 return;
 
             if (insideInteractable.interactionTime > 0)
+            {
+                insideInteractable.isAlreadyInteractedWith = true;
                 StartCoroutine(InteractTimer(insideInteractable.interactionTime));
+            }
             else
                 insideInteractable.Interact(this);
         }
@@ -80,7 +85,10 @@ public class Player : MonoBehaviour
                 return;
 
             if (insideInteractable.interactionTimeA > 0)
+            {
+                insideInteractable.isAlreadyInteractedWith = true;
                 StartCoroutine(InteractTimerA(insideInteractable.interactionTimeA));
+            }
             else
                 insideInteractable.InteractA(this);
         }
@@ -115,6 +123,7 @@ public class Player : MonoBehaviour
         interacting = false;
         ResetProgressBar();
         insideInteractable.Interact(this);
+        insideInteractable.isAlreadyInteractedWith = false;
     }
 
     
@@ -147,6 +156,7 @@ public class Player : MonoBehaviour
         interacting = false;
         ResetProgressBar();
         insideInteractable.InteractA(this);
+        insideInteractable.isAlreadyInteractedWith = false;
     }
 
 
