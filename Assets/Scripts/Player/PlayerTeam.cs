@@ -11,7 +11,7 @@ public class PlayerTeam: MonoBehaviour
     
     private void Update()
     {
-        switch (LevelManager.instance?.GameState)
+        switch (LevelManager.Instance?.GameState)
         {
             case LevelManager.State.Lobby:
                 LobbyUpdate();
@@ -25,11 +25,10 @@ public class PlayerTeam: MonoBehaviour
     private void LobbyUpdate()
     {
         LevelManager.Team newTeam = CurrentPositionTeam;
-        if (newTeam != CurrentTeam)
-        {
-            CurrentTeam = newTeam;
-            TeamChanged?.Invoke();
-        }
+        if (newTeam == CurrentTeam) return;
+        
+        CurrentTeam = newTeam;
+        TeamChanged?.Invoke();
     }
 
     private void GameUpdate()

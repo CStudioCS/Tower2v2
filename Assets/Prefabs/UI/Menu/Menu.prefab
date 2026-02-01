@@ -412,12 +412,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Waiting for players...
-
-    Unbalanced teams! Waiting for someone to switch...
-
-    Waiting
-    until everyone is ready...'
+  m_text: Waiting for players...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 08dec277c05d4f54990dd0b03024e520, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 08dec277c05d4f54990dd0b03024e520, type: 2}

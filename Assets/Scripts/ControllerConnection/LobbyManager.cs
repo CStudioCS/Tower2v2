@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,6 +8,19 @@ public class LobbyManager : MonoBehaviour
 {
     [Header("Setup")]
     [SerializeField] private PlayerInputManager playerInputManager = null;
+    
+    public event Action<PlayerInput> PlayerJoined;
+    public event Action<PlayerInput> PlayerLeft;
+    
+    public static LobbyManager Instance;
+    
+    public void Awake()
+    {
+        if(Instance != null)
+            Destroy(Instance);
+
+        Instance = this;
+    }
     
     private void Update()
     {
@@ -60,14 +76,15 @@ public class LobbyManager : MonoBehaviour
     public void OnPlayerJoined(PlayerInput playerInput)
     {
         if (playerInput == null) return;
-
-        Debug.Log($"Player Joined! Device: {playerInput.devices[0].name} | Scheme: {playerInput.currentControlScheme}");
-
+        
         PlayerControlBadge badge = playerInput.GetComponentInChildren<PlayerControlBadge>();
         if (badge != null)
         {
             badge.Initialize(playerInput.playerIndex, playerInput.currentControlScheme);
         }
+        
+        Debug.Log($"Player Joined! Device: {playerInput.devices[0].name} | Scheme: {playerInput.currentControlScheme}");
+        PlayerJoined?.Invoke(playerInput);
     }
 
     public void OnPlayerLeft(PlayerInput playerInput)
@@ -75,5 +92,6 @@ public class LobbyManager : MonoBehaviour
         if (playerInput == null) return;
 
         Debug.Log($"Player {playerInput.playerIndex} left the lobby.");
+        PlayerLeft?.Invoke(playerInput);
     }
 }

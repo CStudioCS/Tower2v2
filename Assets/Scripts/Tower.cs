@@ -52,7 +52,7 @@ public class Tower : Interactable
         height++;
         lastBlockType = player.heldItem.itemType;
 
-        lastPlacedTime = LevelManager.instance.levelTimer;
+        lastPlacedTime = LevelManager.Instance.levelTimer;
 
         player.ConsumeCurrentItem();
 

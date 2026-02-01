@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager instance;
+    public static LevelManager Instance;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Tower TowerRight;
     [SerializeField] private Tower TowerLeft;
@@ -20,10 +20,10 @@ public class LevelManager : MonoBehaviour
 
     public void Awake()
     {
-        if(instance != null)
-            Destroy(instance);
+        if(Instance != null)
+            Destroy(Instance);
 
-        instance = this;
+        Instance = this;
     }
 
     void Start()
