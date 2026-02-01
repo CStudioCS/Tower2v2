@@ -6,23 +6,36 @@ public class RecipesList : MonoBehaviour
     [SerializeField] private Recipe[] recipes;
     [SerializeField] private int queueSize = 5;
 
-    private Dictionary<Resources.Type, Recipe> recipesMap = new();
+    private Dictionary<Resources.Type, Recipe> recipesMap;
+    private Dictionary<Resources.Type, Recipe> RecipesMap
+    {
+        get
+        {
+            if (recipesMap == null)
+            {
+                recipesMap = new Dictionary<Resources.Type, Recipe>();
+                foreach (Recipe recipe in recipes)
+                {
+                    recipesMap[recipe.Type] = recipe;
+                }
+            }
+            return recipesMap;
+        }
+    }
+    
     private Queue<Recipe> queue;
 
     private int randomIndex = 0;
     
-    private void Start()
+    private void OnEnable()
     {
-        InitializeRecipesMap();
-        InitializeQueue();
+        LevelManager.Instance.GameStarted += OnGameStarted;
     }
 
-    private void InitializeRecipesMap()
+    private void OnGameStarted()
     {
-        foreach (Recipe recipe in recipes)
-        {
-            recipesMap[recipe.Type] = recipe;
-        }
+        ResourceRandomizer.TryReset();
+        InitializeQueue();
     }
 
     private void InitializeQueue()
@@ -39,7 +52,7 @@ public class RecipesList : MonoBehaviour
 
     private void AddRecipe(Resources.Type type)
     {
-        if (!recipesMap.TryGetValue(type, out Recipe recipe))
+        if (!RecipesMap.TryGetValue(type, out Recipe recipe))
         {
             Debug.LogError($"Recipe with resource type {type} was not found.");
             return;
@@ -59,5 +72,10 @@ public class RecipesList : MonoBehaviour
             Destroy(recipe.gameObject);
             AddRandomRecipe();
         }
+    }
+    
+    private void OnDestroy()
+    {
+        LevelManager.Instance.GameStarted -= OnGameStarted;
     }
 }

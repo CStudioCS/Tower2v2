@@ -215,7 +215,7 @@ public class Player : MonoBehaviour
     }
 
     //Discards the item currently held
-    private void DropHeldItem()
+    public void DiscardHeldItem()
     {
         if (!isHolding)
             return;

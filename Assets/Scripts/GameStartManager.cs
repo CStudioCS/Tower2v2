@@ -64,10 +64,21 @@ public class GameStartManager: MonoBehaviour
 
     void Start()
     {
-        LobbyManager lobby = LobbyManager.Instance;
-        if (lobby == null) return;
-        lobby.PlayerJoined += OnPlayerJoined;
-        lobby.PlayerLeft += OnPlayerLeft;
+        LobbyManager.Instance.PlayerJoined += OnPlayerJoined;
+        LobbyManager.Instance.PlayerLeft += OnPlayerLeft;
+        LevelManager.Instance.GameEnded += OnGameEnded;
+    }
+
+    private void OnGameEnded()
+    {
+        foreach (PlayerInput playerInput in players)
+        {
+            Player player = playerInput.GetComponent<Player>();
+            player.DiscardHeldItem();
+            player.PlayerTeam.LobbyUpdate();
+            player.PlayerControlBadge.SetUnready();
+        }
+        ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
     }
 
     private void OnPlayerJoined(PlayerInput playerInput)
@@ -126,9 +137,8 @@ public class GameStartManager: MonoBehaviour
     
     private void OnDestroy()
     {
-        LobbyManager lobby = LobbyManager.Instance;
-        if (lobby == null) return;
-        lobby.PlayerJoined -= OnPlayerJoined;
-        lobby.PlayerLeft -= OnPlayerLeft;
+        LobbyManager.Instance.PlayerJoined -= OnPlayerJoined;
+        LobbyManager.Instance.PlayerLeft -= OnPlayerLeft;
+        LevelManager.Instance.GameEnded -= OnGameEnded;
     }
 }

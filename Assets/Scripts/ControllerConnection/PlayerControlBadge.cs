@@ -13,6 +13,9 @@ public class PlayerControlBadge : MonoBehaviour
     [Header("Color")]
     [SerializeField] private Graphic[] teamColorGraphics;
     
+    [Header("Graphics")]
+    [SerializeField] private GameObject graphics;
+    
     [Header("Ready")]
     [SerializeField] private GameObject readyKey;
     [SerializeField] private GameObject readyGamepadA;
@@ -43,7 +46,13 @@ public class PlayerControlBadge : MonoBehaviour
         playerTeam.TeamChanged += OnTeamChanged;
         UpdateColor();
         SetupControlScheme(controlScheme);
+        LevelManager.Instance.GameStarted += OnGameStarted;
+        LevelManager.Instance.GameEnded += OnGameEnded;
     }
+
+    private void OnGameStarted() => graphics.SetActive(false);
+
+    private void OnGameEnded() => graphics.SetActive(true);
 
     private void OnTeamChanged()
     {
@@ -182,11 +191,18 @@ public class PlayerControlBadge : MonoBehaviour
 
     private void TryUnsetReady()
     {
-        if (IsReady) SetReady(false, false);
+        if (IsReady) SetUnready();
+    }
+
+    public void SetUnready()
+    {
+        SetReady(false, false);
     }
 
     private void OnDestroy()
     {
         playerTeam.TeamChanged -= OnTeamChanged;
+        LevelManager.Instance.GameStarted -= OnGameStarted;
+        LevelManager.Instance.GameEnded -= OnGameEnded;
     }
 }

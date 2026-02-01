@@ -6,7 +6,8 @@ public static class ResourceRandomizer
     private static Resources.Type[] values;
     private static Random random;
     private static readonly List<Resources.Type> sequence = new();
-    private static bool initialized;
+    private static bool initialized = false;
+    private static bool wasReset = true;
 
     private static void Initialize()
     {
@@ -21,6 +22,8 @@ public static class ResourceRandomizer
     {
         Initialize();
 
+        wasReset = false;
+        
         while (sequence.Count <= index)
         {
             sequence.Add(values[random.Next(values.Length)]);
@@ -29,10 +32,17 @@ public static class ResourceRandomizer
         return sequence[index];
     }
 
-    public static void Reset()
+    public static void TryReset()
+    {
+        if (wasReset) return;
+        Reset();
+    }
+    
+    private static void Reset()
     {
         random = new Random();
         sequence.Clear();
         initialized = true;
+        wasReset = true;
     }
 }

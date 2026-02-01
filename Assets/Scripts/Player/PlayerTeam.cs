@@ -22,7 +22,7 @@ public class PlayerTeam: MonoBehaviour
         }
     }
 
-    private void LobbyUpdate()
+    public void LobbyUpdate()
     {
         LevelManager.Team newTeam = CurrentPositionTeam;
         if (newTeam == CurrentTeam) return;

@@ -11,6 +11,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Tower TowerLeft;
     [SerializeField] private TMP_Text timerDisplay;
     [SerializeField] private float timerLimit = 120f;
+    [SerializeField] private TextMeshProUGUI winnerText;
+    
     public float LevelTimer { get; private set; } = 0;
     private Team winner;
 
@@ -23,6 +25,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject[] activateOnlyInGame;
 
     public event Action GameStarted;
+    public event Action GameEnded;
 
     public void Awake()
     {
@@ -83,9 +86,9 @@ public class LevelManager : MonoBehaviour
         ActivateLobbyObjects(false);
         yield return new WaitForSeconds(3); 
         GameState = State.Game;
-        GameStarted?.Invoke();
         LevelTimer = 0;
         ActivateInGameObjects(true);
+        GameStarted?.Invoke();
     }
 
     private void EndLevel(Team winner)
@@ -94,5 +97,9 @@ public class LevelManager : MonoBehaviour
         ActivateLobbyObjects(true);
         ActivateInGameObjects(false);
         Debug.Log($"Level has ended with winner {winner}");
+        
+        winnerText.gameObject.SetActive(true);
+        winnerText.text = (winner == Team.Left? "Left": "Right") + " team wins!";
+        GameEnded?.Invoke();
     }
 }

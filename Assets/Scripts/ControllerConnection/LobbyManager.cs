@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -22,7 +23,9 @@ public class LobbyManager : MonoBehaviour
     
     private void Update()
     {
+        if (LevelManager.Instance.GameState != LevelManager.State.Lobby) return;
         HandleKeyboardJoinInput();
+        HandleGamepadJoinInput();
     }
 
     private void HandleKeyboardJoinInput()
@@ -55,8 +58,63 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    private void HandleGamepadJoinInput()
+    {
+        // Loop through all currently connected gamepads
+        foreach (var gamepad in Gamepad.all)
+        {
+            if (gamepad.buttonSouth.wasPressedThisFrame || 
+                gamepad.buttonEast.wasPressedThisFrame  || 
+                gamepad.buttonWest.wasPressedThisFrame  || 
+                gamepad.buttonNorth.wasPressedThisFrame ||
+                gamepad.leftShoulder.wasPressedThisFrame || 
+                gamepad.rightShoulder.wasPressedThisFrame ||
+                gamepad.startButton.wasPressedThisFrame || 
+                gamepad.selectButton.wasPressedThisFrame ||
+                gamepad.dpad.up.wasPressedThisFrame || 
+                gamepad.dpad.down.wasPressedThisFrame ||
+                gamepad.dpad.left.wasPressedThisFrame || 
+                gamepad.dpad.right.wasPressedThisFrame ||
+                gamepad.leftStick.ReadValue().magnitude > 0.1f || 
+                gamepad.rightStick.ReadValue().magnitude > 0.1f)
+            {
+                JoinGamepadPlayer(gamepad);
+            }
+        }
+    }
+    
+    private void JoinGamepadPlayer(Gamepad gamepad)
+    {
+        if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount) return;
+
+        // Check if THIS specific controller is already assigned to a player
+        foreach (var player in PlayerInput.all)
+        {
+            foreach (var device in player.devices)
+            {
+                if (device == gamepad) return; 
+            }
+        }
+
+        // Join using the Gamepad device. 
+        // Leave controlScheme null or set to "Gamepad" if you have a specific scheme named that.
+        playerInputManager.JoinPlayer(
+            playerIndex: -1,
+            splitScreenIndex: -1,
+            controlScheme: "Gamepad",
+            pairWithDevice: gamepad
+        );
+    }
+    
     private void JoinKeyboardPlayer(string controlSchemeName)
     {
+        // 1. Check if we are already at the player limit
+        if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
+        {
+            return;
+        }
+
+        // 2. Check if a player is already using this specific scheme
         foreach (PlayerInput playerInput in PlayerInput.all)
         {
             if (playerInput.currentControlScheme == controlSchemeName)
@@ -65,8 +123,12 @@ public class LobbyManager : MonoBehaviour
             }
         }
 
-        PlayerInput newPlayer = playerInputManager.JoinPlayer(
-            controlScheme: controlSchemeName,
+        // 3. Manually trigger the join
+        // We pass -1 for playerIndex to let Unity assign the next available index (0, 1, 2, etc.)
+        playerInputManager.JoinPlayer(
+            playerIndex: -1, 
+            splitScreenIndex: -1, 
+            controlScheme: controlSchemeName, 
             pairWithDevice: Keyboard.current
         );
     }
@@ -74,14 +136,17 @@ public class LobbyManager : MonoBehaviour
     public void OnPlayerJoined(PlayerInput playerInput)
     {
         if (playerInput == null) return;
+
+        InputDevice device = playerInput.devices[0];
+        string scheme = playerInput.currentControlScheme;
         
-        PlayerControlBadge badge = playerInput.GetComponentInChildren<PlayerControlBadge>();
+        PlayerControlBadge badge = playerInput.GetComponent<Player>().PlayerControlBadge;
         if (badge != null)
         {
-            badge.Initialize(playerInput.playerIndex, playerInput.currentControlScheme);
+            badge.Initialize(playerInput.playerIndex, scheme);
         }
         
-        Debug.Log($"Player Joined! Device: {playerInput.devices[0].name} | Scheme: {playerInput.currentControlScheme}");
+        Debug.Log($"Player Joined! Device: {device.name} | Scheme: {scheme}");
         PlayerJoined?.Invoke(playerInput);
     }
 
