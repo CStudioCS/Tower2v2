@@ -5,10 +5,6 @@ public class LobbyManager : MonoBehaviour
 {
     [Header("Setup")]
     [SerializeField] private PlayerInputManager playerInputManager = null;
-
-    [SerializeField] private Transform leftTeamContainer;
-    [SerializeField] private Transform rightTeamContainer;
-    
     
     private void Update()
     {
@@ -20,22 +16,26 @@ public class LobbyManager : MonoBehaviour
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        if (keyboard.eKey.wasPressedThisFrame)
+        if (keyboard.eKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
+            keyboard.sKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame)
         {
             JoinKeyboardPlayer("WASD");
         }
 
-        if (keyboard.yKey.wasPressedThisFrame)
+        if (keyboard.yKey.wasPressedThisFrame || keyboard.tKey.wasPressedThisFrame || keyboard.fKey.wasPressedThisFrame ||
+            keyboard.gKey.wasPressedThisFrame || keyboard.hKey.wasPressedThisFrame || keyboard.rKey.wasPressedThisFrame)
         {
             JoinKeyboardPlayer("TFGH");
         }
 
-        if (keyboard.oKey.wasPressedThisFrame)
+        if (keyboard.oKey.wasPressedThisFrame || keyboard.iKey.wasPressedThisFrame || keyboard.jKey.wasPressedThisFrame ||
+            keyboard.kKey.wasPressedThisFrame || keyboard.lKey.wasPressedThisFrame || keyboard.uKey.wasPressedThisFrame)
         {
             JoinKeyboardPlayer("IJKL");
         }
 
-        if (keyboard.rightCtrlKey.wasPressedThisFrame)
+        if (keyboard.rightCtrlKey.wasPressedThisFrame || keyboard.upArrowKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame ||
+            keyboard.leftArrowKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame)
         {
             JoinKeyboardPlayer("ArrowKeys");
         }
@@ -55,8 +55,6 @@ public class LobbyManager : MonoBehaviour
             controlScheme: controlSchemeName,
             pairWithDevice: Keyboard.current
         );
-
-        Debug.Log($"Keyboard player joined with scheme: {controlSchemeName}");
     }
 
     public void OnPlayerJoined(PlayerInput playerInput)
@@ -65,10 +63,10 @@ public class LobbyManager : MonoBehaviour
 
         Debug.Log($"Player Joined! Device: {playerInput.devices[0].name} | Scheme: {playerInput.currentControlScheme}");
 
-        PlayerControlBadge badge = playerInput.GetComponent<PlayerControlBadge>();
+        PlayerControlBadge badge = playerInput.GetComponentInChildren<PlayerControlBadge>();
         if (badge != null)
         {
-            badge.Setup(playerInput.playerIndex, playerInput.currentControlScheme, leftTeamContainer, rightTeamContainer);
+            badge.Initialize(playerInput.playerIndex, playerInput.currentControlScheme);
         }
     }
 

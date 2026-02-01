@@ -1,40 +1,75 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private PlayerTeam playerTeam;
+    
+    [Header("Colors")]
+    [SerializeField] private Color leftTeamColor;
+    [SerializeField] private Color rightTeamColor;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    
+    private Dictionary<LevelManager.Team, Color> teamColors;
+    public Dictionary<LevelManager.Team, Color> TeamColors
+    {
+        get
+        {
+            if (teamColors == null)
+            {
+                teamColors = new Dictionary<LevelManager.Team, Color>
+                {
+                    { LevelManager.Team.Left, leftTeamColor },
+                    { LevelManager.Team.Right, rightTeamColor }
+                };
+            }
+            return teamColors;
+        }
+    }
+    
+    [Header("Interactables")]
     public Interactable insideInteractable;
     public bool isHolding = false;
     
     public Item heldItem;
 
+    [Header("Speed")]
     [SerializeField] private float speed = 7;
+    
+    [Header("Progress")]
     [SerializeField] private RectTransform ProgressBar;
     [SerializeField] private RectTransform ProgressBarFill;
 
     private PlayerInput playerInput;
     private InputAction moveAction;
     private InputAction interactAction;
-    
-    private InputAction interactActionA;
-    private InputAction discardAction;
+    private InputAction cutWoodAction;
     private Rigidbody2D rb;
     private float maxProgressBarFill;
     private bool interacting;
+    
 
     private void Awake()
     {
+        playerTeam.TeamChanged += OnTeamChanged;
+        UpdateColor();
         playerInput = GetComponent<PlayerInput>(); //Using unity's new input system
-        moveAction = playerInput.actions.FindAction("Player/Move");
-        interactAction = playerInput.actions.FindAction("Player/Interact");
-        discardAction = playerInput.actions.FindAction("Player/Discard");
-        interactActionA = playerInput.actions.FindAction("Player/CutWood");
+        moveAction = playerInput.actions.FindAction("Gameplay/Move");
+        interactAction = playerInput.actions.FindAction("Gameplay/Interact");
+        cutWoodAction = playerInput.actions.FindAction("Gameplay/CutWood");
 
         rb = GetComponent<Rigidbody2D>();
 
         maxProgressBarFill = ProgressBarFill.sizeDelta.x;
         ResetProgressBar();
+    }
+
+    private void OnTeamChanged() => UpdateColor();
+    private void UpdateColor()
+    {
+        spriteRenderer.color = TeamColors[playerTeam.CurrentTeam];
     }
 
     void Update()
@@ -49,12 +84,8 @@ public class Player : MonoBehaviour
         if (interactAction.WasPressedThisFrame())
             StartInteracting(true);
 
-        if(interactActionA.WasPressedThisFrame())
+        if(cutWoodAction.WasPressedThisFrame())
             StartInteracting(false);
-
-        //Pressing A to drop an item
-        if (discardAction.WasPressedThisFrame())
-            DropHeldItem();
     }
 
     void StartInteracting(bool interactingWithE)
@@ -128,7 +159,7 @@ public class Player : MonoBehaviour
         while(t < time)
         {
             //if at any point the player stop holding the interact button -> stop interacting
-            if (!interactActionA.IsPressed())
+            if (!cutWoodAction.IsPressed())
             {
                 ResetProgressBar();
                 interacting = false;
@@ -172,5 +203,10 @@ public class Player : MonoBehaviour
         isHolding = false;
         heldItem.Drop();
         heldItem = null;
+    }
+    
+    private void OnDestroy()
+    {
+        playerTeam.TeamChanged -= OnTeamChanged;
     }
 }

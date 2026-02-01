@@ -1,11 +1,16 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerControlBadge : MonoBehaviour
 {
-    private Transform leftTeamContainer;
-    private Transform rightTeamContainer;
+    [Header("Player")]
+    [SerializeField] private Player player;
+    [SerializeField] private PlayerTeam playerTeam;
+    
+    [Header("Color")]
+    [SerializeField] private Graphic[] teamColorGraphics;
     
     [Header("Ready")]
     [SerializeField] private GameObject readyKey;
@@ -31,31 +36,23 @@ public class PlayerControlBadge : MonoBehaviour
     
     private Transform _uiContainer;
 
-    public void Setup(int playerIndex, string controlScheme, Transform leftTeamContainer, Transform rightTeamContainer)
+    public void Initialize(int playerIndex, string controlScheme)
     {
-        // if (_uiContainer == null)
-        // {
-        //     GameObject containerObject = GameObject.FindGameObjectWithTag("LobbyContainer");
-        //     if (containerObject != null)
-        //     {
-        //         _uiContainer = containerObject.transform;
-        //     }
-        // }
-        //
-        // if (_uiContainer != null)
-        // {
-        //     transform.SetParent(_uiContainer, false);
-        // }
-        
-        this.leftTeamContainer = leftTeamContainer;
-        this.rightTeamContainer = rightTeamContainer;
-
-        SetTeamLeft();
+        playerTeam.TeamChanged += OnTeamChanged;
+        UpdateColor();
         SetupControlScheme(controlScheme);
     }
 
-    private void SetTeamLeft() => transform.SetParent(leftTeamContainer, false);
-    private void SetTeamRight() => transform.SetParent(rightTeamContainer, false);
+    private void OnTeamChanged() => UpdateColor();
+
+    private void UpdateColor() => ChangeColor(player.TeamColors[playerTeam.CurrentTeam]);
+    private void ChangeColor(Color color)
+    {
+        foreach (Graphic graphic in teamColorGraphics)
+        {
+            graphic.color = color;
+        }
+    }
     
     private void SetupControlScheme(string controlScheme)
     {
@@ -160,5 +157,10 @@ public class PlayerControlBadge : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+    
+    private void OnDestroy()
+    {
+        playerTeam.TeamChanged -= OnTeamChanged;
     }
 }

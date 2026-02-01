@@ -12,8 +12,11 @@ public class LevelManager : MonoBehaviour
     public float timerLimit = 120f;
     public float levelTimer;
     private Team winner;
-    private bool isLevelActive;
-    private enum Team {Right, Left}
+
+    public enum Team { Right, Left }
+    
+    public enum State { Lobby, Game }
+    public State GameState { get; private set; }
 
     public void Awake()
     {
@@ -25,8 +28,7 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        levelTimer = 0; 
-        isLevelActive = true;  
+        levelTimer = 0;
     }
 
     void Update()
@@ -34,7 +36,7 @@ public class LevelManager : MonoBehaviour
         if (TowerRight == null || TowerLeft == null)
             return;
 
-        if (isLevelActive)
+        if (GameState == State.Game)
         {
             levelTimer += Time.deltaTime;
             float timeRemaining = timerLimit - levelTimer;
@@ -49,7 +51,7 @@ public class LevelManager : MonoBehaviour
                 else
                     winner = (TowerRight.height > TowerLeft.height)? Team.Right : Team.Left;
 
-                isLevelActive = false;
+                GameState = State.Lobby;
                 EndLevel(winner);
             }
         }
