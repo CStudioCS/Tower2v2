@@ -23,7 +23,7 @@ public class RecipesList : MonoBehaviour
         }
     }
     
-    private Queue<Recipe> queue;
+    private readonly Queue<Recipe> queue = new();
 
     private int randomIndex = 0;
     
@@ -34,17 +34,28 @@ public class RecipesList : MonoBehaviour
 
     private void OnGameStarted()
     {
-        ResourceRandomizer.TryReset();
+        randomIndex = 0;
         InitializeQueue();
+    }
+    
+    private void ClearQueue()
+    {
+        while (queue.Count > 0)
+        {
+            Recipe recipe = queue.Dequeue();
+            Destroy(recipe.gameObject);
+        }
+
+        queue.Clear();
     }
 
     private void InitializeQueue()
     {
-        queue = new Queue<Recipe>();
+        ClearQueue();
 
         for (int i = 0; i < queueSize; i++)
         {
-            AddRecipe(ResourceRandomizer.GetAt(randomIndex++));
+            AddRandomRecipe();
         }
     }
     

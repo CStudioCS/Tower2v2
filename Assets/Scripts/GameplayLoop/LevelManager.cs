@@ -6,7 +6,6 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Tower TowerRight;
     [SerializeField] private Tower TowerLeft;
     [SerializeField] private TMP_Text timerDisplay;
@@ -23,7 +22,9 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private GameObject[] activateOnlyInLobby;
     [SerializeField] private GameObject[] activateOnlyInGame;
-
+    [SerializeField] private Animator countdown;
+    private static readonly int CountdownString = Animator.StringToHash("Countdown");
+    
     public event Action GameStarted;
     public event Action GameEnded;
 
@@ -84,10 +85,12 @@ public class LevelManager : MonoBehaviour
     {
         GameState = State.Starting;
         ActivateLobbyObjects(false);
+        countdown.SetTrigger(CountdownString);
         yield return new WaitForSeconds(3); 
         GameState = State.Game;
         LevelTimer = 0;
         ActivateInGameObjects(true);
+        ResourceRandomizer.Reset();
         GameStarted?.Invoke();
     }
 

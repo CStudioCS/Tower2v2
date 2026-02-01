@@ -22,7 +22,7 @@ public class GameStartManager: MonoBehaviour
         {
             waitingMessages ??= new Dictionary<WaitState, string>
             {
-                { WaitState.NotEnoughPlayers, "Waiting for players..." },
+                { WaitState.NotEnoughPlayers, "Press a key to join. Waiting for players..." },
                 { WaitState.UnbalancedTeams, "Unbalanced teams! Waiting for someone to switch..." },
                 { WaitState.PlayersNotReady, "Waiting until everyone is ready..." },
                 { WaitState.GameStarting, "Game is starting!" }
@@ -67,6 +67,7 @@ public class GameStartManager: MonoBehaviour
         LobbyManager.Instance.PlayerJoined += OnPlayerJoined;
         LobbyManager.Instance.PlayerLeft += OnPlayerLeft;
         LevelManager.Instance.GameEnded += OnGameEnded;
+        ChangeWaitState(WaitState.NotEnoughPlayers);
     }
 
     private void OnGameEnded()
