@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTeam: {fileID: 4720667436485828352}
+  playerControlBadge: {fileID: 5167199617259306430}
   leftTeamColor: {r: 0.40784314, g: 0.5411765, b: 0.8392157, a: 1}
   rightTeamColor: {r: 1, g: 0.39999998, b: 0.39999998, a: 1}
   spriteRenderer: {fileID: 441991705434926209}
@@ -621,6 +622,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+--- !u!114 &5167199617259306430 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3895623661270033655, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+  m_PrefabInstance: {fileID: 8189124914177710409}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb95e0100984b56bf602c33956c3c80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &6261290548146840260 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2828558726226557837, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}

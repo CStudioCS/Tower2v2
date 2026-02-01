@@ -6,6 +6,9 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     [SerializeField] private PlayerTeam playerTeam;
+    public PlayerTeam PlayerTeam => playerTeam;
+    [SerializeField] private PlayerControlBadge playerControlBadge;
+    public PlayerControlBadge PlayerControlBadge => playerControlBadge;
     
     [Header("Colors")]
     [SerializeField] private Color leftTeamColor;
@@ -82,10 +85,27 @@ public class Player : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
 
         if (interactAction.WasPressedThisFrame())
-            StartInteracting(true);
+        {
+            switch (LevelManager.Instance.GameState)
+            {
+                case LevelManager.State.Game:
+                    StartInteracting(true);
+                    break;
+                case LevelManager.State.Lobby:
+                    playerControlBadge.Interact();
+                    break;
+            }
+        }
 
         if(cutWoodAction.WasPressedThisFrame())
-            StartInteracting(false);
+        {
+            switch (LevelManager.Instance.GameState)
+            {
+                case LevelManager.State.Game:
+                    StartInteracting(false);;
+                    break;
+            }
+        }
     }
 
     void StartInteracting(bool interactingWithE)

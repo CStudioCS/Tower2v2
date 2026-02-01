@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
@@ -33,9 +34,10 @@ public class PlayerControlBadge : MonoBehaviour
     [SerializeField] private TextMeshProUGUI genericDownKeyText;
     [SerializeField] private TextMeshProUGUI genericLeftKeyText;
     [SerializeField] private TextMeshProUGUI genericRightKeyText;
-    
-    private Transform _uiContainer;
 
+    public bool IsReady { get; private set; } = false;
+    public event Action ReadyChanged;
+    
     public void Initialize(int playerIndex, string controlScheme)
     {
         playerTeam.TeamChanged += OnTeamChanged;
@@ -43,7 +45,11 @@ public class PlayerControlBadge : MonoBehaviour
         SetupControlScheme(controlScheme);
     }
 
-    private void OnTeamChanged() => UpdateColor();
+    private void OnTeamChanged()
+    {
+        TryUnsetReady();
+        UpdateColor();
+    }
 
     private void UpdateColor() => ChangeColor(player.TeamColors[playerTeam.CurrentTeam]);
     private void ChangeColor(Color color)
@@ -159,6 +165,26 @@ public class PlayerControlBadge : MonoBehaviour
         }
     }
     
+    public void Interact()
+    {
+        ToggleReady();
+    }
+
+    private void ToggleReady() => SetReady(!IsReady);
+    private void SetReady(bool ready, bool fireEvent = true)
+    {
+        IsReady = ready;
+        readyCheck.SetActive(ready);
+        readyKey.SetActive(!ready);
+        if (fireEvent)
+            ReadyChanged?.Invoke();
+    }
+
+    private void TryUnsetReady()
+    {
+        if (IsReady) SetReady(false, false);
+    }
+
     private void OnDestroy()
     {
         playerTeam.TeamChanged -= OnTeamChanged;

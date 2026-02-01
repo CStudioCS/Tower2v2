@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -36,11 +35,17 @@ public class GameStartManager: MonoBehaviour
     private int PlayerCount => players.Count;
     // Player Balance counts +1 for right team and -1 for left team. If sum is 0, teams are balanced.
     private int PlayerBalance =>
-        PlayerInput.all.Sum(playerInput => {
-            PlayerTeam team = playerInput.GetComponent<PlayerTeam>();
-            return team != null && team.CurrentTeam == LevelManager.Team.Right ? 1 : -1;
+        players.Sum(playerInput => {
+            Player player = playerInput.GetComponent<Player>();
+            return player.PlayerTeam.CurrentTeam == LevelManager.Team.Right ? 1 : -1;
         });
     private bool TeamsBalanced => PlayerBalance == 0;
+    
+    private bool AllPlayersReady =>
+        players.All(playerInput => {
+            Player player = playerInput.GetComponent<Player>();
+            return player.PlayerControlBadge.IsReady;
+        });
     
     [SerializeField] private TextMeshProUGUI waitingText;
     
@@ -68,20 +73,24 @@ public class GameStartManager: MonoBehaviour
     private void OnPlayerJoined(PlayerInput playerInput)
     {
         players.Add(playerInput);
-        playerInput.GetComponent<PlayerTeam>().TeamChanged += OnPlayerTeamChanged;
+        Player player = playerInput.GetComponent<Player>();
+        player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
+        player.PlayerControlBadge.ReadyChanged += OnPlayerReadyChanged;
         
         if (PlayerCount != 4) return;
         ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
     }
-
+    
     private void OnPlayerTeamChanged()
     {
         if (waitState == WaitState.UnbalancedTeams)
         {
             if (TeamsBalanced)
             {
-                ChangeWaitState(WaitState.PlayersNotReady);
-                // TODO if ready or not
+                if (AllPlayersReady)
+                    StartGame();
+                else
+                    ChangeWaitState(WaitState.PlayersNotReady);
             }
         }
         else if (waitState == WaitState.PlayersNotReady)
@@ -90,13 +99,31 @@ public class GameStartManager: MonoBehaviour
         }
     }
 
+    private void OnPlayerReadyChanged()
+    {
+        if (waitState == WaitState.PlayersNotReady)
+        {
+            if (AllPlayersReady)
+                StartGame();
+        }
+    }
+    
     private void OnPlayerLeft(PlayerInput playerInput)
     {
         players.Remove(playerInput);
-        playerInput.GetComponent<PlayerTeam>().TeamChanged -= OnPlayerTeamChanged;
+        Player player = playerInput.GetComponent<Player>();
+        player.PlayerTeam.TeamChanged -= OnPlayerTeamChanged;
+        player.PlayerControlBadge.ReadyChanged -= OnPlayerReadyChanged;
         TryChangeWaitState(WaitState.NotEnoughPlayers);
     }
 
+    private void StartGame()
+    {
+        ChangeWaitState(WaitState.GameStarting);
+        
+        LevelManager.Instance.StartGameDelayed();
+    }
+    
     private void OnDestroy()
     {
         LobbyManager lobby = LobbyManager.Instance;
