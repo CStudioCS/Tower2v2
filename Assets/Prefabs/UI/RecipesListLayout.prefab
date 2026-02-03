@@ -91,7 +91,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 25
-    m_Right: 0
+    m_Right: 25
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 3
@@ -119,3 +119,4 @@ MonoBehaviour:
   - {fileID: 6891456297890262082, guid: 7d118341ab2a50b4a8372872dcc909b7, type: 3}
   - {fileID: 6891456297890262082, guid: bb9af6a9356b9da46845303e9a1b2391, type: 3}
   - {fileID: 6891456297890262082, guid: ca79863a865f62544aea3bbef8e85c4f, type: 3}
+  queueSize: 5

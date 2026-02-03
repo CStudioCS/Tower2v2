@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Tower : Interactable
 {
-    public int height = 0; //The actual height of the tower (doesn't augment when placing cement)
+    public int height;
 
     [HideInInspector] public float lastPlacedTime = float.MaxValue;
     [SerializeField] private Vector3 blockOffset;
@@ -15,44 +15,54 @@ public class Tower : Interactable
     [SerializeField] private GameObject woodTowerPiecePrefab;
     [SerializeField] private GameObject brickTowerPiecePrefab;
 
-    private Dictionary<Resources.Type, GameObject> towerPieceMap = new();
+    private readonly List<GameObject> towerPieces = new();
     
-    private Resources.Type lastBlockType;
-    
-    [SerializeField] private RecipesList recipesList;
-    
-    private void Awake()
+    private Dictionary<Resources.Type, GameObject> towerPieceMap;
+    private Dictionary<Resources.Type, GameObject> TowerPieceMap
     {
-        towerPieceMap = new Dictionary<Resources.Type, GameObject>
+        get
         {
-            { Resources.Type.Straw, strawTowerPiecePrefab },
-            { Resources.Type.WoodPlank, woodTowerPiecePrefab },
-            { Resources.Type.Brick, brickTowerPiecePrefab },
-        };
+            towerPieceMap ??= new Dictionary<Resources.Type, GameObject>
+            {
+                { Resources.Type.Straw, strawTowerPiecePrefab },
+                { Resources.Type.WoodPlank, woodTowerPiecePrefab },
+                { Resources.Type.Brick, brickTowerPiecePrefab },
+            };
+            return towerPieceMap;
+        }
     }
     
+    [SerializeField] private RecipesList recipesList;
+
+    private void OnEnable()
+    {
+        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+    }
+
+    private void OnGameAboutToStart() => ResetTower();
+
     public override bool CanInteract(Player player)
     {
-        //check if the player is holding the correct item for the recipe
-        return recipesList.CurrentNeededResourceType == player.heldItem.itemType;
+        // Check if the player is holding the correct item for the recipe
+        return player.isHolding && recipesList.CurrentNeededResourceType == player.heldItem.itemType;
     }
 
     public override void Interact(Player player)
     {
-        //The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime, and with the way
-        //unity handles rendering, the new object is rendered on top of the old one
+        // The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime,
+        // and with the way Unity handles rendering, the new object is rendered on top of the old one
         
-        if(!towerPieceMap.TryGetValue(player.heldItem.itemType, out GameObject towerPiece))
+        if (!TowerPieceMap.TryGetValue(player.heldItem.itemType, out GameObject towerPiece))
         {
             Debug.LogError("Could not find tower piece associated with " + player.heldItem.itemType + " held item");
             return;
         }
 
-        Instantiate(towerPiece, transform.position + blockOffset * height, Quaternion.identity, transform);
+        GameObject towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * height, Quaternion.identity, transform);
+        towerPieces.Add(towerPieceInstance);
         height++;
-        lastBlockType = player.heldItem.itemType;
 
-        lastPlacedTime = LevelManager.instance.levelTimer;
+        lastPlacedTime = LevelManager.Instance.LevelTimer;
 
         player.ConsumeCurrentItem();
 
@@ -60,6 +70,20 @@ public class Tower : Interactable
         recipesList.OnRecipeCompleted();
     }
 
-    private void UpdateText()
-        => heightText.text = height.ToString();
+    private void UpdateText() => heightText.text = height.ToString();
+    
+    private void ResetTower()
+    {
+        foreach (GameObject towerPiece in towerPieces)
+            Destroy(towerPiece);
+        towerPieces.Clear();
+        height = 0;
+        lastPlacedTime = float.MaxValue;
+        UpdateText();
+    }
+
+    private void OnDestroy()
+    {
+        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+    }
 }

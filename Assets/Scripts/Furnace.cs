@@ -4,7 +4,7 @@ using UnityEngine;
 public class Furnace : Interactable
 {
     [SerializeField] private float cookTime;
-    [SerializeField] private RectTransform ProgressBarFill;
+    [SerializeField] private RectTransform progressBarFill;
     [SerializeField] private Item brickItem;
 
     private State state;
@@ -13,7 +13,7 @@ public class Furnace : Interactable
 
     private void Awake()
     {
-        maxProgressBarFill = ProgressBarFill.sizeDelta.x;
+        maxProgressBarFill = progressBarFill.sizeDelta.x;
         ResetProgressBar();
     }
 
@@ -34,16 +34,15 @@ public class Furnace : Interactable
 
     public override void Interact(Player player)
     {
-        if(state == State.Empty)
+        if (state == State.Empty)
         {
             StartCoroutine(Cook());
 
             player.ConsumeCurrentItem();
         }
-        else if(state == State.Cooked)
+        else if (state == State.Cooked)
         {
-            player.isHolding = true;
-            player.heldItem = Instantiate(brickItem.gameObject, player.transform).GetComponent<Item>();
+            player.GrabNewItem(brickItem);
             state = State.Empty;
             ResetProgressBar();
         }
@@ -53,24 +52,24 @@ public class Furnace : Interactable
     {
         state = State.Cooking;
 
-        ProgressBarFill.parent.gameObject.SetActive(true);
+        progressBarFill.parent.gameObject.SetActive(true);
         float t = 0;
 
         while (t < cookTime)
         {
-            ProgressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxProgressBarFill, t / cookTime), ProgressBarFill.sizeDelta.y);
+            progressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxProgressBarFill, t / cookTime), progressBarFill.sizeDelta.y);
 
             t += Time.deltaTime * Time.timeScale;
             yield return null;
         }
 
-        ProgressBarFill.sizeDelta = new Vector2(maxProgressBarFill, ProgressBarFill.sizeDelta.y);
+        progressBarFill.sizeDelta = new Vector2(maxProgressBarFill, progressBarFill.sizeDelta.y);
         state = State.Cooked;
     }
 
     private void ResetProgressBar()
     {
-        ProgressBarFill.parent.gameObject.SetActive(false);
-        ProgressBarFill.sizeDelta = new Vector2(0, ProgressBarFill.sizeDelta.y);
+        progressBarFill.parent.gameObject.SetActive(false);
+        progressBarFill.sizeDelta = new Vector2(0, progressBarFill.sizeDelta.y);
     }
 }

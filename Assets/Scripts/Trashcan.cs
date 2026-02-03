@@ -5,6 +5,5 @@ public class Trashcan : Interactable
         player.ConsumeCurrentItem();
     }
 
-    public override bool CanInteract(Player player)
-        => player.isHolding;
+    public override bool CanInteract(Player player) => player.isHolding;
 }

@@ -12,7 +12,6 @@ public class Collector : Interactable
 
     public override void Interact(Player player)
     {
-        player.isHolding = true;
-        player.heldItem = Instantiate(itemPrefab.gameObject, player.transform).GetComponent<Item>();
+        player.GrabNewItem(itemPrefab);
     }
 }

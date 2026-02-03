@@ -12,13 +12,15 @@ public abstract class Interactable : MonoBehaviour
 
     public abstract void Interact(Player player);
     
-    public virtual void InteractA(Player player) {}
+    public virtual void InteractA(Player player) { }
+    
     public virtual bool CanInteract(Player player) => true;
+    
     public virtual bool CanInteractA(Player player) => false;
 
-    public bool isAlreadyInteractedWith=false;
+    public bool isAlreadyInteractedWith = false;
 
-    //When the player walks inside the interactable, we tell it that it is inside
+    // When the player walks inside the interactable, we tell it that it is inside
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player))
