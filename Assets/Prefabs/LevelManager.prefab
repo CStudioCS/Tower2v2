@@ -44,8 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70a52dc31a2a5b0aaaf9dd1cefd86e20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TowerRight: {fileID: 0}
-  TowerLeft: {fileID: 0}
+  towerRight: {fileID: 0}
+  towerLeft: {fileID: 0}
   timerDisplay: {fileID: 0}
   timerLimit: 120
-  levelTimer: 0
+  winnerText: {fileID: 0}
+  activateOnlyInLobby:
+  - {fileID: 0}
+  activateOnlyInGame:
+  - {fileID: 0}
+  countdown: {fileID: 0}
