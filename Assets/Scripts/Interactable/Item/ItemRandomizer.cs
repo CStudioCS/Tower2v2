@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-public static class WorldResourceRandomizer
+public static class ItemRandomizer
 {
-    private static WorldResources.Type[] values;
+    private static Item.Type[] values;
     private static System.Random random;
-    private static readonly List<WorldResources.Type> sequence = new();
+    private static readonly List<Item.Type> sequence = new();
     private static bool initialized = false;
 
     private static void Initialize()
@@ -14,9 +14,9 @@ public static class WorldResourceRandomizer
         random = new System.Random();
         values = new[]
         {
-            WorldResources.Type.Straw,
-            WorldResources.Type.WoodPlank,
-            WorldResources.Type.Brick
+            Item.Type.Straw,
+            Item.Type.WoodPlank,
+            Item.Type.Brick
         };
 
         initialized = true;
@@ -28,7 +28,7 @@ public static class WorldResourceRandomizer
         sequence.Clear();
     }
 
-    public static WorldResources.Type GetAt(int index)
+    public static Item.Type GetAt(int index)
     {
         Initialize();
 

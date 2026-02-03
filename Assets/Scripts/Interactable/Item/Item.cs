@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class Item : Interactable
 {
+    public enum Type { Straw, WoodLog, WoodPlank, Clay, Brick }
+    
     private Collider2D itemCollider;
-    public WorldResources.Type itemType;
+    public Type itemType;
 
     private void Awake()
     {
