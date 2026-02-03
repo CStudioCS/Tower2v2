@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class LobbyManager : MonoBehaviour
 {
     [Header("Setup")]
-    [SerializeField] private PlayerInputManager playerInputManager = null;
+    [SerializeField] private PlayerInputManager playerInputManager;
     
     public event Action<PlayerInput> PlayerJoined;
     public event Action<PlayerInput> PlayerLeft;

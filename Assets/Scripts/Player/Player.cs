@@ -9,17 +9,17 @@ public class Player : MonoBehaviour
     [SerializeField] private Color leftTeamColor;
     [SerializeField] private Color rightTeamColor;
     
-    private Dictionary<LevelManager.Team, Color> teamColors;
-    public Dictionary<LevelManager.Team, Color> TeamColors
+    private Dictionary<PlayerTeam.Team, Color> teamColors;
+    public Dictionary<PlayerTeam.Team, Color> TeamColors
     {
         get
         {
             if (teamColors == null)
             {
-                teamColors = new Dictionary<LevelManager.Team, Color>
+                teamColors = new Dictionary<PlayerTeam.Team, Color>
                 {
-                    { LevelManager.Team.Left, leftTeamColor },
-                    { LevelManager.Team.Right, rightTeamColor }
+                    { PlayerTeam.Team.Left, leftTeamColor },
+                    { PlayerTeam.Team.Right, rightTeamColor }
                 };
             }
             return teamColors;

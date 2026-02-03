@@ -37,7 +37,7 @@ public class GameStartManager : MonoBehaviour
     private int PlayerBalance =>
         players.Sum(playerInput => {
             Player player = playerInput.GetComponent<Player>();
-            return player.PlayerTeam.CurrentTeam == LevelManager.Team.Right ? 1 : -1;
+            return player.PlayerTeam.CurrentTeam == PlayerTeam.Team.Right ? 1 : -1;
         });
     private bool TeamsBalanced => PlayerBalance == 0;
     
