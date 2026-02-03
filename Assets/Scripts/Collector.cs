@@ -8,9 +8,9 @@ public class Collector : Interactable
 {
     [SerializeField] private Item itemPrefab;
 
-    public override bool CanInteract(Player player) => !player.IsHolding;
+    protected override bool CanInteractPrimary(Player player) => !player.IsHolding;
 
-    public override void Interact(Player player)
+    protected override void InteractPrimary(Player player)
     {
         player.GrabNewItem(itemPrefab);
     }

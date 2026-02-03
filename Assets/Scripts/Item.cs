@@ -11,9 +11,8 @@ public class Item : Interactable
         itemCollider.enabled = false;
     }
 
-    public override bool CanInteract(Player player) => !player.IsHolding;
-
-    public override void Interact(Player player)
+    protected override bool CanInteractPrimary(Player player) => !player.IsHolding;
+    protected override void InteractPrimary(Player player)
     {
         itemCollider.enabled = false;
         player.GrabItem(this);

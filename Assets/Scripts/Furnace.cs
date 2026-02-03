@@ -11,7 +11,7 @@ public class Furnace : Interactable
     private float maxProgressBarFill;
     private enum State { Empty, Cooking, Cooked }
 
-    public override bool CanInteract(Player player)
+    protected override bool CanInteractPrimary(Player player)
     {
         switch (state)
         {
@@ -26,7 +26,7 @@ public class Furnace : Interactable
         }
     }
 
-    public override void Interact(Player player)
+    protected override void InteractPrimary(Player player)
     {
         if (state == State.Empty)
         {

@@ -41,13 +41,13 @@ public class Tower : Interactable
 
     private void OnGameAboutToStart() => ResetTower();
 
-    public override bool CanInteract(Player player)
+    protected override bool CanInteractPrimary(Player player)
     {
         // Check if the player is holding the correct item for the recipe
         return player.IsHolding && recipesList.CurrentNeededResourceType == player.HeldItem.itemType;
     }
 
-    public override void Interact(Player player)
+    protected override void InteractPrimary(Player player)
     {
         // The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime,
         // and with the way Unity handles rendering, the new object is rendered on top of the old one

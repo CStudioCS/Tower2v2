@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
             switch (LevelManager.Instance.GameState)
             {
                 case LevelManager.State.Game:
-                    StartInteracting(true);
+                    StartInteracting(Interactable.InteractionType.Primary, interactAction);
                     break;
                 case LevelManager.State.Lobby:
                     playerControlBadge.Interact();
@@ -77,50 +77,38 @@ public class Player : MonoBehaviour
             switch (LevelManager.Instance.GameState)
             {
                 case LevelManager.State.Game:
-                    StartInteracting(false);
+                    StartInteracting(Interactable.InteractionType.Secondary, cutWoodAction);
                     break;
             }
         }
     }
 
-    private void StartInteracting(bool interactingWithE)
+    private void StartInteracting(Interactable.InteractionType interactionType, InputAction inputAction)
     {
         // We check whether we're inside an interactable object and if yes if we can interact with it
         if (insideInteractable == null)
             return;
-        if (insideInteractable.isAlreadyInteractedWith) // I do not set isAlreadyInteractedWith to true in an else statement because it only applies to interactables with interaction time
+        if (insideInteractable.IsAlreadyInteractedWith) // I do not set isAlreadyInteractedWith to true in an else statement because it only applies to interactables with interaction time
             return;
 
-        // If we can interact instantly, we do it, else we need to wait for the interaction time
-        if (interactingWithE)
-        {
-            if (!insideInteractable.CanInteract(this))
-                return;
+        if (!insideInteractable.CanInteract(interactionType, this))
+            return;
 
-            if (insideInteractable.interactionTime > 0)
-            {
-                insideInteractable.isAlreadyInteractedWith = true;
-                StartCoroutine(InteractTimer(insideInteractable.interactionTime));
-            }
-            else
-                insideInteractable.Interact(this);
+        float time = insideInteractable.GetInteractionTime(interactionType);
+        
+        // If we can interact instantly, we do it, else we need to wait for the interaction time
+        if (time > 0)
+        {
+            insideInteractable.IsAlreadyInteractedWith = true;
+            StartCoroutine(InteractTimer(interactionType, time, inputAction));
         }
         else
         {
-            if (!insideInteractable.CanInteractA(this))
-                return;
-
-            if (insideInteractable.interactionTimeA > 0)
-            {
-                insideInteractable.isAlreadyInteractedWith = true;
-                StartCoroutine(InteractTimerA(insideInteractable.interactionTimeA));
-            }
-            else
-                insideInteractable.InteractA(this);
+            insideInteractable.Interact(interactionType, this);
         }
     }
 
-    private IEnumerator InteractTimer(float time)
+    private IEnumerator InteractTimer(Interactable.InteractionType interactionType, float time, InputAction inputAction)
     {
         Interacting = true;
         progressBar.StartProgress();
@@ -128,12 +116,12 @@ public class Player : MonoBehaviour
         
         while(t < time)
         {
-            // If at any point the player stop holding the interact button -> stop interacting
-            if (!interactAction.IsPressed())
+            // If at any point the player stops holding the interact button -> stop interacting
+            if (!inputAction.IsPressed())
             {
                 progressBar.ResetProgress();
                 Interacting = false;
-                insideInteractable.isAlreadyInteractedWith = false;
+                insideInteractable.IsAlreadyInteractedWith = false;
                 yield break;
             }
 
@@ -143,39 +131,10 @@ public class Player : MonoBehaviour
         }
 
         // We interacted with the object -> Reset everything and call the interact function
-
         Interacting = false;
         progressBar.ResetProgress();
-        insideInteractable.Interact(this);
-        insideInteractable.isAlreadyInteractedWith = false;
-    }
-    
-    private IEnumerator InteractTimerA(float time)
-    {
-        Interacting = true;
-        progressBar.StartProgress();
-        float t = 0;
-        
-        while (t < time)
-        {
-            if (!cutWoodAction.IsPressed())
-            {
-                progressBar.ResetProgress();
-                Interacting = false;
-                yield break;
-            }
-
-            progressBar.UpdateProgress(t / time);
-            t += Time.deltaTime * Time.timeScale;
-            yield return null;
-        }
-
-        // We interacted with the object -> Reset everything and call the interact function
-
-        Interacting = false;
-        progressBar.ResetProgress();
-        insideInteractable.InteractA(this);
-        insideInteractable.isAlreadyInteractedWith = false;
+        insideInteractable.Interact(interactionType, this);
+        insideInteractable.IsAlreadyInteractedWith = false;
     }
 
     // Discards the item currently held

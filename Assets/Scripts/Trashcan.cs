@@ -1,9 +1,9 @@
 public class Trashcan : Interactable
 {   
-    public override void Interact(Player player)
+    protected override void InteractPrimary(Player player)
     {
         player.ConsumeCurrentItem();
     }
 
-    public override bool CanInteract(Player player) => player.IsHolding;
+    protected override bool CanInteractPrimary(Player player) => player.IsHolding;
 }

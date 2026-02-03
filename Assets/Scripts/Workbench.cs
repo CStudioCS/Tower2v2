@@ -13,7 +13,7 @@ public class Workbench : Interactable
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public override bool CanInteract(Player player)
+    protected override bool CanInteractPrimary(Player player)
     {
         switch (state)
         {
@@ -28,9 +28,9 @@ public class Workbench : Interactable
         }
     }
 
-    public override bool CanInteractA(Player player) => state == State.HasWoodLog && !player.IsHolding;
+    protected override bool CanInteractSecondary(Player player) => state == State.HasWoodLog && !player.IsHolding;
 
-    public override void Interact(Player player)
+    protected override void InteractPrimary(Player player)
     {
         if (state == State.Empty)
         {
@@ -46,7 +46,7 @@ public class Workbench : Interactable
         }
     }
 
-    public override void InteractA(Player player)
+    protected override void InteractSecondary(Player player)
     {
         state = State.HasWoodPlank;
         spriteRenderer.color = Color.blue;

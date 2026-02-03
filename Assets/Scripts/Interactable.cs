@@ -6,19 +6,40 @@ using UnityEngine;
 /// </summary>
 public abstract class Interactable : MonoBehaviour
 {
-    public float interactionTime;
+    public enum InteractionType { Primary, Secondary }
     
-    public float interactionTimeA;
+    [Header("Interaction Times")]
+    [SerializeField] float interactionTime;
+    [SerializeField] float interactionTimeSecondary;
+    
+    public bool IsAlreadyInteractedWith { get; set; }
 
-    public abstract void Interact(Player player);
-    
-    public virtual void InteractA(Player player) { }
-    
-    public virtual bool CanInteract(Player player) => true;
-    
-    public virtual bool CanInteractA(Player player) => false;
+    public virtual void Interact(InteractionType type, Player player)
+    {
+        switch (type)
+        {
+            case InteractionType.Primary: InteractPrimary(player); break;
+            case InteractionType.Secondary: InteractSecondary(player); break;
+        }
+    }
 
-    public bool isAlreadyInteractedWith = false;
+    protected virtual void InteractPrimary(Player player) { }
+    protected virtual void InteractSecondary(Player player) { }
+
+    public float GetInteractionTime(InteractionType type) => type == InteractionType.Primary ? interactionTime : interactionTimeSecondary;
+
+    public virtual bool CanInteract(InteractionType type, Player player)
+    {
+        switch (type)
+        {
+            case InteractionType.Primary: return CanInteractPrimary(player);
+            case InteractionType.Secondary: return CanInteractSecondary(player);
+        }
+        return false;
+    }
+
+    protected virtual bool CanInteractPrimary(Player player) => false;
+    protected virtual bool CanInteractSecondary(Player player) => false;
 
     // When the player walks inside the interactable, we tell it that it is inside
     private void OnTriggerEnter2D(Collider2D collision)
