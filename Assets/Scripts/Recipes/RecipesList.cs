@@ -6,14 +6,14 @@ public class RecipesList : MonoBehaviour
     [SerializeField] private Recipe[] recipes;
     [SerializeField] private int queueSize = 5;
 
-    private Dictionary<Resources.Type, Recipe> recipesMap;
-    private Dictionary<Resources.Type, Recipe> RecipesMap
+    private Dictionary<WorldResources.Type, Recipe> recipesMap;
+    private Dictionary<WorldResources.Type, Recipe> RecipesMap
     {
         get
         {
             if (recipesMap == null)
             {
-                recipesMap = new Dictionary<Resources.Type, Recipe>();
+                recipesMap = new Dictionary<WorldResources.Type, Recipe>();
                 foreach (Recipe recipe in recipes)
                 {
                     recipesMap[recipe.Type] = recipe;
@@ -59,9 +59,9 @@ public class RecipesList : MonoBehaviour
         }
     }
     
-    public Resources.Type CurrentNeededResourceType => queue.Peek().Type;
+    public WorldResources.Type CurrentNeededResourceType => queue.Peek().Type;
 
-    private void AddRecipe(Resources.Type type)
+    private void AddRecipe(WorldResources.Type type)
     {
         if (!RecipesMap.TryGetValue(type, out Recipe recipe))
         {
@@ -73,7 +73,7 @@ public class RecipesList : MonoBehaviour
         queue.Enqueue(recipeInstance);
     }
 
-    private void AddRandomRecipe() => AddRecipe(ResourceRandomizer.GetAt(randomIndex++));
+    private void AddRandomRecipe() => AddRecipe(WorldResourceRandomizer.GetAt(randomIndex++));
     
     public void OnRecipeCompleted()
     {

@@ -17,16 +17,16 @@ public class Tower : Interactable
 
     private readonly List<GameObject> towerPieces = new();
     
-    private Dictionary<Resources.Type, GameObject> towerPieceMap;
-    private Dictionary<Resources.Type, GameObject> TowerPieceMap
+    private Dictionary<WorldResources.Type, GameObject> towerPieceMap;
+    private Dictionary<WorldResources.Type, GameObject> TowerPieceMap
     {
         get
         {
-            towerPieceMap ??= new Dictionary<Resources.Type, GameObject>
+            towerPieceMap ??= new Dictionary<WorldResources.Type, GameObject>
             {
-                { Resources.Type.Straw, strawTowerPiecePrefab },
-                { Resources.Type.WoodPlank, woodTowerPiecePrefab },
-                { Resources.Type.Brick, brickTowerPiecePrefab },
+                { WorldResources.Type.Straw, strawTowerPiecePrefab },
+                { WorldResources.Type.WoodPlank, woodTowerPiecePrefab },
+                { WorldResources.Type.Brick, brickTowerPiecePrefab },
             };
             return towerPieceMap;
         }

@@ -92,7 +92,7 @@ public class LevelManager : MonoBehaviour
         GameState = State.Game;
         LevelTimer = 0;
         ActivateInGameObjects(true);
-        ResourceRandomizer.Reset();
+        WorldResourceRandomizer.Reset();
         GameStarted?.Invoke();
     }
 

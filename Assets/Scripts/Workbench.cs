@@ -18,7 +18,7 @@ public class Workbench : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.IsHolding && player.HeldItem.itemType == Resources.Type.WoodLog;
+                return player.IsHolding && player.HeldItem.itemType == WorldResources.Type.WoodLog;
             case State.HasWoodLog:
                 return false;
             case State.HasWoodPlank:

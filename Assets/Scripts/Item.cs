@@ -3,7 +3,7 @@ using UnityEngine;
 public class Item : Interactable
 {
     private Collider2D itemCollider;
-    public Resources.Type itemType;
+    public WorldResources.Type itemType;
 
     private void Awake()
     {

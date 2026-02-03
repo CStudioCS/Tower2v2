@@ -16,7 +16,7 @@ public class Furnace : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.IsHolding && player.HeldItem.itemType == Resources.Type.Clay;
+                return player.IsHolding && player.HeldItem.itemType == WorldResources.Type.Clay;
             case State.Cooking:
                 return false;
             case State.Cooked:

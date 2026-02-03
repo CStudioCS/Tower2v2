@@ -2,6 +2,6 @@ using UnityEngine;
 
 public class Recipe : MonoBehaviour
 {
-    [SerializeField] private Resources.Type type;
-    public Resources.Type Type => type;
+    [SerializeField] private WorldResources.Type type;
+    public WorldResources.Type Type => type;
 }
