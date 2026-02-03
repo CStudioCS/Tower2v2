@@ -22,11 +22,11 @@ public class Furnace : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.isHolding && player.heldItem.itemType == Resources.Type.Clay;
+                return player.IsHolding && player.HeldItem.itemType == Resources.Type.Clay;
             case State.Cooking:
                 return false;
             case State.Cooked:
-                return !player.isHolding;
+                return !player.IsHolding;
             default:
                 throw new UnityException("Furnace state not handled in CanInteract");
         }

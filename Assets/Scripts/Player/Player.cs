@@ -33,8 +33,8 @@ public class Player : MonoBehaviour
     }
 
     [HideInInspector] public Interactable insideInteractable;
-    public bool isHolding { get; private set; }
-    public Item heldItem { get; private set; }
+    public bool IsHolding { get; private set; }
+    public Item HeldItem { get; private set; }
 
     [Header("Speed")]
     [SerializeField] private float speed = 7;
@@ -215,21 +215,21 @@ public class Player : MonoBehaviour
     // Discards the item currently held
     public void ConsumeCurrentItem()
     {
-        isHolding = false;
-        if (heldItem != null)
-            Destroy(heldItem.gameObject);
-        heldItem = null;
+        IsHolding = false;
+        if (HeldItem != null)
+            Destroy(HeldItem.gameObject);
+        HeldItem = null;
     }
 
     // Drops to the ground the item currently held
     public void DropItem()
     {
-        if (!isHolding)
+        if (!IsHolding)
             return;
 
-        isHolding = false;
-        heldItem.Drop();
-        heldItem = null;
+        IsHolding = false;
+        HeldItem.Drop();
+        HeldItem = null;
     }
 
     public void GrabNewItem(Item itemPrefab) => GrabItem(Instantiate(itemPrefab, transform));
@@ -238,8 +238,8 @@ public class Player : MonoBehaviour
     
     public void GrabItem(Item item)
     {
-        isHolding = true;
-        heldItem = item;
+        IsHolding = true;
+        HeldItem = item;
     }
     
     private void OnDestroy()

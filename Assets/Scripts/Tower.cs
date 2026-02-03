@@ -44,7 +44,7 @@ public class Tower : Interactable
     public override bool CanInteract(Player player)
     {
         // Check if the player is holding the correct item for the recipe
-        return player.isHolding && recipesList.CurrentNeededResourceType == player.heldItem.itemType;
+        return player.IsHolding && recipesList.CurrentNeededResourceType == player.HeldItem.itemType;
     }
 
     public override void Interact(Player player)
@@ -52,9 +52,9 @@ public class Tower : Interactable
         // The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime,
         // and with the way Unity handles rendering, the new object is rendered on top of the old one
         
-        if (!TowerPieceMap.TryGetValue(player.heldItem.itemType, out GameObject towerPiece))
+        if (!TowerPieceMap.TryGetValue(player.HeldItem.itemType, out GameObject towerPiece))
         {
-            Debug.LogError("Could not find tower piece associated with " + player.heldItem.itemType + " held item");
+            Debug.LogError("Could not find tower piece associated with " + player.HeldItem.itemType + " held item");
             return;
         }
 

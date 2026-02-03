@@ -18,17 +18,17 @@ public class Workbench : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.isHolding && player.heldItem.itemType == Resources.Type.WoodLog;
+                return player.IsHolding && player.HeldItem.itemType == Resources.Type.WoodLog;
             case State.HasWoodLog:
                 return false;
             case State.HasWoodPlank:
-                return !player.isHolding;
+                return !player.IsHolding;
             default:
                 throw new UnityException("Workbench state not handled in CanInteract");
         }
     }
 
-    public override bool CanInteractA(Player player) => state == State.HasWoodLog && !player.isHolding;
+    public override bool CanInteractA(Player player) => state == State.HasWoodLog && !player.IsHolding;
 
     public override void Interact(Player player)
     {

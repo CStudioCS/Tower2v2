@@ -8,7 +8,7 @@ public class Collector : Interactable
 {
     [SerializeField] private Item itemPrefab;
 
-    public override bool CanInteract(Player player) => !player.isHolding;
+    public override bool CanInteract(Player player) => !player.IsHolding;
 
     public override void Interact(Player player)
     {
