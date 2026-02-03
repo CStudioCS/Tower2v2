@@ -6,16 +6,15 @@ public class ProgressBar : MonoBehaviour
     [SerializeField] private RectTransform progressBarFill;
 
     private float maxProgressBarFill;
-    private float MaxProgressBarFill => maxProgressBarFill == 0 ? maxProgressBarFill = progressBarFill.sizeDelta.x : maxProgressBarFill;
-    
-    private Coroutine currentCoroutine;
 
-    private void Awake() => ResetProgress();
-
-    public void UpdateProgress(float percentage)
+    private void Awake()
     {
-        progressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, MaxProgressBarFill, percentage), progressBarFill.sizeDelta.y);
+        maxProgressBarFill = progressBarFill.sizeDelta.x;
+        ResetProgress();
     }
+
+    // The argument is expected in range 0 - 1
+    public void UpdateProgress(float percentage) => SetProgress(Mathf.Lerp(0, maxProgressBarFill, percentage));
 
     public void StartProgress()
     {
@@ -29,5 +28,8 @@ public class ProgressBar : MonoBehaviour
         gameObject.SetActive(false);
     }
     
-    private void SetProgress0() => progressBarFill.sizeDelta = new Vector2(0, progressBarFill.sizeDelta.y);
+    // The argument progress here is expected in range 0 - MaxProgressBarFill
+    private void SetProgress(float progress) => progressBarFill.sizeDelta = new Vector2(progress, progressBarFill.sizeDelta.y);
+    public void SetProgressMax() => SetProgress(maxProgressBarFill);
+    private void SetProgress0() => SetProgress(0);
 }

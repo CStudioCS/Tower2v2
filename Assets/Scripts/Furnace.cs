@@ -4,18 +4,12 @@ using UnityEngine;
 public class Furnace : Interactable
 {
     [SerializeField] private float cookTime;
-    [SerializeField] private RectTransform progressBarFill;
-    [SerializeField] private Item brickItem;
+    [SerializeField] private Item brickItemPrefab;
+    [SerializeField] private ProgressBar progressBar;
 
     private State state;
     private float maxProgressBarFill;
     private enum State { Empty, Cooking, Cooked }
-
-    private void Awake()
-    {
-        maxProgressBarFill = progressBarFill.sizeDelta.x;
-        ResetProgressBar();
-    }
 
     public override bool CanInteract(Player player)
     {
@@ -42,9 +36,9 @@ public class Furnace : Interactable
         }
         else if (state == State.Cooked)
         {
-            player.GrabNewItem(brickItem);
+            player.GrabNewItem(brickItemPrefab);
             state = State.Empty;
-            ResetProgressBar();
+            progressBar.ResetProgress();
         }
     }
 
@@ -52,24 +46,17 @@ public class Furnace : Interactable
     {
         state = State.Cooking;
 
-        progressBarFill.parent.gameObject.SetActive(true);
+        progressBar.StartProgress();
         float t = 0;
 
         while (t < cookTime)
         {
-            progressBarFill.sizeDelta = new Vector2(Mathf.Lerp(0, maxProgressBarFill, t / cookTime), progressBarFill.sizeDelta.y);
+            progressBar.UpdateProgress(t / cookTime);
 
             t += Time.deltaTime * Time.timeScale;
             yield return null;
         }
-
-        progressBarFill.sizeDelta = new Vector2(maxProgressBarFill, progressBarFill.sizeDelta.y);
+        progressBar.SetProgressMax();
         state = State.Cooked;
-    }
-
-    private void ResetProgressBar()
-    {
-        progressBarFill.parent.gameObject.SetActive(false);
-        progressBarFill.sizeDelta = new Vector2(0, progressBarFill.sizeDelta.y);
     }
 }
