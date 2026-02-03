@@ -35,32 +35,25 @@ public class Player : MonoBehaviour
     [HideInInspector] public Interactable insideInteractable;
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
-
-    [Header("Speed")]
-    [SerializeField] private float speed = 7;
     
     [Header("Progress")]
     [SerializeField] private RectTransform progressBar;
     [SerializeField] private RectTransform progressBarFill;
 
     private PlayerInput playerInput;
-    private InputAction moveAction;
     private InputAction interactAction;
     private InputAction cutWoodAction;
-    private Rigidbody2D rb;
+    
     private float maxProgressBarFill;
-    private bool interacting;
+    public bool Interacting { get; private set; }
 
     private void Awake()
     {
         playerTeam.TeamChanged += OnTeamChanged;
         UpdateColor();
         playerInput = GetComponent<PlayerInput>(); // Using Unity's new input system
-        moveAction = playerInput.actions.FindAction("Gameplay/Move");
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
         cutWoodAction = playerInput.actions.FindAction("Gameplay/CutWood");
-
-        rb = GetComponent<Rigidbody2D>();
 
         maxProgressBarFill = progressBarFill.sizeDelta.x;
         ResetProgressBar();
@@ -74,13 +67,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        Vector2 move = moveAction.ReadValue<Vector2>();
-
-        if (!interacting)
-            rb.linearVelocity = move * speed;
-        else
-            rb.linearVelocity = Vector2.zero;
-
         if (interactAction.WasPressedThisFrame())
         {
             switch (LevelManager.Instance.GameState)
@@ -145,7 +131,7 @@ public class Player : MonoBehaviour
 
     private IEnumerator InteractTimer(float time)
     {
-        interacting = true;
+        Interacting = true;
         progressBar.gameObject.SetActive(true);
         float t = 0;
         
@@ -155,7 +141,7 @@ public class Player : MonoBehaviour
             if (!interactAction.IsPressed())
             {
                 ResetProgressBar();
-                interacting = false;
+                Interacting = false;
                 insideInteractable.isAlreadyInteractedWith = false;
                 yield break;
             }
@@ -169,7 +155,7 @@ public class Player : MonoBehaviour
 
         // We interacted with the object -> Reset everything and call the interact function
 
-        interacting = false;
+        Interacting = false;
         ResetProgressBar();
         insideInteractable.Interact(this);
         insideInteractable.isAlreadyInteractedWith = false;
@@ -177,7 +163,7 @@ public class Player : MonoBehaviour
     
     private IEnumerator InteractTimerA(float time)
     {
-        interacting = true;
+        Interacting = true;
         progressBar.gameObject.SetActive(true);
         float t = 0;
         
@@ -187,7 +173,7 @@ public class Player : MonoBehaviour
             if (!cutWoodAction.IsPressed())
             {
                 ResetProgressBar();
-                interacting = false;
+                Interacting = false;
                 yield break;
             }
 
@@ -200,7 +186,7 @@ public class Player : MonoBehaviour
 
         // We interacted with the object -> Reset everything and call the interact function
 
-        interacting = false;
+        Interacting = false;
         ResetProgressBar();
         insideInteractable.InteractA(this);
         insideInteractable.isAlreadyInteractedWith = false;
