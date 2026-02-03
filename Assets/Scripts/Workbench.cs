@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Workbench : Interactable
 {
-    [SerializeField] private GameObject woodPlankItemPrefab;
+    [SerializeField] private Item woodPlankItemPrefab;
     
     private State state;
     private SpriteRenderer spriteRenderer;

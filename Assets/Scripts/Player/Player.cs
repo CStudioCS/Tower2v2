@@ -159,8 +159,6 @@ public class Player : MonoBehaviour
 
     public void GrabNewItem(Item itemPrefab) => GrabItem(Instantiate(itemPrefab, transform));
     
-    public void GrabNewItem(GameObject itemPrefab) => GrabItem(Instantiate(itemPrefab, transform).GetComponent<Item>());
-    
     public void GrabItem(Item item)
     {
         IsHolding = true;
