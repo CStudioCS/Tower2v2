@@ -3,12 +3,11 @@ using UnityEngine;
 
 public class Furnace : Interactable
 {
-    [SerializeField] private float cookTime;
+    [SerializeField] private float cookTime = 4;
     [SerializeField] private Item brickItemPrefab;
     [SerializeField] private ProgressBar progressBar;
 
     private State state;
-    private float maxProgressBarFill;
     private enum State { Empty, Cooking, Cooked }
 
     protected override bool CanInteractPrimary(Player player)
@@ -28,17 +27,17 @@ public class Furnace : Interactable
 
     protected override void InteractPrimary(Player player)
     {
-        if (state == State.Empty)
+        switch (state)
         {
-            StartCoroutine(Cook());
-
-            player.ConsumeCurrentItem();
-        }
-        else if (state == State.Cooked)
-        {
-            player.GrabNewItem(brickItemPrefab);
-            state = State.Empty;
-            progressBar.ResetProgress();
+            case State.Empty:
+                StartCoroutine(Cook());
+                player.ConsumeCurrentItem();
+                break;
+            case State.Cooked:
+                player.GrabNewItem(brickItemPrefab);
+                state = State.Empty;
+                progressBar.ResetProgress();
+                break;
         }
     }
 
@@ -53,7 +52,7 @@ public class Furnace : Interactable
         {
             progressBar.UpdateProgress(t / cookTime);
 
-            t += Time.deltaTime * Time.timeScale;
+            t += Time.deltaTime;
             yield return null;
         }
         progressBar.SetProgressMax();

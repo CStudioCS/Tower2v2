@@ -126,7 +126,7 @@ public class Player : MonoBehaviour
             }
 
             progressBar.UpdateProgress(t / time);
-            t += Time.deltaTime * Time.timeScale;
+            t += Time.deltaTime;
             yield return null;
         }
 
