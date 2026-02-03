@@ -88,7 +88,9 @@ public class Player : MonoBehaviour
         // We check whether we're inside an interactable object and if yes if we can interact with it
         if (insideInteractable == null)
             return;
-        if (insideInteractable.IsAlreadyInteractedWith) // I do not set isAlreadyInteractedWith to true in an else statement because it only applies to interactables with interaction time
+        
+        // I do not set isAlreadyInteractedWith to true in an else statement because it only applies to interactables with interaction time // Si qqun comprend ce commentaire de Pierre qu'il se manifeste
+        if (insideInteractable.IsAlreadyInteractedWith)
             return;
 
         if (!insideInteractable.CanInteract(interactionType, this))
@@ -98,19 +100,15 @@ public class Player : MonoBehaviour
         
         // If we can interact instantly, we do it, else we need to wait for the interaction time
         if (time > 0)
-        {
-            insideInteractable.IsAlreadyInteractedWith = true;
             StartCoroutine(InteractTimer(interactionType, time, inputAction));
-        }
         else
-        {
             insideInteractable.Interact(interactionType, this);
-        }
     }
 
     private IEnumerator InteractTimer(Interactable.InteractionType interactionType, float time, InputAction inputAction)
     {
         Interacting = true;
+        insideInteractable.IsAlreadyInteractedWith = true;
         progressBar.StartProgress();
         float t = 0;
         
@@ -119,9 +117,7 @@ public class Player : MonoBehaviour
             // If at any point the player stops holding the interact button -> stop interacting
             if (!inputAction.IsPressed())
             {
-                progressBar.ResetProgress();
-                Interacting = false;
-                insideInteractable.IsAlreadyInteractedWith = false;
+                StopInteracting();
                 yield break;
             }
 
@@ -131,10 +127,15 @@ public class Player : MonoBehaviour
         }
 
         // We interacted with the object -> Reset everything and call the interact function
-        Interacting = false;
-        progressBar.ResetProgress();
+        StopInteracting();
         insideInteractable.Interact(interactionType, this);
+    }
+
+    private void StopInteracting()
+    {
+        Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
+        progressBar.ResetProgress();
     }
 
     // Discards the item currently held
