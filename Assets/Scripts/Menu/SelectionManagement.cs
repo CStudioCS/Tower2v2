@@ -22,51 +22,54 @@ public class SelectionManagement : MonoBehaviour
 
     void Start()
     {
+        // Store initial camera parameters
         initialCamSize = cam.orthographicSize;
         initialCamPosition = cam.transform.position;
+        
+        // Get the keyboard instance
         keyboard = Keyboard.current;
     }
 
     void Update()
     {
-        if(!isAButtonCLicked){
+        // Only allow selection if not zooming in and if no button is currently clicked
+        if(!isAButtonCLicked && !isZoomingIn){
             Selection();
+            // Check for selection confirmation
             if(keyboard.enterKey.wasPressedThisFrame)
-            {
                 Transition();
-            }
         }
+        // Update the display based on current selection
         AffichageSelection();
-        if(isZoomingIn)
-        {   
 
+        if(isZoomingIn)
             ZoomIn();
-        }
+        
     }
     private void AffichageSelection()
     {
+        // Reset all font sizes
         playText.fontSize = 96;
         settingsText.fontSize = 96;
         quitText.fontSize = 96;
+
+        // Highlight the selected option
         switch (nbSelected)
-                {
-                    case 0:
-                        playText.fontSize = 150;
-                        // Load the game scene or start the game
-                        break;
-                    case 1:
-                        settingsText.fontSize = 150;
-                        // Open the settings menu
-                        break;
-                    case 2:
-                        quitText.fontSize = 150;
-                        // Quit the application
-                        break;
-                }
+        {
+            case 0:
+                playText.fontSize = 150;
+                break;
+            case 1:
+                settingsText.fontSize = 150;
+                break;
+            case 2:
+                quitText.fontSize = 150;
+                break;
+        }
     }
     private void Selection()
     {   
-
+        // Check for keyboard input
         if (keyboard.upArrowKey.wasPressedThisFrame)
         {
             nbSelected--;
@@ -79,6 +82,7 @@ public class SelectionManagement : MonoBehaviour
             isAButtonCLicked = true;
         }
 
+        // Check for gamepad input
         foreach (var gamepad in Gamepad.all)
         {
             if (gamepad.leftStick.ReadValue().y > 0.1f)
@@ -96,6 +100,7 @@ public class SelectionManagement : MonoBehaviour
             
         }
 
+        // Clamp the selection between 0 and 2
         if (nbSelected < 0)
         {
             nbSelected = 0;
@@ -105,6 +110,7 @@ public class SelectionManagement : MonoBehaviour
             nbSelected = 2;
         }
 
+        // Start cooldown to prevent multiple inputs
         if(isAButtonCLicked)
         {
             StartCoroutine(InputCooldown());
@@ -120,11 +126,14 @@ public class SelectionManagement : MonoBehaviour
 
     private void Transition()
     {
-        playText.gameObject.SetActive(false);
+        // Deactivate all menu texts
+        playText.gameObject.SetActive(false); 
         settingsText.gameObject.SetActive(false);
         quitText.gameObject.SetActive(false);
 
+        //select the correct parent to zoom in on
         Transform parent = null;
+
         switch (nbSelected)
                 {
                     case 0:
@@ -139,15 +148,22 @@ public class SelectionManagement : MonoBehaviour
                 }
 
         parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.right * 35f;
+
+        //Start the zoom in process
         isZoomingIn = true;
+
+        //Coroutine qui gère le temps pour l'easing
         StartCoroutine(TransitionCoroutine());
         
     }
 
     private void ZoomIn()
     {
-
+        //zoom in the camera using easing
         cam.orthographicSize = Mathf.Lerp(initialCamSize, 0f, Easing.QuadOut(time));
+        
+        //select the correct y position to zoom in on
+
         float pos = 0f;
         switch(nbSelected)
         {
@@ -164,11 +180,15 @@ public class SelectionManagement : MonoBehaviour
                 break;
         }
         
-
+        //move the camera to the correct position using easing
         cam.transform.position = Vector3.Lerp(initialCamPosition, new Vector3(4.5f, pos, -10f), Easing.QuadOut(time));
         
+        //if the zoom in is complete, load the appropriate scene or quit
         if(time >= 0.99f && nbSelected == 0){
             SceneManager.LoadScene(0);
+        }
+        else if(time >= 0.99f && nbSelected == 2){
+            Application.Quit();
         }
         
     }
