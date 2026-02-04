@@ -60,7 +60,7 @@ public class PlayerControlBadge : MonoBehaviour
         UpdateColor();
     }
 
-    private void UpdateColor() => ChangeColor(player.TeamColors[playerTeam.CurrentTeam]);
+    private void UpdateColor() => ChangeColor(playerTeam.TeamColors[playerTeam.CurrentTeam]);
     private void ChangeColor(Color color)
     {
         foreach (Graphic graphic in teamColorGraphics)
@@ -199,7 +199,7 @@ public class PlayerControlBadge : MonoBehaviour
         SetReady(false, false);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         playerTeam.TeamChanged -= OnTeamChanged;
         LevelManager.Instance.GameStarted -= OnGameStarted;

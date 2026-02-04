@@ -1,13 +1,40 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerTeam : MonoBehaviour
 {
-    public LevelManager.Team CurrentTeam { get; private set; } = LevelManager.Team.Left;
+    public enum Team { Right, Left }
+    public Team CurrentTeam { get; private set; } = Team.Left;
     
     public event Action TeamChanged;
     
-    private LevelManager.Team CurrentPositionTeam => transform.position.x > 0 ? LevelManager.Team.Right : LevelManager.Team.Left; 
+    private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left; 
+    
+    [Header("Colors")]
+    [SerializeField] private Color leftTeamColor;
+    [SerializeField] private Color rightTeamColor;
+    
+    private Dictionary<Team, Color> teamColors;
+    public Dictionary<Team, Color> TeamColors
+    {
+        get
+        {
+            teamColors ??= new Dictionary<Team, Color>
+            {
+                { Team.Left, leftTeamColor },
+                { Team.Right, rightTeamColor }
+            };
+            return teamColors;
+        }
+    }
+    [Header("References")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    private void Awake()
+    {
+        UpdateColor();
+    }
     
     private void Update()
     {
@@ -16,23 +43,18 @@ public class PlayerTeam : MonoBehaviour
             case LevelManager.State.Lobby:
                 LobbyUpdate();
                 break;
-            case LevelManager.State.Game:
-                GameUpdate();
-                break;
         }
     }
 
     public void LobbyUpdate()
     {
-        LevelManager.Team newTeam = CurrentPositionTeam;
+        Team newTeam = CurrentPositionTeam;
         if (newTeam == CurrentTeam) return;
         
         CurrentTeam = newTeam;
+        UpdateColor();
         TeamChanged?.Invoke();
     }
-
-    private void GameUpdate()
-    {
-        
-    }
+    
+    private void UpdateColor() => spriteRenderer.color = TeamColors[CurrentTeam];
 }

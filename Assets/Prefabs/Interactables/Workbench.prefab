@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTime: 0
-  interactionTimeA: 1.5
-  woodPlankItemPrefab: {fileID: 8930447777740200761, guid: 41bd7609910bc2e4383d0234046cf75a, type: 3}
+  interactionTimeSecondary: 1.5
+  woodPlankItemPrefab: {fileID: 3378557466002707279, guid: 41bd7609910bc2e4383d0234046cf75a, type: 3}
 --- !u!212 &2862079642628240185
 SpriteRenderer:
   m_ObjectHideFlags: 0

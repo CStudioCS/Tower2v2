@@ -6,30 +6,29 @@ public class RecipesList : MonoBehaviour
     [SerializeField] private Recipe[] recipes;
     [SerializeField] private int queueSize = 5;
 
-    private Dictionary<Resources.Type, Recipe> recipesMap;
-    private Dictionary<Resources.Type, Recipe> RecipesMap
+    private Dictionary<Item.Type, Recipe> recipesMap;
+    private Dictionary<Item.Type, Recipe> RecipesMap
     {
         get
         {
-            if (recipesMap == null)
+            if (recipesMap != null) return recipesMap;
+            recipesMap = new Dictionary<Item.Type, Recipe>();
+            foreach (Recipe recipe in recipes)
             {
-                recipesMap = new Dictionary<Resources.Type, Recipe>();
-                foreach (Recipe recipe in recipes)
-                {
-                    recipesMap[recipe.Type] = recipe;
-                }
+                recipesMap[recipe.Type] = recipe;
             }
             return recipesMap;
         }
     }
-    
-    private readonly Queue<Recipe> queue = new();
 
-    private int randomIndex = 0;
+    [SerializeField] private Tower tower;
+    private readonly Queue<Recipe> queue = new();
+    private int randomIndex;
     
     private void OnEnable()
     {
         LevelManager.Instance.GameStarted += OnGameStarted;
+        tower.PieceBuilt += OnPieceBuilt;
     }
 
     private void OnGameStarted()
@@ -59,9 +58,9 @@ public class RecipesList : MonoBehaviour
         }
     }
     
-    public Resources.Type CurrentNeededResourceType => queue.Peek().Type;
+    public Item.Type CurrentNeededItemType => queue.Peek().Type;
 
-    private void AddRecipe(Resources.Type type)
+    private void AddRecipe(Item.Type type)
     {
         if (!RecipesMap.TryGetValue(type, out Recipe recipe))
         {
@@ -73,9 +72,11 @@ public class RecipesList : MonoBehaviour
         queue.Enqueue(recipeInstance);
     }
 
-    private void AddRandomRecipe() => AddRecipe(ResourceRandomizer.GetAt(randomIndex++));
+    private void AddRandomRecipe() => AddRecipe(ItemRandomizer.GetAt(randomIndex++));
     
-    public void OnRecipeCompleted()
+    private void OnPieceBuilt() => CompleteRecipe();
+    
+    private void CompleteRecipe()
     {
         if (queue.Count > 0)
         {
@@ -85,8 +86,9 @@ public class RecipesList : MonoBehaviour
         }
     }
     
-    private void OnDestroy()
+    private void OnDisable()
     {
         LevelManager.Instance.GameStarted -= OnGameStarted;
+        tower.PieceBuilt -= OnPieceBuilt;
     }
 }

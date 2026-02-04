@@ -1,0 +1,78 @@
+using UnityEngine;
+
+/// <summary>
+/// An Interactable is everything a player interacts with. When a player is standing within the bounds of the
+/// trigger collider and if CanInteract(player) is evaluated to true, the player can call the Interact function of the Interactable.
+/// </summary>
+public abstract class Interactable : MonoBehaviour
+{
+    public enum InteractionType { Primary, Secondary }
+    
+    [Header("Interaction Times")]
+    [SerializeField] float interactionTime;
+    [SerializeField] float interactionTimeSecondary;
+    
+    public bool IsAlreadyInteractedWith { get; set; }
+
+    public virtual void Interact(InteractionType type, Player player)
+    {
+        switch (type)
+        {
+            case InteractionType.Primary: InteractPrimary(player); break;
+            case InteractionType.Secondary: InteractSecondary(player); break;
+        }
+    }
+
+    protected virtual void InteractPrimary(Player player) { }
+    protected virtual void InteractSecondary(Player player) { }
+
+    public float GetInteractionTime(InteractionType type) => type == InteractionType.Primary ? interactionTime : interactionTimeSecondary;
+
+    public virtual bool CanInteract(InteractionType type, Player player)
+    {
+        switch (type)
+        {
+            case InteractionType.Primary: return CanInteractPrimary(player);
+            case InteractionType.Secondary: return CanInteractSecondary(player);
+        }
+        return false;
+    }
+
+    protected virtual bool CanInteractPrimary(Player player) => false;
+    protected virtual bool CanInteractSecondary(Player player) => false;
+
+    // When the player walks inside the interactable, we tell it that it is inside
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.TryGetComponent<Player>(out Player player))
+            player.insideInteractable = this;
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractable == this)
+            player.insideInteractable = null;
+    }
+    
+    private void Start()
+    {
+        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.Instance.GameEnded += OnGameEnded;
+    }
+
+    protected virtual void OnGameAboutToStart()
+    {
+        IsAlreadyInteractedWith = false;
+    }
+    
+    protected virtual void OnGameEnded()
+    {
+        IsAlreadyInteractedWith = false;
+    }
+    
+    private void OnDisable()
+    {
+        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.Instance.GameEnded -= OnGameEnded;
+    }
+}

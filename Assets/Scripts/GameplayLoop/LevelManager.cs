@@ -6,16 +6,16 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
+    [SerializeField] private float timerLimit = 120f;
+    
+    [Header("References")]
     [SerializeField] private Tower towerRight;
     [SerializeField] private Tower towerLeft;
-    [SerializeField] private TMP_Text timerDisplay;
-    [SerializeField] private float timerLimit = 120f;
+    [SerializeField] private TextMeshProUGUI timerDisplay;
     [SerializeField] private TextMeshProUGUI winnerText;
     
     public float LevelTimer { get; private set; }
-    private Team winningTeam;
-
-    public enum Team { Right, Left }
+    private PlayerTeam.Team winningTeam;
     
     public enum State { Lobby, Starting, Game }
     public State GameState { get; private set; } = State.Lobby;
@@ -66,10 +66,10 @@ public class LevelManager : MonoBehaviour
 
             if (LevelTimer >= timerLimit)
             {
-                if (towerRight.height == towerLeft.height)
-                    winningTeam = towerRight.lastPlacedTime < towerLeft.lastPlacedTime ? Team.Right : Team.Left;
+                if (towerRight.Height == towerLeft.Height)
+                    winningTeam = towerRight.LastPlacedTime < towerLeft.LastPlacedTime ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
                 else
-                    winningTeam = towerRight.height > towerLeft.height ? Team.Right : Team.Left;
+                    winningTeam = towerRight.Height > towerLeft.Height ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
 
                 GameState = State.Lobby;
                 EndLevel(winningTeam);
@@ -92,11 +92,11 @@ public class LevelManager : MonoBehaviour
         GameState = State.Game;
         LevelTimer = 0;
         ActivateInGameObjects(true);
-        ResourceRandomizer.Reset();
+        ItemRandomizer.Reset();
         GameStarted?.Invoke();
     }
 
-    private void EndLevel(Team winner)
+    private void EndLevel(PlayerTeam.Team winner)
     {
         GameState = State.Lobby;
         ActivateLobbyObjects(true);
@@ -104,7 +104,7 @@ public class LevelManager : MonoBehaviour
         Debug.Log($"Level has ended with winner {winner}");
         
         winnerText.gameObject.SetActive(true);
-        winnerText.text = (winner == Team.Left ? "Left" : "Right") + " team wins!";
+        winnerText.text = (winner == PlayerTeam.Team.Left ? "Left" : "Right") + " team wins!";
         GameEnded?.Invoke();
     }
 }
