@@ -38,7 +38,12 @@ public class Player : MonoBehaviour
     private void GameUpdate()
     {
         if (interactAction.WasPressedThisFrame())
-            StartInteracting(Interactable.InteractionType.Primary, interactAction);
+        {
+            if (insideInteractable)
+                StartInteracting(Interactable.InteractionType.Primary, interactAction);
+            else if(HeldItem  != null)
+                DropHeldItem();
+        }
         else if (cutWoodAction.WasPressedThisFrame())
             StartInteracting(Interactable.InteractionType.Secondary, cutWoodAction);
     }
@@ -104,7 +109,9 @@ public class Player : MonoBehaviour
         progressBar.ResetProgress();
     }
 
-    // Discards the item currently held
+    /// <summary>
+    /// Discards the item currently held
+    /// </summary>
     public void ConsumeCurrentItem()
     {
         IsHolding = false;
@@ -113,8 +120,10 @@ public class Player : MonoBehaviour
         HeldItem = null;
     }
 
-    // Drops to the ground the item currently held
-    public void DropItem()
+    /// <summary>
+    /// Drops to the ground the item currently held
+    /// </summary>
+    public void DropHeldItem()
     {
         if (!IsHolding)
             return;
