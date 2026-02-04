@@ -25,7 +25,7 @@ public class SelectionManagement : MonoBehaviour
         // Store initial camera parameters
         initialCamSize = cam.orthographicSize;
         initialCamPosition = cam.transform.position;
-        
+
         // Get the keyboard instance
         keyboard = Keyboard.current;
     }
@@ -175,8 +175,6 @@ public class SelectionManagement : MonoBehaviour
                 break;
             case 2:
                 pos = quitText.transform.parent.gameObject.transform.position.y;
-                break;
-            case default:
                 break;
         }
         
