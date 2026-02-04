@@ -16,7 +16,9 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerControlBadge playerControlBadge;
     public PlayerControlBadge PlayerControlBadge => playerControlBadge;
     [SerializeField] private ProgressBar progressBar;
-    
+    [SerializeField] private PlayerMovement playerMovement;
+    public PlayerMovement PlayerMovement => playerMovement;
+
     private InputAction interactAction;
     private InputAction cutWoodAction;
 
@@ -133,7 +135,11 @@ public class Player : MonoBehaviour
         HeldItem = null;
     }
 
-    public void GrabNewItem(Item itemPrefab) => GrabItem(Instantiate(itemPrefab, transform));
+    public void GrabNewItem(Item itemPrefab)
+    {
+        Item itemInstance = Instantiate(itemPrefab);
+        itemInstance.Grab(this);        
+    }
     
     public void GrabItem(Item item)
     {
