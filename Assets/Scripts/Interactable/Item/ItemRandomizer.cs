@@ -11,7 +11,7 @@ public class ItemRandomizer : MonoBehaviour
     [SerializeField] private float strawProbability = 0.50f;
     [SerializeField] private float woodPlankProbability = 0.35f;
     [SerializeField] private float brickProbability = 0.15f;
-    [SerializeField] private float contextSize = 6f;
+    [SerializeField] private int contextSize = 6;
     private static Item.Type[] values;
 
     private static Dictionary<Item.Type, float> itemWeights;
