@@ -54,8 +54,7 @@ public class PlayerControlBadge : MonoBehaviour
         if (LobbyManager.Instance.DebugMode)
         {
             //quick and dirty but it's debug
-            int numPlayers = FindObjectsByType<Player>(FindObjectsSortMode.None).Length;
-            if (numPlayers % 2 == 0)
+            if (GameStartManager.Instance.PlayerCount % 2 == 0)
                 playerTeam.SetTeam(PlayerTeam.Team.Left);
             else
                 playerTeam.SetTeam(PlayerTeam.Team.Right);

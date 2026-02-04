@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class GameStartManager : MonoBehaviour
 {
+    public static GameStartManager Instance;
     public enum WaitState
     {
         NotEnoughPlayers,
@@ -32,7 +33,7 @@ public class GameStartManager : MonoBehaviour
     }
 
     private readonly List<PlayerInput> players = new();
-    private int PlayerCount => players.Count;
+    public int PlayerCount => players.Count;
     // Player Balance counts +1 for right team and -1 for left team. If sum is 0, teams are balanced.
     private int PlayerBalance =>
         players.Sum(playerInput => {
@@ -48,7 +49,15 @@ public class GameStartManager : MonoBehaviour
         });
     
     [SerializeField] private TextMeshProUGUI waitingText;
-    
+
+    private void Awake()
+    {
+        if (Instance != null)
+            Destroy(Instance);
+
+        Instance = this;
+    }
+
     private void UpdateWaitingText() => waitingText.text = WaitingMessages[waitState];
     
     private void TryChangeWaitState(WaitState newWaitState)
