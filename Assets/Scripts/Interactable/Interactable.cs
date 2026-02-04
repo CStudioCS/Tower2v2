@@ -13,6 +13,7 @@ public abstract class Interactable : MonoBehaviour
     [SerializeField] float interactionTimeSecondary;
     
     public bool IsAlreadyInteractedWith { get; set; }
+    private bool isHighlighted = false;
 
     public virtual void Interact(InteractionType type, Player player)
     {
@@ -45,13 +46,16 @@ public abstract class Interactable : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player))
-            player.insideInteractable = this;
+            player.insideInteractableList.Add(this);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractable == this)
-            player.insideInteractable = null;
+        if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractableList.Contains(this))
+        {
+            this.HighlightObject(false);
+            player.insideInteractableList.Remove(this);
+        }
     }
     
     private void Start()
@@ -60,6 +64,25 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
+    public virtual void HighlightObject(bool highlightState)
+    {
+        // à modifier pour chaque interactable (ou pas)
+        // Juste pour tester je met des logs ici pour voir que ça marche
+
+        if (isHighlighted == highlightState) 
+            return;
+        
+        isHighlighted = highlightState;
+
+        if (highlightState)
+        {
+            // Mettre le code pour highlight l'objet
+        }
+        else
+        {
+            // Mettre le code pour enlever le highlight de l'objet
+        }
+    }
     protected virtual void OnGameAboutToStart()
     {
         IsAlreadyInteractedWith = false;
