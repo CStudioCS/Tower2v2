@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Player player;
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Rigidbody2D rb;
+    public Rigidbody2D Rb => rb;
     private InputAction moveAction;
 
     private void Awake()

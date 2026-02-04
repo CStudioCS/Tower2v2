@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8569902203551738096}
   - component: {fileID: 3599087220505950698}
   - component: {fileID: -256997523848646438}
+  - component: {fileID: 3815938341415364146}
   m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
@@ -49,7 +50,10 @@ MonoBehaviour:
   interactionTime: 0
   interactionTimeSecondary: 0
   itemType: 0
+  rb: {fileID: 3815938341415364146}
   itemCollider: {fileID: -256997523848646438}
+  ejectionCoefficient: 1.5
+  rotationCoefficient: 10
 --- !u!212 &3599087220505950698
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -151,3 +155,30 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &3815938341415364146
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2585688832917479558}
+  m_BodyType: 0
+  m_Simulated: 0
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 2
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

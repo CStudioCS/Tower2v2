@@ -7,9 +7,12 @@ public class Item : Interactable
     [Header("Item")]
     [SerializeField] private Type itemType;
     public Type ItemType => itemType;
-    
+    private Player lastOwner;
+    [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Collider2D itemCollider;
-    
+    [SerializeField] private float ejectionCoefficient;
+    [SerializeField] private float rotationCoefficient;
+
     private void Awake()
     {
         itemCollider.enabled = false;
@@ -18,6 +21,16 @@ public class Item : Interactable
     protected override bool CanInteractPrimary(Player player) => !player.IsHolding;
     protected override void InteractPrimary(Player player)
     {
+        Grab(player);
+    }
+
+    public void Grab(Player player)
+    {
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0;
+        rb.simulated = false;
+        transform.rotation = Quaternion.identity;
+        lastOwner = player;
         itemCollider.enabled = false;
         player.GrabItem(this);
         transform.SetParent(player.transform);
@@ -26,7 +39,12 @@ public class Item : Interactable
 
     public void Drop()
     {
+        Vector2 speedVector = lastOwner.PlayerMovement.Rb.linearVelocity;
+        lastOwner = null;
         transform.SetParent(null);
+        rb.simulated = true;
         itemCollider.enabled = true;
+        rb.linearVelocity = ejectionCoefficient * speedVector ;
+        rb.angularVelocity = Random.Range(-1,2) * rotationCoefficient;
     }
 }
