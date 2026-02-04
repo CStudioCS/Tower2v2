@@ -72,7 +72,7 @@ public class RecipesList : MonoBehaviour
         queue.Enqueue(recipeInstance);
     }
 
-    private void AddRandomRecipe() => AddRecipe(ItemRandomizer.GetAt(randomIndex++));
+    private void AddRandomRecipe() => AddRecipe(ItemRandomizer.Instance.GetAt(randomIndex++));
     
     private void OnPieceBuilt() => CompleteRecipe();
     

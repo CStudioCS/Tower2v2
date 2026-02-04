@@ -1,46 +1,34 @@
 ﻿using System.Collections.Generic;
-using System.Xml.Schema;
-using Unity.VisualScripting;
-using UnityEditor.UI;
 using UnityEngine;
 
 public class ItemRandomizer : MonoBehaviour
 {
-
-    [SerializeField]
-    private float updateRate = .3f;
-    [SerializeField]
-    private static float strawProbability = 0.45f;
-    [SerializeField]
-    private static float woodPlankProbability = 0.35f;
-    [SerializeField]
-    private static float brickProbability = 0.20f;
-
     public static ItemRandomizer Instance;
+
+    [SerializeField] private float updateRate = .3f;
+    [SerializeField] private float strawProbability = 0.50f;
+    [SerializeField] private float woodPlankProbability = 0.35f;
+    [SerializeField] private float brickProbability = 0.15f;
+    
     private static Item.Type[] values;
 
     private static Dictionary<Item.Type, float> itemWeights;
     
-    private static Dictionary<Item.Type, float> initialItemWight = new ()
-    {
-            {Item.Type.Straw, strawProbability},
-            {Item.Type.WoodPlank, woodPlankProbability},
-            {Item.Type.Brick, brickProbability},
-    };
-
+    private Dictionary<Item.Type, float> initialItemWight;
     private static Dictionary<Item.Type, int> itemCounter;
     private static System.Random random;
     private static readonly List<Item.Type> sequence = new();
     private static bool initialized = false;
 
-    private void Awake()
+    public void Awake()
     {
         if(Instance != null)
             Destroy(Instance);
         
         Instance = this;
     }
-    private static void Initialize()
+
+    private void Initialize()
     {
         if (initialized) return;
 
@@ -51,7 +39,13 @@ public class ItemRandomizer : MonoBehaviour
             Item.Type.WoodPlank,
             Item.Type.Brick
         };
-        
+
+        initialItemWight = new () {
+            {Item.Type.Straw, strawProbability},
+            {Item.Type.WoodPlank, woodPlankProbability},
+            {Item.Type.Brick, brickProbability},
+        };
+
         itemWeights = new Dictionary<Item.Type, float>(initialItemWight);
 
         itemCounter = new Dictionary<Item.Type, int> 
@@ -70,7 +64,7 @@ public class ItemRandomizer : MonoBehaviour
         sequence.Clear();
     }
 
-    public static Item.Type GetAt(int index)
+    public Item.Type GetAt(int index)
     {
         Initialize();
 
@@ -85,12 +79,12 @@ public class ItemRandomizer : MonoBehaviour
         return sequence[index];
     }
 
-    public static void UpdateWeights()
+    public void UpdateWeights()
     {
         // weight update heuristic to prevent getting the same item too often 
-        int size = sequence.Count;
         foreach(var item in values){
-            itemWeights[item] = Mathf.Max(initialItemWight[item] + updateRate * (initialItemWight[item] -((float)itemCounter[item] / size)), 0);
+            Debug.Log("itemWeights :" + itemWeights[item] + " " + item.ToString());
+            itemWeights[item] = Mathf.Max(initialItemWight[item] + updateRate * (initialItemWight[item] -((float)itemCounter[item] / sequence.Count)), 0);
         }
     }
 
