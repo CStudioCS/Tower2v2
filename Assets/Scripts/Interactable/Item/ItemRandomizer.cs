@@ -1,19 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Schema;
+using Unity.VisualScripting;
 using UnityEditor.UI;
 using UnityEngine;
 
-public static class ItemRandomizer
+public class ItemRandomizer : MonoBehaviour
 {
+
+    [SerializeField]
+    private float updateRate = .3f;
+    [SerializeField]
+    private static float strawProbability = 0.45f;
+    [SerializeField]
+    private static float woodPlankProbability = 0.35f;
+    [SerializeField]
+    private static float brickProbability = 0.20f;
+
+    public static ItemRandomizer Instance;
     private static Item.Type[] values;
 
     private static Dictionary<Item.Type, float> itemWeights;
     
     private static Dictionary<Item.Type, float> initialItemWight = new ()
     {
-            {Item.Type.Straw, 45f},
-            {Item.Type.WoodPlank, 35f},
-            {Item.Type.Brick, 20f},
+            {Item.Type.Straw, strawProbability},
+            {Item.Type.WoodPlank, woodPlankProbability},
+            {Item.Type.Brick, brickProbability},
     };
 
     private static Dictionary<Item.Type, int> itemCounter;
@@ -21,6 +33,13 @@ public static class ItemRandomizer
     private static readonly List<Item.Type> sequence = new();
     private static bool initialized = false;
 
+    private void Awake()
+    {
+        if(Instance != null)
+            Destroy(Instance);
+        
+        Instance = this;
+    }
     private static void Initialize()
     {
         if (initialized) return;
@@ -69,10 +88,9 @@ public static class ItemRandomizer
     public static void UpdateWeights()
     {
         // weight update heuristic to prevent getting the same item too often 
-        float updateRate = .3f;
         int size = sequence.Count;
         foreach(var item in values){
-            itemWeights[item] = Mathf.Max(initialItemWight[item] + updateRate * (initialItemWight[item]-((float)itemCounter[item] / size)), 0);
+            itemWeights[item] = Mathf.Max(initialItemWight[item] + updateRate * (initialItemWight[item] -((float)itemCounter[item] / size)), 0);
         }
     }
 
