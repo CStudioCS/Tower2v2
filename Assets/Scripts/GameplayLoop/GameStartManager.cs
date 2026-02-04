@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class GameStartManager : MonoBehaviour
 {
+    public static GameStartManager Instance;
     public enum WaitState
     {
         NotEnoughPlayers,
@@ -32,7 +33,7 @@ public class GameStartManager : MonoBehaviour
     }
 
     private readonly List<PlayerInput> players = new();
-    private int PlayerCount => players.Count;
+    public int PlayerCount => players.Count;
     // Player Balance counts +1 for right team and -1 for left team. If sum is 0, teams are balanced.
     private int PlayerBalance =>
         players.Sum(playerInput => {
@@ -48,7 +49,15 @@ public class GameStartManager : MonoBehaviour
         });
     
     [SerializeField] private TextMeshProUGUI waitingText;
-    
+
+    private void Awake()
+    {
+        if (Instance != null)
+            Destroy(Instance);
+
+        Instance = this;
+    }
+
     private void UpdateWaitingText() => waitingText.text = WaitingMessages[waitState];
     
     private void TryChangeWaitState(WaitState newWaitState)
@@ -89,8 +98,15 @@ public class GameStartManager : MonoBehaviour
         player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
         player.PlayerControlBadge.ReadyChanged += OnPlayerReadyChanged;
         
-        if (PlayerCount != 4) return;
-        ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
+        if (PlayerCount != 4)
+            return;
+
+#if DEBUG
+        if (TeamsBalanced && AllPlayersReady) //only ever true in debug mode where the frame the player joins it changes its team
+            StartGame();
+        else
+#endif
+            ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
     }
     
     private void OnPlayerTeamChanged()

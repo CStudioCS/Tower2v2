@@ -9,7 +9,6 @@ public class PlayerTeam : MonoBehaviour
     
     public event Action TeamChanged;
     
-    private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left; 
     
     [Header("Colors")]
     [SerializeField] private Color leftTeamColor;
@@ -28,6 +27,7 @@ public class PlayerTeam : MonoBehaviour
             return teamColors;
         }
     }
+
     [Header("References")]
     [SerializeField] private SpriteRenderer spriteRenderer;
 
@@ -35,6 +35,8 @@ public class PlayerTeam : MonoBehaviour
     {
         UpdateColor();
     }
+
+    private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left; 
     
     private void Update()
     {
@@ -49,9 +51,14 @@ public class PlayerTeam : MonoBehaviour
     public void LobbyUpdate()
     {
         Team newTeam = CurrentPositionTeam;
-        if (newTeam == CurrentTeam) return;
-        
-        CurrentTeam = newTeam;
+        if (newTeam != CurrentTeam)
+            SetTeam(newTeam);
+    }
+
+
+    public void SetTeam(Team team)
+    {
+        CurrentTeam = team;
         UpdateColor();
         TeamChanged?.Invoke();
     }
