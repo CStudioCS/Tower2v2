@@ -1,15 +1,17 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class Tower : Interactable
 {
-    public int height;
-
-    [HideInInspector] public float lastPlacedTime = float.MaxValue;
+    public int Height { get; private set; }
+    public float LastPlacedTime { get; private set; } = float.MaxValue;
+    
+    [Header("Tower")]
+    
     [SerializeField] private Vector3 blockOffset;
-
-    [SerializeField] private TMP_Text heightText;
+    [SerializeField] private TextMeshProUGUI heightText;
 
     [SerializeField] private GameObject strawTowerPiecePrefab;
     [SerializeField] private GameObject woodTowerPiecePrefab;
@@ -33,6 +35,7 @@ public class Tower : Interactable
     }
     
     [SerializeField] private RecipesList recipesList;
+    public event Action PieceBuilt;
 
     private void OnEnable()
     {
@@ -44,41 +47,38 @@ public class Tower : Interactable
     protected override bool CanInteractPrimary(Player player)
     {
         // Check if the player is holding the correct item for the recipe
-        return player.IsHolding && recipesList.CurrentNeededResourceType == player.HeldItem.itemType;
+        return player.IsHolding && recipesList.CurrentNeededItemType == player.HeldItem.ItemType;
     }
 
     protected override void InteractPrimary(Player player)
     {
-        // The way we display wood and cement stacking up is just by adding pieces with a certain offset everytime,
+        // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
         // and with the way Unity handles rendering, the new object is rendered on top of the old one
         
-        if (!TowerPieceMap.TryGetValue(player.HeldItem.itemType, out GameObject towerPiece))
+        if (!TowerPieceMap.TryGetValue(player.HeldItem.ItemType, out GameObject towerPiece))
         {
-            Debug.LogError("Could not find tower piece associated with " + player.HeldItem.itemType + " held item");
+            Debug.LogError("Could not find tower piece associated with " + player.HeldItem.ItemType + " held item");
             return;
         }
 
-        GameObject towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * height, Quaternion.identity, transform);
+        GameObject towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * Height, Quaternion.identity, transform);
         towerPieces.Add(towerPieceInstance);
-        height++;
-
-        lastPlacedTime = LevelManager.Instance.LevelTimer;
-
+        Height++;
+        LastPlacedTime = LevelManager.Instance.LevelTimer;
         player.ConsumeCurrentItem();
-
         UpdateText();
-        recipesList.OnRecipeCompleted();
+        PieceBuilt?.Invoke();
     }
 
-    private void UpdateText() => heightText.text = height.ToString();
+    private void UpdateText() => heightText.text = Height.ToString();
     
     private void ResetTower()
     {
         foreach (GameObject towerPiece in towerPieces)
             Destroy(towerPiece);
         towerPieces.Clear();
-        height = 0;
-        lastPlacedTime = float.MaxValue;
+        Height = 0;
+        LastPlacedTime = float.MaxValue;
         UpdateText();
     }
 

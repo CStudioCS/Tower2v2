@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Furnace : Interactable
 {
+    [Header("Furnace")]
     [SerializeField] private float cookTime = 4;
     [SerializeField] private Item brickItemPrefab;
     [SerializeField] private ProgressBar progressBar;
@@ -15,7 +16,7 @@ public class Furnace : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.IsHolding && player.HeldItem.itemType == Item.Type.Clay;
+                return player.IsHolding && player.HeldItem.ItemType == Item.Type.Clay;
             case State.Cooking:
                 return false;
             case State.Cooked:

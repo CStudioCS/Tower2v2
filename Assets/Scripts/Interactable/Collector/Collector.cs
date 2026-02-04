@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public class Collector : Interactable
 {
+    [Header("Collector")]
     [SerializeField] private Item itemPrefab;
 
     protected override bool CanInteractPrimary(Player player) => !player.IsHolding;

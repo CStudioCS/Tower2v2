@@ -4,12 +4,14 @@ public class Item : Interactable
 {
     public enum Type { Straw, WoodLog, WoodPlank, Clay, Brick }
     
-    private Collider2D itemCollider;
-    public Type itemType;
-
+    [Header("Item")]
+    [SerializeField] private Type itemType;
+    public Type ItemType => itemType;
+    
+    [SerializeField] private Collider2D itemCollider;
+    
     private void Awake()
     {
-        itemCollider = GetComponent<Collider2D>();
         itemCollider.enabled = false;
     }
 
@@ -19,7 +21,7 @@ public class Item : Interactable
         itemCollider.enabled = false;
         player.GrabItem(this);
         transform.SetParent(player.transform);
-        transform.position = player.transform.position;
+        transform.localPosition = Vector2.zero;
     }
 
     public void Drop()

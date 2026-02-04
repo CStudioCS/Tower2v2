@@ -66,10 +66,10 @@ public class LevelManager : MonoBehaviour
 
             if (LevelTimer >= timerLimit)
             {
-                if (towerRight.height == towerLeft.height)
-                    winningTeam = towerRight.lastPlacedTime < towerLeft.lastPlacedTime ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
+                if (towerRight.Height == towerLeft.Height)
+                    winningTeam = towerRight.LastPlacedTime < towerLeft.LastPlacedTime ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
                 else
-                    winningTeam = towerRight.height > towerLeft.height ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
+                    winningTeam = towerRight.Height > towerLeft.Height ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
 
                 GameState = State.Lobby;
                 EndLevel(winningTeam);

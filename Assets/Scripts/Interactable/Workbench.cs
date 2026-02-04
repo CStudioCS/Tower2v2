@@ -18,7 +18,7 @@ public class Workbench : Interactable
         switch (state)
         {
             case State.Empty:
-                return player.IsHolding && player.HeldItem.itemType == Item.Type.WoodLog;
+                return player.IsHolding && player.HeldItem.ItemType == Item.Type.WoodLog;
             case State.HasWoodLog:
                 return false;
             case State.HasWoodPlank:
@@ -32,17 +32,18 @@ public class Workbench : Interactable
 
     protected override void InteractPrimary(Player player)
     {
-        if (state == State.Empty)
+        switch (state)
         {
-            state = State.HasWoodLog;
-            player.ConsumeCurrentItem();
-            spriteRenderer.color = Color.red;
-        }
-        else if (state == State.HasWoodPlank)
-        {
-            state = State.Empty;
-            player.GrabNewItem(woodPlankItemPrefab);
-            spriteRenderer.color = Color.white;
+            case State.Empty:
+                state = State.HasWoodLog;
+                player.ConsumeCurrentItem();
+                spriteRenderer.color = Color.red;
+                break;
+            case State.HasWoodPlank:
+                state = State.Empty;
+                player.GrabNewItem(woodPlankItemPrefab);
+                spriteRenderer.color = Color.white;
+                break;
         }
     }
 
