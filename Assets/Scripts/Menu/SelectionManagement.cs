@@ -7,10 +7,14 @@ public class SelectionManagement : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI playText;
     [SerializeField] private TextMeshProUGUI settingsText;
+    
+    [SerializeField] private TextMeshProUGUI settingsQuitText;
     [SerializeField] private TextMeshProUGUI quitText;
     [SerializeField] private Camera cam;
 
     private bool isZoomingIn = false;
+    
+    private bool isZoomingOut = false;
     private Keyboard keyboard;
     private int nbSelected = 0;
     private float inputDelay = 0.2f;
@@ -18,6 +22,8 @@ public class SelectionManagement : MonoBehaviour
     private Vector3 initialCamPosition;
     private float time = 0f;
     private bool isAButtonCLicked = false;
+    private Vector3 initialPositionButonSettings;
+    private bool updateSettings = false;
 
 
     void Start()
@@ -26,6 +32,8 @@ public class SelectionManagement : MonoBehaviour
         initialCamSize = cam.orthographicSize;
         initialCamPosition = cam.transform.position;
 
+        initialPositionButonSettings = settingsText.gameObject.transform.parent.gameObject.transform.position;
+
         // Get the keyboard instance
         keyboard = Keyboard.current;
     }
@@ -33,10 +41,11 @@ public class SelectionManagement : MonoBehaviour
     void Update()
     {
         // Only allow selection if not zooming in and if no button is currently clicked
-        if(!isAButtonCLicked && !isZoomingIn){
+        if(!isAButtonCLicked && !isZoomingIn && !updateSettings && !isZoomingOut){
             Selection();
             // Check for selection confirmation
             if(keyboard.enterKey.wasPressedThisFrame)
+            
                 Transition();
         }
         // Update the display based on current selection
@@ -44,6 +53,17 @@ public class SelectionManagement : MonoBehaviour
 
         if(isZoomingIn)
             ZoomIn();
+
+        if (updateSettings)
+        {
+            UpdateSettings();
+        }
+
+        if(isZoomingOut)
+        {
+            ZoomOut();
+        }
+
         
     }
     private void AffichageSelection()
@@ -124,6 +144,11 @@ public class SelectionManagement : MonoBehaviour
         isAButtonCLicked = false;
     }
 
+    private IEnumerator InputCooldown2()
+    {        
+        yield return new WaitForSeconds(1f);
+        isAButtonCLicked = false;
+    }
     private void Transition()
     {
         // Deactivate all menu texts
@@ -146,12 +171,13 @@ public class SelectionManagement : MonoBehaviour
                         parent = quitText.gameObject.transform.parent;
                         break;
                 }
-
+        
         parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.right * 35f;
-
+       
         //Start the zoom in process
         isZoomingIn = true;
 
+        time = 0f;
         //Coroutine qui gère le temps pour l'easing
         StartCoroutine(TransitionCoroutine());
         
@@ -182,11 +208,24 @@ public class SelectionManagement : MonoBehaviour
         cam.transform.position = Vector3.Lerp(initialCamPosition, new Vector3(4.5f, pos, -10f), Easing.QuadOut(time));
         
         //if the zoom in is complete, load the appropriate scene or quit
-        if(time >= 0.99f && nbSelected == 0){
+        if(time > 1f && nbSelected == 0){
+            Transform parent = playText.gameObject.transform.parent;
+            parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
             SceneManager.LoadScene(0);
         }
-        else if(time >= 0.99f && nbSelected == 2){
+        else if(time > 1f && nbSelected == 2){
+            Transform parent = quitText.gameObject.transform.parent;
+            parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
             Application.Quit();
+        }
+        else if(time >  1f && nbSelected == 1){
+            Transform parent = settingsText.gameObject.transform.parent;
+            parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+            settingsQuitText.gameObject.transform.parent.gameObject.SetActive(true);
+            isZoomingIn = false;
+            updateSettings = true;
+            
+            StopCoroutine(TransitionCoroutine());
         }
         
     }
@@ -197,6 +236,72 @@ public class SelectionManagement : MonoBehaviour
             yield return null;
         }
     }
+
+    void UpdateSettings()
+    {
+        if(keyboard.enterKey.wasPressedThisFrame)
+        {
+            isZoomingOut = true;
+            updateSettings = false;
+            time = 0f;
+            
+            settingsText.gameObject.transform.parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * 35f;
+            StartCoroutine(TransitionCoroutine());
+        }
+         foreach (var gamepad in Gamepad.all)
+        {
+            if (gamepad.buttonSouth.wasPressedThisFrame)
+            {
+                isZoomingOut = true;
+                updateSettings = false;
+                time = 0f;
+                settingsText.gameObject.transform.parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * 35f;
+            
+            }
+        }
+    }
+    void TransitionBackToMenu()
+    {
+        // Reset camera parameters
+        cam.orthographicSize = initialCamSize;
+        cam.transform.position = initialCamPosition;
+
+        // Reactivate menu texts
+        playText.gameObject.SetActive(true); 
+        settingsText.gameObject.SetActive(true);
+        quitText.gameObject.SetActive(true);
+
+        // Deactivate settings menu
+
+        settingsText.gameObject.transform.parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+           
+        settingsText.gameObject.transform.parent.gameObject.transform.position = initialPositionButonSettings;
+        // Reset selection and states
+        nbSelected = 1;
+        isZoomingIn = false;
+        isZoomingOut = false;
+        updateSettings = false;
+        time = 0f;
+        isAButtonCLicked = true;
+        StartCoroutine(InputCooldown2());
+    }
+
+    void ZoomOut()
+    {
+        settingsQuitText.gameObject.transform.parent.gameObject.SetActive(false);
+        //zoom out the camera using easing
+        cam.orthographicSize = Mathf.Lerp(0f, initialCamSize, Easing.RootOut(time));
+
+        //move the camera to the correct position using easing
+        cam.transform.position = Vector3.Lerp(new Vector3(4.5f, initialPositionButonSettings.y, -10f), initialCamPosition, Easing.QuadOut(time));
+        
+        //if the zoom out is complete, reset everything
+        if(time > 1f){
+            TransitionBackToMenu();
+            time = 0f;
+        }
+    }
+
 }
 
 
