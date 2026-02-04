@@ -55,10 +55,10 @@ public class PlayerControlBadge : MonoBehaviour
         {
             //quick and dirty but it's debug
             int numPlayers = FindObjectsByType<Player>(FindObjectsSortMode.None).Length;
-            if (numPlayers > 2)
-                playerTeam.SetTeam(PlayerTeam.Team.Right);
-            else
+            if (numPlayers % 2 == 0)
                 playerTeam.SetTeam(PlayerTeam.Team.Left);
+            else
+                playerTeam.SetTeam(PlayerTeam.Team.Right);
             ToggleReady();
         }
     }

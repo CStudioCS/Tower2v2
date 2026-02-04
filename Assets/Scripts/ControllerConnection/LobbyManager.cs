@@ -27,16 +27,16 @@ public class LobbyManager : MonoBehaviour
 
     private void Update()
     {
-        if (LevelManager.Instance.GameState != LevelManager.State.Lobby) return;
+        if (LevelManager.Instance.GameState != LevelManager.State.Lobby)
+            return;
+        
 #if DEBUG
-        else if (DebugMode)
+        if (DebugMode)
         {
             JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.WASD);
             JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.TFGH);
             JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.IJKL);
             JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.ArrowKeys);
-
-            
         }
 #endif
 
