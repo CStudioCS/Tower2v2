@@ -44,7 +44,7 @@ public class Item : Interactable
         transform.SetParent(null);
         rb.simulated = true;
         itemCollider.enabled = true;
-        rb.linearVelocity = ejectionCoefficient*speedVector ;
-        rb.angularVelocity = Random.Range(-1,2)*rotationCoefficient;
+        rb.linearVelocity = ejectionCoefficient * speedVector ;
+        rb.angularVelocity = Random.Range(-1,2) * rotationCoefficient;
     }
 }
