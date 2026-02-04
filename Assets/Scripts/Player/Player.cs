@@ -1,10 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [HideInInspector] public Interactable insideInteractable;
+    public List<Interactable> insideInteractableList { get; private set; }
+    private Interactable currentInteractable;
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
     public bool Interacting { get; private set; }
@@ -18,12 +20,12 @@ public class Player : MonoBehaviour
     [SerializeField] private ProgressBar progressBar;
     
     private InputAction interactAction;
-    private InputAction cutWoodAction;
+    private InputAction secondaryAction;
 
     private void Awake()
     {
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
-        cutWoodAction = playerInput.actions.FindAction("Gameplay/CutWood");
+        secondaryAction = playerInput.actions.FindAction("Gameplay/CutWood");
     }
 
     private void Update()
@@ -38,14 +40,27 @@ public class Player : MonoBehaviour
     private void GameUpdate()
     {
         if (interactAction.WasPressedThisFrame())
+            Interact(Interactable.InteractionType.Primary);
+        else if (secondaryAction.WasPressedThisFrame())
+            Interact(Interactable.InteractionType.Secondary);
+    }
+
+    private void Interact(Interactable.InteractionType interactionType)
+    {
+        Interactable closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
+
+        if (closestInteractable != null)
         {
-            if (insideInteractable)
-                StartInteracting(Interactable.InteractionType.Primary, interactAction);
-            else if(HeldItem  != null)
-                DropHeldItem();
+            if (currentInteractable && currentInteractable != closestInteractable)
+                currentInteractable.Highlight(false);
+
+            currentInteractable = closestInteractable;
+            currentInteractable.Highlight(true);
+
+            StartInteracting(currentInteractable, interactionType, interactAction);
         }
-        else if (cutWoodAction.WasPressedThisFrame())
-            StartInteracting(Interactable.InteractionType.Secondary, cutWoodAction);
+        else if (HeldItem != null)
+            DropHeldItem();
     }
 
     private void LobbyUpdate()
@@ -54,29 +69,35 @@ public class Player : MonoBehaviour
             playerControlBadge.Interact();
     }
 
-    private void StartInteracting(Interactable.InteractionType interactionType, InputAction inputAction)
+    private void StartInteracting(Interactable insideInteractable, Interactable.InteractionType interactionType, InputAction inputAction)
     {
         // We check whether we're inside an interactable object and if yes if we can interact with it
-        if (insideInteractable == null)
+        if (!insideInteractable)
             return;
-        
+
+        Debug.Log($"[StartInteracting] Trying to interact with {insideInteractable.name} with interaction type {interactionType}");
+
         // I do not set isAlreadyInteractedWith to true in an else statement because it only applies to interactables with interaction time // Si qqun comprend ce commentaire de Pierre qu'il se manifeste
         if (insideInteractable.IsAlreadyInteractedWith)
             return;
 
+        Debug.Log($"[StartInteracting] CanInteract: {insideInteractable.CanInteract(interactionType, this)}, InteractionTime: {insideInteractable.GetInteractionTime(interactionType)}");
+
         if (!insideInteractable.CanInteract(interactionType, this))
             return;
+
+        Debug.Log($"[StartInteracting] Starting interaction with {insideInteractable.name} with interaction type {interactionType}");
 
         float time = insideInteractable.GetInteractionTime(interactionType);
         
         // If we can interact instantly, we do it, else we need to wait for the interaction time
         if (time > 0)
-            StartCoroutine(InteractTimer(interactionType, time, inputAction));
+            StartCoroutine(InteractTimer(insideInteractable, interactionType, time, inputAction));
         else
             insideInteractable.Interact(interactionType, this);
     }
 
-    private IEnumerator InteractTimer(Interactable.InteractionType interactionType, float time, InputAction inputAction)
+    private IEnumerator InteractTimer(Interactable insideInteractable, Interactable.InteractionType interactionType, float time, InputAction inputAction)
     {
         Interacting = true;
         insideInteractable.IsAlreadyInteractedWith = true;
@@ -88,7 +109,7 @@ public class Player : MonoBehaviour
             // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
             if (!inputAction.IsPressed() || LevelManager.Instance.GameState != LevelManager.State.Game)
             {
-                StopInteracting();
+                StopInteracting(insideInteractable);
                 yield break;
             }
 
@@ -98,11 +119,11 @@ public class Player : MonoBehaviour
         }
 
         // We interacted with the object -> Reset everything and call the interact function
-        StopInteracting();
+        StopInteracting(insideInteractable);
         insideInteractable.Interact(interactionType, this);
     }
 
-    private void StopInteracting()
+    private void StopInteracting(Interactable insideInteractable)
     {
         Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
@@ -155,5 +176,23 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         LevelManager.Instance.GameEnded -= OnGameEnded;
+    }
+
+    private Interactable GetClosestInteractable()
+    {
+        Interactable closest = null;
+        float minSqrDistance = float.MaxValue;
+
+        foreach (Interactable interactable in insideInteractableList)
+        {
+            float sqrDistance = (interactable.transform.position - transform.position).sqrMagnitude;
+            if (sqrDistance < minSqrDistance)
+            {
+                minSqrDistance = sqrDistance;
+                closest = interactable;
+            }
+        }
+
+        return closest;
     }
 }

@@ -13,6 +13,7 @@ public abstract class Interactable : MonoBehaviour
     [SerializeField] float interactionTimeSecondary;
     
     public bool IsAlreadyInteractedWith { get; set; }
+    private bool isHighlighted = false;
 
     public virtual void Interact(InteractionType type, Player player)
     {
@@ -45,13 +46,16 @@ public abstract class Interactable : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player))
-            player.insideInteractable = this;
+            player.insideInteractableList.Add(this);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractable == this)
-            player.insideInteractable = null;
+        if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractableList.Contains(this))
+        {
+            this.Highlight(false);
+            player.insideInteractableList.Remove(this);
+        }
     }
     
     private void Start()
@@ -60,6 +64,13 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
+    public virtual void Highlight(bool highlighted)
+    {
+        if (isHighlighted == highlighted) 
+            return;
+        
+        isHighlighted = highlighted;
+    }
     protected virtual void OnGameAboutToStart()
     {
         IsAlreadyInteractedWith = false;
