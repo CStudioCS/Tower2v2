@@ -89,7 +89,7 @@ public class ItemRandomizer : MonoBehaviour
 
         foreach(var item in values){
             Debug.Log("itemWeights :" + itemWeights[item] + " " + item.ToString());
-            itemWeights[item] = Mathf.Max(initialItemWight[item] + updateRate * (initialItemWight[item] -((float)itemCounter[item] / sequence.Count)), 0);
+            itemWeights[item] = Mathf.Max(initialItemWight[item] + updateRate * (initialItemWight[item] -((float)itemCounter[item] /  Math.Min(contextSize, sequence.Count))), 0);
         }
     }
 
