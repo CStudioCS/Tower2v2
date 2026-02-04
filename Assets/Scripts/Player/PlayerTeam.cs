@@ -30,6 +30,7 @@ public class PlayerTeam : MonoBehaviour
     }
     [Header("References")]
     [SerializeField] private SpriteRenderer spriteRenderer;
+    public int TeamPlayerIndex { get; private set; }
 
     private void Awake()
     {
@@ -57,4 +58,9 @@ public class PlayerTeam : MonoBehaviour
     }
     
     private void UpdateColor() => spriteRenderer.color = TeamColors[CurrentTeam];
+
+    public void InitTeamPlayerIndex(int teamPlayerIndex)
+    {
+        TeamPlayerIndex = teamPlayerIndex;
+    }
 }

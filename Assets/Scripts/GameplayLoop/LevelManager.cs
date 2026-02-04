@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -31,6 +32,26 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private StartPoint[] startPoints;
     public StartPoint[] StartPoints => startPoints;
+    private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
+    public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
+    {
+        get
+        {
+            if (startPointsMap == null)
+            {
+                startPointsMap = new();
+                foreach (StartPoint startPoint in startPoints)
+                {
+                    if (startPointsMap.TryGetValue(startPoint.Team, out List<StartPoint> startPoints))
+                    {
+                        startPoints.Add(startPoint);
+                    }
+                    else StartPointsMap[startPoint.Team] = new() { startPoint };
+                }
+            }
+            return startPointsMap;
+        }
+    }
 
     public void Awake()
     {

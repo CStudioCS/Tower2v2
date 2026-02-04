@@ -132,7 +132,7 @@ public class GameStartManager : MonoBehaviour
     private void StartGame()
     {
         ChangeWaitState(WaitState.GameStarting);
-        
+        InitializeTeamPLayerIndices();
         LevelManager.Instance.StartGameDelayed();
     }
     
@@ -141,5 +141,28 @@ public class GameStartManager : MonoBehaviour
         LobbyManager.Instance.PlayerJoined -= OnPlayerJoined;
         LobbyManager.Instance.PlayerLeft -= OnPlayerLeft;
         LevelManager.Instance.GameEnded -= OnGameEnded;
+    }
+
+    private void InitializeTeamPLayerIndices()
+    {
+        int leftTeamCounter = 0;
+        int rightTeamCounter = 0;
+        foreach (PlayerInput playerInput in players)
+        {
+            Player player = playerInput.GetComponent<Player>();
+            PlayerTeam playerTeam = player.PlayerTeam;
+            PlayerTeam.Team currentTeam = playerTeam.CurrentTeam;
+            switch (currentTeam)
+            {
+                case PlayerTeam.Team.Left:
+                    playerTeam.InitTeamPlayerIndex(leftTeamCounter);
+                    leftTeamCounter++;
+                    break;
+                default:
+                    playerTeam.InitTeamPlayerIndex(rightTeamCounter);
+                    rightTeamCounter++;
+                    break;
+            }
+        }
     }
 }
