@@ -311,7 +311,7 @@
                 {
                     "name": "",
                     "id": "d3e8b7f4-f3c3-4110-92f4-7e4f55f9ad83",
-                    "path": "<Keyboard>/rightCtrl",
+                    "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
                     "groups": ";ArrowKeys",
@@ -564,7 +564,7 @@
                 {
                     "name": "",
                     "id": "ecf22d7d-6011-417b-80b3-984e57bd0224",
-                    "path": "<Keyboard>/rightCtrl",
+                    "path": "<Keyboard>/rightShift",
                     "interactions": "",
                     "processors": "",
                     "groups": ";ArrowKeys",
@@ -575,7 +575,7 @@
                 {
                     "name": "",
                     "id": "690c9edb-31c8-490b-a91b-c1abab2853e4",
-                    "path": "<Keyboard>/rightShift",
+                    "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
                     "groups": ";ArrowKeys",

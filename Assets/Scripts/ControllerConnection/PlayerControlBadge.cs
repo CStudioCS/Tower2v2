@@ -15,7 +15,9 @@ public class PlayerControlBadge : MonoBehaviour
     
     [Header("Graphics")]
     [SerializeField] private GameObject graphics;
-    
+
+    public enum ControlSchemes { WASD, TFGH, IJKL, ArrowKeys, Gamepad }
+
     [Header("Ready")]
     [SerializeField] private GameObject readyKey;
     [SerializeField] private GameObject readyGamepadA;
@@ -41,7 +43,7 @@ public class PlayerControlBadge : MonoBehaviour
     public bool IsReady { get; private set; }
     public event Action ReadyChanged;
     
-    public void Initialize(int playerIndex, string controlScheme)
+    public void Initialize(int playerIndex, ControlSchemes controlScheme)
     {
         playerTeam.TeamChanged += OnTeamChanged;
         UpdateColor();
@@ -69,12 +71,12 @@ public class PlayerControlBadge : MonoBehaviour
         }
     }
     
-    private void SetupControlScheme(string controlScheme)
+    private void SetupControlScheme(ControlSchemes controlScheme)
     {
         switch (controlScheme)
         {
-            case "Gamepad": SetupControlSchemeGamepad(); break;
-            case "ArrowKeys": SetupControlSchemeArrowKeys(); break;
+            case ControlSchemes.Gamepad: SetupControlSchemeGamepad(); break;
+            case ControlSchemes.ArrowKeys: SetupControlSchemeArrowKeys(); break;
             default: SetupControlSchemeGenericKeys(controlScheme); break;
         }
     }
@@ -105,7 +107,7 @@ public class PlayerControlBadge : MonoBehaviour
         genericKeys.SetActive(false);
     }
 
-    private void SetupControlSchemeGenericKeys(string controlScheme)
+    private void SetupControlSchemeGenericKeys(ControlSchemes controlScheme)
     {
         string interactKey = GetInteractKeyString(controlScheme);
         
@@ -123,55 +125,59 @@ public class PlayerControlBadge : MonoBehaviour
         genericInteractKeyText.text = interactKey;
         genericUpKeyText.text = GetUpKeyString(controlScheme);
         genericLeftKeyText.text = GetLeftKeyString(controlScheme);
-        genericDownKeyText.text = controlScheme[2].ToString();
-        genericRightKeyText.text = controlScheme[3].ToString();
+        genericDownKeyText.text = controlScheme.ToString()[2].ToString();
+        genericRightKeyText.text = controlScheme.ToString()[3].ToString();
     }
 
-    private string GetInteractKeyString(string controlScheme)
+    private string GetInteractKeyString(ControlSchemes controlScheme)
     {
         switch (controlScheme)
         {
-            case "Gamepad": return "A";
-            case "ArrowKeys": return "Ctrl";
-            case "WASD": return "E";
-            case "TFGH": return "Y";
-            case "IJKL": return "O";
+            case ControlSchemes.Gamepad: return "A";
+            case ControlSchemes.ArrowKeys: return "Ctrl";
+            case ControlSchemes.WASD: return "E";
+            case ControlSchemes.TFGH: return "Y";
+            case ControlSchemes.IJKL: return "O";
         }
+
+        Debug.LogError($"Control scheme {controlScheme} is not correctly handled");
         return "";
     }
     
-    private string GetUpKeyString(string controlScheme)
+    private string GetUpKeyString(ControlSchemes controlScheme)
     {
         switch (controlScheme)
         {
-            case "Gamepad": return "";
-            case "ArrowKeys": return "Up";
-            case "WASD": return "Z";
-            case "TFGH": return "T";
-            case "IJKL": return "I";
+            case ControlSchemes.Gamepad: return "";
+            case ControlSchemes.ArrowKeys: return "Up";
+            case ControlSchemes.WASD: return "Z";
+            case ControlSchemes.TFGH: return "T";
+            case ControlSchemes.IJKL: return "I";
         }
+
+        Debug.LogError($"Control scheme {controlScheme} is not correctly handled");
         return "";
     }
     
-    private string GetLeftKeyString(string controlScheme)
+    private string GetLeftKeyString(ControlSchemes controlScheme)
     {
         switch (controlScheme)
         {
-            case "Gamepad": return "";
-            case "ArrowKeys": return "Left";
-            case "WASD": return "Q";
-            case "TFGH": return "F";
-            case "IJKL": return "J";
+            case ControlSchemes.Gamepad: return "";
+            case ControlSchemes.ArrowKeys: return "Left";
+            case ControlSchemes.WASD: return "Q";
+            case ControlSchemes.TFGH: return "F";
+            case ControlSchemes.IJKL: return "J";
         }
+
+        Debug.LogError($"Control scheme {controlScheme} is not correctly handled");
         return "";
     }
 
     public void OnDisconnect(InputAction.CallbackContext context)
     {
         if (context.performed)
-        {
             Destroy(gameObject);
-        }
     }
     
     public void Interact()
