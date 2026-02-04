@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class ItemRandomizer : MonoBehaviour
@@ -9,7 +11,7 @@ public class ItemRandomizer : MonoBehaviour
     [SerializeField] private float strawProbability = 0.50f;
     [SerializeField] private float woodPlankProbability = 0.35f;
     [SerializeField] private float brickProbability = 0.15f;
-    
+    [SerializeField] private float contextSize = 6f;
     private static Item.Type[] values;
 
     private static Dictionary<Item.Type, float> itemWeights;
@@ -48,13 +50,6 @@ public class ItemRandomizer : MonoBehaviour
 
         itemWeights = new Dictionary<Item.Type, float>(initialItemWight);
 
-        itemCounter = new Dictionary<Item.Type, int> 
-        {
-            {Item.Type.Straw, 0},
-            {Item.Type.WoodPlank, 0},
-            {Item.Type.Brick, 0},
-        };
-
         initialized = true;
     }
 
@@ -71,7 +66,6 @@ public class ItemRandomizer : MonoBehaviour
         while (sequence.Count <= index)
         {
             Item.Type newItem = GetRandomWeightedItem(itemWeights);
-            itemCounter[newItem]++;
             sequence.Add(newItem);
             UpdateWeights();
         }
@@ -82,6 +76,17 @@ public class ItemRandomizer : MonoBehaviour
     public void UpdateWeights()
     {
         // weight update heuristic to prevent getting the same item too often 
+        itemCounter = new Dictionary<Item.Type, int> 
+        {
+            {Item.Type.Straw, 0},
+            {Item.Type.WoodPlank, 0},
+            {Item.Type.Brick, 0},
+        };
+
+        for(int i = 1; i <= Math.Min(contextSize, sequence.Count); i++){
+            itemCounter[sequence[^i]]++; 
+        }
+
         foreach(var item in values){
             Debug.Log("itemWeights :" + itemWeights[item] + " " + item.ToString());
             itemWeights[item] = Mathf.Max(initialItemWight[item] + updateRate * (initialItemWight[item] -((float)itemCounter[item] / sequence.Count)), 0);
