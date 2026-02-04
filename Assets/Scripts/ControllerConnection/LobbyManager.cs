@@ -51,7 +51,7 @@ public class LobbyManager : MonoBehaviour
             JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.IJKL);
         }
 
-        if (keyboard.rightCtrlKey.wasPressedThisFrame || keyboard.upArrowKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame ||
+        if (keyboard.enterKey.wasPressedThisFrame || keyboard.upArrowKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame ||
             keyboard.leftArrowKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame)
         {
             JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.ArrowKeys);

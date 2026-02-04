@@ -21,7 +21,7 @@ public class PlayerControlBadge : MonoBehaviour
     [Header("Ready")]
     [SerializeField] private GameObject readyKey;
     [SerializeField] private GameObject readyGamepadA;
-    [SerializeField] private GameObject readyCtrl;
+    [SerializeField] private GameObject readyEnter;
     [SerializeField] private GameObject readyGenericInteractKey;
     [SerializeField] private TextMeshProUGUI readyGenericInteractKeyText;
     [SerializeField] private GameObject readyCheck;
@@ -85,7 +85,7 @@ public class PlayerControlBadge : MonoBehaviour
     {
         readyKey.SetActive(true);
         readyGamepadA.SetActive(true);
-        readyCtrl.SetActive(false);
+        readyEnter.SetActive(false);
         readyGenericInteractKey.SetActive(false);
         readyCheck.SetActive(false);
         
@@ -98,7 +98,7 @@ public class PlayerControlBadge : MonoBehaviour
     {
         readyKey.SetActive(true);
         readyGamepadA.SetActive(false);
-        readyCtrl.SetActive(true);
+        readyEnter.SetActive(true);
         readyGenericInteractKey.SetActive(false);
         readyCheck.SetActive(false);
         
@@ -113,7 +113,7 @@ public class PlayerControlBadge : MonoBehaviour
         
         readyKey.SetActive(true);
         readyGamepadA.SetActive(false);
-        readyCtrl.SetActive(false);
+        readyEnter.SetActive(false);
         readyGenericInteractKey.SetActive(true);
         readyGenericInteractKeyText.text = interactKey;
         readyCheck.SetActive(false);
@@ -134,7 +134,7 @@ public class PlayerControlBadge : MonoBehaviour
         switch (controlScheme)
         {
             case ControlSchemes.Gamepad: return "A";
-            case ControlSchemes.ArrowKeys: return "Ctrl";
+            case ControlSchemes.ArrowKeys: return "Enter";
             case ControlSchemes.WASD: return "E";
             case ControlSchemes.TFGH: return "Y";
             case ControlSchemes.IJKL: return "O";
