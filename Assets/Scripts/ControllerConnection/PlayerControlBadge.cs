@@ -50,6 +50,17 @@ public class PlayerControlBadge : MonoBehaviour
         SetupControlScheme(controlScheme);
         LevelManager.Instance.GameStarted += OnGameStarted;
         LevelManager.Instance.GameEnded += OnGameEnded;
+
+        if (LobbyManager.Instance.DebugMode)
+        {
+            //quick and dirty but it's debug
+            int numPlayers = FindObjectsByType<Player>(FindObjectsSortMode.None).Length;
+            if (numPlayers > 2)
+                playerTeam.SetTeam(PlayerTeam.Team.Right);
+            else
+                playerTeam.SetTeam(PlayerTeam.Team.Left);
+            ToggleReady();
+        }
     }
 
     private void OnGameStarted() => graphics.SetActive(false);

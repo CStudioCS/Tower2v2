@@ -89,8 +89,15 @@ public class GameStartManager : MonoBehaviour
         player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
         player.PlayerControlBadge.ReadyChanged += OnPlayerReadyChanged;
         
-        if (PlayerCount != 4) return;
-        ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
+        if (PlayerCount != 4)
+            return;
+
+#if DEBUG
+        if (TeamsBalanced && AllPlayersReady) //only ever true in debug mode where the frame the player joins it changes its team
+            StartGame();
+        else
+#endif
+            ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
     }
     
     private void OnPlayerTeamChanged()
