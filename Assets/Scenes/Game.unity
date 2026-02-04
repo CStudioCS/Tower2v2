@@ -868,6 +868,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 810532242}
     - target: {fileID: 7872059014178648389, guid: f7a829f4afd32c57ead5fede8647d239, type: 3}
+      propertyPath: timerLimit
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7872059014178648389, guid: f7a829f4afd32c57ead5fede8647d239, type: 3}
       propertyPath: towerRight
       value: 
       objectReference: {fileID: 794865267}

@@ -86,7 +86,7 @@ public class RecipesList : MonoBehaviour
         }
     }
     
-    private void OnDestroy()
+    private void OnDisable()
     {
         LevelManager.Instance.GameStarted -= OnGameStarted;
         tower.PieceBuilt -= OnPieceBuilt;

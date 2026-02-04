@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -81,8 +80,8 @@ public class Player : MonoBehaviour
         
         while(t < time)
         {
-            // If at any point the player stops holding the interact button -> stop interacting
-            if (!inputAction.IsPressed())
+            // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
+            if (!inputAction.IsPressed() || LevelManager.Instance.GameState != LevelManager.State.Game)
             {
                 StopInteracting();
                 yield break;
@@ -131,5 +130,21 @@ public class Player : MonoBehaviour
     {
         IsHolding = true;
         HeldItem = item;
+    }
+    
+    private void Start()
+    {
+        LevelManager.Instance.GameEnded += OnGameEnded;
+    }
+
+    private void OnGameEnded()
+    {
+        Interacting = false;
+        ConsumeCurrentItem();
+    }
+    
+    private void OnDisable()
+    {
+        LevelManager.Instance.GameEnded -= OnGameEnded;
     }
 }

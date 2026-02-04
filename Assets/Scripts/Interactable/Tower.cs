@@ -37,12 +37,11 @@ public class Tower : Interactable
     [SerializeField] private RecipesList recipesList;
     public event Action PieceBuilt;
 
-    private void OnEnable()
+    protected override void OnGameAboutToStart()
     {
-        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+        base.OnGameAboutToStart();
+        ResetTower();
     }
-
-    private void OnGameAboutToStart() => ResetTower();
 
     protected override bool CanInteractPrimary(Player player)
     {
@@ -80,10 +79,5 @@ public class Tower : Interactable
         Height = 0;
         LastPlacedTime = float.MaxValue;
         UpdateText();
-    }
-
-    private void OnDestroy()
-    {
-        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
     }
 }

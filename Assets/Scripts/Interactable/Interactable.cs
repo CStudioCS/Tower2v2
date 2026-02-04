@@ -53,4 +53,26 @@ public abstract class Interactable : MonoBehaviour
         if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractable == this)
             player.insideInteractable = null;
     }
+    
+    private void Start()
+    {
+        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.Instance.GameEnded += OnGameEnded;
+    }
+
+    protected virtual void OnGameAboutToStart()
+    {
+        IsAlreadyInteractedWith = false;
+    }
+    
+    protected virtual void OnGameEnded()
+    {
+        IsAlreadyInteractedWith = false;
+    }
+    
+    private void OnDisable()
+    {
+        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.Instance.GameEnded -= OnGameEnded;
+    }
 }

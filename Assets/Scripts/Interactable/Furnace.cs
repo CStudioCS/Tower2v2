@@ -59,4 +59,10 @@ public class Furnace : Interactable
         progressBar.SetProgressMax();
         state = State.Cooked;
     }
+    
+    protected override void OnGameEnded()
+    {
+        base.OnGameEnded();
+        state = State.Empty;
+    }
 }

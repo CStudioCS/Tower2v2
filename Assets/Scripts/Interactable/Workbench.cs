@@ -52,4 +52,11 @@ public class Workbench : Interactable
         state = State.HasWoodPlank;
         spriteRenderer.color = Color.blue;
     }
+    
+    protected override void OnGameEnded()
+    {
+        base.OnGameEnded();
+        state = State.Empty;
+        spriteRenderer.color = Color.white;
+    }
 }

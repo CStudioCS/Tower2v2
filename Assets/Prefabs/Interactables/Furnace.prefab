@@ -48,8 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTime: 0
-  interactionTimeA: 0
-  isAlreadyInteractedWith: 0
+  interactionTimeSecondary: 0
   cookTime: 4
   brickItemPrefab: {fileID: 3935943603334928311, guid: d8b092eee7d429941b1f898ae5ab311e, type: 3}
   progressBar: {fileID: 4831184238089262219}

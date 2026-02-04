@@ -199,7 +199,7 @@ public class PlayerControlBadge : MonoBehaviour
         SetReady(false, false);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         playerTeam.TeamChanged -= OnTeamChanged;
         LevelManager.Instance.GameStarted -= OnGameStarted;

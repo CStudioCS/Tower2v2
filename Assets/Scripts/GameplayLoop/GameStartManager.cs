@@ -136,7 +136,7 @@ public class GameStartManager : MonoBehaviour
         LevelManager.Instance.StartGameDelayed();
     }
     
-    private void OnDestroy()
+    private void OnDisable()
     {
         LobbyManager.Instance.PlayerJoined -= OnPlayerJoined;
         LobbyManager.Instance.PlayerLeft -= OnPlayerLeft;
