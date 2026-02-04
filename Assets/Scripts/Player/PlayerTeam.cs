@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerTeam : MonoBehaviour
@@ -9,6 +10,31 @@ public class PlayerTeam : MonoBehaviour
     public event Action TeamChanged;
     
     private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left; 
+    
+    [Header("Colors")]
+    [SerializeField] private Color leftTeamColor;
+    [SerializeField] private Color rightTeamColor;
+    
+    private Dictionary<Team, Color> teamColors;
+    public Dictionary<Team, Color> TeamColors
+    {
+        get
+        {
+            teamColors ??= new Dictionary<Team, Color>
+            {
+                { Team.Left, leftTeamColor },
+                { Team.Right, rightTeamColor }
+            };
+            return teamColors;
+        }
+    }
+    [Header("References")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    private void Awake()
+    {
+        UpdateColor();
+    }
     
     private void Update()
     {
@@ -26,6 +52,9 @@ public class PlayerTeam : MonoBehaviour
         if (newTeam == CurrentTeam) return;
         
         CurrentTeam = newTeam;
+        UpdateColor();
         TeamChanged?.Invoke();
     }
+    
+    private void UpdateColor() => spriteRenderer.color = TeamColors[CurrentTeam];
 }

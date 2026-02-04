@@ -5,27 +5,6 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [Header("Colors")]
-    [SerializeField] private Color leftTeamColor;
-    [SerializeField] private Color rightTeamColor;
-    
-    private Dictionary<PlayerTeam.Team, Color> teamColors;
-    public Dictionary<PlayerTeam.Team, Color> TeamColors
-    {
-        get
-        {
-            if (teamColors == null)
-            {
-                teamColors = new Dictionary<PlayerTeam.Team, Color>
-                {
-                    { PlayerTeam.Team.Left, leftTeamColor },
-                    { PlayerTeam.Team.Right, rightTeamColor }
-                };
-            }
-            return teamColors;
-        }
-    }
-    
     [HideInInspector] public Interactable insideInteractable;
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
@@ -37,7 +16,6 @@ public class Player : MonoBehaviour
     public PlayerTeam PlayerTeam => playerTeam;
     [SerializeField] private PlayerControlBadge playerControlBadge;
     public PlayerControlBadge PlayerControlBadge => playerControlBadge;
-    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private ProgressBar progressBar;
     
     private InputAction interactAction;
@@ -45,42 +23,31 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        playerTeam.TeamChanged += OnTeamChanged;
-        UpdateColor();
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
         cutWoodAction = playerInput.actions.FindAction("Gameplay/CutWood");
     }
 
-    private void OnTeamChanged() => UpdateColor();
-    private void UpdateColor()
-    {
-        spriteRenderer.color = TeamColors[playerTeam.CurrentTeam];
-    }
-
     private void Update()
     {
-        if (interactAction.WasPressedThisFrame())
+        switch (LevelManager.Instance.GameState)
         {
-            switch (LevelManager.Instance.GameState)
-            {
-                case LevelManager.State.Game:
-                    StartInteracting(Interactable.InteractionType.Primary, interactAction);
-                    break;
-                case LevelManager.State.Lobby:
-                    playerControlBadge.Interact();
-                    break;
-            }
+            case LevelManager.State.Game: GameUpdate(); break;
+            case LevelManager.State.Lobby: LobbyUpdate(); break;
         }
+    }
 
-        if(cutWoodAction.WasPressedThisFrame())
-        {
-            switch (LevelManager.Instance.GameState)
-            {
-                case LevelManager.State.Game:
-                    StartInteracting(Interactable.InteractionType.Secondary, cutWoodAction);
-                    break;
-            }
-        }
+    private void GameUpdate()
+    {
+        if (interactAction.WasPressedThisFrame())
+            StartInteracting(Interactable.InteractionType.Primary, interactAction);
+        else if (cutWoodAction.WasPressedThisFrame())
+            StartInteracting(Interactable.InteractionType.Secondary, cutWoodAction);
+    }
+
+    private void LobbyUpdate()
+    {
+        if (interactAction.WasPressedThisFrame())
+            playerControlBadge.Interact();
     }
 
     private void StartInteracting(Interactable.InteractionType interactionType, InputAction inputAction)
@@ -164,10 +131,5 @@ public class Player : MonoBehaviour
     {
         IsHolding = true;
         HeldItem = item;
-    }
-    
-    private void OnDestroy()
-    {
-        playerTeam.TeamChanged -= OnTeamChanged;
     }
 }
