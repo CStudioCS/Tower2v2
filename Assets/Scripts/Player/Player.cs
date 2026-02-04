@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [HideInInspector] public List<Interactable> insideInteractableList = new();
+    public List<Interactable> insideInteractableList { get; private set; }
     private Interactable currentInteractable;
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
@@ -52,10 +52,10 @@ public class Player : MonoBehaviour
         if (closestInteractable != null)
         {
             if (currentInteractable && currentInteractable != closestInteractable)
-                currentInteractable.HighlightObject(false);
+                currentInteractable.Highlight(false);
 
             currentInteractable = closestInteractable;
-            currentInteractable.HighlightObject(true);
+            currentInteractable.Highlight(true);
 
             StartInteracting(currentInteractable, interactionType, interactAction);
         }

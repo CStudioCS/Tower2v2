@@ -53,7 +53,7 @@ public abstract class Interactable : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractableList.Contains(this))
         {
-            this.HighlightObject(false);
+            this.Highlight(false);
             player.insideInteractableList.Remove(this);
         }
     }
@@ -64,24 +64,12 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
-    public virtual void HighlightObject(bool highlightState)
+    public virtual void Highlight(bool highlighted)
     {
-        // à modifier pour chaque interactable (ou pas)
-        // Juste pour tester je met des logs ici pour voir que ça marche
-
-        if (isHighlighted == highlightState) 
+        if (isHighlighted == highlighted) 
             return;
         
-        isHighlighted = highlightState;
-
-        if (highlightState)
-        {
-            // Mettre le code pour highlight l'objet
-        }
-        else
-        {
-            // Mettre le code pour enlever le highlight de l'objet
-        }
+        isHighlighted = highlighted;
     }
     protected virtual void OnGameAboutToStart()
     {
