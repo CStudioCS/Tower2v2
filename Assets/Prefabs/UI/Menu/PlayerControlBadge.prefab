@@ -338,7 +338,7 @@ MonoBehaviour:
   graphics: {fileID: 5765944297760505085}
   readyKey: {fileID: 8326511394360499217}
   readyGamepadA: {fileID: 5309453904940665509}
-  readyCtrl: {fileID: 7437948822101210429}
+  readyEnter: {fileID: 7437948822101210429}
   readyGenericInteractKey: {fileID: 1306481334988066537}
   readyGenericInteractKeyText: {fileID: 6097907941955235373}
   readyCheck: {fileID: 350535946810898002}
@@ -512,7 +512,7 @@ GameObject:
   - component: {fileID: 3368734049085497114}
   - component: {fileID: 2820721345270577434}
   m_Layer: 5
-  m_Name: Ctrl
+  m_Name: Enter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
