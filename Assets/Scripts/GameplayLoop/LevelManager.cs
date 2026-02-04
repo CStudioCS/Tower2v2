@@ -29,6 +29,9 @@ public class LevelManager : MonoBehaviour
     public event Action GameStarted;
     public event Action GameEnded;
 
+    [SerializeField] private StartPoint[] startPoints;
+    public StartPoint[] StartPoints => startPoints;
+
     public void Awake()
     {
         if (Instance != null)
