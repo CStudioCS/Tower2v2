@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public List<Interactable> insideInteractableList { get; private set; }
+    public List<Interactable> insideInteractableList { get; private set; } = new();
     private Interactable currentInteractable;
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
             currentInteractable = closestInteractable;
             currentInteractable.Highlight(true);
 
-            StartInteracting(currentInteractable, interactionType, interactAction);
+            StartInteracting(currentInteractable, interactionType);
         }
         else if (HeldItem != null)
             DropHeldItem();
@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
             playerControlBadge.Interact();
     }
 
-    private void StartInteracting(Interactable insideInteractable, Interactable.InteractionType interactionType, InputAction inputAction)
+    private void StartInteracting(Interactable insideInteractable, Interactable.InteractionType interactionType)
     {
         // We check whether we're inside an interactable object and if yes if we can interact with it
         if (!insideInteractable)
@@ -94,12 +94,12 @@ public class Player : MonoBehaviour
         
         // If we can interact instantly, we do it, else we need to wait for the interaction time
         if (time > 0)
-            StartCoroutine(InteractTimer(insideInteractable, interactionType, time, inputAction));
+            StartCoroutine(InteractTimer(insideInteractable, interactionType, time));
         else
             insideInteractable.Interact(interactionType, this);
     }
 
-    private IEnumerator InteractTimer(Interactable insideInteractable, Interactable.InteractionType interactionType, float time, InputAction inputAction)
+    private IEnumerator InteractTimer(Interactable insideInteractable, Interactable.InteractionType interactionType, float time)
     {
         Interacting = true;
         insideInteractable.IsAlreadyInteractedWith = true;
@@ -109,7 +109,7 @@ public class Player : MonoBehaviour
         while(t < time)
         {
             // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
-            if (!inputAction.IsPressed() || LevelManager.Instance.GameState != LevelManager.State.Game)
+            if (!GetAssociatedInputAction(interactionType).IsPressed() || LevelManager.Instance.GameState != LevelManager.State.Game)
             {
                 StopInteracting(insideInteractable);
                 yield break;
@@ -200,5 +200,19 @@ public class Player : MonoBehaviour
         }
 
         return closest;
+    }
+
+    private InputAction GetAssociatedInputAction(Interactable.InteractionType interactionType)
+    {
+        switch (interactionType)
+        {
+            case Interactable.InteractionType.Primary:
+                return interactAction;
+            case Interactable.InteractionType.Secondary:
+                return secondaryAction;
+        }
+
+        Debug.LogError("Associated input action was not found");
+        return null;
     }
 }
