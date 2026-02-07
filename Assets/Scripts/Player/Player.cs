@@ -51,7 +51,7 @@ public class Player : MonoBehaviour
     {
         Interactable closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
 
-        if (closestInteractable != null)
+        if (closestInteractable != null && !closestInteractable.IsAlreadyInteractedWith && closestInteractable.CanInteract(interactionType, this))
         {
             if (currentInteractable && currentInteractable != closestInteractable)
                 currentInteractable.Highlight(false);
@@ -59,7 +59,11 @@ public class Player : MonoBehaviour
             currentInteractable = closestInteractable;
             currentInteractable.Highlight(true);
 
-            StartInteracting(currentInteractable, interactionType);
+            float time = closestInteractable.GetInteractionTime(interactionType);
+            if (time > 0)
+                StartCoroutine(InteractTimer(closestInteractable, interactionType, time));
+            else
+                closestInteractable.Interact(interactionType, this);
         }
         else if (HeldItem != null)
             DropHeldItem();
@@ -69,34 +73,6 @@ public class Player : MonoBehaviour
     {
         if (interactAction.WasPressedThisFrame())
             playerControlBadge.Interact();
-    }
-
-    private void StartInteracting(Interactable insideInteractable, Interactable.InteractionType interactionType)
-    {
-        // We check whether we're inside an interactable object and if yes if we can interact with it
-        if (!insideInteractable)
-            return;
-
-        Debug.Log($"[StartInteracting] Trying to interact with {insideInteractable.name} with interaction type {interactionType}");
-
-        // I do not set isAlreadyInteractedWith to true in an else statement because it only applies to interactables with interaction time // Si qqun comprend ce commentaire de Pierre qu'il se manifeste
-        if (insideInteractable.IsAlreadyInteractedWith)
-            return;
-
-        Debug.Log($"[StartInteracting] CanInteract: {insideInteractable.CanInteract(interactionType, this)}, InteractionTime: {insideInteractable.GetInteractionTime(interactionType)}");
-
-        if (!insideInteractable.CanInteract(interactionType, this))
-            return;
-
-        Debug.Log($"[StartInteracting] Starting interaction with {insideInteractable.name} with interaction type {interactionType}");
-
-        float time = insideInteractable.GetInteractionTime(interactionType);
-        
-        // If we can interact instantly, we do it, else we need to wait for the interaction time
-        if (time > 0)
-            StartCoroutine(InteractTimer(insideInteractable, interactionType, time));
-        else
-            insideInteractable.Interact(interactionType, this);
     }
 
     private IEnumerator InteractTimer(Interactable insideInteractable, Interactable.InteractionType interactionType, float time)
