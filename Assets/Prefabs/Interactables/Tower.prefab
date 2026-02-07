@@ -297,7 +297,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &3266461718733638260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -340,7 +340,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8286533885462722529}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.708, y: 1.708, z: 1.708}
   m_ConstrainProportionsScale: 0
@@ -368,9 +368,9 @@ MonoBehaviour:
   interactionTime: 0
   interactionTimeSecondary: 0
   blockOffset: {x: 0, y: 0.25, z: -0.1}
-  onTowerHeightText: {fileID: 0}
+  onTowerHeightText: {fileID: 312890316318916640}
   offTowerHeightText: {fileID: 0}
-  onTowerCanvas: {fileID: 0}
+  onTowerCanvas: {fileID: 7428609469738332248}
   offTowerCanvas: {fileID: 0}
   strawTowerPiecePrefab: {fileID: 6828945417408229614, guid: 50c8ea5a07072f24393c6bd798ddc9dc, type: 3}
   woodTowerPiecePrefab: {fileID: 1104166184276824648, guid: 768e3f708f781a849b5f398d919c5071, type: 3}
