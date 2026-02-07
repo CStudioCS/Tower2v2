@@ -51,6 +51,7 @@ public class PlayerControlBadge : MonoBehaviour
         LevelManager.Instance.GameStarted += OnGameStarted;
         LevelManager.Instance.GameEnded += OnGameEnded;
 
+#if DEBUG
         if (LobbyManager.Instance.DebugMode)
         {
             //quick and dirty but it's debug
@@ -60,6 +61,7 @@ public class PlayerControlBadge : MonoBehaviour
                 playerTeam.SetTeam(PlayerTeam.Team.Right);
             ToggleReady();
         }
+#endif
     }
 
     private void OnGameStarted() => graphics.SetActive(false);

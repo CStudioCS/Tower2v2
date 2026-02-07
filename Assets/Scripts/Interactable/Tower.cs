@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor.UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Tower : Interactable
 {
@@ -76,19 +73,16 @@ public class Tower : Interactable
 private void UpdateTowerTopUI()
     {
         if (Height > 0)
-        {
             onTowerCanvas.position = towerPieces[^1].transform.position + blockOffset;
-        }
         else
-        {
             onTowerCanvas.position = gameObject.transform.position;
-        }
 
         Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, onTowerCanvas.position);
 
         if (screenPoint.y > Screen.height)
         {
-            onTowerCanvas.gameObject.SetActive(false);
+            //onTowerCanvas.gameObject.SetActive(false); //remove the gray bases of the tower if u want
+            
             offTowerCanvas.gameObject.SetActive(true);
             offTowerHeightText.text = Height.ToString();
             float yPos = offTowerCanvas.position.y;
@@ -100,6 +94,8 @@ private void UpdateTowerTopUI()
             onTowerCanvas.gameObject.SetActive(true);
             onTowerHeightText.text = Height.ToString();
         }
+
+        onTowerHeightText.text = Height.ToString();
     }
 
     private void ResetTower()
