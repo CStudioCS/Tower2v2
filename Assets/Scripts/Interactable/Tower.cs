@@ -1,18 +1,22 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Tower : Interactable
 {
-    public int Height { get; private set; }
+    public int Height => towerPieces.Count;
     public float LastPlacedTime { get; private set; } = float.MaxValue;
     
     [Header("Tower")]
-    
     [SerializeField] private Vector3 blockOffset;
-    [SerializeField] private TextMeshProUGUI heightText;
-
+    [SerializeField] private TextMeshProUGUI onTowerHeightText;
+    [SerializeField] private TextMeshProUGUI offTowerHeightText;
+    [SerializeField] private RectTransform onTowerCanvas;
+    [SerializeField] private RectTransform offTowerCanvas;
     [SerializeField] private GameObject strawTowerPiecePrefab;
     [SerializeField] private GameObject woodTowerPiecePrefab;
     [SerializeField] private GameObject brickTowerPiecePrefab;
@@ -62,22 +66,48 @@ public class Tower : Interactable
 
         GameObject towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * Height, Quaternion.identity, transform);
         towerPieces.Add(towerPieceInstance);
-        Height++;
         LastPlacedTime = LevelManager.Instance.LevelTimer;
+
         player.ConsumeCurrentItem();
-        UpdateText();
+        UpdateTowerTopUI();
         PieceBuilt?.Invoke();
     }
 
-    private void UpdateText() => heightText.text = Height.ToString();
-    
+private void UpdateTowerTopUI()
+    {
+        if (Height > 0)
+        {
+            onTowerCanvas.position = towerPieces[^1].transform.position + blockOffset;
+        }
+        else
+        {
+            onTowerCanvas.position = gameObject.transform.position;
+        }
+
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, onTowerCanvas.position);
+
+        if (screenPoint.y > Screen.height)
+        {
+            onTowerCanvas.gameObject.SetActive(false);
+            offTowerCanvas.gameObject.SetActive(true);
+            offTowerHeightText.text = Height.ToString();
+            float yPos = offTowerCanvas.position.y;
+            offTowerCanvas.position = new Vector3(screenPoint.x, yPos, 0);
+        }
+        else
+        {
+            offTowerCanvas.gameObject.SetActive(false);
+            onTowerCanvas.gameObject.SetActive(true);
+            onTowerHeightText.text = Height.ToString();
+        }
+    }
+
     private void ResetTower()
     {
         foreach (GameObject towerPiece in towerPieces)
             Destroy(towerPiece);
         towerPieces.Clear();
-        Height = 0;
         LastPlacedTime = float.MaxValue;
-        UpdateText();
+        UpdateTowerTopUI();
     }
 }
