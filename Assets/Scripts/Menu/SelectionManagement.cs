@@ -5,24 +5,36 @@ using TMPro;
 using UnityEngine.SceneManagement;
 public class SelectionManagement : MonoBehaviour
 {
+    [SerializeField] private GameObject playRectangle;
     [SerializeField] private TextMeshProUGUI playText;
+    
+    [SerializeField] private GameObject settingsRectangle;
     [SerializeField] private TextMeshProUGUI settingsText;
     
     [SerializeField] private TextMeshProUGUI settingsQuitText;
+    [SerializeField] private GameObject settingsQuitRectangle;
+
     [SerializeField] private TextMeshProUGUI quitText;
+    [SerializeField] private GameObject quitRectangle;
+
     [SerializeField] private Camera cam;
 
-    private bool isZoomingIn = false;
-    
-    private bool isZoomingOut = false;
+
+    private GameObject selectedGameObject = null;
     private Keyboard keyboard;
+
+    private bool isZoomingIn = false;
+    private bool isZoomingOut = false;
+
     private int nbSelected = 0;
     private float inputDelay = 0.2f;
-    private float initialCamSize;
-    private Vector3 initialCamPosition;
     private float time = 0f;
-    private bool isAButtonCLicked = false;
+
+    private float initialCamSize;
     private Vector3 initialPositionButonSettings;
+    private Vector3 initialCamPosition;
+
+    private bool isAButtonCLicked = false;
     private bool updateSettings = false;
 
 
@@ -32,7 +44,7 @@ public class SelectionManagement : MonoBehaviour
         initialCamSize = cam.orthographicSize;
         initialCamPosition = cam.transform.position;
 
-        initialPositionButonSettings = settingsText.gameObject.transform.parent.gameObject.transform.position;
+        initialPositionButonSettings = settingsRectangle.transform.position;
 
         // Get the keyboard instance
         keyboard = Keyboard.current;
@@ -41,29 +53,27 @@ public class SelectionManagement : MonoBehaviour
     void Update()
     {
         // Only allow selection if not zooming in and if no button is currently clicked
-        if(!isAButtonCLicked && !isZoomingIn && !updateSettings && !isZoomingOut){
+        
+        // Update the display based on current selection
+        AffichageSelection();
+
+        if(isZoomingIn)
+            ZoomIn();
+        else if(isZoomingOut)
+        {
+            ZoomOut();
+        }
+        else if (updateSettings)
+        {
+            UpdateSettings();
+        }
+        else if(!isAButtonCLicked && !isZoomingIn && !updateSettings && !isZoomingOut){
             Selection();
             // Check for selection confirmation
             if(keyboard.enterKey.wasPressedThisFrame)
             
                 Transition();
         }
-        // Update the display based on current selection
-        AffichageSelection();
-
-        if(isZoomingIn)
-            ZoomIn();
-
-        if (updateSettings)
-        {
-            UpdateSettings();
-        }
-
-        if(isZoomingOut)
-        {
-            ZoomOut();
-        }
-
         
     }
     private void AffichageSelection()
@@ -98,7 +108,6 @@ public class SelectionManagement : MonoBehaviour
         else if (keyboard.downArrowKey.wasPressedThisFrame)
         {
             nbSelected++;
-            
             isAButtonCLicked = true;
         }
 
@@ -108,13 +117,11 @@ public class SelectionManagement : MonoBehaviour
             if (gamepad.leftStick.ReadValue().y > 0.1f)
             {
                 nbSelected--;
-                
                 isAButtonCLicked = true;
             }
             else if (gamepad.leftStick.ReadValue().y < -0.1f)
             {
                 nbSelected++;
-                
                 isAButtonCLicked = true;
             }
             
@@ -156,23 +163,23 @@ public class SelectionManagement : MonoBehaviour
         settingsText.gameObject.SetActive(false);
         quitText.gameObject.SetActive(false);
 
-        //select the correct parent to zoom in on
-        Transform parent = null;
+        //select the correct rectangle to zoom in on
 
         switch (nbSelected)
                 {
                     case 0:
-                        parent = playText.gameObject.transform.parent;
+                        selectedGameObject = playRectangle ;
                         break;
                     case 1:
-                        parent = settingsText.gameObject.transform.parent;
+                        selectedGameObject = settingsRectangle;
                         break;
                     case 2:
-                        parent = quitText.gameObject.transform.parent;
+                        selectedGameObject = quitRectangle;
                         break;
                 }
         
-        parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.right * 35f;
+        //Ajout d'une force pour faire l'effet que le rectangle parte
+        selectedGameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.right * 35f;
        
         //Start the zoom in process
         isZoomingIn = true;
@@ -194,13 +201,13 @@ public class SelectionManagement : MonoBehaviour
         switch(nbSelected)
         {
             case 0:
-                pos = playText.transform.parent.gameObject.transform.position.y;
+                pos = playRectangle.transform.position.y;
                 break;
             case 1:
-                pos = settingsText.transform.parent.gameObject.transform.position.y;
+                pos = settingsRectangle.transform.position.y;
                 break;
             case 2:
-                pos = quitText.transform.parent.gameObject.transform.position.y;
+                pos = quitRectangle.transform.position.y;
                 break;
         }
         
@@ -209,19 +216,20 @@ public class SelectionManagement : MonoBehaviour
         
         //if the zoom in is complete, load the appropriate scene or quit
         if(time > 1f && nbSelected == 0){
-            Transform parent = playText.gameObject.transform.parent;
-            parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+            selectedGameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
             SceneManager.LoadScene(0);
         }
         else if(time > 1f && nbSelected == 2){
-            Transform parent = quitText.gameObject.transform.parent;
-            parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+            selectedGameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
             Application.Quit();
         }
         else if(time >  1f && nbSelected == 1){
-            Transform parent = settingsText.gameObject.transform.parent;
-            parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
-            settingsQuitText.gameObject.transform.parent.gameObject.SetActive(true);
+
+            selectedGameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+
+            settingsQuitRectangle.gameObject.SetActive(true);
+            settingsQuitText.gameObject.SetActive(true);
+        
             isZoomingIn = false;
             updateSettings = true;
             
@@ -245,7 +253,7 @@ public class SelectionManagement : MonoBehaviour
             updateSettings = false;
             time = 0f;
             
-            settingsText.gameObject.transform.parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * 35f;
+            selectedGameObject.GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * 35f;
             StartCoroutine(TransitionCoroutine());
         }
          foreach (var gamepad in Gamepad.all)
@@ -255,7 +263,7 @@ public class SelectionManagement : MonoBehaviour
                 isZoomingOut = true;
                 updateSettings = false;
                 time = 0f;
-                settingsText.gameObject.transform.parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * 35f;
+                selectedGameObject.GetComponent<Rigidbody2D>().linearVelocity = -Vector2.right * 35f;
             
             }
         }
@@ -273,22 +281,26 @@ public class SelectionManagement : MonoBehaviour
 
         // Deactivate settings menu
 
-        settingsText.gameObject.transform.parent.gameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+        selectedGameObject.GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
            
-        settingsText.gameObject.transform.parent.gameObject.transform.position = initialPositionButonSettings;
+        selectedGameObject.transform.position = initialPositionButonSettings;
         // Reset selection and states
         nbSelected = 1;
+
         isZoomingIn = false;
         isZoomingOut = false;
         updateSettings = false;
-        time = 0f;
-        isAButtonCLicked = true;
-        StartCoroutine(InputCooldown2());
+
+        isAButtonCLicked = false;
+        
+        //Rajout d'une pose car il y a un bug qui fait que le joueur peut appuyer sur la touche pour zoomer alors que le rectangle n'est pas encore revenu à sa position initiale
+        StopCoroutine(TransitionCoroutine());
     }
 
     void ZoomOut()
     {
-        settingsQuitText.gameObject.transform.parent.gameObject.SetActive(false);
+        settingsQuitRectangle.gameObject.SetActive(false);
+        settingsQuitText.gameObject.SetActive(false);
         //zoom out the camera using easing
         cam.orthographicSize = Mathf.Lerp(0f, initialCamSize, Easing.RootOut(time));
 
@@ -298,7 +310,6 @@ public class SelectionManagement : MonoBehaviour
         //if the zoom out is complete, reset everything
         if(time > 1f){
             TransitionBackToMenu();
-            time = 0f;
         }
     }
 
