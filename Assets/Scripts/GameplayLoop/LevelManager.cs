@@ -81,24 +81,24 @@ public class LevelManager : MonoBehaviour
     {
 #if DEBUG
         if (LobbyManager.Instance.DebugMode)
-            StartGameNoDelay();
+            StartCoroutine(StartGameDelayedRoutine(0f));
         else
 #endif
             StartCoroutine(StartGameDelayedRoutine());
     }
 
-    private IEnumerator StartGameDelayedRoutine()
+    private IEnumerator StartGameDelayedRoutine(float delay = 3f)
     {
         GameState = State.Starting;
         ActivateLobbyObjects(false);
-        countdown.SetTrigger(CountdownString);
-        GameAboutToStart?.Invoke();
-        yield return new WaitForSeconds(3);
-        StartGameNoDelay();
-    }
 
-    private void StartGameNoDelay()
-    {
+        if(delay > 0f)
+            countdown.SetTrigger(CountdownString);
+
+        GameAboutToStart?.Invoke();
+
+        yield return new WaitForSeconds(delay);
+
         GameState = State.Game;
         LevelTimer = 0;
         ActivateInGameObjects(true);
