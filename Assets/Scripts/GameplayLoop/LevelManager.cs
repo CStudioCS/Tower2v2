@@ -79,7 +79,12 @@ public class LevelManager : MonoBehaviour
     
     public void StartGameDelayed()
     {
-        StartCoroutine(StartGameDelayedRoutine());
+#if DEBUG
+        if (LobbyManager.Instance.DebugMode)
+            StartGameNoDelay();
+        else
+#endif
+            StartCoroutine(StartGameDelayedRoutine());
     }
 
     private IEnumerator StartGameDelayedRoutine()
@@ -88,7 +93,12 @@ public class LevelManager : MonoBehaviour
         ActivateLobbyObjects(false);
         countdown.SetTrigger(CountdownString);
         GameAboutToStart?.Invoke();
-        yield return new WaitForSeconds(3); 
+        yield return new WaitForSeconds(3);
+        StartGameNoDelay();
+    }
+
+    private void StartGameNoDelay()
+    {
         GameState = State.Game;
         LevelTimer = 0;
         ActivateInGameObjects(true);

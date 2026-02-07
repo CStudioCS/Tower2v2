@@ -86,6 +86,7 @@ MonoBehaviour:
   playerTeam: {fileID: 4720667436485828352}
   playerControlBadge: {fileID: 5167199617259306430}
   progressBar: {fileID: 7722397540325121459}
+  playerMovement: {fileID: 4423661849542820139}
 --- !u!114 &4423661849542820139
 MonoBehaviour:
   m_ObjectHideFlags: 0

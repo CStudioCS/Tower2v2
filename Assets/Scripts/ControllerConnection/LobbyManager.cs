@@ -12,7 +12,11 @@ public class LobbyManager : MonoBehaviour
     public event Action<PlayerInput> PlayerLeft;
     
     public static LobbyManager Instance;
-    
+
+#if DEBUG
+    public bool DebugMode;
+#endif
+
     public void Awake()
     {
         if(Instance != null)
@@ -20,10 +24,22 @@ public class LobbyManager : MonoBehaviour
 
         Instance = this;
     }
-    
+
     private void Update()
     {
-        if (LevelManager.Instance.GameState != LevelManager.State.Lobby) return;
+        if (LevelManager.Instance.GameState != LevelManager.State.Lobby)
+            return;
+        
+#if DEBUG
+        if (DebugMode)
+        {
+            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.WASD);
+            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.TFGH);
+            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.IJKL);
+            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.ArrowKeys);
+        }
+#endif
+
         HandleKeyboardJoinInput();
         HandleGamepadJoinInput();
     }
