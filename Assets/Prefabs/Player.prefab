@@ -99,7 +99,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba2a6933f5869544693a019bbe8eb80d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
+  maxSpeed: 8
+  acceleration: 100
+  friction: 140
   player: {fileID: 8343199554380001103}
   playerInput: {fileID: 859528782026247002}
   rb: {fileID: 176917095401970236}
