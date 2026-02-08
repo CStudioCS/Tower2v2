@@ -3,30 +3,22 @@ using System.Collections;
 using System;
 public static class Zoom
 {
-    private const float zoomDuration = 1f;
-      
-    public static IEnumerator TransitionZoomInCoroutine(Camera cam, float initialCamSize, Vector3 initialCamPosition, float posYFinal, float zoomSize, Action action)
+    public static IEnumerator TransitionZoomInCoroutine(Camera cam, float zoomDuration, float initialCamSize, Vector3 initialCamPosition, Vector3 finalPos, float zoomSize)
     {
-    
-        float posZfinal = cam.transform.position.z;
-        float posXfinal = cam.transform.position.x;
-        Vector3 finalPosition = cam.transform.position;
-        finalPosition.y = posYFinal;
-
+        finalPos.z = cam.transform.position.z;
         //Gere à chaque frame le zoom de la caméra 
         float time = 0f;
         while (time < zoomDuration)
         {
             time += Time.deltaTime;
-            Zooming(cam, initialCamSize, initialCamPosition, time, finalPosition, zoomSize);
+            ModifyZoom(cam, initialCamSize, initialCamPosition, time, finalPos, zoomSize);
             yield return null;
             
         }
-        
-        action?.Invoke();
+
     }
 
-    private static void Zooming(Camera cam, float initialCamSize, Vector3 initialCamPosition, float time, Vector3 finalPos, float zoomSize)
+    private static void ModifyZoom(Camera cam, float initialCamSize, Vector3 initialCamPosition, float time, Vector3 finalPos, float zoomSize)
     {
         //Modifie le zoom de la caméra
         cam.orthographicSize = Mathf.Lerp(initialCamSize, zoomSize, Easing.QuadOut(time));

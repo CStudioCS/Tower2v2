@@ -6,19 +6,18 @@ public class ButtonQuitSettingsAction : ButtonAction
 
     [SerializeField] private GameObject settingsButton;
 
-    private Vector3 settingsButtonInitialPos;
+    private Vector3 initialSettingsButtonPos;
 
     public void Start()
     {
-        settingsButtonInitialPos = settingsButton.transform.position;
+        initialSettingsButtonPos = settingsButton.transform.position;
     }
     
     public override void Action()
     {
-        Vector3 targetPosition = settingsButtonInitialPos;
         float speedButtonWhenClicked = settingsButton.GetComponent<ButtonActionWithMovement>().SpeedButtonWhenClicked;
         
-        LMotion.Create(settingsButton.transform.position, targetPosition, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => settingsButton.transform.position = y);
+        LMotion.Create(settingsButton.transform.position, initialSettingsButtonPos, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => settingsButton.transform.position = y);
     }
 
     public override void Movement(){}
