@@ -46,7 +46,7 @@ public class ButtonClick : MonoBehaviour
 
     private IEnumerator ZoomInCoroutineAction(GameObject buttonClicked)
     {
-        yield return Zoom.TransitionZoomInCoroutineAction(cam, zoomDuration,initialCamSize, initialCamPosition, buttonClicked.transform.position, zoomSize);
+        yield return Zoom.TransitionZoomInCoroutine(cam, zoomDuration,initialCamSize, initialCamPosition, buttonClicked.transform.position, zoomSize);
         ButtonAction buttonAction = buttonClicked.GetComponent<ButtonAction>();
         buttonAction.Action();
     }
