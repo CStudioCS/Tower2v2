@@ -102,6 +102,8 @@ MonoBehaviour:
   maxSpeed: 8
   acceleration: 100
   friction: 140
+  gamepadDeadzone: 0.05
+  gamepadmaxSpeedThreashold: 0.5
   player: {fileID: 8343199554380001103}
   playerInput: {fileID: 859528782026247002}
   rb: {fileID: 176917095401970236}

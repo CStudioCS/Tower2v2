@@ -7,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float maxSpeed = 8f;
     [SerializeField] private float acceleration = 100f;
     [SerializeField] private float friction = 140f;
+    [SerializeField] private float gamepadDeadzone = 0.05f;
+    [SerializeField] private float gamepadmaxSpeedThreashold = 0.5f;
 
     [Header("References")]
     [SerializeField] private Player player;
@@ -41,10 +43,10 @@ public class PlayerMovement : MonoBehaviour
         Vector2 move = moveAction.ReadValue<Vector2>();
 
         //We wanna move and we're not at top speed -> accelerate
-        if (move != Vector2.zero && rb.linearVelocity.sqrMagnitude < maxSpeed * maxSpeed)
+        if (move.sqrMagnitude > gamepadDeadzone * gamepadDeadzone && rb.linearVelocity.sqrMagnitude < maxSpeed * maxSpeed)
         {
             //Account for the fact that move can be of norm different than one (for controllers when moving slowly)
-            Vector2 apporached = (move.sqrMagnitude > 0.3f * 0.3f ? move.normalized : move) * maxSpeed;
+            Vector2 apporached = (move.sqrMagnitude > gamepadmaxSpeedThreashold * gamepadmaxSpeedThreashold ? move.normalized : move) * maxSpeed;
             return Approach(rb.linearVelocity, apporached, acceleration * Time.deltaTime);
         }
 
