@@ -48,8 +48,6 @@ public class GameStartManager : MonoBehaviour
             return player.PlayerControlBadge.IsReady;
         });
     
-    [SerializeField] private TextMeshProUGUI waitingText;
-
     private void Awake()
     {
         if (Instance != null)
@@ -58,7 +56,7 @@ public class GameStartManager : MonoBehaviour
         Instance = this;
     }
 
-    private void UpdateWaitingText() => waitingText.text = WaitingMessages[waitState];
+    private void UpdateWaitingText() => CanvasLinker.Instance.waitingText.text = WaitingMessages[waitState];
     
     private void TryChangeWaitState(WaitState newWaitState)
     {

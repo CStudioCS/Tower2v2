@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
@@ -8,21 +8,16 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance;
     [SerializeField] private float timerLimit = 120f;
     
-    [Header("References")]
-    [SerializeField] private Tower towerRight;
-    [SerializeField] private Tower towerLeft;
-    [SerializeField] private TextMeshProUGUI timerDisplay;
-    [SerializeField] private TextMeshProUGUI winnerText;
-    
     public float LevelTimer { get; private set; }
     private PlayerTeam.Team winningTeam;
     
     public enum State { Lobby, Starting, Game }
     public State GameState { get; private set; } = State.Lobby;
 
-    [SerializeField] private GameObject[] activateOnlyInLobby;
-    [SerializeField] private GameObject[] activateOnlyInGame;
-    [SerializeField] private Animator countdown;
+    //I don't really know what's the point of these lists being serializedfield-ed if you're going full linker mode, since you can't add shit through the inspector
+    private List<GameObject> activateOnlyInLobby = new();
+    private List<GameObject> activateOnlyInGame = new();
+
     private static readonly int CountdownString = Animator.StringToHash("Countdown");
 
     public event Action GameAboutToStart;
@@ -35,6 +30,14 @@ public class LevelManager : MonoBehaviour
             Destroy(Instance);
 
         Instance = this;
+    }
+
+    private void Start()
+    {
+        //idk if doing it this way is the best way to do it, feel free to tell me better ways
+        activateOnlyInLobby.Add(CanvasLinker.Instance.MenuUI);
+        activateOnlyInGame.Add(CanvasLinker.Instance.InGameUI);
+
         ActivateLobbyObjects(true);
         ActivateInGameObjects(false);
     }
@@ -53,6 +56,9 @@ public class LevelManager : MonoBehaviour
 
     private void Update()
     {
+        Tower towerRight = WorldLinker.Instance.towerRight;
+        Tower towerLeft = WorldLinker.Instance.towerLeft;
+
         if (towerRight == null || towerLeft == null)
             return;
 
@@ -62,7 +68,7 @@ public class LevelManager : MonoBehaviour
             float timeRemaining = timerLimit - LevelTimer;
             int minutes = Mathf.FloorToInt(timeRemaining / 60);
             int seconds = Mathf.FloorToInt(timeRemaining % 60);
-            timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
+            CanvasLinker.Instance.timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
 
             if (LevelTimer >= timerLimit)
             {
@@ -93,7 +99,7 @@ public class LevelManager : MonoBehaviour
         ActivateLobbyObjects(false);
 
         if(delay > 0f)
-            countdown.SetTrigger(CountdownString);
+            CanvasLinker.Instance.countdown.SetTrigger(CountdownString);
 
         GameAboutToStart?.Invoke();
 
@@ -112,9 +118,9 @@ public class LevelManager : MonoBehaviour
         ActivateLobbyObjects(true);
         ActivateInGameObjects(false);
         Debug.Log($"Level has ended with winner {winner}");
-        
-        winnerText.gameObject.SetActive(true);
-        winnerText.text = (winner == PlayerTeam.Team.Left ? "Left" : "Right") + " team wins!";
+
+        CanvasLinker.Instance.winnerText.gameObject.SetActive(true);
+        CanvasLinker.Instance.winnerText.text = (winner == PlayerTeam.Team.Left ? "Left" : "Right") + " team wins!";
         GameEnded?.Invoke();
     }
 }

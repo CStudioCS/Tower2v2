@@ -21,7 +21,9 @@ public class RecipesList : MonoBehaviour
         }
     }
 
-    [SerializeField] private Tower tower;
+    private bool isLeftRecipeList => this == CanvasLinker.Instance.recipesListLeft; 
+    private Tower tower => isLeftRecipeList ? WorldLinker.Instance.towerLeft : WorldLinker.Instance.towerRight;
+
     private readonly Queue<Recipe> queue = new();
     private int randomIndex;
     
