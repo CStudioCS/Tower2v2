@@ -1,9 +1,9 @@
 using UnityEngine;
-using DG.Tweening;
 using UnityEngine.UI;
 
 public class ButtonHover : MonoBehaviour
 {
+    /*
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private GameObject buttonPlay;
     
@@ -50,6 +50,6 @@ public class ButtonHover : MonoBehaviour
     public void ButtonQuitSettingsHover(){ HoverButton(buttonQuitSettings, textQuitSettings); }
     public void ButtonQuitSettingsExitHover(){ ExitHoverButton(buttonQuitSettings, textQuitSettings); }
 
-
+*/
 }
 

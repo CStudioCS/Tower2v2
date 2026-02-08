@@ -1,0 +1,3 @@
+[submodule "Assets/Plugins/DOTween"]
+	path = Assets/Plugins/DOTween
+	url = https://github.com/Demigiant/dotween.git

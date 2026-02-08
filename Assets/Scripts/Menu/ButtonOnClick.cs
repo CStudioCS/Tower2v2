@@ -3,16 +3,14 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using LitMotion;
 using LitMotion.Extensions;
-public class ButtonOnCLick : MonoBehaviour
+
+public class ButtonClick : MonoBehaviour
 {
 
     [SerializeField] private Camera cam;
-
+    [SerializeField] private float zoomSize;
     private float initialCamSize;
-    private Vector3 initialPositionButtonSettings;
     private Vector3 initialCamPosition;
-
-    
 
     void Start()
     {
@@ -23,10 +21,11 @@ public class ButtonOnCLick : MonoBehaviour
     public void ZoomInOnCLick(GameObject buttonClicked)
     {
         float posYFinal = buttonClicked.transform.position.y;
+
         ButtonAction buttonAction = buttonClicked.GetComponent<ButtonAction>();
         buttonAction.Movement();
 
-        StartCoroutine(Zoom.TransitionZoomInCoroutine(cam, initialCamSize, initialCamPosition, posYFinal, 0.5f,buttonAction.Action));
+        StartCoroutine(Zoom.TransitionZoomInCoroutine(cam, initialCamSize, initialCamPosition, posYFinal, zoomSize, buttonAction.Action));
     
     }
     
@@ -36,6 +35,6 @@ public class ButtonOnCLick : MonoBehaviour
         ButtonAction buttonAction = buttonClicked.GetComponent<ButtonAction>();
         buttonAction.Movement();
 
-        StartCoroutine(Zoom.TransitionZoomInCoroutine(cam, 0.5f, initialCamPosition, 0, initialCamSize, buttonAction.Action));
+        StartCoroutine(Zoom.TransitionZoomInCoroutine(cam, zoomSize, cam.transform.position, initialCamPosition.y, initialCamSize, buttonAction.Action));
     }
 }

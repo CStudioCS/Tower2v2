@@ -818,12 +818,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31c425a736c33094d9073e7286b55c35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPlay: {fileID: 1757303640}
-  buttonSettings: {fileID: 1033078492}
-  buttonQuit: {fileID: 2089002184}
   cam: {fileID: 747379110}
-  finalPositionButtonAfterMove: 15
-  speedButtonWhenClicked: 0.8
+  zoomSize: 0.5
 --- !u!4 &675469809
 Transform:
   m_ObjectHideFlags: 0
@@ -851,17 +847,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628c22d1c25fc644d9e3b276a35654d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonPlay: {fileID: 1757303640}
-  textPlay: {fileID: 167379787}
-  buttonSettings: {fileID: 1033078492}
-  textSettings: {fileID: 676816472}
-  buttonQuit: {fileID: 2089002184}
-  textQuit: {fileID: 10915706}
-  buttonQuitSettings: {fileID: 1634812001}
-  textQuitSettings: {fileID: 148690820}
-  scaleFactor: 1.2
-  hoverColor: {r: 1, g: 0, b: 0, a: 1}
-  hoverDuration: 0.2
 --- !u!1 &676816472
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,6 +1288,7 @@ GameObject:
   - component: {fileID: 1033078496}
   - component: {fileID: 1033078495}
   - component: {fileID: 1033078498}
+  - component: {fileID: 1033078499}
   m_Layer: 5
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -1376,11 +1362,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 675469808}
         m_TargetAssemblyTypeName: ButtonClicked, Assembly-CSharp
-        m_MethodName: SettingsButtonClicked
-        m_Mode: 1
+        m_MethodName: ZoomInOnCLick
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1033078492}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1469,6 +1455,20 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1033078499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033078492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c4f74528899a3489b469ade4ac6538, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  finalPositionButtonAfterMove: 15
+  speedButtonWhenClicked: 0.8
 --- !u!1 &1634812001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1482,6 +1482,7 @@ GameObject:
   - component: {fileID: 1634812004}
   - component: {fileID: 1634812003}
   - component: {fileID: 1634812006}
+  - component: {fileID: 1634812007}
   m_Layer: 5
   m_Name: QuitSettingsButton
   m_TagString: Untagged
@@ -1555,11 +1556,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 675469808}
         m_TargetAssemblyTypeName: ButtonClicked, Assembly-CSharp
-        m_MethodName: QuitSettingsButtonClicked
-        m_Mode: 1
+        m_MethodName: ZoomOutOnCLick
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1634812001}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1648,6 +1649,19 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1634812007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1634812001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c218561b10737ea4bae361429a9a1d31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingsButton: {fileID: 1033078492}
 --- !u!1 &1757303640
 GameObject:
   m_ObjectHideFlags: 0
@@ -1661,6 +1675,7 @@ GameObject:
   - component: {fileID: 1757303644}
   - component: {fileID: 1757303643}
   - component: {fileID: 1757303646}
+  - component: {fileID: 1757303647}
   m_Layer: 5
   m_Name: PlayButton
   m_TagString: Untagged
@@ -1734,11 +1749,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 675469808}
         m_TargetAssemblyTypeName: ButtonClicked, Assembly-CSharp
-        m_MethodName: PlayButtonClicked
-        m_Mode: 1
+        m_MethodName: ZoomInOnCLick
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1757303640}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1827,6 +1842,20 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &1757303647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1757303640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45b4b48ae76d01645a5ea8c1d2793fb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  finalPositionButtonAfterMove: 15
+  speedButtonWhenClicked: 0.8
 --- !u!1 &2089002184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1840,6 +1869,7 @@ GameObject:
   - component: {fileID: 2089002188}
   - component: {fileID: 2089002187}
   - component: {fileID: 2089002190}
+  - component: {fileID: 2089002191}
   m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
@@ -1913,12 +1943,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 675469808}
         m_TargetAssemblyTypeName: ButtonClicked, Assembly-CSharp
-        m_MethodName: QuitButtonClicked
-        m_Mode: 1
+        m_MethodName: ZoomInOnCLick
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_ObjectArgument: {fileID: 2089002184}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2006,6 +2036,20 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!114 &2089002191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2089002184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dde089738e743f40acffac5c53ee53b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  finalPositionButtonAfterMove: 15
+  speedButtonWhenClicked: 0.8
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
