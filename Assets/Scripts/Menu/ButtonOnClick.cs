@@ -2,23 +2,11 @@ using UnityEngine;
 using LitMotion;
 using LitMotion.Extensions;
 using System.Collections;
-public class ButtonClick : MonoBehaviour
+public class ButtonOnClick : MonoBehaviour
 {
+    [SerializeField] CameraZoomer camZoomer;
 
-    [SerializeField] private Camera cam;
-    [SerializeField] private float zoomSize;
-    [SerializeField] private float zoomDuration = 1f;
-
-    private float initialCamSize;
-    private Vector3 initialCamPosition;
-
-    void Start()
-    {
-        initialCamSize = cam.orthographicSize;
-        initialCamPosition = cam.transform.position;
-    }
-
-    public void ZoomInOnCLick(GameObject buttonClicked)
+    public void ZoomInOnClick(GameObject buttonClicked)
     {
         ButtonAction buttonAction = buttonClicked.GetComponent<ButtonAction>();
         buttonAction.Movement();
@@ -27,7 +15,7 @@ public class ButtonClick : MonoBehaviour
         StartCoroutine(ZoomInCoroutineAction(buttonClicked));
     }
 
-    public void ZoomOutOnCLick(GameObject buttonClicked)
+    public void ZoomOutOnClick(GameObject buttonClicked)
     {
         ButtonAction buttonAction = buttonClicked.GetComponent<ButtonAction>();
         buttonAction.Movement();
@@ -39,14 +27,16 @@ public class ButtonClick : MonoBehaviour
 
     private IEnumerator ZoomOutCoroutineAction(GameObject buttonClicked)
     {
-        yield return Zoom.TransitionZoomInCoroutine(cam, zoomDuration,zoomSize, cam.transform.position, initialCamPosition, initialCamSize);
+        
+        yield return  camZoomer.ReturnToNormalState();
         ButtonAction buttonAction = buttonClicked.GetComponent<ButtonAction>();
         buttonAction.Action();
     }
 
     private IEnumerator ZoomInCoroutineAction(GameObject buttonClicked)
     {
-        yield return Zoom.TransitionZoomInCoroutine(cam, zoomDuration,initialCamSize, initialCamPosition, buttonClicked.transform.position, zoomSize);
+        
+        yield return camZoomer.ZoomIn(buttonClicked.transform.position);
         ButtonAction buttonAction = buttonClicked.GetComponent<ButtonAction>();
         buttonAction.Action();
     }

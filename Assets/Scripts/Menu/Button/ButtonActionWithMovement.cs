@@ -18,9 +18,4 @@ public class ButtonActionWithMovement : ButtonAction
         LMotion.Create(this.transform.position, targetPosition, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => this.transform.position = y);
 
     }
-
-    public float getSpeedButtonWhenClicked()
-    {
-        return speedButtonWhenClicked;
-    }
 }
