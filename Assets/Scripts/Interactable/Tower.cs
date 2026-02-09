@@ -10,10 +10,8 @@ public class Tower : Interactable
     
     [Header("Tower")]
     [SerializeField] private Vector3 blockOffset;
-    [SerializeField] private TextMeshProUGUI onTowerHeightText;
-    [SerializeField] private TextMeshProUGUI offTowerHeightText;
+    [SerializeField] private TMP_Text onTowerHeightText;
     [SerializeField] private RectTransform onTowerCanvas;
-    [SerializeField] private RectTransform offTowerCanvas;
     [SerializeField] private GameObject strawTowerPiecePrefab;
     [SerializeField] private GameObject woodTowerPiecePrefab;
     [SerializeField] private GameObject brickTowerPiecePrefab;
@@ -35,8 +33,11 @@ public class Tower : Interactable
         }
     }
     
-    [SerializeField] private RecipesList recipesList;
     public event Action PieceBuilt;
+    private bool isLeftTower => this == WorldLinker.Instance.towerLeft;
+    private RecipesList recipesList => isLeftTower ? CanvasLinker.Instance.recipesListLeft : CanvasLinker.Instance.recipesListRight;
+    private RectTransform offTowerCanvas => isLeftTower ? CanvasLinker.Instance.offTowerHeightCanvasLeft : CanvasLinker.Instance.offTowerHeightCanvasRight;
+    private TMP_Text offTowerHeightText => isLeftTower ? CanvasLinker.Instance.offTowerHeightTextLeft : CanvasLinker.Instance.offTowerHeightTextRight;
 
     protected override void OnGameAboutToStart()
     {
