@@ -16,9 +16,7 @@ public class CameraZoomer : MonoBehaviour
         initialCamSize = cam.orthographicSize;
         initialCamPosition = cam.transform.position;
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    
     public IEnumerator ZoomIn(Vector3 finalPos)
     {
         finalPos.z = this.transform.position.z;
