@@ -5,7 +5,6 @@ public class ButtonQuitSettingsAction : ButtonAction
 {
 
     [SerializeField] private GameObject settingsButton;
-    [SerializeField] private ButtonQuitSettingsAction settingButtonAction;
 
     private Vector3 initialSettingsButtonPos;
 
