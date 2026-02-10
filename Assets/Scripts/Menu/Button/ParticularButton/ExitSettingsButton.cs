@@ -33,7 +33,7 @@ public class ExitSettingsButton : ActionButton
 
     private IEnumerator ZoomOutCoroutineAction()
     {
-        yield return  camZoomer.ReturnToNormalState();
+        yield return camZoomer.ReturnToNormalState();
         Action();
         
         Button.interactable = true;
