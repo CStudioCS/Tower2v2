@@ -2,10 +2,9 @@ using UnityEngine;
 using LitMotion;
 using LitMotion.Extensions;
 using System.Collections;
+
 public class ExitSettingsButton : IActionButton
 {
-
-    
     [SerializeField] private CameraZoomer camZoomer;
     [SerializeField] private SettingsButton settingsButton;
 
