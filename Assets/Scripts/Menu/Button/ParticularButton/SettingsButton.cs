@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ButtonSettingsAction : ButtonActionWithMovement
+public class SettingsButton : MovingButton
 {
     public override void Action()
     {

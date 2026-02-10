@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ButtonPlayAction : ButtonActionWithMovement
+public class PlayButton : MovingButton
 {
     public override void Action()
     {

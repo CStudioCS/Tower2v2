@@ -268,7 +268,7 @@ GameObject:
   - component: {fileID: 105857735}
   - component: {fileID: 105857734}
   m_Layer: 5
-  m_Name: Straw (2)
+  m_Name: Brick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -725,7 +725,7 @@ GameObject:
   - component: {fileID: 632174048}
   - component: {fileID: 632174047}
   m_Layer: 5
-  m_Name: Straw (1)
+  m_Name: Wood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -788,51 +788,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 632174045}
   m_CullTransparentMesh: 1
---- !u!1 &675469807
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 675469809}
-  - component: {fileID: 675469808}
-  m_Layer: 0
-  m_Name: GameEvent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &675469808
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 675469807}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31c425a736c33094d9073e7286b55c35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 747379110}
---- !u!4 &675469809
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 675469807}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &676816472
 GameObject:
   m_ObjectHideFlags: 0
@@ -1289,7 +1244,6 @@ GameObject:
   - component: {fileID: 1033078497}
   - component: {fileID: 1033078496}
   - component: {fileID: 1033078495}
-  - component: {fileID: 1033078498}
   - component: {fileID: 1033078499}
   m_Layer: 5
   m_Name: SettingsButton
@@ -1362,13 +1316,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 675469808}
-        m_TargetAssemblyTypeName: ButtonClicked, Assembly-CSharp
-        m_MethodName: ZoomInOnCLick
-        m_Mode: 2
+      - m_Target: {fileID: 1033078499}
+        m_TargetAssemblyTypeName: SettingsButton, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 1033078492}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1412,51 +1366,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1033078492}
   m_CullTransparentMesh: 1
---- !u!114 &1033078498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1033078492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: ButtonHover, Assembly-CSharp
-          m_MethodName: ButtonSettingsHover
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: ButtonHover, Assembly-CSharp
-          m_MethodName: ButtonSettingsExitHover
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1033078499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1469,8 +1378,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64c4f74528899a3489b469ade4ac6538, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonSerializeField: {fileID: 1033078495}
   finalPositionButtonAfterMove: 15
   speedButtonWhenClicked: 0.8
+  camZoomer: {fileID: 747379113}
 --- !u!1 &1634812001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1483,7 +1394,6 @@ GameObject:
   - component: {fileID: 1634812005}
   - component: {fileID: 1634812004}
   - component: {fileID: 1634812003}
-  - component: {fileID: 1634812006}
   - component: {fileID: 1634812007}
   m_Layer: 5
   m_Name: QuitSettingsButton
@@ -1556,13 +1466,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 675469808}
-        m_TargetAssemblyTypeName: ButtonClicked, Assembly-CSharp
-        m_MethodName: ZoomOutOnCLick
-        m_Mode: 2
+      - m_Target: {fileID: 1634812007}
+        m_TargetAssemblyTypeName: ExitSettingsButton, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 1634812001}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1606,51 +1516,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1634812001}
   m_CullTransparentMesh: 1
---- !u!114 &1634812006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1634812001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: ButtonHover, Assembly-CSharp
-          m_MethodName: ButtonQuitSettingsHover
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: ButtonHover, Assembly-CSharp
-          m_MethodName: ButtonQuitSettingsExitHover
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1634812007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1663,7 +1528,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c218561b10737ea4bae361429a9a1d31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  settingsButton: {fileID: 1033078492}
+  buttonSerializeField: {fileID: 1634812003}
+  camZoomer: {fileID: 747379113}
+  settingsButton: {fileID: 1033078499}
 --- !u!1 &1757303640
 GameObject:
   m_ObjectHideFlags: 0
@@ -1676,7 +1543,6 @@ GameObject:
   - component: {fileID: 1757303645}
   - component: {fileID: 1757303644}
   - component: {fileID: 1757303643}
-  - component: {fileID: 1757303646}
   - component: {fileID: 1757303647}
   m_Layer: 5
   m_Name: PlayButton
@@ -1749,13 +1615,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 675469808}
-        m_TargetAssemblyTypeName: ButtonClicked, Assembly-CSharp
-        m_MethodName: ZoomInOnCLick
-        m_Mode: 2
+      - m_Target: {fileID: 1757303647}
+        m_TargetAssemblyTypeName: PlayButton, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 1757303640}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1799,51 +1665,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1757303640}
   m_CullTransparentMesh: 1
---- !u!114 &1757303646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1757303640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: ButtonHover, Assembly-CSharp
-          m_MethodName: ButtonPlayHover
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: ButtonHover, Assembly-CSharp
-          m_MethodName: ButtonPlayExitHover
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1757303647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1856,8 +1677,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45b4b48ae76d01645a5ea8c1d2793fb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonSerializeField: {fileID: 1757303643}
   finalPositionButtonAfterMove: 15
   speedButtonWhenClicked: 0.8
+  camZoomer: {fileID: 747379113}
 --- !u!1 &2089002184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1870,7 +1693,6 @@ GameObject:
   - component: {fileID: 2089002189}
   - component: {fileID: 2089002188}
   - component: {fileID: 2089002187}
-  - component: {fileID: 2089002190}
   - component: {fileID: 2089002191}
   m_Layer: 5
   m_Name: QuitButton
@@ -1943,13 +1765,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 675469808}
-        m_TargetAssemblyTypeName: ButtonClicked, Assembly-CSharp
-        m_MethodName: ZoomInOnCLick
-        m_Mode: 2
+      - m_Target: {fileID: 2089002191}
+        m_TargetAssemblyTypeName: QuitButton, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 2089002184}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1993,51 +1815,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2089002184}
   m_CullTransparentMesh: 1
---- !u!114 &2089002190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2089002184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: ButtonHover, Assembly-CSharp
-          m_MethodName: ButtonQuitHover
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: ButtonHover, Assembly-CSharp
-          m_MethodName: ButtonQuitExitHover
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &2089002191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2050,8 +1827,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dde089738e743f40acffac5c53ee53b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonSerializeField: {fileID: 2089002187}
   finalPositionButtonAfterMove: 15
   speedButtonWhenClicked: 0.8
+  camZoomer: {fileID: 747379113}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2059,4 +1838,3 @@ SceneRoots:
   - {fileID: 747379111}
   - {fileID: 415368620}
   - {fileID: 908180370}
-  - {fileID: 675469809}
