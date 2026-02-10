@@ -5,8 +5,6 @@ using System.Collections;
 
 public class ExitSettingsButton : ActionButton
 {
-
-    
     [SerializeField] private CameraZoomer camZoomer;
     [SerializeField] private SettingsButton settingsButton;
 
@@ -35,7 +33,6 @@ public class ExitSettingsButton : ActionButton
     {
         yield return camZoomer.ReturnToNormalState();
         Action();
-        
         Button.interactable = true;
     }
 }

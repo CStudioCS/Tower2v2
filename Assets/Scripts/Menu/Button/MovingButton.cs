@@ -13,10 +13,10 @@ public class MovingButton : ActionButton
     public float SpeedButtonWhenClicked => speedButtonWhenClicked;
     public override void Action(){}
 
-    protected  virtual void Movement()
+    protected virtual void Movement()
     {
-        Vector3 targetPosition = this.transform.position + new Vector3(finalPositionButtonAfterMove, 0f, 0f);
-        LMotion.Create(this.transform.position, targetPosition, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => this.transform.position = y);
+        Vector3 targetPosition = transform.position + new Vector3(finalPositionButtonAfterMove, 0f, 0f);
+        LMotion.Create(transform.position, targetPosition, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => transform.position = y);
     }
     
     public override void OnClick()
