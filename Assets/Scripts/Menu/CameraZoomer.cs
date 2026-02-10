@@ -2,6 +2,7 @@ using UnityEngine;
 using LitMotion;
 using LitMotion.Extensions;
 using System.Collections;
+
 public class CameraZoomer : MonoBehaviour
 {
     [SerializeField] private Camera cam;
@@ -19,15 +20,15 @@ public class CameraZoomer : MonoBehaviour
 
     public IEnumerator ZoomIn(Vector3 finalPos)
     {
-        finalPos.z = this.transform.position.z;
-        LMotion.Create(this.transform.position, finalPos, zoomDuration).WithEase(Ease.OutQuad).Bind(x => this.transform.position = x);
+        finalPos.z = transform.position.z;
+        LMotion.Create(transform.position, finalPos, zoomDuration).WithEase(Ease.OutQuad).Bind(x => transform.position = x);
         LMotion.Create(cam.orthographicSize, zoomSize, zoomDuration).WithEase(Ease.OutQuad).Bind(x => cam.orthographicSize = x);
         yield return new WaitForSeconds(zoomDuration);
     }
 
     public IEnumerator ReturnToNormalState()
     {
-        LMotion.Create(this.transform.position, initialCamPosition, zoomDuration).WithEase(Ease.OutQuad).Bind(x => this.transform.position = x);
+        LMotion.Create(transform.position, initialCamPosition, zoomDuration).WithEase(Ease.OutQuad).Bind(x => transform.position = x);
         LMotion.Create(cam.orthographicSize, initialCamSize, zoomDuration).WithEase(Ease.OutQuad).Bind(x => cam.orthographicSize = x);
         yield return new WaitForSeconds(zoomDuration);
     }

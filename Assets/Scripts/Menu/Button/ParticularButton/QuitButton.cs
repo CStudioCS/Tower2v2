@@ -4,7 +4,7 @@ using UnityEditor;
 #endif
 public class QuitButton : MovingButton
 {
-    public override void  Action()
+    public override void Action()
     {
         #if UNITY_EDITOR
             Debug.Log("Stop Play Mode in Editor");
