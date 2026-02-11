@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class LevelManager : MonoBehaviour
 {
@@ -109,15 +110,31 @@ public class LevelManager : MonoBehaviour
     private IEnumerator StartGameDelayedRoutine()
     {
         GameState = State.Starting;
+
+        List<PlayerMovement> playerMovements = new();
+        foreach (PlayerInput playerInput in GameStartManager.Instance.Players)
+        {
+            PlayerMovement playerMovement = playerInput.GetComponent<PlayerMovement>();
+            playerMovement.enabled = false;
+            playerMovements.Add(playerMovement);
+        }
+
         ActivateLobbyObjects(false);
         countdown.SetTrigger(CountdownString);
         GameAboutToStart?.Invoke();
+        
         yield return new WaitForSeconds(3); 
+
         GameState = State.Game;
         LevelTimer = 0;
         ActivateInGameObjects(true);
         ItemRandomizer.Reset();
         GameStarted?.Invoke();
+
+        foreach (PlayerMovement playerMovement in playerMovements)
+        {
+            playerMovement.enabled = true;
+        }
     }
 
     private void EndLevel(PlayerTeam.Team winner)
