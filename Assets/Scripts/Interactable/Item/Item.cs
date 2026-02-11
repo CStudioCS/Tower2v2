@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-
 public class Item : Interactable
 {
     public enum Type { Straw, WoodLog, WoodPlank, Clay, Brick }
@@ -38,7 +37,6 @@ public class Item : Interactable
         itemCollider.enabled = false;
         player.GrabItem(this);
         transform.SetParent(player.transform);
-        transform.localPosition = Vector2.zero;
     }
 
     public void Drop()
