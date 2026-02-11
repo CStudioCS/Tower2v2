@@ -365,13 +365,10 @@ MonoBehaviour:
   interactionTimeSecondary: 0
   blockOffset: {x: 0, y: 0.25, z: -0.1}
   onTowerHeightText: {fileID: 312890316318916640}
-  offTowerHeightText: {fileID: 0}
   onTowerCanvas: {fileID: 7428609469738332248}
-  offTowerCanvas: {fileID: 0}
   strawTowerPiecePrefab: {fileID: 6828945417408229614, guid: 50c8ea5a07072f24393c6bd798ddc9dc, type: 3}
   woodTowerPiecePrefab: {fileID: 1104166184276824648, guid: 768e3f708f781a849b5f398d919c5071, type: 3}
   brickTowerPiecePrefab: {fileID: 7086032503934932409, guid: d29e198529ac9e842ad823191db288ea, type: 3}
-  recipesList: {fileID: 0}
 --- !u!61 &1051541586536054059
 BoxCollider2D:
   m_ObjectHideFlags: 0

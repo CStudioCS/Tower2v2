@@ -47,8 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTime: 1
-  interactionTimeA: 0
-  givenItem: 0
+  interactionTimeSecondary: 0
   itemPrefab: {fileID: 0}
 --- !u!212 &7177215030695489216
 SpriteRenderer:

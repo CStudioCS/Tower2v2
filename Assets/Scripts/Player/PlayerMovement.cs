@@ -5,10 +5,13 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float maxSpeed = 8f;
+    public float MaxSpeed => maxSpeed;
     [SerializeField] private float acceleration = 100f;
     [SerializeField] private float friction = 140f;
     [SerializeField] private float gamepadDeadzone = 0.05f;
     [SerializeField] private float gamepadmaxSpeedThreashold = 0.5f;
+    private Vector2 lastSpeed = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
+    public Vector2 LastSpeed => lastSpeed;
 
     [Header("References")]
     [SerializeField] private Player player;
@@ -31,6 +34,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.linearVelocity = VelocityApproach();
+
+        if (Rb.linearVelocity != Vector2.zero)
+        {
+            lastSpeed = rb.linearVelocity;
+        }
     }
 
 

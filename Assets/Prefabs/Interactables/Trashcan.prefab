@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionTime: 0
-  interactionTimeA: 0
+  interactionTimeSecondary: 0
 --- !u!212 &-1162814141957900994
 SpriteRenderer:
   m_ObjectHideFlags: 0
