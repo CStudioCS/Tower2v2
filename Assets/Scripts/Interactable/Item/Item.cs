@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 public class Item : Interactable
 {
     public enum Type { Straw, WoodLog, WoodPlank, Clay, Brick }
@@ -15,6 +16,7 @@ public class Item : Interactable
     [SerializeField] private float ejectionCoefficientMaxDeviation;
     [SerializeField] private float rotationCoefficientMaxDeviation;
     [SerializeField] private float minimumEjectionSpeedRatio;
+    [SerializeField] private float grabbingTime;
 
     private void Awake()
     {
@@ -24,10 +26,10 @@ public class Item : Interactable
     protected override bool CanInteractPrimary(Player player) => !player.IsHolding;
     protected override void InteractPrimary(Player player)
     {
-        Grab(player);
+        Grab(player,false);
     }
 
-    public void Grab(Player player)
+    public void Grab(Player player, bool newItem)
     {
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0;
@@ -37,6 +39,14 @@ public class Item : Interactable
         itemCollider.enabled = false;
         player.GrabItem(this);
         transform.SetParent(player.transform);
+        if (newItem)
+        {
+            transform.localPosition = Vector2.zero;  
+        }
+        else
+        {
+            transform.DOLocalMove(Vector3.zero, grabbingTime);
+        }
     }
 
     public void Drop()
@@ -50,8 +60,8 @@ public class Item : Interactable
 
         Vector2 lastSpeed = lastOwner.PlayerMovement.LastSpeed;
         Vector2 speedDirection =lastSpeed.normalized;
-        float ejectionSpeedRecalibration = Mathf.Clamp(Mathf.Abs(lastSpeed.magnitude), minimumEjectionSpeedRatio * lastOwner.PlayerMovement.MaxSpeed, lastOwner.PlayerMovement.MaxSpeed);//speed if not null else a percentage of max speed
-        rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionCoefficient * ejectionDeviation;
+        float ejectionSpeedRecalibration = ejectionCoefficient * Mathf.Clamp(Mathf.Abs(lastSpeed.magnitude), minimumEjectionSpeedRatio * lastOwner.PlayerMovement.MaxSpeed, lastOwner.PlayerMovement.MaxSpeed);//speed if not null else a percentage of max speed
+        rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionDeviation;
         rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationCoefficient * rotationDeviation;
         lastOwner = null;
     }

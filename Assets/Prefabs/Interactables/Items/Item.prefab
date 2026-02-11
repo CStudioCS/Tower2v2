@@ -131,11 +131,12 @@ MonoBehaviour:
   itemType: 0
   rb: {fileID: 3815938341415364146}
   itemCollider: {fileID: -256997523848646438}
-  ejectionCoefficient: 0.8
+  ejectionCoefficient: 1.2
   rotationCoefficient: 180
   ejectionCoefficientMaxDeviation: 0.2
   rotationCoefficientMaxDeviation: 0.2
   minimumEjectionSpeedRatio: 0.2
+  grabbingTime: 0.3
 --- !u!212 &3599087220505950698
 SpriteRenderer:
   m_ObjectHideFlags: 0

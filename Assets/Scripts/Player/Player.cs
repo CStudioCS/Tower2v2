@@ -135,7 +135,7 @@ public class Player : MonoBehaviour
     public void GrabNewItem(Item itemPrefab)
     {
         Item itemInstance = Instantiate(itemPrefab);
-        itemInstance.Grab(this);        
+        itemInstance.Grab(this,true);        
     }
     
     public void GrabItem(Item item)
