@@ -12,9 +12,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     private InputAction moveAction;
 
+    private bool gameStartinglock;
+
     private void Awake()
     {
         moveAction = playerInput.actions.FindAction("Gameplay/Move");
+    }
+
+    private void Start()
+    {
+        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.Instance.GameStarted += OnGameStarted;
     }
 
     private void FixedUpdate()
@@ -24,7 +32,20 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             return;
         }
-        
-        rb.linearVelocity = moveAction.ReadValue<Vector2>() * speed;
+
+        if (gameStartinglock)
+            return;
+
+        rb.linearVelocity = moveAction.ReadValue<Vector2>() * speed;    
+    }
+
+    private void OnGameAboutToStart()
+    {
+        gameStartinglock = true;
+    }
+
+    private void OnGameStarted()
+    {
+        gameStartinglock = false;
     }
 }
