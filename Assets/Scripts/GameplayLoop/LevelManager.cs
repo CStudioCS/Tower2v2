@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class LevelManager : MonoBehaviour
 {
@@ -24,8 +24,6 @@ public class LevelManager : MonoBehaviour
     public event Action GameStarted;
     public event Action GameEnded;
 
-    [SerializeField] private StartPoint[] startPoints;
-    public StartPoint[] StartPoints => startPoints;
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
     {
@@ -34,7 +32,10 @@ public class LevelManager : MonoBehaviour
             if (startPointsMap == null)
             {
                 startPointsMap = new();
-                foreach (StartPoint startPoint in startPoints)
+                if (WorldLinker.Instance.startPoints.Length <= 0)
+                    Debug.LogError("Start Points haven't been defined in World Linker");
+
+                foreach (StartPoint startPoint in WorldLinker.Instance.startPoints)
                 {
                     if (startPointsMap.TryGetValue(startPoint.Team, out List<StartPoint> startPoints))
                     {

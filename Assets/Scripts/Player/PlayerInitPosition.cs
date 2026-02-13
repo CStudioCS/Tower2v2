@@ -6,9 +6,8 @@ using UnityEngine.InputSystem;
 public class PlayerInitPosition : MonoBehaviour
 {
     [SerializeField] private PlayerTeam playerTeam;
-    [SerializeField] private StartPoint[] startPoints;
     
-    private void Start()
+    public void Initialize()
     {
         LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
     }
