@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class GameStartManager : MonoBehaviour
 {
-    public static GameStartManager Instance; 
+    public static GameStartManager Instance;
     public enum WaitState
     {
         NotEnoughPlayers,
@@ -48,9 +47,15 @@ public class GameStartManager : MonoBehaviour
             return player.PlayerControlBadge.IsReady;
         });
     
-    [SerializeField] private TextMeshProUGUI waitingText;
-    
-    private void UpdateWaitingText() => waitingText.text = WaitingMessages[waitState];
+    private void Awake()
+    {
+        if (Instance != null)
+            Destroy(Instance);
+
+        Instance = this;
+    }
+
+    private void UpdateWaitingText() => CanvasLinker.Instance.waitingText.text = WaitingMessages[waitState];
     
     private void TryChangeWaitState(WaitState newWaitState)
     {
@@ -61,14 +66,6 @@ public class GameStartManager : MonoBehaviour
     {
         waitState = newWaitState;
         UpdateWaitingText();
-    }
-
-    public void Awake()
-    {
-        if (Instance != null)
-            Destroy(Instance);
-            
-        Instance = this;
     }
 
     void Start()
@@ -98,8 +95,15 @@ public class GameStartManager : MonoBehaviour
         player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
         player.PlayerControlBadge.ReadyChanged += OnPlayerReadyChanged;
         
-        if (PlayerCount != 4) return;
-        ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
+        if (PlayerCount != 4)
+            return;
+
+#if DEBUG
+        if (TeamsBalanced && AllPlayersReady) //only ever true in debug mode where the frame the player joins it changes its team
+            StartGame();
+        else
+#endif
+            ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
     }
     
     private void OnPlayerTeamChanged()
