@@ -149,6 +149,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerLobbyManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6678145294387318844, guid: b7aa67acaa006fd41aac1d31be2c7997, type: 3}
+      propertyPath: m_PlayerPrefab
+      value: 
+      objectReference: {fileID: 4067928945899315388, guid: d9e8e633f322a534dbce3d6e6bd1edc6, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

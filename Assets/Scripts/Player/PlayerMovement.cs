@@ -17,19 +17,27 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D Rb => rb;
     private InputAction moveAction;
 
+    private bool gameStartingLock;
+
     private void Awake()
     {
         moveAction = playerInput.actions.FindAction("Gameplay/Move");
     }
 
+    private void Start()
+    {
+        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.Instance.GameStarted += OnGameStarted;
+    }
+
     private void FixedUpdate()
     {
-        if (player.Interacting)
+        if (gameStartingLock || player.Interacting)
         {
             rb.linearVelocity = Vector2.zero;
             return;
         }
-
+    
         rb.linearVelocity = VelocityApproach();
     }
 
@@ -64,5 +72,21 @@ public class PlayerMovement : MonoBehaviour
         dir.Normalize();
 
         return value + dir * Mathf.Min(maxDisplacement, move);
+    }
+
+    private void OnGameAboutToStart()
+    {
+        gameStartingLock = true;
+    }
+
+    private void OnGameStarted()
+    {
+        gameStartingLock = false;
+    }
+
+    private void OnDisable()
+    {
+        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.Instance.GameStarted -= OnGameStarted;
     }
 }

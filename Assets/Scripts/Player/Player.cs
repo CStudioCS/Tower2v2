@@ -30,6 +30,11 @@ public class Player : MonoBehaviour
         secondaryAction = playerInput.actions.FindAction("Gameplay/CutWood");
     }
 
+    private void Start()
+    {
+        LevelManager.Instance.GameEnded += OnGameEnded;
+    }
+
     private void Update()
     {
         switch (LevelManager.Instance.GameState)
@@ -142,11 +147,6 @@ public class Player : MonoBehaviour
     {
         IsHolding = true;
         HeldItem = item;
-    }
-    
-    private void Start()
-    {
-        LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
     private void OnGameEnded()
