@@ -9,8 +9,8 @@ public abstract class Interactable : MonoBehaviour
     public enum InteractionType { Primary, Secondary }
     
     [Header("Interaction Times")]
-    [SerializeField] float interactionTime;
-    [SerializeField] float interactionTimeSecondary;
+    [SerializeField] protected float interactionTime;
+    protected float interactionTimeSecondary; //unused
     
     public bool IsAlreadyInteractedWith { get; set; }
     private bool isHighlighted = false;

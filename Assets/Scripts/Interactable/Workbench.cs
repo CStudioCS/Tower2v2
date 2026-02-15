@@ -2,15 +2,22 @@ using UnityEngine;
 
 public class Workbench : Interactable
 {
-    [SerializeField] private Item woodPlankItemPrefab;
     
     private State state;
     private SpriteRenderer spriteRenderer;
+
+    private float giveOrTakeItemInteractionTime = 0f;
+    [SerializeField] private float cutWoodInteractionTime = 1f;
+
+    [Header("Prefab refs")]
+    [SerializeField] private Item woodPlankItemPrefab;
+
     private enum State { Empty, HasWoodLog, HasWoodPlank }
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        giveOrTakeItemInteractionTime = interactionTime;
     }
 
     protected override bool CanInteractPrimary(Player player)
@@ -20,15 +27,13 @@ public class Workbench : Interactable
             case State.Empty:
                 return player.IsHolding && player.HeldItem.ItemType == Item.Type.WoodLog;
             case State.HasWoodLog:
-                return false;
+                return !player.IsHolding;
             case State.HasWoodPlank:
                 return !player.IsHolding;
             default:
                 throw new UnityException("Workbench state not handled in CanInteract");
         }
     }
-
-    protected override bool CanInteractSecondary(Player player) => state == State.HasWoodLog && !player.IsHolding;
 
     protected override void InteractPrimary(Player player)
     {
@@ -37,20 +42,23 @@ public class Workbench : Interactable
             case State.Empty:
                 state = State.HasWoodLog;
                 player.ConsumeCurrentItem();
+                interactionTime = cutWoodInteractionTime;
+
                 spriteRenderer.color = Color.red;
+                break;
+            case State.HasWoodLog:
+                state = State.HasWoodPlank;
+                interactionTime = giveOrTakeItemInteractionTime;
+
+                spriteRenderer.color = Color.blue;
                 break;
             case State.HasWoodPlank:
                 state = State.Empty;
                 player.GrabNewItem(woodPlankItemPrefab);
+
                 spriteRenderer.color = Color.white;
                 break;
         }
-    }
-
-    protected override void InteractSecondary(Player player)
-    {
-        state = State.HasWoodPlank;
-        spriteRenderer.color = Color.blue;
     }
     
     protected override void OnGameEnded()
