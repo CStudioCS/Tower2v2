@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D Rb => rb;
     private InputAction moveAction;
 
-    private bool gameStartinglock;
+    private bool gameStartingLock;
 
     private void Awake()
     {
@@ -32,14 +32,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (player.Interacting)
+        if (gameStartingLock || player.Interacting)
         {
             rb.linearVelocity = Vector2.zero;
             return;
         }
-
-        if (gameStartinglock)
-            return;
     
         rb.linearVelocity = VelocityApproach();
     }
@@ -79,11 +76,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnGameAboutToStart()
     {
-        gameStartinglock = true;
+        gameStartingLock = true;
     }
 
     private void OnGameStarted()
     {
-        gameStartinglock = false;
+        gameStartingLock = false;
+    }
+
+    private void OnDisable()
+    {
+        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.Instance.GameStarted -= OnGameStarted;
     }
 }
