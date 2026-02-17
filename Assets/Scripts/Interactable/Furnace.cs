@@ -11,7 +11,7 @@ public class Furnace : Interactable
     private State state;
     private enum State { Empty, Cooking, Cooked }
 
-    protected override bool CanInteractPrimary(Player player)
+    public override bool CanInteract(Player player)
     {
         switch (state)
         {
@@ -26,7 +26,7 @@ public class Furnace : Interactable
         }
     }
 
-    protected override void InteractPrimary(Player player)
+    public override void Interact(Player player)
     {
         switch (state)
         {
@@ -41,6 +41,8 @@ public class Furnace : Interactable
                 break;
         }
     }
+
+    public override float GetInteractionTime() => 0;
 
     private IEnumerator Cook()
     {

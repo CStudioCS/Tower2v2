@@ -45,13 +45,13 @@ public class Tower : Interactable
         ResetTower();
     }
 
-    protected override bool CanInteractPrimary(Player player)
+    public override bool CanInteract(Player player)
     {
         // Check if the player is holding the correct item for the recipe
         return player.IsHolding && recipesList.CurrentNeededItemType == player.HeldItem.ItemType;
     }
 
-    protected override void InteractPrimary(Player player)
+    public override void Interact(Player player)
     {
         // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
         // and with the way Unity handles rendering, the new object is rendered on top of the old one
@@ -71,7 +71,9 @@ public class Tower : Interactable
         PieceBuilt?.Invoke();
     }
 
-private void UpdateTowerTopUI()
+    public override float GetInteractionTime() => 0;
+
+    private void UpdateTowerTopUI()
     {
         if (Height > 0)
             onTowerCanvas.position = towerPieces[^1].transform.position + blockOffset;

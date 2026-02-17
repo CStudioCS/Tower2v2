@@ -6,8 +6,9 @@ public class Workbench : Interactable
     private State state;
     private SpriteRenderer spriteRenderer;
 
-    private float giveOrTakeItemInteractionTime = 0f;
+    [SerializeField] private float putOrPickUpItemInteractionTime = 0f;
     [SerializeField] private float cutWoodInteractionTime = 1f;
+    private float currentInteractionTime;
 
     [Header("Prefab refs")]
     [SerializeField] private Item woodPlankItemPrefab;
@@ -17,10 +18,9 @@ public class Workbench : Interactable
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        giveOrTakeItemInteractionTime = interactionTime;
     }
 
-    protected override bool CanInteractPrimary(Player player)
+    public override bool CanInteract(Player player)
     {
         switch (state)
         {
@@ -35,20 +35,20 @@ public class Workbench : Interactable
         }
     }
 
-    protected override void InteractPrimary(Player player)
+    public override void Interact(Player player)
     {
         switch (state)
         {
             case State.Empty:
                 state = State.HasWoodLog;
                 player.ConsumeCurrentItem();
-                interactionTime = cutWoodInteractionTime;
+                currentInteractionTime = cutWoodInteractionTime;
 
                 spriteRenderer.color = Color.red;
                 break;
             case State.HasWoodLog:
                 state = State.HasWoodPlank;
-                interactionTime = giveOrTakeItemInteractionTime;
+                currentInteractionTime = putOrPickUpItemInteractionTime;
 
                 spriteRenderer.color = Color.blue;
                 break;
@@ -60,6 +60,8 @@ public class Workbench : Interactable
                 break;
         }
     }
+
+    public override float GetInteractionTime() => currentInteractionTime;
     
     protected override void OnGameEnded()
     {

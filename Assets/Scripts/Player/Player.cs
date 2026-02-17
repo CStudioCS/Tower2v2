@@ -47,16 +47,14 @@ public class Player : MonoBehaviour
     private void GameUpdate()
     {
         if (interactAction.WasPressedThisFrame())
-            Interact(Interactable.InteractionType.Primary);
-        else if (secondaryAction.WasPressedThisFrame())
-            Interact(Interactable.InteractionType.Secondary);
+            Interact();
     }
 
-    private void Interact(Interactable.InteractionType interactionType)
+    private void Interact()
     {
         Interactable closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
 
-        if (closestInteractable != null && !closestInteractable.IsAlreadyInteractedWith && closestInteractable.CanInteract(interactionType, this))
+        if (closestInteractable != null && !closestInteractable.IsAlreadyInteractedWith && closestInteractable.CanInteract(this))
         {
             if (currentInteractable && currentInteractable != closestInteractable)
                 currentInteractable.Highlight(false);
@@ -64,11 +62,11 @@ public class Player : MonoBehaviour
             currentInteractable = closestInteractable;
             currentInteractable.Highlight(true);
 
-            float time = closestInteractable.GetInteractionTime(interactionType);
+            float time = closestInteractable.GetInteractionTime();
             if (time > 0)
-                StartCoroutine(InteractTimer(closestInteractable, interactionType, time));
+                StartCoroutine(InteractTimer(closestInteractable, time));
             else
-                closestInteractable.Interact(interactionType, this);
+                closestInteractable.Interact(this);
         }
         else if (HeldItem != null)
             DropHeldItem();
@@ -80,7 +78,7 @@ public class Player : MonoBehaviour
             playerControlBadge.Interact();
     }
 
-    private IEnumerator InteractTimer(Interactable insideInteractable, Interactable.InteractionType interactionType, float time)
+    private IEnumerator InteractTimer(Interactable insideInteractable, float time)
     {
         Interacting = true;
         insideInteractable.IsAlreadyInteractedWith = true;
@@ -90,7 +88,7 @@ public class Player : MonoBehaviour
         while(t < time)
         {
             // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
-            if (!GetAssociatedInputAction(interactionType).IsPressed() || LevelManager.Instance.GameState != LevelManager.State.Game)
+            if (!interactAction.IsPressed() || LevelManager.Instance.GameState != LevelManager.State.Game)
             {
                 StopInteracting(insideInteractable);
                 yield break;
@@ -103,7 +101,7 @@ public class Player : MonoBehaviour
 
         // We interacted with the object -> Reset everything and call the interact function
         StopInteracting(insideInteractable);
-        insideInteractable.Interact(interactionType, this);
+        insideInteractable.Interact(this);
     }
 
     private void StopInteracting(Interactable insideInteractable)
@@ -176,19 +174,5 @@ public class Player : MonoBehaviour
         }
 
         return closest;
-    }
-
-    private InputAction GetAssociatedInputAction(Interactable.InteractionType interactionType)
-    {
-        switch (interactionType)
-        {
-            case Interactable.InteractionType.Primary:
-                return interactAction;
-            case Interactable.InteractionType.Secondary:
-                return secondaryAction;
-        }
-
-        Debug.LogError("Associated input action was not found");
-        return null;
     }
 }
