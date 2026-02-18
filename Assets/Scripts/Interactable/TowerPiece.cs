@@ -10,13 +10,9 @@ public class TowerPiece : Interactable
         tower = transform.parent.GetComponent<Tower>();
     }
 
-    public override bool CanInteract(InteractionType type, Player player)
-    {
-        return tower.CanInteract(type,player);
-    }
+    public override bool CanInteract(Player player) => tower.CanInteract(player);
 
-    public override void Interact(InteractionType type, Player player)
-    {
-        tower.Interact(type,player);
-    }
+    public override void Interact(Player player) => tower.Interact(player);
+
+    public override float GetInteractionTime() => 0;
 }
