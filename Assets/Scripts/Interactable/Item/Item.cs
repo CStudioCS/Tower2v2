@@ -18,11 +18,14 @@ public class Item : Interactable
         itemCollider.enabled = false;
     }
 
-    protected override bool CanInteractPrimary(Player player) => !player.IsHolding;
-    protected override void InteractPrimary(Player player)
+    public override bool CanInteract(Player player) => !player.IsHolding;
+
+    public override void Interact(Player player)
     {
         Grab(player);
     }
+
+    public override float GetInteractionTime() => 0;
 
     public void Grab(Player player)
     {
