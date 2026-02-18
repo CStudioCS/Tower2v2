@@ -36,7 +36,6 @@ public class Item : Interactable
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0;
         rb.simulated = false;
-        transform.rotation = Quaternion.identity;
         itemCollider.enabled = false;
     }
 
