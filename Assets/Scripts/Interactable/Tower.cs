@@ -62,7 +62,7 @@ public class Tower : Interactable
             return;
         }
 
-        GameObject towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * Height, Quaternion.identity, transform);
+        GameObject towerPieceInstance = Instantiate(towerPiece, transform.position +  blockOffset * Height, Quaternion.identity, transform);
         towerPieces.Add(towerPieceInstance);
         LastPlacedTime = LevelManager.Instance.LevelTimer;
 

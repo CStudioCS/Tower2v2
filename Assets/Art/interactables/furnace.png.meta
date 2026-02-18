@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d4f503d0f7b03ba4598302b303a93902
+guid: 839c5c37cc62cf0979ac74f4d663986e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7874217791664242756
-    second: caillou_0
+      213: -5160551831037241196
+    second: furnace_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: caillou_0
+      name: furnace_0
       rect:
         serializedVersion: 2
-        x: 3860
-        y: 2362
-        width: 608
-        height: 409
+        x: 0
+        y: 0
+        width: 506
+        height: 567
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4404534bc57d64d60800000000000000
-      internalID: 7874217791664242756
+      spriteID: 498980293790268b0800000000000000
+      internalID: -5160551831037241196
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      caillou_0: 7874217791664242756
+      furnace_0: -5160551831037241196
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
