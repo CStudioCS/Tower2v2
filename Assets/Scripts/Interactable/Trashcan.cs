@@ -5,8 +5,7 @@ public class Trashcan : Interactable
         player.ConsumeCurrentItem();
     }
 
-    public override float GetInteractionTime()
-        => 0;
+    public override float GetInteractionTime() => 0;
 
     public override bool CanInteract(Player player) => player.IsHolding;
 }
