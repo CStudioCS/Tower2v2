@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1131759844280173415, guid: a92ef83830325384fa35406c670165ea, type: 3}
       propertyPath: m_Name
-      value: RecipeWood
+      value: RecipeWoodPlank
       objectReference: {fileID: 0}
     - target: {fileID: 2729854252911813677, guid: a92ef83830325384fa35406c670165ea, type: 3}
       propertyPath: m_text
@@ -19,7 +19,7 @@ PrefabInstance:
     - target: {fileID: 4172522581351886278, guid: a92ef83830325384fa35406c670165ea, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 8957324059118975939, guid: 661b6a1b5b52df3458e15c197723bf33, type: 3}
+      objectReference: {fileID: -1770322661694616754, guid: d2b359fc02133bbd8aa678a44b8ce2a9, type: 3}
     - target: {fileID: 7959850080090337080, guid: a92ef83830325384fa35406c670165ea, type: 3}
       propertyPath: type
       value: 2
