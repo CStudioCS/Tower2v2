@@ -19,11 +19,8 @@ public abstract class Interactable : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player))
         {
-            if (CanInteract(player))
-            {
-                this.Highlight(true);
-                player.insideInteractableList.Add(this);
-            }
+            this.Highlight(true);
+            player.insideInteractableList.Add(this);
         }
     }
 
