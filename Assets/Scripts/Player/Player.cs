@@ -1,7 +1,9 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using LitMotion;
 
 public class Player : MonoBehaviour
 {
@@ -135,13 +137,23 @@ public class Player : MonoBehaviour
     public void GrabNewItem(Item itemPrefab)
     {
         Item itemInstance = Instantiate(itemPrefab);
-        itemInstance.Grab(this,true);        
+        GrabItem(itemInstance, false);        
     }
-    
-    public void GrabItem(Item item)
+
+    public void GrabItem(Item item, bool interpolatePosition)
     {
         IsHolding = true;
         HeldItem = item;
+
+        item.Immobilize();
+        item.LastOwner = this;
+        item.transform.SetParent(transform);
+        
+        if(interpolatePosition)
+            LMotion.Create(item.transform.localPosition, Vector3.zero, item.GrabbingTime)
+       .BindToLocalPosition(item.transform);
+        else
+            item.transform.localPosition = Vector2.zero;
     }
     
     private void Start()
