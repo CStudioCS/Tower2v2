@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldLinker : MonoBehaviour
@@ -6,6 +7,8 @@ public class WorldLinker : MonoBehaviour
 
     public Tower towerLeft;
     public Tower towerRight;
+
+    public StartPoint[] startPoints;
 
     private void Awake()
     {

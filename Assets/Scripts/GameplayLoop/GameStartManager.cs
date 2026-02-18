@@ -94,6 +94,7 @@ public class GameStartManager : MonoBehaviour
         Player player = playerInput.GetComponent<Player>();
         player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
         player.PlayerControlBadge.ReadyChanged += OnPlayerReadyChanged;
+        playerInput.GetComponent<PlayerInitPosition>().Initialize();
         
         if (PlayerCount != 4)
             return;
@@ -145,7 +146,7 @@ public class GameStartManager : MonoBehaviour
     private void StartGame()
     {
         ChangeWaitState(WaitState.GameStarting);
-        
+        InitializeTeamPlayerIndices();
         LevelManager.Instance.StartGameDelayed();
     }
     
@@ -154,5 +155,28 @@ public class GameStartManager : MonoBehaviour
         LobbyManager.Instance.PlayerJoined -= OnPlayerJoined;
         LobbyManager.Instance.PlayerLeft -= OnPlayerLeft;
         LevelManager.Instance.GameEnded -= OnGameEnded;
+    }
+
+    private void InitializeTeamPlayerIndices()
+    {
+        int leftTeamCounter = 0;
+        int rightTeamCounter = 0;
+        foreach (PlayerInput playerInput in players)
+        {
+            Player player = playerInput.GetComponent<Player>();
+            PlayerTeam playerTeam = player.PlayerTeam;
+            PlayerTeam.Team currentTeam = playerTeam.CurrentTeam;
+            switch (currentTeam)
+            {
+                case PlayerTeam.Team.Left:
+                    playerTeam.InitTeamPlayerIndex(leftTeamCounter);
+                    leftTeamCounter++;
+                    break;
+                default:
+                    playerTeam.InitTeamPlayerIndex(rightTeamCounter);
+                    rightTeamCounter++;
+                    break;
+            }
+        }
     }
 }

@@ -54,7 +54,6 @@ public class PlayerControlBadge : MonoBehaviour
 #if DEBUG
         if (LobbyManager.Instance.DebugMode)
         {
-            //quick and dirty but it's debug
             if (GameStartManager.Instance.PlayerCount % 2 == 0)
                 playerTeam.SetTeam(PlayerTeam.Team.Left);
             else

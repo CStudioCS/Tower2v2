@@ -24,6 +24,30 @@ public class LevelManager : MonoBehaviour
     public event Action GameStarted;
     public event Action GameEnded;
 
+    private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
+    public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
+    {
+        get
+        {
+            if (startPointsMap == null)
+            {
+                startPointsMap = new();
+                if (WorldLinker.Instance.startPoints.Length <= 0)
+                    Debug.LogError("Start Points haven't been defined in World Linker");
+
+                foreach (StartPoint startPoint in WorldLinker.Instance.startPoints)
+                {
+                    if (startPointsMap.TryGetValue(startPoint.Team, out List<StartPoint> startPoints))
+                    {
+                        startPoints.Add(startPoint);
+                    }
+                    else StartPointsMap[startPoint.Team] = new() { startPoint };
+                }
+            }
+            return startPointsMap;
+        }
+    }
+
     public void Awake()
     {
         if (Instance != null)

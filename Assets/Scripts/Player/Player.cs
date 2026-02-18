@@ -32,6 +32,11 @@ public class Player : MonoBehaviour
         secondaryAction = playerInput.actions.FindAction("Gameplay/CutWood");
     }
 
+    private void Start()
+    {
+        LevelManager.Instance.GameEnded += OnGameEnded;
+    }
+
     private void Update()
     {
         switch (LevelManager.Instance.GameState)
@@ -154,11 +159,6 @@ public class Player : MonoBehaviour
        .BindToLocalPosition(item.transform);
         else
             item.transform.localPosition = Vector2.zero;
-    }
-    
-    private void Start()
-    {
-        LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
     private void OnGameEnded()
