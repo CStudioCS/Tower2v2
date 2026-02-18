@@ -16,6 +16,7 @@ public class Item : Interactable
     private void Awake()
     {
         itemCollider.enabled = false;
+        LevelManager.Instance.GameEnded += Disappear;
     }
 
     public override bool CanInteract(Player player) => !player.IsHolding;
@@ -49,5 +50,15 @@ public class Item : Interactable
         itemCollider.enabled = true;
         rb.linearVelocity = ejectionCoefficient * speedVector ;
         rb.angularVelocity = Random.Range(-1,2) * rotationCoefficient;
+    }
+
+    private void Disappear()
+    {
+        Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        LevelManager.Instance.GameEnded -= Disappear;
     }
 }
