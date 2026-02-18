@@ -1,9 +1,9 @@
-using DG.Tweening;
+using LitMotion;
+using LitMotion.Adapters;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using LitMotion;
 
 public class Player : MonoBehaviour
 {
@@ -25,6 +25,8 @@ public class Player : MonoBehaviour
 
     private InputAction interactAction;
     private InputAction secondaryAction;
+
+    private MotionHandle dropMotion;
 
     private void Awake()
     {
@@ -135,6 +137,7 @@ public class Player : MonoBehaviour
             return;
 
         IsHolding = false;
+        dropMotion.TryCancel();
         HeldItem.Drop();
         HeldItem = null;
     }
@@ -153,10 +156,11 @@ public class Player : MonoBehaviour
         item.Immobilize();
         item.LastOwner = this;
         item.transform.SetParent(transform);
-        
-        if(interpolatePosition)
-            LMotion.Create(item.transform.localPosition, Vector3.zero, item.GrabbingTime)
-       .BindToLocalPosition(item.transform);
+
+        if (interpolatePosition)
+        {
+            dropMotion = LMotion.Create(item.transform.localPosition, Vector3.zero, item.GrabbingTime).Bind(x => item.transform.localPosition = x);
+        }
         else
             item.transform.localPosition = Vector2.zero;
     }

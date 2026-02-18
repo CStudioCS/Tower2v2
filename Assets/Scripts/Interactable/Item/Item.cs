@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+
 public class Item : Interactable
 {
     public enum Type { Straw, WoodLog, WoodPlank, Clay, Brick }
@@ -50,6 +51,7 @@ public class Item : Interactable
 
         Vector2 lastSpeed = LastOwner.PlayerMovement.LastSpeed;
         Vector2 speedDirection =lastSpeed.normalized;
+        Debug.Log(speedDirection);
         float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(Mathf.Abs(lastSpeed.magnitude), minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);//speed if not null else a percentage of max speed
         rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionDeviation;
         rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;

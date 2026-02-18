@@ -129,12 +129,13 @@ MonoBehaviour:
   interactionTime: 0
   interactionTimeSecondary: 0
   itemType: 0
+  LastOwner: {fileID: 0}
   rb: {fileID: 3815938341415364146}
   itemCollider: {fileID: -256997523848646438}
-  ejectionCoefficient: 1.2
-  rotationCoefficient: 180
-  ejectionCoefficientMaxDeviation: 0.2
-  rotationCoefficientMaxDeviation: 0.2
+  ejectionSpeedMultiplier: 1.2
+  rotationSpeed: 180
+  ejectionSpeedVariance: 0.2
+  rotationSpeedVariance: 0.2
   minimumEjectionSpeedRatio: 0.2
   grabbingTime: 0.3
 --- !u!212 &3599087220505950698

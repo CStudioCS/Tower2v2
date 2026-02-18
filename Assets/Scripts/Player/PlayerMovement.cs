@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
     
         rb.linearVelocity = VelocityApproach();
 
-        if (Rb.linearVelocity != Vector2.zero)
+        if (rb.linearVelocity != Vector2.zero)
         {
             lastSpeed = rb.linearVelocity;
         }
