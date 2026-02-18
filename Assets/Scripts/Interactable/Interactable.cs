@@ -18,7 +18,13 @@ public abstract class Interactable : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player))
-            player.insideInteractableList.Add(this);
+        {
+            if (CanInteract(player))
+            {
+                this.Highlight(true);
+                player.insideInteractableList.Add(this);
+            }
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
