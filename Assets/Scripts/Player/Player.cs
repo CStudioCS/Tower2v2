@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
     {
         Interactable closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
 
-        if (closestInteractable != null && !closestInteractable.IsAlreadyInteractedWith && closestInteractable.CanInteract(this))
+        if (closestInteractable != null)
         {
             if (currentInteractable && currentInteractable != closestInteractable)
                 currentInteractable.Highlight(false);
@@ -185,7 +185,7 @@ public class Player : MonoBehaviour
         foreach (Interactable interactable in insideInteractableList)
         {
             float sqrDistance = (interactable.transform.position - transform.position).sqrMagnitude;
-            if (sqrDistance < minSqrDistance)
+            if (sqrDistance < minSqrDistance && !interactable.IsAlreadyInteractedWith && interactable.CanInteract(this))
             {
                 minSqrDistance = sqrDistance;
                 closest = interactable;
