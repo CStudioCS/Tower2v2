@@ -6,13 +6,16 @@ using UnityEngine;
 /// </summary>
 public class Collector : Interactable
 {
+    [SerializeField] private float interactionTime;
     [Header("Collector")]
     [SerializeField] private Item itemPrefab;
 
-    protected override bool CanInteractPrimary(Player player) => !player.IsHolding;
+    public override bool CanInteract(Player player) => !player.IsHolding;
 
-    protected override void InteractPrimary(Player player)
+    public override void Interact(Player player)
     {
         player.GrabNewItem(itemPrefab);
     }
+
+    public override float GetInteractionTime() => interactionTime;
 }

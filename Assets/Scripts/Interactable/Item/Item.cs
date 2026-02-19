@@ -23,14 +23,17 @@ public class Item : Interactable
     private void Awake()
     {
         itemCollider.enabled = false;
+        LevelManager.Instance.GameEnded += Disappear;
     }
 
-    protected override bool CanInteractPrimary(Player player) => !player.IsHolding;
-    protected override void InteractPrimary(Player player)
+    public override bool CanInteract(Player player) => !player.IsHolding;
+
+    public override void Interact(Player player)
     {
         player.GrabItem(this, true);
     }
 
+    public override float GetInteractionTime() => 0;
     public void Immobilize()
     {
         rb.linearVelocity = Vector2.zero;
@@ -55,5 +58,15 @@ public class Item : Interactable
         rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionDeviation;
         rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
         LastOwner = null;
+    }
+
+    private void Disappear()
+    {
+        Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        LevelManager.Instance.GameEnded -= Disappear;
     }
 }
