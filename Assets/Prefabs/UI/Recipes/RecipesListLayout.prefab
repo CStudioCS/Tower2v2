@@ -75,8 +75,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.6301887, g: 0.6301887, b: 0.6301887, a: 1}
+  m_Material: {fileID: 2100000, guid: bc8b3c8b094b38e42a7de54d6ce0407a, type: 2}
+  m_Color: {r: 1, g: 0.96862745, b: 0.95686275, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -312,8 +312,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.6094339, b: 0.6094339, a: 1}
+  m_Material: {fileID: 2100000, guid: bc8b3c8b094b38e42a7de54d6ce0407a, type: 2}
+  m_Color: {r: 1, g: 0.96862745, b: 0.95686275, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -367,6 +367,10 @@ PrefabInstance:
     - target: {fileID: 112929144989487835, guid: 2bde536445fd7df449971a4b76029aab, type: 3}
       propertyPath: m_Name
       value: NextRecipeSlot3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2284304384399826201, guid: 2bde536445fd7df449971a4b76029aab, type: 3}
+      propertyPath: m_Color.a
+      value: 0.5568628
       objectReference: {fileID: 0}
     - target: {fileID: 5774087308355632350, guid: 2bde536445fd7df449971a4b76029aab, type: 3}
       propertyPath: m_Pivot.x
@@ -470,6 +474,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NextRecipeSlot2
       objectReference: {fileID: 0}
+    - target: {fileID: 2284304384399826201, guid: 2bde536445fd7df449971a4b76029aab, type: 3}
+      propertyPath: m_Color.a
+      value: 0.5568628
+      objectReference: {fileID: 0}
     - target: {fileID: 5774087308355632350, guid: 2bde536445fd7df449971a4b76029aab, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -571,6 +579,10 @@ PrefabInstance:
     - target: {fileID: 112929144989487835, guid: 2bde536445fd7df449971a4b76029aab, type: 3}
       propertyPath: m_Name
       value: NextRecipeSlot1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2284304384399826201, guid: 2bde536445fd7df449971a4b76029aab, type: 3}
+      propertyPath: m_Color.a
+      value: 0.5568628
       objectReference: {fileID: 0}
     - target: {fileID: 5774087308355632350, guid: 2bde536445fd7df449971a4b76029aab, type: 3}
       propertyPath: m_Pivot.x
