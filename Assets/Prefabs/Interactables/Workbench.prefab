@@ -49,6 +49,7 @@ MonoBehaviour:
   putOrPickUpItemInteractionTime: 0
   cutWoodInteractionTime: 1
   woodPlankItemPrefab: {fileID: 3378557466002707279, guid: 41bd7609910bc2e4383d0234046cf75a, type: 3}
+  spriteRenderer: {fileID: 4097081278808117934}
 --- !u!61 &8837958186719799260
 BoxCollider2D:
   m_ObjectHideFlags: 0
