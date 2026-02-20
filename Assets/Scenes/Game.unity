@@ -481,10 +481,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2914927600258276031, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
-      propertyPath: DebugMode
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5951444765711152512, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: m_Name
       value: Managers
@@ -566,6 +562,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 495541142928629306, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 495541142928629306, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1870112903221476896, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -613,6 +617,10 @@ PrefabInstance:
     - target: {fileID: 1944757377118136502, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2090285879150248889, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2121756531582142018, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
       propertyPath: tower
@@ -866,6 +874,10 @@ PrefabInstance:
     - target: {fileID: 5085563546327574621, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
       propertyPath: m_Name
       value: World
+      objectReference: {fileID: 0}
+    - target: {fileID: 6479677227959581136, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.18
       objectReference: {fileID: 0}
     - target: {fileID: 6583537718899368180, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
       propertyPath: recipesList

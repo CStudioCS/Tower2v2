@@ -57,7 +57,8 @@ MonoBehaviour:
   mainPanelToColorize: {fileID: 0}
   validateColor: {r: 0, g: 1, b: 0, a: 1}
   invalidateColor: {r: 1, g: 0, b: 0, a: 1}
-  colorFlashSemiDuration: 0.2
+  colorFlashDuration: 0.1
+  colorStayDuration: 0.2
 --- !u!222 &7820146473660039608
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -184,7 +185,8 @@ MonoBehaviour:
   mainPanelToColorize: {fileID: 4272694207269054113}
   validateColor: {r: 0.5411765, g: 0.90588236, b: 0.44705883, a: 1}
   invalidateColor: {r: 0.8901961, g: 0.45490196, b: 0.4117647, a: 1}
-  colorFlashSemiDuration: 0.2
+  colorFlashDuration: 0.1
+  colorStayDuration: 0.2
 --- !u!1 &5656119064293831357
 GameObject:
   m_ObjectHideFlags: 0
