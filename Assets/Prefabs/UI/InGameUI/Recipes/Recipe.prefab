@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  transitionTime: 0.1
   rectTransform: {fileID: 8283607618409411847}
 --- !u!1 &1460654135654224473
 GameObject:

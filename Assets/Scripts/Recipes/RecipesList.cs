@@ -41,7 +41,7 @@ public class RecipesList : MonoBehaviour
     {
         foreach (Recipe recipe in recipes)
         {
-            Destroy(recipe.gameObject);
+            recipe.Disappear();
         }
     }
 
@@ -60,7 +60,7 @@ public class RecipesList : MonoBehaviour
     
     public Item.Type CurrentNeededItemType => recipes[firstRecipeIndex].Type;
 
-    private void AddRecipe(Item.Type type, int recipesIndex, int slotIndex)
+    private void AddRecipe(Item.Type type, int recipesIndex, int slotIndex, bool animate = false)
     {
         if (!RecipesMap.TryGetValue(type, out Recipe recipe))
         {
@@ -70,24 +70,24 @@ public class RecipesList : MonoBehaviour
 
         Recipe recipeInstance = Instantiate(recipe, transform);
         recipes[recipesIndex] = recipeInstance;
-        recipeInstance.SetRecipeSlot(recipeSlots[slotIndex % recipeSlots.Length]);
+        recipeInstance.Appear(recipeSlots[slotIndex % recipeSlots.Length], animate);
     }
     
-    private void AddRandomRecipe(int recipesIndex, int slotIndex) => AddRecipe(ItemRandomizer.Instance.GetAt(randomIndex++), recipesIndex, slotIndex);
+    private void AddRandomRecipe(int recipesIndex, int slotIndex,bool animate = false) => AddRecipe(ItemRandomizer.Instance.GetAt(randomIndex++), recipesIndex, slotIndex, animate);
     
     private void OnPieceBuilt() => CompleteRecipe();
     
     private void CompleteRecipe()
     {
-        Destroy(recipes[firstRecipeIndex].gameObject);
+        recipes[firstRecipeIndex].Disappear(true);
         
         for (int i = 1; i < recipeSlots.Length; i++)
         {
             int cyclicIndex = (firstRecipeIndex + i) % recipeSlots.Length;
-            recipes[cyclicIndex].SetRecipeSlot(recipeSlots[i - 1]);
+            recipes[cyclicIndex].MoveToRecipeSlot(recipeSlots[i - 1]);
         }
         
-        AddRandomRecipe(firstRecipeIndex, recipeSlots.Length - 1);
+        AddRandomRecipe(firstRecipeIndex, recipeSlots.Length - 1, true);
         firstRecipeIndex = (firstRecipeIndex + 1) % recipeSlots.Length;
     }
     
