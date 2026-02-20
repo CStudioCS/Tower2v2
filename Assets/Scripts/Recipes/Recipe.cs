@@ -11,7 +11,8 @@ public class Recipe : MonoBehaviour
     
     [SerializeField] private float transitionTime = .1f;
     [SerializeField] private float popAnimationSemiDuration = .2f;
-    [SerializeField] private float popAnimationScaleMultiplier = 2f;
+    [SerializeField] private float popValidateAnimationScaleMultiplier = 2.5f;
+    [SerializeField] private float popInvalidateAnimationScaleMultiplier = 1.5f;
     
     [SerializeField] private float delayBeforeMove = 0.3f;
     
@@ -130,7 +131,7 @@ public class Recipe : MonoBehaviour
         isAnimatingScale = true;
 
         Vector3 startScale = rectTransform.localScale;
-        Vector3 peakScale = Vector3.one * (popAnimationScaleMultiplier * targetScale);
+        Vector3 peakScale = Vector3.one * (popValidateAnimationScaleMultiplier * targetScale);
 
         try
         {
@@ -163,7 +164,7 @@ public class Recipe : MonoBehaviour
         isAnimatingScale = true;
 
         Vector3 startScale = rectTransform.localScale;
-        Vector3 peakScale = Vector3.one * (popAnimationScaleMultiplier * targetScale);
+        Vector3 peakScale = Vector3.one * (popInvalidateAnimationScaleMultiplier * targetScale);
 
         try
         {

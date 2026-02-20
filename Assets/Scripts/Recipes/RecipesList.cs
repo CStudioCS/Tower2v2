@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using LitMotion;
+using LitMotion.Extensions;
 using UnityEngine;
 
 public class RecipesList : MonoBehaviour
@@ -27,12 +30,24 @@ public class RecipesList : MonoBehaviour
     // The recipes array is cyclic. The index of the first recipe is dynamic and stored in firstRecipeIndex.
     // This avoids the need to shift the array when a recipe is completed.
     private Recipe[] recipes;
-    private int firstRecipeIndex = 0;
+    private int firstRecipeIndex;
     private int randomIndex;
+    
+    private Recipe CurrentRecipe => recipes[firstRecipeIndex];
+    public Item.Type CurrentNeededItemType => CurrentRecipe.Type;
+    
+    [SerializeField] private UnityEngine.UI.Graphic mainPanelToColorize;
+    [SerializeField] private Color validateColor = Color.green;
+    [SerializeField] private Color invalidateColor = Color.red;
+    [SerializeField] private float colorFlashDuration = 0.1f;
+    [SerializeField] private float colorStayDuration = 0.2f;
+
+    private MotionHandle colorTweenHandle;
 
     private void Start()
     {
         Tower.PieceBuilt += OnPieceBuilt;
+        Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
         randomIndex = 0;
         InitializeRecipes();
     }
@@ -58,8 +73,6 @@ public class RecipesList : MonoBehaviour
         }
     }
     
-    public Item.Type CurrentNeededItemType => recipes[firstRecipeIndex].Type;
-
     private void AddRecipe(Item.Type type, int recipesIndex, int slotIndex, bool animate = false)
     {
         if (!RecipesMap.TryGetValue(type, out Recipe recipe))
@@ -89,10 +102,50 @@ public class RecipesList : MonoBehaviour
         
         AddRandomRecipe(firstRecipeIndex, recipeSlots.Length - 1, true);
         firstRecipeIndex = (firstRecipeIndex + 1) % recipeSlots.Length;
+        
+        FlashValidateColor();
+    }
+    
+    private void OnTriedBuildingWithIncorrectItemType()
+    {
+        CurrentRecipe.InvalidateRecipe();
+        FlashInvalidateColor();
+    }
+
+    private void FlashValidateColor() => FlashColor(validateColor);
+    private void FlashInvalidateColor() => FlashColor(invalidateColor);
+    private async void FlashColor(Color flashColor)
+    {
+        if (colorTweenHandle.IsActive())
+            colorTweenHandle.Cancel();
+
+        try
+        {
+            colorTweenHandle = LMotion.Create(Color.white, flashColor, colorFlashDuration)
+                .WithEase(Ease.OutQuad)
+                .BindToColor(mainPanelToColorize);
+            
+            await colorTweenHandle;
+
+            colorTweenHandle = LMotion.Create(flashColor, flashColor, colorStayDuration)
+                .BindToColor(mainPanelToColorize);
+            
+            await colorTweenHandle;
+
+            colorTweenHandle = LMotion.Create(flashColor, Color.white, colorFlashDuration)
+                .WithEase(Ease.InQuad)
+                .BindToColor(mainPanelToColorize);
+            
+            await colorTweenHandle;
+        }
+        catch (OperationCanceledException)
+        {
+        }
     }
     
     private void OnDisable()
     {
         Tower.PieceBuilt -= OnPieceBuilt;
+        Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
     }
 }

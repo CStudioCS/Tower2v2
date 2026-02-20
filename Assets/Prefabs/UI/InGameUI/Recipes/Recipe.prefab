@@ -93,7 +93,8 @@ MonoBehaviour:
   type: 0
   transitionTime: 0.1
   popAnimationSemiDuration: 0.2
-  popAnimationScaleMultiplier: 2
+  popValidateAnimationScaleMultiplier: 1.5
+  popInvalidateAnimationScaleMultiplier: 1.5
   delayBeforeMove: 0.3
   rectTransform: {fileID: 8283607618409411847}
 --- !u!1 &1460654135654224473
