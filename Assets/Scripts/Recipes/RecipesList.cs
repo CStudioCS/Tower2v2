@@ -86,7 +86,7 @@ public class RecipesList : MonoBehaviour
         recipeInstance.Appear(recipeSlots[slotIndex % recipeSlots.Length], animate);
     }
     
-    private void AddRandomRecipe(int recipesIndex, int slotIndex,bool animate = false) => AddRecipe(ItemRandomizer.Instance.GetAt(randomIndex++), recipesIndex, slotIndex, animate);
+    private void AddRandomRecipe(int recipesIndex, int slotIndex, bool animate = false) => AddRecipe(ItemRandomizer.Instance.GetAt(randomIndex++), recipesIndex, slotIndex, animate);
     
     private void OnPieceBuilt() => CompleteRecipe();
     

@@ -11,7 +11,7 @@ public class Recipe : MonoBehaviour
     
     [SerializeField] private float transitionTime = .1f;
     [SerializeField] private float popAnimationSemiDuration = .2f;
-    [SerializeField] private float popValidateAnimationScaleMultiplier = 2.5f;
+    [SerializeField] private float popValidateAnimationScaleMultiplier = 1.5f;
     [SerializeField] private float popInvalidateAnimationScaleMultiplier = 1.5f;
     
     [SerializeField] private float delayBeforeMove = 0.3f;
