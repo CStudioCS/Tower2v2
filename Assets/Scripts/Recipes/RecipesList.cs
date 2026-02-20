@@ -41,7 +41,7 @@ public class RecipesList : MonoBehaviour
     {
         foreach (Recipe recipe in recipes)
         {
-            recipe.Disappear();
+            Destroy(recipe.gameObject);
         }
     }
 
@@ -79,7 +79,7 @@ public class RecipesList : MonoBehaviour
     
     private void CompleteRecipe()
     {
-        recipes[firstRecipeIndex].Disappear(true);
+        recipes[firstRecipeIndex].ValidateRecipe();
         
         for (int i = 1; i < recipeSlots.Length; i++)
         {

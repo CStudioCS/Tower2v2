@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using LitMotion;
 using LitMotion.Extensions;
@@ -9,8 +10,10 @@ public class Recipe : MonoBehaviour
     public Item.Type Type => type;
     
     [SerializeField] private float transitionTime = .1f;
-    [SerializeField] private float popAnimationSemiDuration = .1f;
+    [SerializeField] private float popAnimationSemiDuration = .2f;
     [SerializeField] private float popAnimationScaleMultiplier = 2f;
+    
+    [SerializeField] private float delayBeforeMove = 0.3f;
     
     [SerializeField] private RectTransform rectTransform;
     
@@ -21,27 +24,54 @@ public class Recipe : MonoBehaviour
     private Vector2 velocity;
     private float scaleVelocity;
 
+    private MotionHandle scaleTweenHandle;
+    private bool isAnimatingScale;
+    private bool isDestroying;
+    
+    private int currentMoveCommandId = 0;
+
     public void Appear(RecipeSlot slot, bool animate = false)
     {
-        SetSlotAsTarget(slot);
-        ReachTargetPosition();
-        
         if (animate)
+        {
             SetScale(0);
+            slotTarget = slot;
+            targetPosition = slotTarget.RecipePosition;
+            targetScale = 0; 
+            ReachTargetPosition();
+            MoveToRecipeSlot(slot);
+        }
         else
+        {
+            SetSlotAsTarget(slot);
+            ReachTargetPosition();
             ReachTargetScale();
+        }
     }
 
     public void MoveToRecipeSlot(RecipeSlot slot)
     {
+        currentMoveCommandId++;
+        _ = MoveToRecipeSlotAsync(slot, currentMoveCommandId);
+    }
+
+    private async Task MoveToRecipeSlotAsync(RecipeSlot slot, int commandId)
+    {
+        if (delayBeforeMove > 0f)
+        {
+            await Task.Delay(Mathf.RoundToInt(delayBeforeMove * 1000f));
+            if (this == null || gameObject == null) return;
+            if (currentMoveCommandId != commandId) return;
+        }
+
         SetSlotAsTarget(slot);
     }
 
     private void SetSlotAsTarget(RecipeSlot slot)
     {
         slotTarget = slot;
-        targetPosition = slot.RecipePosition;
-        targetScale = slot.RecipeScale;
+        targetPosition = slotTarget.RecipePosition;
+        targetScale = slotTarget.RecipeScale;
     }
 
     private void SetPosition(Vector2 position) => rectTransform.position = position;
@@ -52,53 +82,100 @@ public class Recipe : MonoBehaviour
 
     public void Disappear(bool animate = false)
     {
+        if (isDestroying) return;
+        isDestroying = true;
+        
         if (animate)
         {
             targetScale = 0;
+            CancelCurrentAnimation(); 
             Destroy(gameObject, transitionTime * 2);
         }
-        else Destroy(gameObject);
+        else 
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void Update()
     {
-        // The use of SmoothDamp is not recommended (changing manually the value each frame, low control on the easing.)
-        // But for now, it's the simplest solution and gives pretty good results.
-        // Ideally, we should do this using an external package, but I couldn't find a package that does exactly what I wanted.
-        // So ideally, we should make our own external package, that probably does something like this video: https://youtu.be/KPoeNZZ6H4s?si=l3mShw5QepdsIROI
-        // But this would take a lot of time, so let's use this one-liner to meet the deadline.
         SetPosition(Vector2.SmoothDamp(rectTransform.position, targetPosition, ref velocity, transitionTime));
-        SetScale(Mathf.SmoothDamp(rectTransform.localScale.x, targetScale, ref scaleVelocity, transitionTime));
+        
+        if (!isAnimatingScale)
+        {
+            SetScale(Mathf.SmoothDamp(rectTransform.localScale.x, targetScale, ref scaleVelocity, transitionTime));
+        }
+    }
+
+    private void CancelCurrentAnimation()
+    {
+        if (scaleTweenHandle.IsActive())
+        {
+            scaleTweenHandle.Cancel();
+        }
+        isAnimatingScale = false;
     }
     
-    private void ValidateRecipe()
+    public void ValidateRecipe()
     {
+        if (isDestroying) return; 
+        isDestroying = true;
+        
         _ = ValidateRecipeAsync();
     }
 
     private async Task ValidateRecipeAsync()
     {
-        await LMotion.Create(Vector3.one, Vector3.one * popAnimationScaleMultiplier * targetScale, popAnimationSemiDuration)
-            .WithEase(Ease.OutQuad)
-            .BindToLocalScale(rectTransform);
+        CancelCurrentAnimation();
+        isAnimatingScale = true;
 
-        await LMotion.Create(Vector3.one * popAnimationScaleMultiplier, Vector3.zero, popAnimationSemiDuration)
-            .WithEase(Ease.InQuad)
-            .BindToLocalScale(rectTransform);
-        
-        Destroy(gameObject);
+        Vector3 startScale = rectTransform.localScale;
+        Vector3 peakScale = Vector3.one * (popAnimationScaleMultiplier * targetScale);
+
+        try
+        {
+            scaleTweenHandle = LMotion.Create(startScale, peakScale, popAnimationSemiDuration)
+                .WithEase(Ease.OutQuad)
+                .BindToLocalScale(rectTransform);
+
+            await scaleTweenHandle;
+
+            scaleTweenHandle = LMotion.Create(peakScale, Vector3.zero, popAnimationSemiDuration)
+                .WithEase(Ease.InQuad)
+                .BindToLocalScale(rectTransform);
+
+            await scaleTweenHandle;
+            
+            if (gameObject != null) Destroy(gameObject);
+        }
+        catch (OperationCanceledException) { }
     }
 
     public void InvalidateRecipe()
     {
+        if (isDestroying) return; 
         _ = InvalidateRecipeAsync();
     }
     
     private async Task InvalidateRecipeAsync()
     {
-        await LMotion.Create(Vector3.one, Vector3.one * popAnimationScaleMultiplier * targetScale, popAnimationSemiDuration)
-            .WithEase(Ease.OutQuad) 
-            .WithLoops(2, LoopType.Yoyo)
-            .BindToLocalScale(rectTransform);
+        CancelCurrentAnimation();
+        isAnimatingScale = true;
+
+        Vector3 startScale = rectTransform.localScale;
+        Vector3 peakScale = Vector3.one * (popAnimationScaleMultiplier * targetScale);
+
+        try
+        {
+            scaleTweenHandle = LMotion.Create(startScale, peakScale, popAnimationSemiDuration)
+                .WithEase(Ease.OutQuad) 
+                .WithLoops(2, LoopType.Yoyo) 
+                .BindToLocalScale(rectTransform);
+
+            await scaleTweenHandle;
+
+            isAnimatingScale = false; 
+        }
+        catch (OperationCanceledException) { }
     }
 }
