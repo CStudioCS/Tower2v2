@@ -8,7 +8,7 @@ public class Item : Interactable
     [Header("Item")]
     [SerializeField] private Type itemType;
     public Type ItemType => itemType;
-    public Player LastOwner;
+    public Player LastOwner { get; set; }
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Collider2D itemCollider;
     [SerializeField] private float ejectionSpeedMultiplier;
@@ -53,7 +53,7 @@ public class Item : Interactable
 
         Vector2 lastSpeed = LastOwner.PlayerMovement.LastSpeed;
         Vector2 speedDirection =lastSpeed.normalized;
-        Debug.Log(speedDirection);
+        
         float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(Mathf.Abs(lastSpeed.magnitude), minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);//speed if not null else a percentage of max speed
         rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionDeviation;
         rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
