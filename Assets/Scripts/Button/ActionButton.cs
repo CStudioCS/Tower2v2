@@ -5,9 +5,7 @@ using UnityEngine.UI;
 public abstract class ActionButton : NoActionButton
 {
     [SerializeField] private Button button;
-
     protected Button Button => button; 
 
     public abstract void Action();
-
 }

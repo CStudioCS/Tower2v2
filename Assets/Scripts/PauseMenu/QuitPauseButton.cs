@@ -22,12 +22,10 @@ public class QuitPauseButton : NoActionButton
             {
                 OnClick();
             }
-
         }
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             OnClick();
         }
     }
-    
 }

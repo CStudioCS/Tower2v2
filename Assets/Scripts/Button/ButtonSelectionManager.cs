@@ -5,11 +5,11 @@ using UnityEngine.UI;
 public class ButtonSelectionManager : MonoBehaviour
 {
     [SerializeField] private Button[] buttons;
-    private bool oneShot = false;
     [SerializeField] private bool pauseSelection = false;
 
     public int numOfButtons { get; set; }
     private float startTime;
+    private bool oneShot = false;
 
     void Start()
     {
@@ -24,7 +24,6 @@ public class ButtonSelectionManager : MonoBehaviour
             //Time.time-startTime >0.5f a pour but d'eviter que la scene se lance et que le bouton soit directement appuyé sans faire exprès
             if (Keyboard.current.enterKey.wasPressedThisFrame && Time.time-startTime >0.5f)
             {
-
                 if (buttons[numOfButtons].TryGetComponent(out NoActionButton actionButton))
                 {
                     actionButton.OnClick();
@@ -32,6 +31,7 @@ public class ButtonSelectionManager : MonoBehaviour
             }
         }
     }
+
     void Update()
     {
         if (!pauseSelection) { 
@@ -52,23 +52,18 @@ public class ButtonSelectionManager : MonoBehaviour
             {
                 numOfButtons = buttons.Length - 1;
             }
-
             buttons[numOfButtons].Select();
         }
-
-        
     }
 
     //Il ne s'agit pas d'un setter classique, c'est pourquoi on n'utilise pas la methode facile de declarer des setteurs
     public void PauseSelection(bool boolean)
     {
         pauseSelection = boolean;
-
         foreach (var button in buttons)
         {
             button.interactable = !pauseSelection;
         }
-        
     }
 
     private void GamepadChecker()
@@ -100,7 +95,5 @@ public class ButtonSelectionManager : MonoBehaviour
             numOfButtons--;
             oneShot = true;
         }
-
-        
     }
 }

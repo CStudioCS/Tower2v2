@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class ReturnToMenuButton : ActionButton
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private string menuSceneName;
     [SerializeField] private GameObject returnMenuConfirmationGameObject;
     [SerializeField] private ButtonSelectionManager buttonSelectionMenu ;
@@ -19,7 +18,5 @@ public class ReturnToMenuButton : ActionButton
         returnMenuConfirmationGameObject.SetActive(true);
         buttonSelectionMenu.PauseSelection(true);
         confirmationSelectionManager.numOfButtons = 0;
-
     }
-
 }

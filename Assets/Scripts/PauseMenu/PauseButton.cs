@@ -4,18 +4,15 @@ using UnityEngine.InputSystem;
 
 public class PauseButton : NoActionButton
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private GameObject pauseMenuGameObject;
     [SerializeField] private ButtonSelectionManager buttonSelectionManager;
 
     public override void OnClick()
     {
-
         Time.timeScale = 0f;
         gameObject.SetActive(false);
         pauseMenuGameObject.SetActive(true);
         buttonSelectionManager.numOfButtons = 0;
- 
     }
     public void Update()
     {
@@ -25,7 +22,6 @@ public class PauseButton : NoActionButton
             {
                 OnClick();
             }
-
         }
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
