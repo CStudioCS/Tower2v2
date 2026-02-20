@@ -54,7 +54,6 @@ public class RecipesList : MonoBehaviour
         
         for (int i = 0; i < recipeSlots.Length; i++)
         {
-            recipeSlots[i].SetRecipeSlotIndex(i);
             AddRandomRecipe(i, i);
         }
     }

@@ -17,9 +17,7 @@ public class Recipe : MonoBehaviour
     
     private void MatchTarget()
     {
-        UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(slotTarget.RectTransform.parent.GetComponent<RectTransform>());
-        Vector2 pos = (Vector2)slotTarget.RectTransform.position + .5f * new Vector2(slotTarget.RectTransform.rect.width, slotTarget.RectTransform.rect.height);
-        rectTransform.position = pos;
-        rectTransform.localScale = slotTarget.RectTransform.lossyScale * slotTarget.RecipeScale;
+        rectTransform.position = slotTarget.RecipePosition;
+        rectTransform.localScale = slotTarget.RecipeScale * Vector3.one;
     }
 }
