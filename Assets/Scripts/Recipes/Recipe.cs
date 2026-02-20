@@ -1,3 +1,6 @@
+using System.Threading.Tasks;
+using LitMotion;
+using LitMotion.Extensions;
 using UnityEngine;
 
 public class Recipe : MonoBehaviour
@@ -6,6 +9,8 @@ public class Recipe : MonoBehaviour
     public Item.Type Type => type;
     
     [SerializeField] private float transitionTime = .1f;
+    [SerializeField] private float popAnimationSemiDuration = .1f;
+    [SerializeField] private float popAnimationScaleMultiplier = 2f;
     
     [SerializeField] private RectTransform rectTransform;
     
@@ -62,7 +67,38 @@ public class Recipe : MonoBehaviour
         // Ideally, we should do this using an external package, but I couldn't find a package that does exactly what I wanted.
         // So ideally, we should make our own external package, that probably does something like this video: https://youtu.be/KPoeNZZ6H4s?si=l3mShw5QepdsIROI
         // But this would take a lot of time, so let's use this one-liner to meet the deadline.
-        rectTransform.position = Vector2.SmoothDamp(rectTransform.position, targetPosition, ref velocity, transitionTime);
-        rectTransform.localScale = Vector3.one * Mathf.SmoothDamp(rectTransform.localScale.x, targetScale, ref scaleVelocity, transitionTime);
+        SetPosition(Vector2.SmoothDamp(rectTransform.position, targetPosition, ref velocity, transitionTime));
+        SetScale(Mathf.SmoothDamp(rectTransform.localScale.x, targetScale, ref scaleVelocity, transitionTime));
+    }
+    
+    private void ValidateRecipe()
+    {
+        _ = ValidateRecipeAsync();
+    }
+
+    private async Task ValidateRecipeAsync()
+    {
+        await LMotion.Create(Vector3.one, Vector3.one * popAnimationScaleMultiplier * targetScale, popAnimationSemiDuration)
+            .WithEase(Ease.OutQuad)
+            .BindToLocalScale(rectTransform);
+
+        await LMotion.Create(Vector3.one * popAnimationScaleMultiplier, Vector3.zero, popAnimationSemiDuration)
+            .WithEase(Ease.InQuad)
+            .BindToLocalScale(rectTransform);
+        
+        Destroy(gameObject);
+    }
+
+    public void InvalidateRecipe()
+    {
+        _ = InvalidateRecipeAsync();
+    }
+    
+    private async Task InvalidateRecipeAsync()
+    {
+        await LMotion.Create(Vector3.one, Vector3.one * popAnimationScaleMultiplier * targetScale, popAnimationSemiDuration)
+            .WithEase(Ease.OutQuad) 
+            .WithLoops(2, LoopType.Yoyo)
+            .BindToLocalScale(rectTransform);
     }
 }
