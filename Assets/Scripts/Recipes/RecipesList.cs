@@ -121,7 +121,7 @@ public class RecipesList : MonoBehaviour
 
         try
         {
-            colorTweenHandle = LMotion.Create(Color.white, flashColor, colorFlashDuration)
+            colorTweenHandle = LMotion.Create(mainPanelToColorize.color, flashColor, colorFlashDuration)
                 .WithEase(Ease.OutQuad)
                 .BindToColor(mainPanelToColorize);
             
@@ -147,5 +147,14 @@ public class RecipesList : MonoBehaviour
     {
         Tower.PieceBuilt -= OnPieceBuilt;
         Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
+
+        if (colorTweenHandle.IsActive())
+        {
+            colorTweenHandle.Cancel();
+        }
+        if (mainPanelToColorize != null)
+        {
+            mainPanelToColorize.color = Color.white; 
+        }
     }
 }
