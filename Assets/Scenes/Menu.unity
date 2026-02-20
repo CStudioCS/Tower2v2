@@ -359,18 +359,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1434248402552022259, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
-      propertyPath: m_PresetInfoIsWorld
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2939744326286691645, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
       propertyPath: camZoomer
       value: 
       objectReference: {fileID: 747379113}
-    - target: {fileID: 2939744326286691645, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
-      propertyPath: loadedSceneName
-      value: Game
-      objectReference: {fileID: 0}
     - target: {fileID: 3389047808999493239, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
       propertyPath: m_Name
       value: MenuCanvas
