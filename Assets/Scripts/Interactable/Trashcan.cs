@@ -1,7 +1,11 @@
+using UnityEngine;
+
 public class Trashcan : Interactable
 {
+    [SerializeField] private AudioSource audioSource;
     public override void Interact(Player player)
     {
+        audioSource.Play();
         player.ConsumeCurrentItem();
     }
 

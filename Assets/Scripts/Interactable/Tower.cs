@@ -16,6 +16,8 @@ public class Tower : Interactable
     [SerializeField] private GameObject woodTowerPiecePrefab;
     [SerializeField] private GameObject brickTowerPiecePrefab;
 
+    [SerializeField] private AudioSource audioSource;
+
     private readonly List<GameObject> towerPieces = new();
     
     private Dictionary<Item.Type, GameObject> towerPieceMap;
@@ -61,6 +63,8 @@ public class Tower : Interactable
             Debug.LogError("Could not find tower piece associated with " + player.HeldItem.ItemType + " held item");
             return;
         }
+
+        audioSource.Play();
 
         GameObject towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * Height, Quaternion.identity, transform);
         towerPieces.Add(towerPieceInstance);
