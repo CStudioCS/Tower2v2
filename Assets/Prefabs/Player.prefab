@@ -153,6 +153,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 4042930519934913343}
   rb: {fileID: 176917095401970236}
+  isCuttingId: isCutting
+  isCollectingId: isCollecting
+  hasItemId: hasItem
+  dropTriggerId: drop
+  speedId: speed
 --- !u!50 &176917095401970236
 Rigidbody2D:
   serializedVersion: 5
