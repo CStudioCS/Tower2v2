@@ -12,6 +12,8 @@ public class Item : Interactable
     [SerializeField] private Collider2D itemCollider;
     [SerializeField] private float ejectionCoefficient;
     [SerializeField] private float rotationCoefficient;
+    [SerializeField] private AudioSource audioSourceGrab;
+    [SerializeField] private AudioSource audioSourceDrop;
 
     private void Awake()
     {
@@ -39,6 +41,8 @@ public class Item : Interactable
         player.GrabItem(this);
         transform.SetParent(player.transform);
         transform.localPosition = Vector2.zero;
+
+        audioSourceGrab.Play();
     }
 
     public void Drop()
@@ -50,6 +54,8 @@ public class Item : Interactable
         itemCollider.enabled = true;
         rb.linearVelocity = ejectionCoefficient * speedVector ;
         rb.angularVelocity = Random.Range(-1,2) * rotationCoefficient;
+
+        audioSourceDrop.Play();
     }
 
     private void Disappear()

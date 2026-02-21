@@ -13,6 +13,8 @@ public class Workbench : Interactable
     [Header("Prefab refs")]
     [SerializeField] private Item woodPlankItemPrefab;
 
+    [SerializeField] private AudioSource audioSource;
+
     private enum State { Empty, HasWoodLog, HasWoodPlank }
 
     private void Awake()
@@ -68,5 +70,18 @@ public class Workbench : Interactable
         base.OnGameEnded();
         state = State.Empty;
         spriteRenderer.color = Color.white;
+    }
+
+    private void Update()
+    {
+        if(IsAlreadyInteractedWith && !audioSource.isPlaying)
+        {
+            audioSource.Play();
+        }
+
+        if (!IsAlreadyInteractedWith && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
     }
 }
