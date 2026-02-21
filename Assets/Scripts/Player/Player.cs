@@ -1,3 +1,5 @@
+using LitMotion;
+using LitMotion.Adapters;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +25,9 @@ public class Player : MonoBehaviour
 
     private InputAction interactAction;
     private InputAction secondaryAction;
+
+    private MotionHandle grabbingLerp;
+    private MotionHandle rotationLerp;
 
     private void Awake()
     {
@@ -54,7 +59,7 @@ public class Player : MonoBehaviour
     {
         Interactable closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
 
-        if (closestInteractable != null && !closestInteractable.IsAlreadyInteractedWith && closestInteractable.CanInteract(this))
+        if (closestInteractable != null)
         {
             if (currentInteractable && currentInteractable != closestInteractable)
                 currentInteractable.Highlight(false);
@@ -131,6 +136,8 @@ public class Player : MonoBehaviour
             return;
 
         IsHolding = false;
+        grabbingLerp.TryCancel();
+        rotationLerp.TryCancel();
         HeldItem.Drop();
         HeldItem = null;
     }
@@ -138,13 +145,25 @@ public class Player : MonoBehaviour
     public void GrabNewItem(Item itemPrefab)
     {
         Item itemInstance = Instantiate(itemPrefab);
-        itemInstance.Grab(this);        
+        GrabItem(itemInstance, false);        
     }
-    
-    public void GrabItem(Item item)
+
+    public void GrabItem(Item item, bool interpolatePosition)
     {
         IsHolding = true;
         HeldItem = item;
+
+        item.Immobilize();
+        item.LastOwner = this;
+        item.transform.SetParent(transform);
+
+        if (interpolatePosition)
+        {
+            grabbingLerp = LMotion.Create(item.transform.localPosition, Vector3.zero, item.GrabbingTime).Bind(x => item.transform.localPosition = x);
+            rotationLerp = LMotion.Create(item.transform.localRotation, Quaternion.identity, item.GrabbingTime).Bind(x => item.transform.localRotation = x);
+        }
+        else
+            item.transform.localPosition = Vector2.zero;
     }
 
     private void OnGameEnded()
@@ -166,7 +185,7 @@ public class Player : MonoBehaviour
         foreach (Interactable interactable in insideInteractableList)
         {
             float sqrDistance = (interactable.transform.position - transform.position).sqrMagnitude;
-            if (sqrDistance < minSqrDistance)
+            if (sqrDistance < minSqrDistance && !interactable.IsAlreadyInteractedWith && interactable.CanInteract(this))
             {
                 minSqrDistance = sqrDistance;
                 closest = interactable;

@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: -4655949978739127763}
+  interactionTimeSecondary: 0
 --- !u!212 &-1162814141957900994
 SpriteRenderer:
   m_ObjectHideFlags: 0
