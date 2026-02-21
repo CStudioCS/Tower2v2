@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AnimationPlayer : MonoBehaviour
+public class PlayerAnimationController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Rigidbody2D rb;
