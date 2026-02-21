@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerAnimationController playerAnimationController;
 
     private InputAction interactAction;
-    private InputAction secondaryAction;
+    private Interactable closestInteractable;
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
@@ -34,7 +34,6 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
-        secondaryAction = playerInput.actions.FindAction("Gameplay/CutWood");
     }
 
     private void Start()
@@ -53,15 +52,17 @@ public class Player : MonoBehaviour
 
     private void GameUpdate()
     {
+        UpdateClosestInteractable();
+
         if (interactAction.WasPressedThisFrame())
             Interact();
 
         playerAnimationController.HasItem(HeldItem != null);
     }
 
-    private void Interact()
+    private void UpdateClosestInteractable()
     {
-        Interactable closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
+        closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
 
         if (closestInteractable != null)
         {
@@ -70,7 +71,12 @@ public class Player : MonoBehaviour
 
             currentInteractable = closestInteractable;
             currentInteractable.Highlight(true);
-
+        }
+    }
+    private void Interact()
+    {
+        if (closestInteractable != null)
+        {
             float time = closestInteractable.GetInteractionTime();
             if (time > 0)
             {
