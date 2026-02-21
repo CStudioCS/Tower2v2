@@ -16,6 +16,8 @@ public class Tower : Interactable
     [SerializeField] private GameObject woodTowerPiecePrefab;
     [SerializeField] private GameObject brickTowerPiecePrefab;
 
+    [SerializeField] private AudioSource audioSource;
+
     private readonly List<GameObject> towerPieces = new();
     
     private Dictionary<Item.Type, GameObject> towerPieceMap;
@@ -62,7 +64,9 @@ public class Tower : Interactable
             return;
         }
 
-        GameObject towerPieceInstance = Instantiate(towerPiece, transform.position +  blockOffset * Height, Quaternion.identity, transform);
+        audioSource.Play();
+
+        GameObject towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * Height, Quaternion.identity, transform);
         towerPieces.Add(towerPieceInstance);
         LastPlacedTime = LevelManager.Instance.LevelTimer;
 

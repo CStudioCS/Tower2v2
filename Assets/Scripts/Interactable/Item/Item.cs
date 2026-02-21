@@ -20,6 +20,9 @@ public class Item : Interactable
 
     public float GrabbingTime => grabbingTime;
 
+    [SerializeField] private AudioSource audioSourceGrab;
+    [SerializeField] private AudioSource audioSourceDrop;
+
     private void Awake()
     {
         itemCollider.enabled = false;
@@ -40,6 +43,8 @@ public class Item : Interactable
         rb.angularVelocity = 0;
         rb.simulated = false;
         itemCollider.enabled = false;
+
+        audioSourceGrab.Play();
     }
 
     public void Drop()
@@ -58,6 +63,8 @@ public class Item : Interactable
         rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionDeviation;
         rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
         LastOwner = null;
+
+        audioSourceDrop.Play();
     }
 
     private void Disappear()
