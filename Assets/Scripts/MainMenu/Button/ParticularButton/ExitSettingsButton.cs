@@ -1,30 +1,30 @@
 using UnityEngine;
 using LitMotion;
-using LitMotion.Extensions;
 using System.Collections;
 
 public class ExitSettingsButton : ActionButton
 {
     [SerializeField] private CameraZoomer camZoomer;
-    [SerializeField] private SettingsButton settingsButton;
+    [SerializeField] private SettingsButton settingsButtonScript;
+    [SerializeField] private ButtonSelectionManager menuSelectionManager;
+    [SerializeField] private ButtonSelectionManager settingsSelectionManager;
 
     private Vector3 initialSettingsButtonPos;
 
     public void Start()
     {
-        initialSettingsButtonPos = settingsButton.transform.position;
+        initialSettingsButtonPos = settingsButtonScript.transform.position;
     }
     
     public override void Action()
     {
-        float speedButtonWhenClicked = settingsButton.SpeedButtonWhenClicked;
-        
-        LMotion.Create(settingsButton.transform.position, initialSettingsButtonPos, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => settingsButton.gameObject.transform.position = y);
+        StartCoroutine(WaitMovementSettingsButton());
     }
 
     public override void OnClick()
     {
-        Button.interactable = false;
+        settingsSelectionManager.PauseSelection(true);
+
         //La fonction doit retourner void pour le OnClick donc elle passe par une autre fonction qui lance l'action après le zoom
         StartCoroutine(ZoomOutCoroutineAction());
     }
@@ -33,6 +33,13 @@ public class ExitSettingsButton : ActionButton
     {
         yield return camZoomer.ReturnToNormalState();
         Action();
-        Button.interactable = true;
+    }
+
+    private IEnumerator WaitMovementSettingsButton()
+    {
+        float speedButtonWhenClicked = settingsButtonScript.SpeedButtonWhenClicked;
+        LMotion.Create(settingsButtonScript.transform.position, initialSettingsButtonPos, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => settingsButtonScript.gameObject.transform.position = y); ;
+        yield return new WaitForSeconds(speedButtonWhenClicked);
+        menuSelectionManager.PauseSelection(false);
     }
 }

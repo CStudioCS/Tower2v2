@@ -9,6 +9,7 @@ public class MovingButton : ActionButton
     [SerializeField] private float finalPositionButtonAfterMove;
     [SerializeField] private float speedButtonWhenClicked;
     [SerializeField] private CameraZoomer camZoomer;
+    [SerializeField] private ButtonSelectionManager menuSelectionManager;
 
     public float SpeedButtonWhenClicked => speedButtonWhenClicked;
     public override void Action(){}
@@ -22,7 +23,7 @@ public class MovingButton : ActionButton
     public override void OnClick()
     {
         Movement();
-
+        menuSelectionManager.PauseSelection(true);
         Button.interactable = false;
         //La fonction doit retourner void pour le OnClick donc elle passe par une autre fonction qui lance l'action après le zoom
         StartCoroutine(ZoomInCoroutineAction());
@@ -32,6 +33,5 @@ public class MovingButton : ActionButton
     {
         yield return camZoomer.ZoomIn(transform.position);
         Action();
-        Button.interactable = true;
     }
 }

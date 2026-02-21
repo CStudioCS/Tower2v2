@@ -27,17 +27,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 25372156347785299}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.051653415, y: 0.069, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5716589548243110116}
-  m_Father: {fileID: 6381145844402561735}
+  m_Father: {fileID: 4823607384730395388}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: -0.763}
+  m_AnchoredPosition: {x: 0, y: -0.763}
   m_SizeDelta: {x: 33.9885, y: 2.9466}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7985269561714478314
@@ -148,7 +148,150 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 2865415744790561854}
   camZoomer: {fileID: 0}
-  settingsButton: {fileID: 5756224847907927930}
+  settingsButtonScript: {fileID: 5756224847907927930}
+  menuSelectionManager: {fileID: 5069247085196240259}
+  settingsSelectionManager: {fileID: 5383501118290636200}
+--- !u!1 &339605761195299787
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1086215422549496019}
+  - component: {fileID: 5383501118290636200}
+  m_Layer: 5
+  m_Name: SettingsSelectionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1086215422549496019
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339605761195299787}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4823607384730395388}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5383501118290636200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339605761195299787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a3453a2684f8404e95c36184dc9635e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttons:
+  - {fileID: 2865415744790561854}
+  pauseSelection: 1
+--- !u!1 &702998156577170029
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4823607384730395388}
+  m_Layer: 5
+  m_Name: Settings
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4823607384730395388
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702998156577170029}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7520927032063338735}
+  - {fileID: 1086215422549496019}
+  m_Father: {fileID: 6381145844402561735}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1118495047034740371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7046141341829742507}
+  - component: {fileID: 5069247085196240259}
+  m_Layer: 5
+  m_Name: SelectionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7046141341829742507
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118495047034740371}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6381145844402561735}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5069247085196240259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118495047034740371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a3453a2684f8404e95c36184dc9635e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttons:
+  - {fileID: 8248289156378004600}
+  - {fileID: 9171483310033564379}
+  - {fileID: 7887014308757947402}
+  pauseSelection: 0
 --- !u!1 &1795308070123598145
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,13 +535,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7520927032063338735}
+  - {fileID: 4823607384730395388}
   - {fileID: 8335160848911056217}
   - {fileID: 4047893997750434891}
   - {fileID: 5068359370935981189}
   - {fileID: 8379733645024183646}
   - {fileID: 7424231403134634103}
   - {fileID: 23845934523058760}
+  - {fileID: 7046141341829742507}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -451,7 +595,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &1238760710924661351
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,7 +715,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 0.5235849, b: 0.5235849, a: 1}
     m_PressedColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 1, g: 0.43867922, b: 0.43867922, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -619,6 +763,8 @@ MonoBehaviour:
   finalPositionButtonAfterMove: 15
   speedButtonWhenClicked: 0.8
   camZoomer: {fileID: 0}
+  menuSelectionManager: {fileID: 5069247085196240259}
+  settingsSelectionManager: {fileID: 5383501118290636200}
 --- !u!1 &4761507090366058531
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,7 +942,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 0.5235849, b: 0.5235849, a: 1}
     m_PressedColor: {r: 0.46226418, g: 0.45136172, b: 0.45136172, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 1, g: 0.5330188, b: 0.5330188, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -844,6 +990,7 @@ MonoBehaviour:
   finalPositionButtonAfterMove: 15
   speedButtonWhenClicked: 0.8
   camZoomer: {fileID: 0}
+  menuSelectionManager: {fileID: 5069247085196240259}
 --- !u!1 &6140813922002054457
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,7 +1168,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 0.5235849, b: 0.5235849, a: 1}
     m_PressedColor: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 1, g: 0.4764151, b: 0.4764151, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1069,6 +1216,8 @@ MonoBehaviour:
   finalPositionButtonAfterMove: 15
   speedButtonWhenClicked: 0.8
   camZoomer: {fileID: 0}
+  menuSelectionManager: {fileID: 5069247085196240259}
+  loadedSceneName: Game
 --- !u!1 &7333372375036529568
 GameObject:
   m_ObjectHideFlags: 0
