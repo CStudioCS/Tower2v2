@@ -55,6 +55,8 @@ public class Player : MonoBehaviour
     {
         if (interactAction.WasPressedThisFrame())
             Interact();
+
+        playerAnimationController.HasItem(HeldItem != null);
     }
 
     private void Interact()
@@ -72,23 +74,18 @@ public class Player : MonoBehaviour
             float time = closestInteractable.GetInteractionTime();
             if (time > 0)
             {
-                if(closestInteractable is Workbench)
-                {
+                if (closestInteractable is Workbench)
                     playerAnimationController.StartCutting();
-                }
-                else
-                {
+                else if (closestInteractable is Collector)
                     playerAnimationController.StartCollecting();
-                }
+                else
+                    Debug.LogError("This Interactable is not currently supported by the animator");
+                    //no interactable in the game takes time aside from Collector and Workbench as of rn
                 
                 StartCoroutine(InteractTimer(closestInteractable, time));
             }
             else
-            {
                 closestInteractable.Interact(this);
-
-                playerAnimationController.HasItem(HeldItem != null);
-            }
         }
         else if (HeldItem != null)
             DropHeldItem();
@@ -129,8 +126,7 @@ public class Player : MonoBehaviour
 
     private void StopInteracting(Interactable insideInteractable)
     {
-        playerAnimationController.EndCutting();
-        playerAnimationController.EndCollecting();
+        playerAnimationController.EndInteraction();
         Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
         progressBar.ResetProgress();
@@ -166,8 +162,6 @@ public class Player : MonoBehaviour
 
     public void GrabNewItem(Item itemPrefab)
     {
-        playerAnimationController.Grab();
-
         Item itemInstance = Instantiate(itemPrefab);
         GrabItem(itemInstance, false);        
     }

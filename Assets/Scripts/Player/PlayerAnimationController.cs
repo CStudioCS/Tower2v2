@@ -14,14 +14,14 @@ public class PlayerAnimationController : MonoBehaviour
     public void StartCutting()
         => animator.SetBool(isCuttingId, true);
 
-    public void EndCutting()
-        => animator.SetBool(isCuttingId, false);
-
     public void StartCollecting()
         => animator.SetBool(isCollectingId, true);
 
-    public void EndCollecting()
-        => animator.SetBool(isCollectingId, false);
+    public void EndInteraction()
+    {
+        animator.SetBool(isCuttingId, false);
+        animator.SetBool(isCollectingId, false);
+    }
 
     public void HasItem(bool hasItem)
         => animator.SetBool(hasItemId, hasItem);
