@@ -8,7 +8,8 @@ public class Furnace : Interactable
     [SerializeField] private float cookTime = 4;
     [SerializeField] private Item brickItemPrefab;
     [SerializeField] private ProgressBar progressBar;
-    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource audioSourceFire;
+    [SerializeField] private AudioSource audioSourceBricks;
 
     private State state;
     private enum State { Empty, Cooking, Cooked }
@@ -37,6 +38,8 @@ public class Furnace : Interactable
                 player.ConsumeCurrentItem();
                 break;
             case State.Cooked:
+                audioSourceBricks.Play();
+
                 player.GrabNewItem(brickItemPrefab);
                 state = State.Empty;
                 progressBar.ResetProgress();
@@ -48,7 +51,7 @@ public class Furnace : Interactable
 
     private IEnumerator Cook()
     {
-        audioSource.Play();
+        audioSourceFire.Play();
 
         state = State.Cooking;
 
@@ -65,7 +68,7 @@ public class Furnace : Interactable
         progressBar.SetProgressMax();
         state = State.Cooked;
 
-        audioSource.Stop();
+        audioSourceFire.Stop();
     }
     
     protected override void OnGameEnded()

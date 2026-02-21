@@ -13,7 +13,8 @@ public class Workbench : Interactable
     [Header("Prefab refs")]
     [SerializeField] private Item woodPlankItemPrefab;
 
-    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource audioSourceSaw;
+    [SerializeField] private AudioSource audioSourceWood;
 
     private enum State { Empty, HasWoodLog, HasWoodPlank }
 
@@ -42,6 +43,8 @@ public class Workbench : Interactable
         switch (state)
         {
             case State.Empty:
+                audioSourceWood.Play();
+
                 state = State.HasWoodLog;
                 player.ConsumeCurrentItem();
                 currentInteractionTime = cutWoodInteractionTime;
@@ -55,6 +58,8 @@ public class Workbench : Interactable
                 spriteRenderer.color = Color.blue;
                 break;
             case State.HasWoodPlank:
+                audioSourceWood.Play();
+
                 state = State.Empty;
                 player.GrabNewItem(woodPlankItemPrefab);
 
@@ -74,14 +79,14 @@ public class Workbench : Interactable
 
     private void Update()
     {
-        if(IsAlreadyInteractedWith && !audioSource.isPlaying)
+        if(IsAlreadyInteractedWith && !audioSourceSaw.isPlaying)
         {
-            audioSource.Play();
+            audioSourceSaw.Play();
         }
 
-        if (!IsAlreadyInteractedWith && audioSource.isPlaying)
+        if (!IsAlreadyInteractedWith && audioSourceSaw.isPlaying)
         {
-            audioSource.Stop();
+            audioSourceSaw.Stop();
         }
     }
 }
