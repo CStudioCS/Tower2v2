@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
 
-    [SerializeField] private AnimationPlayer animationPlayer;
+    [SerializeField] private PlayerAnimationController playerAnimationController;
 
     private InputAction interactAction;
     private InputAction secondaryAction;
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
             float time = closestInteractable.GetInteractionTime();
             if (time > 0)
             {
-                animationPlayer.StartCrafting();
+                playerAnimationController.StartCrafting();
                 StartCoroutine(InteractTimer(closestInteractable, time));
             }
             else
@@ -111,7 +111,7 @@ public class Player : MonoBehaviour
 
     private void StopInteracting(Interactable insideInteractable)
     {
-        animationPlayer.EndCrafting();
+        playerAnimationController.EndCrafting();
         Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
         progressBar.ResetProgress();
@@ -136,7 +136,7 @@ public class Player : MonoBehaviour
         if (!IsHolding)
             return;
 
-        animationPlayer.Drop();
+        playerAnimationController.Drop();
 
         IsHolding = false;
         HeldItem.Drop();
@@ -145,7 +145,7 @@ public class Player : MonoBehaviour
 
     public void GrabNewItem(Item itemPrefab)
     {
-        animationPlayer.Grab();
+        playerAnimationController.Grab();
 
         Item itemInstance = Instantiate(itemPrefab);
         itemInstance.Grab(this);        
@@ -153,7 +153,7 @@ public class Player : MonoBehaviour
     
     public void GrabItem(Item item)
     {
-        animationPlayer.Grab();
+        playerAnimationController.Grab();
 
         IsHolding = true;
         HeldItem = item;

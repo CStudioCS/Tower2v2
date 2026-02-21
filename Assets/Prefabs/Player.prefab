@@ -103,7 +103,7 @@ MonoBehaviour:
   playerControlBadge: {fileID: 5167199617259306430}
   progressBar: {fileID: 7722397540325121459}
   playerMovement: {fileID: 4423661849542820139}
-  animationPlayer: {fileID: -6306556956286896828}
+  playerAnimationController: {fileID: -6306556956286896828}
 --- !u!114 &4423661849542820139
 MonoBehaviour:
   m_ObjectHideFlags: 0
