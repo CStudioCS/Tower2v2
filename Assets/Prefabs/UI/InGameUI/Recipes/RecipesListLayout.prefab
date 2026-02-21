@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8911619633381368466}
-  - component: {fileID: 8409405416869769041}
   - component: {fileID: 7820146473660039608}
   - component: {fileID: 4272694207269054113}
   - component: {fileID: 5031816486124688700}
@@ -40,25 +39,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 160}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &8409405416869769041
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511997957431637144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43db824325eabbd44831296552a714c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  recipePrefabs: []
-  recipeSlots: []
-  mainPanelToColorize: {fileID: 0}
-  validateColor: {r: 0, g: 1, b: 0, a: 1}
-  invalidateColor: {r: 1, g: 0, b: 0, a: 1}
-  colorFlashDuration: 0.1
-  colorStayDuration: 0.2
 --- !u!222 &7820146473660039608
 CanvasRenderer:
   m_ObjectHideFlags: 0
