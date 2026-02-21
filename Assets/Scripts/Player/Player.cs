@@ -72,14 +72,27 @@ public class Player : MonoBehaviour
             float time = closestInteractable.GetInteractionTime();
             if (time > 0)
             {
-                playerAnimationController.StartCrafting();
+                if(closestInteractable is Workbench)
+                {
+                    playerAnimationController.StartCutting();
+                }
+                else
+                {
+                    playerAnimationController.StartCollecting();
+                }
+                
                 StartCoroutine(InteractTimer(closestInteractable, time));
             }
             else
+            {
                 closestInteractable.Interact(this);
+
+                playerAnimationController.HasItem(HeldItem != null);
+            }
         }
         else if (HeldItem != null)
             DropHeldItem();
+
     }
 
     private void LobbyUpdate()
@@ -116,7 +129,8 @@ public class Player : MonoBehaviour
 
     private void StopInteracting(Interactable insideInteractable)
     {
-        playerAnimationController.EndCrafting();
+        playerAnimationController.EndCutting();
+        playerAnimationController.EndCollecting();
         Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
         progressBar.ResetProgress();
