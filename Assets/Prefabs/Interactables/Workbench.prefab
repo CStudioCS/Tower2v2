@@ -46,8 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3919466a342310f4d8578b0c1cb29e32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionTime: 0
-  interactionTimeSecondary: 1.5
+  outlineThickness: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  putOrPickUpItemInteractionTime: 0
+  cutWoodInteractionTime: 1
   woodPlankItemPrefab: {fileID: 3378557466002707279, guid: 41bd7609910bc2e4383d0234046cf75a, type: 3}
 --- !u!212 &2862079642628240185
 SpriteRenderer:
@@ -72,7 +74,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

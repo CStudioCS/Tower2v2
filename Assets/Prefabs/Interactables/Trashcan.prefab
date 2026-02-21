@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 493fe926fc0997a499ff4ca3b2c9125d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionTime: 0
-  interactionTimeA: 0
+  outlineThickness: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!212 &-1162814141957900994
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -71,7 +71,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

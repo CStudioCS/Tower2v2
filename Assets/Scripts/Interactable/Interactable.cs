@@ -14,6 +14,20 @@ public abstract class Interactable : MonoBehaviour
 
     public virtual bool CanInteract(Player player) => false;
 
+    [SerializeField] private float outlineThickness = 1f;
+    [SerializeField] private Color outlineColor = Color.white;
+
+    private SpriteRenderer _spriteRenderer;
+    private MaterialPropertyBlock _propBlock;
+
+    void Awake()
+    {
+         if (!TryGetComponent<SpriteRenderer>(out _spriteRenderer))
+            Debug.LogError("Interactable " + gameObject.name + " does not have a SpriteRenderer component.");
+           
+        _propBlock = new MaterialPropertyBlock();
+    }
+
     // When the player walks inside the interactable, we tell it that it is inside
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -25,8 +39,10 @@ public abstract class Interactable : MonoBehaviour
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractableList.Contains(this))
         {
-            this.Highlight(false);
             player.insideInteractableList.Remove(this);
+
+            if(isHighlighted)
+                Highlight(false);
         }
     }
     
@@ -36,12 +52,30 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
-    public virtual void Highlight(bool highlighted)
+    public void Highlight(bool highlighted)
     {
         if (isHighlighted == highlighted) 
             return;
         
         isHighlighted = highlighted;
+
+        if (_spriteRenderer == null)
+            return;
+
+        _spriteRenderer.GetPropertyBlock(_propBlock);
+
+        if (isHighlighted)
+        {
+            _propBlock.SetFloat("_OutlineSize", outlineThickness);
+            _propBlock.SetColor("_OutlineColor", outlineColor);
+            Debug.Log("Highlighting " + gameObject.name);
+        }
+        else
+        {
+            _propBlock.SetFloat("_OutlineSize", 0f);
+        }
+
+        _spriteRenderer.SetPropertyBlock(_propBlock);
     }
     protected virtual void OnGameAboutToStart()
     {

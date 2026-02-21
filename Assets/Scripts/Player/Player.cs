@@ -22,12 +22,11 @@ public class Player : MonoBehaviour
     public PlayerMovement PlayerMovement => playerMovement;
 
     private InputAction interactAction;
-    private InputAction secondaryAction;
+    private Interactable closestInteractable;
 
     private void Awake()
     {
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
-        secondaryAction = playerInput.actions.FindAction("Gameplay/CutWood");
     }
 
     private void Start()
@@ -46,22 +45,29 @@ public class Player : MonoBehaviour
 
     private void GameUpdate()
     {
+        UpdateClosestInteractable();
+
         if (interactAction.WasPressedThisFrame())
             Interact();
     }
 
-    private void Interact()
+    private void UpdateClosestInteractable()
     {
-        Interactable closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
+        closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
 
-        if (closestInteractable != null && !closestInteractable.IsAlreadyInteractedWith && closestInteractable.CanInteract(this))
+        if (closestInteractable != null)
         {
             if (currentInteractable && currentInteractable != closestInteractable)
                 currentInteractable.Highlight(false);
 
             currentInteractable = closestInteractable;
             currentInteractable.Highlight(true);
-
+        }
+    }
+    private void Interact()
+    {
+        if (closestInteractable != null)
+        {
             float time = closestInteractable.GetInteractionTime();
             if (time > 0)
                 StartCoroutine(InteractTimer(closestInteractable, time));
@@ -166,7 +172,7 @@ public class Player : MonoBehaviour
         foreach (Interactable interactable in insideInteractableList)
         {
             float sqrDistance = (interactable.transform.position - transform.position).sqrMagnitude;
-            if (sqrDistance < minSqrDistance)
+            if (sqrDistance < minSqrDistance && !interactable.IsAlreadyInteractedWith && interactable.CanInteract(this))
             {
                 minSqrDistance = sqrDistance;
                 closest = interactable;
