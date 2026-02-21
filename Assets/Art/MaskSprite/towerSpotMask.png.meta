@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d4f503d0f7b03ba4598302b303a93902
+guid: 8e57b58d42e65c743b9cd8c740fca1bf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7874217791664242756
-    second: caillou_0
+      213: -6038115937019083508
+    second: tower_spot_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 800
+  spritePixelsToUnits: 600
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: caillou_0
+      name: tower_spot_0
       rect:
         serializedVersion: 2
-        x: 3860
-        y: 2362
-        width: 608
-        height: 409
+        x: 1020
+        y: 980
+        width: 1
+        height: 167
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4404534bc57d64d60800000000000000
-      internalID: 7874217791664242756
+      spriteID: c054a5deb8d443ca0800000000000000
+      internalID: -6038115937019083508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: towerSpotMask_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 727
+        width: 1021
+        height: 420
+      alignment: 9
+      pivot: {x: 0.5044074, y: -0.4857143}
+      border: {x: 0, y: 6, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1968d0f14e3a7fb4689ce8e91297e553
+      internalID: -1715769050
       vertices: []
       indices: 
       edges: []
@@ -126,7 +148,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -135,7 +157,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      caillou_0: 7874217791664242756
+      towerSpotMask_0: -1715769050
+      tower_spot_0: -6038115937019083508
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d4f503d0f7b03ba4598302b303a93902
+guid: b7e1dd25b41a94a499230965a80753a4
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -100,16 +100,16 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: caillou_0
+      name: ClayMask
       rect:
         serializedVersion: 2
-        x: 3860
-        y: 2362
-        width: 608
-        height: 409
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+        x: 0
+        y: 201
+        width: 606
+        height: 206
+      alignment: 9
+      pivot: {x: 0.5, y: 0.004854369}
+      border: {x: 0, y: 1, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      caillou_0: 7874217791664242756
+      ClayMask: 7874217791664242756
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

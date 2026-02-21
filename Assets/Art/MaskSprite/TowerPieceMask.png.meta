@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d4f503d0f7b03ba4598302b303a93902
+guid: 072f694700ca0a04eba7aec7c7262837
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7874217791664242756
-    second: caillou_0
+      213: 8854674405657680986
+    second: straw_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 800
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: caillou_0
+      name: TowerPieceMask
       rect:
         serializedVersion: 2
-        x: 3860
-        y: 2362
-        width: 608
-        height: 409
+        x: 0
+        y: 0
+        width: 256
+        height: 256
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 4404534bc57d64d60800000000000000
-      internalID: 7874217791664242756
+      spriteID: a5c18f6357f12ea70800000000000000
+      internalID: 8854674405657680986
       vertices: []
       indices: 
       edges: []
@@ -125,8 +125,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    spriteID: 1d9277c56e6a4c34fa4c2f5881c4672f
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      caillou_0: 7874217791664242756
+      TowerPieceMask: 8854674405657680986
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
