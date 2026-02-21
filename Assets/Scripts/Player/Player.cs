@@ -23,6 +23,8 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
 
+    [SerializeField] private PlayerAnimationController playerAnimationController;
+
     private InputAction interactAction;
     private InputAction secondaryAction;
 
@@ -53,6 +55,8 @@ public class Player : MonoBehaviour
     {
         if (interactAction.WasPressedThisFrame())
             Interact();
+
+        playerAnimationController.HasItem(HeldItem != null);
     }
 
     private void Interact()
@@ -69,12 +73,23 @@ public class Player : MonoBehaviour
 
             float time = closestInteractable.GetInteractionTime();
             if (time > 0)
+            {
+                if (closestInteractable is Workbench)
+                    playerAnimationController.StartCutting();
+                else if (closestInteractable is Collector)
+                    playerAnimationController.StartCollecting();
+                else
+                    Debug.LogError("This Interactable is not currently supported by the animator");
+                    //no interactable in the game takes time aside from Collector and Workbench as of rn
+                
                 StartCoroutine(InteractTimer(closestInteractable, time));
+            }
             else
                 closestInteractable.Interact(this);
         }
         else if (HeldItem != null)
             DropHeldItem();
+
     }
 
     private void LobbyUpdate()
@@ -111,6 +126,7 @@ public class Player : MonoBehaviour
 
     private void StopInteracting(Interactable insideInteractable)
     {
+        playerAnimationController.EndInteraction();
         Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
         progressBar.ResetProgress();
@@ -135,6 +151,8 @@ public class Player : MonoBehaviour
         if (!IsHolding)
             return;
 
+        playerAnimationController.Drop();
+
         IsHolding = false;
         grabbingLerp.TryCancel();
         rotationLerp.TryCancel();
@@ -150,6 +168,8 @@ public class Player : MonoBehaviour
 
     public void GrabItem(Item item, bool interpolatePosition)
     {
+        playerAnimationController.Grab();
+
         IsHolding = true;
         HeldItem = item;
 

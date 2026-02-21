@@ -14,9 +14,11 @@ GameObject:
   - component: {fileID: 8343199554380001103}
   - component: {fileID: 4423661849542820139}
   - component: {fileID: 4720667436485828352}
+  - component: {fileID: -6306556956286896828}
   - component: {fileID: 176917095401970236}
   - component: {fileID: 4818485210361488442}
   - component: {fileID: 441991705434926209}
+  - component: {fileID: 4042930519934913343}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -102,6 +104,7 @@ MonoBehaviour:
   playerControlBadge: {fileID: 5167199617259306430}
   progressBar: {fileID: 7722397540325121459}
   playerMovement: {fileID: 4423661849542820139}
+  playerAnimationController: {fileID: -6306556956286896828}
 --- !u!114 &4423661849542820139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,6 +140,25 @@ MonoBehaviour:
   leftTeamColor: {r: 1, g: 1, b: 1, a: 1}
   rightTeamColor: {r: 1, g: 1, b: 1, a: 1}
   spriteRenderer: {fileID: 441991705434926209}
+--- !u!114 &-6306556956286896828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4067928945899315388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7369c033c8f2fa641abc71f93028626a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 4042930519934913343}
+  rb: {fileID: 176917095401970236}
+  isCuttingId: isCutting
+  isCollectingId: isCollecting
+  hasItemId: hasItem
+  dropTriggerId: drop
+  speedId: speed
 --- !u!50 &176917095401970236
 Rigidbody2D:
   serializedVersion: 5
@@ -265,6 +287,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 2
   m_SpriteSortPoint: 0
+--- !u!95 &4042930519934913343
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4067928945899315388}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8e677c9689be0ae4e8871b096c9ceccb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4296346886437397786
 GameObject:
   m_ObjectHideFlags: 0
