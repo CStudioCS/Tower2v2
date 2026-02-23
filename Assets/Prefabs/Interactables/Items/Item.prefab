@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c86d2ac048b5240a6e38a3e5d8810b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineThickness: 20
+  outlineThickness: 3
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
   spriteRenderer: {fileID: 3599087220505950698}
   itemType: 0

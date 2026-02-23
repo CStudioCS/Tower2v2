@@ -74,7 +74,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8569902203551738096, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: outlineThickness
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
