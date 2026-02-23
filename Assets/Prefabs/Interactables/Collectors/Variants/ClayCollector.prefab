@@ -25,8 +25,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9046229091504955708, guid: ff195b21e2e2dc849ae9e1c4ef98a5f4, type: 3}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 4389709378226094520}
+    - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: interactionTime
       value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: outlineThickness
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 1423934274109864873, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Name
@@ -108,6 +116,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3680878637782089664, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
     - target: {fileID: 6707140646644410602, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -160,6 +172,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1990951441333698336}
   m_SourcePrefab: {fileID: 100100000, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+--- !u!212 &4389709378226094520 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3680878637782089664, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+  m_PrefabInstance: {fileID: 1152493749722234488}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4799432521113060337 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5576996233147055497, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}

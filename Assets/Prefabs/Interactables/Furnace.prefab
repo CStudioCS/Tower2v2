@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineThickness: 1
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  spriteRenderer: {fileID: 5018667716091664872}
   cookTime: 4
   brickItemPrefab: {fileID: 3935943603334928311, guid: d8b092eee7d429941b1f898ae5ab311e, type: 3}
   progressBar: {fileID: 4831184238089262219}
@@ -353,7 +354,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

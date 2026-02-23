@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,31 +9,44 @@ public abstract class Interactable : MonoBehaviour
 {        
     public bool IsAlreadyInteractedWith { get; set; }
     private bool isHighlighted = false;
+    private List<Player> highlightedByPlayers = new();
+
+    [Header("Highlight Settings")]
+    [SerializeField] private float outlineThickness = 5f;
+    [SerializeField] private Color outlineColor = Color.white;
+
+    [SerializeField] protected SpriteRenderer spriteRenderer;
+    private MaterialPropertyBlock propBlock;
 
     public virtual void Interact(Player player) { }
     public abstract float GetInteractionTime();
 
     public virtual bool CanInteract(Player player) => false;
 
-    [SerializeField] private float outlineThickness = 1f;
-    [SerializeField] private Color outlineColor = Color.white;
-
-    private SpriteRenderer _spriteRenderer;
-    private MaterialPropertyBlock _propBlock;
-
-    void Awake()
+    protected virtual void Awake()
     {
-         if (!TryGetComponent<SpriteRenderer>(out _spriteRenderer))
-            Debug.LogError("Interactable " + gameObject.name + " does not have a SpriteRenderer component.");
-           
-        _propBlock = new MaterialPropertyBlock();
+        InitializeHighlight();
+    }
+
+    protected void InitializeHighlight()
+    {
+        if (propBlock != null) 
+            return;
+
+        if (spriteRenderer == null)
+            return;
+
+        propBlock = new MaterialPropertyBlock();
     }
 
     // When the player walks inside the interactable, we tell it that it is inside
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player))
+        {
             player.insideInteractableList.Add(this);
+            highlightedByPlayers.Add(player);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -40,8 +54,9 @@ public abstract class Interactable : MonoBehaviour
         if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractableList.Contains(this))
         {
             player.insideInteractableList.Remove(this);
+            highlightedByPlayers.Remove(player);
 
-            if(isHighlighted)
+            if(highlightedByPlayers.Count == 0)
                 Highlight(false);
         }
     }
@@ -52,30 +67,29 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
-    public void Highlight(bool highlighted)
+    public virtual void Highlight(bool highlighted)
     {
+        if (spriteRenderer == null || propBlock == null)
+            return;
+
         if (isHighlighted == highlighted) 
             return;
-        
+
         isHighlighted = highlighted;
-
-        if (_spriteRenderer == null)
-            return;
-
-        _spriteRenderer.GetPropertyBlock(_propBlock);
+        
+        spriteRenderer.GetPropertyBlock(propBlock);
 
         if (isHighlighted)
         {
-            _propBlock.SetFloat("_OutlineSize", outlineThickness);
-            _propBlock.SetColor("_OutlineColor", outlineColor);
-            Debug.Log("Highlighting " + gameObject.name);
+            propBlock.SetFloat("_OutlineSize", outlineThickness);
+            propBlock.SetColor("_OutlineColor", outlineColor);
         }
         else
         {
-            _propBlock.SetFloat("_OutlineSize", 0f);
+            propBlock.SetFloat("_OutlineSize", 0f);
         }
 
-        _spriteRenderer.SetPropertyBlock(_propBlock);
+        spriteRenderer.SetPropertyBlock(propBlock);
     }
     protected virtual void OnGameAboutToStart()
     {

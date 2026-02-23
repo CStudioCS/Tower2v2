@@ -70,6 +70,7 @@ public class Player : MonoBehaviour
                 currentInteractable.Highlight(false);
 
             currentInteractable = closestInteractable;
+
             currentInteractable.Highlight(true);
         }
     }

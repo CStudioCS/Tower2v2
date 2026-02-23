@@ -112,7 +112,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: [{fileID: 6490535111245912574}]
+  m_Children:
+  - {fileID: 6490535111245912574}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8569902203551738096
@@ -127,8 +128,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c86d2ac048b5240a6e38a3e5d8810b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outlineThickness: 20
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  spriteRenderer: {fileID: 3599087220505950698}
   itemType: 0
-  LastOwner: {fileID: 0}
   rb: {fileID: 3815938341415364146}
   itemCollider: {fileID: -256997523848646438}
   ejectionSpeedMultiplier: 1.2
