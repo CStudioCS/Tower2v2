@@ -1,6 +1,5 @@
 using UnityEngine;
 using LitMotion;
-using LitMotion.Extensions;
 using System.Collections;
 
 public class CameraZoomer : MonoBehaviour
