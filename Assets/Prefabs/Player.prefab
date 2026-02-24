@@ -9,15 +9,16 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4006656927875155964}
-  - component: {fileID: 305416469070274735}
-  - component: {fileID: 859528782026247002}
   - component: {fileID: 8343199554380001103}
+  - component: {fileID: 305416469070274735}
   - component: {fileID: 4423661849542820139}
   - component: {fileID: 4720667436485828352}
   - component: {fileID: -6306556956286896828}
+  - component: {fileID: -7975852267515287093}
   - component: {fileID: 176917095401970236}
   - component: {fileID: 4818485210361488442}
   - component: {fileID: 441991705434926209}
+  - component: {fileID: 859528782026247002}
   - component: {fileID: 4042930519934913343}
   m_Layer: 0
   m_Name: Player
@@ -44,49 +45,6 @@ Transform:
   - {fileID: 3819617118844221997}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &305416469070274735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4067928945899315388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d28773be4de2cdd49aadf2d81a19bd79, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerTeam: {fileID: 4720667436485828352}
---- !u!114 &859528782026247002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4067928945899315388}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 1
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: Gameplay
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!114 &8343199554380001103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,9 +60,23 @@ MonoBehaviour:
   playerInput: {fileID: 859528782026247002}
   playerTeam: {fileID: 4720667436485828352}
   playerControlBadge: {fileID: 5167199617259306430}
-  progressBar: {fileID: 7722397540325121459}
   playerMovement: {fileID: 4423661849542820139}
   playerAnimationController: {fileID: -6306556956286896828}
+  playerStats: {fileID: -7975852267515287093}
+  progressBar: {fileID: 7722397540325121459}
+--- !u!114 &305416469070274735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4067928945899315388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d28773be4de2cdd49aadf2d81a19bd79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTeam: {fileID: 4720667436485828352}
 --- !u!114 &4423661849542820139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,6 +131,25 @@ MonoBehaviour:
   hasItemId: hasItem
   dropTriggerId: drop
   speedId: speed
+--- !u!114 &-7975852267515287093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4067928945899315388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 255c003f064f7c24784e76f785fb1f2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemsPlaced: 0
+  woodCut: 0
+  stolenItems: 0
+  strawCollected: 0
+  woodLogsCollected: 0
+  clayCollected: 0
+  bricksCooked: 0
 --- !u!50 &176917095401970236
 Rigidbody2D:
   serializedVersion: 5
@@ -287,6 +278,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 2
   m_SpriteSortPoint: 0
+--- !u!114 &859528782026247002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4067928945899315388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 1
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Gameplay
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!95 &4042930519934913343
 Animator:
   serializedVersion: 7

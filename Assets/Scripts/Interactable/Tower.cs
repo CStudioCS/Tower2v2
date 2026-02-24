@@ -79,7 +79,12 @@ public class Tower : Interactable
         towerPieces.Add(towerPieceInstance);
         LastPlacedTime = LevelManager.Instance.LevelTimer;
 
+        if (player.HeldItem.originallyCollectedByTeam != player.PlayerTeam.CurrentTeam)
+            player.PlayerStats.stolenItems++;
+        player.PlayerStats.itemsPlaced++;
+
         player.ConsumeCurrentItem();
+
         UpdateTowerTopUI();
         PieceBuilt?.Invoke();
     }

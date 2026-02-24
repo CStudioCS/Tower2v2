@@ -13,16 +13,19 @@ public class Player : MonoBehaviour
     public bool Interacting { get; private set; }
 
     [Header("References")]
+
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerTeam playerTeam;
     public PlayerTeam PlayerTeam => playerTeam;
     [SerializeField] private PlayerControlBadge playerControlBadge;
     public PlayerControlBadge PlayerControlBadge => playerControlBadge;
-    [SerializeField] private ProgressBar progressBar;
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
-
     [SerializeField] private PlayerAnimationController playerAnimationController;
+    [SerializeField] private PlayerStats playerStats;
+    public PlayerStats PlayerStats => playerStats;
+
+    [SerializeField] private ProgressBar progressBar;
 
     private InputAction interactAction;
     private Interactable closestInteractable;
@@ -167,10 +170,19 @@ public class Player : MonoBehaviour
         HeldItem = null;
     }
 
-    public void GrabNewItem(Item itemPrefab)
+    /// <summary>
+    /// Makes the player grab a newly instantiated Item
+    /// </summary>
+    /// <param name="itemPrefab"></param>
+    /// <param name="originallyCollectedByTeam">The team this item was originally collected by. If left null this will be set as this player's team</param>
+    public void GrabNewItem(Item itemPrefab, PlayerTeam.Team? originallyCollectedByTeam = null)
     {
         Item itemInstance = Instantiate(itemPrefab);
-        GrabItem(itemInstance, false);        
+        GrabItem(itemInstance, false);
+        if (originallyCollectedByTeam is PlayerTeam.Team team)
+            itemInstance.originallyCollectedByTeam = team;
+        else
+            itemInstance.originallyCollectedByTeam = playerTeam.CurrentTeam;
     }
 
     public void GrabItem(Item item, bool interpolatePosition)

@@ -11,6 +11,8 @@ public class Furnace : Interactable
     [SerializeField] private AudioSource audioSourceFire;
     [SerializeField] private AudioSource audioSourceBricks;
 
+    private PlayerTeam.Team itemCookedByTeam;
+
     private State state;
     private enum State { Empty, Cooking, Cooked }
 
@@ -36,11 +38,13 @@ public class Furnace : Interactable
             case State.Empty:
                 StartCoroutine(Cook());
                 player.ConsumeCurrentItem();
+                itemCookedByTeam = player.PlayerTeam.CurrentTeam;
                 break;
             case State.Cooked:
                 audioSourceBricks.Play();
 
-                player.GrabNewItem(brickItemPrefab);
+                player.GrabNewItem(brickItemPrefab, itemCookedByTeam);
+                player.PlayerStats.bricksCooked++;
                 state = State.Empty;
                 progressBar.ResetProgress();
                 break;

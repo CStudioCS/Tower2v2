@@ -14,6 +14,8 @@ public class Workbench : Interactable
     [SerializeField] private AudioSource audioSourceSaw;
     [SerializeField] private AudioSource audioSourceWood;
 
+    private PlayerTeam.Team cutLastByTeam;
+
     private enum State { Empty, HasWoodLog, HasWoodPlank }
 
     public override bool CanInteract(Player player)
@@ -47,6 +49,8 @@ public class Workbench : Interactable
             case State.HasWoodLog:
                 state = State.HasWoodPlank;
                 currentInteractionTime = putOrPickUpItemInteractionTime;
+                player.PlayerStats.woodCut++;
+                cutLastByTeam = player.PlayerTeam.CurrentTeam;
                 spriteRenderer.color = Color.blue;
                 break;
             
@@ -54,7 +58,10 @@ public class Workbench : Interactable
                 audioSourceWood.Play();
 
                 state = State.Empty;
-                player.GrabNewItem(woodPlankItemPrefab);
+                player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam); //ownership for wood is determined by who cut it, not who collected it 
+                //imo we should instantiate the item after the cut is done
+                //and leave it on the workbench. then picking it up would look like (not be coded like, only look like)
+                //picking up an item from the ground with sum LitMotion action
                 spriteRenderer.color = Color.white;
                 break;
         }

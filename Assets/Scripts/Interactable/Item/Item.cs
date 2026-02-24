@@ -18,6 +18,7 @@ public class Item : Interactable
     [SerializeField] private float minimumEjectionSpeedRatio;
     [SerializeField] private float grabbingTime;
 
+    [HideInInspector] public PlayerTeam.Team originallyCollectedByTeam;
     public float GrabbingTime => grabbingTime;
 
     [SerializeField] private AudioSource audioSourceDrop;

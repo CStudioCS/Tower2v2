@@ -18,6 +18,7 @@ public class Collector : Interactable
     public override void Interact(Player player)
     {
         player.GrabNewItem(itemPrefab);
+        player.PlayerStats.OnCollectedItem(itemPrefab.ItemType);
     }
 
     public override float GetInteractionTime() => interactionTime;
