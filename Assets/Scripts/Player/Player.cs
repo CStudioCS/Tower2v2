@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public List<Interactable> insideInteractableList { get; private set; } = new();
-    private Interactable currentInteractable;
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
     public bool Interacting { get; private set; }
@@ -62,17 +61,18 @@ public class Player : MonoBehaviour
 
     private void UpdateClosestInteractable()
     {
-        closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
+        Interactable newClosestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
 
-        if (closestInteractable != null)
+        if (closestInteractable != newClosestInteractable)
         {
-            if (currentInteractable && currentInteractable != closestInteractable)
-                currentInteractable.Highlight(false);
-
-            currentInteractable = closestInteractable;
-
-            currentInteractable.Highlight(true);
+            if (closestInteractable != null)
+                closestInteractable.Highlight(false);
+            
+            if (newClosestInteractable != null)
+                newClosestInteractable.Highlight(true);
         }
+
+        closestInteractable = newClosestInteractable;
     }
     private void Interact()
     {

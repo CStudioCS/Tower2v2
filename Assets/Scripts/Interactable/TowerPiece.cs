@@ -16,5 +16,8 @@ public class TowerPiece : Interactable
 
     public override float GetInteractionTime() => 0;
 
-    public override void Highlight(bool highlighted) { }
+    public override void Highlight(bool highlighted) 
+    {
+        tower.Highlight(highlighted);
+    }
 }

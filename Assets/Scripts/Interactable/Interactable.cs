@@ -8,8 +8,7 @@ using UnityEngine;
 public abstract class Interactable : MonoBehaviour
 {        
     public bool IsAlreadyInteractedWith { get; set; }
-    private bool isHighlighted = false;
-    private List<Player> highlightedByPlayers = new();
+    private int highlightedPlayerCount = 0;
 
     [Header("Highlight Settings")]
     [SerializeField] private float outlineThickness = 5f;
@@ -43,22 +42,13 @@ public abstract class Interactable : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player))
-        {
             player.insideInteractableList.Add(this);
-            highlightedByPlayers.Add(player);
-        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractableList.Contains(this))
-        {
             player.insideInteractableList.Remove(this);
-            highlightedByPlayers.Remove(player);
-
-            if(highlightedByPlayers.Count == 0)
-                Highlight(false);
-        }
     }
     
     private void Start()
@@ -69,17 +59,23 @@ public abstract class Interactable : MonoBehaviour
 
     public virtual void Highlight(bool highlighted)
     {
+        if (highlighted) 
+            highlightedPlayerCount++;
+        else 
+            highlightedPlayerCount--;
+
+        if (!highlighted && highlightedPlayerCount > 0) 
+            return;
+
+        if (highlighted && highlightedPlayerCount >= 2) 
+            return;
+
         if (spriteRenderer == null || propBlock == null)
             return;
 
-        if (isHighlighted == highlighted) 
-            return;
-
-        isHighlighted = highlighted;
-        
         spriteRenderer.GetPropertyBlock(propBlock);
 
-        if (isHighlighted)
+        if (highlighted)
         {
             propBlock.SetFloat("_OutlineSize", outlineThickness);
             propBlock.SetColor("_OutlineColor", outlineColor);
