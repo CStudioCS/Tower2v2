@@ -16,6 +16,8 @@ public class Tower : Interactable
     [SerializeField] private GameObject woodTowerPiecePrefab;
     [SerializeField] private GameObject brickTowerPiecePrefab;
 
+    [SerializeField] private AudioSource audioSource;
+
     private readonly List<GameObject> towerPieces = new();
     
     private Dictionary<Item.Type, GameObject> towerPieceMap;
@@ -32,7 +34,8 @@ public class Tower : Interactable
             return towerPieceMap;
         }
     }
-    
+
+    public event Action TriedBuildingWithIncorrectItemType;
     public event Action PieceBuilt;
     private bool isLeftTower => this == WorldLinker.Instance.towerLeft;
     private RecipesList recipesList => isLeftTower ? CanvasLinker.Instance.recipesListLeft : CanvasLinker.Instance.recipesListRight;
@@ -48,11 +51,19 @@ public class Tower : Interactable
     public override bool CanInteract(Player player)
     {
         // Check if the player is holding the correct item for the recipe
-        return player.IsHolding && recipesList.CurrentNeededItemType == player.HeldItem.ItemType;
+        return player.IsHolding;
     }
 
+    private bool IsItemCorrect(Player player) => recipesList.CurrentNeededItemType == player.HeldItem.ItemType;
+    
     public override void Interact(Player player)
     {
+        if (!IsItemCorrect(player))
+        {
+            TriedBuildingWithIncorrectItemType?.Invoke();
+            return;
+        }
+        
         // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
         // and with the way Unity handles rendering, the new object is rendered on top of the old one
         
@@ -61,6 +72,8 @@ public class Tower : Interactable
             Debug.LogError("Could not find tower piece associated with " + player.HeldItem.ItemType + " held item");
             return;
         }
+
+        audioSource.Play();
 
         GameObject towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * Height, Quaternion.identity, transform);
         towerPieces.Add(towerPieceInstance);

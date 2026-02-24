@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8064182893626633851, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: 0dc861394fd09c94ab0c0e51d44acc25, type: 3}
     - target: {fileID: 2585688832917479558, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: m_Name
       value: WoodPlankItem
