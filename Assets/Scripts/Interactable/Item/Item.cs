@@ -43,8 +43,6 @@ public class Item : Interactable
         rb.angularVelocity = 0;
         rb.simulated = false;
         itemCollider.enabled = false;
-
-        audioSourceGrab.Play();
     }
 
     public void Drop()
