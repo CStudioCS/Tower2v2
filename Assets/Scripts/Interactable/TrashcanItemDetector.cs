@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class TrashcanItemDetector : MonoBehaviour
 {
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        if(collision != null)
+        if(collider != null)
         {
-            if(collision.gameObject.TryGetComponent<Item>(out Item item))
+            if(collider.gameObject.TryGetComponent<Item>(out Item item))
             {
-                Destroy(collision.gameObject);
+                Destroy(collider.gameObject);
             }
         }
     }

@@ -481,10 +481,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2914927600258276031, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
-      propertyPath: DebugMode
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2233086918350289950, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: timerLimit
       value: 120
@@ -903,6 +899,10 @@ PrefabInstance:
       propertyPath: offTowerHeightText
       value: 
       objectReference: {fileID: 931680180}
+    - target: {fileID: 6877970651468838363, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6941577674923723632, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
       propertyPath: m_Camera
       value: 
@@ -959,7 +959,8 @@ PrefabInstance:
       propertyPath: offTowerHeightText
       value: 
       objectReference: {fileID: 493288975}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8171078712455920661, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
