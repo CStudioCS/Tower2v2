@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4033631931683956610, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
     - target: {fileID: 5447477023065441515, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -58,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7406187175304900994, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
       propertyPath: m_Name
-      value: woodTowerPiece 1
+      value: WoodTowerPiece
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

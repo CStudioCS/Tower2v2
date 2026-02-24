@@ -22,8 +22,9 @@ public class Item : Interactable
 
     [SerializeField] private AudioSource audioSourceDrop;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake(); // Initialize highlight system
         itemCollider.enabled = false;
         LevelManager.Instance.GameEnded += Disappear;
     }
@@ -42,8 +43,6 @@ public class Item : Interactable
         rb.angularVelocity = 0;
         rb.simulated = false;
         itemCollider.enabled = false;
-
-        audioSourceGrab.Play();
     }
 
     public void Drop()

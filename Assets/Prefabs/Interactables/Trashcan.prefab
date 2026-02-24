@@ -141,6 +141,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 493fe926fc0997a499ff4ca3b2c9125d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  outlineThickness: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  spriteRenderer: {fileID: -1162814141957900994}
   audioSource: {fileID: -4655949978739127763}
 --- !u!212 &-1162814141957900994
 SpriteRenderer:
@@ -165,7 +168,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -186,7 +189,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -5868093129598958763, guid: 5af059fd62ced2a829afff2d337634b6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5af059fd62ced2a829afff2d337634b6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

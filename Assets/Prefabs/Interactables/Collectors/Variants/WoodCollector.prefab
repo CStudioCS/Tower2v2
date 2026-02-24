@@ -21,6 +21,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 446428572069877000, guid: 2e900ac2d5a92804a9c0b03180a5dfab, type: 3}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 8951723891140760563}
+    - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: interactionTime
       value: 1.2
       objectReference: {fileID: 0}
@@ -104,6 +108,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3680878637782089664, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
     - target: {fileID: 4215571851615593671, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -120,6 +128,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7177215030695489216, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
     - target: {fileID: 8122058454346053111, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Size.x
       value: 0.8
@@ -189,3 +201,8 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.855, y: 1}
   m_EdgeRadius: 0
+--- !u!212 &8951723891140760563 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3680878637782089664, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+  m_PrefabInstance: {fileID: 5706046352899812403}
+  m_PrefabAsset: {fileID: 0}

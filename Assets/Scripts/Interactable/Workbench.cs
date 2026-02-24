@@ -10,7 +10,6 @@ public class Workbench : Interactable
 
     [Header("References")]
     [SerializeField] private Item woodPlankItemPrefab;
-    [SerializeField] private SpriteRenderer spriteRenderer;
 
     [SerializeField] private AudioSource audioSourceSaw;
     [SerializeField] private AudioSource audioSourceWood;
