@@ -20,7 +20,6 @@ public class Item : Interactable
 
     public float GrabbingTime => grabbingTime;
 
-    [SerializeField] private AudioSource audioSourceGrab;
     [SerializeField] private AudioSource audioSourceDrop;
 
     protected override void Awake()

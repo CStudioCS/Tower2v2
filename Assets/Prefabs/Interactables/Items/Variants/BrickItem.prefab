@@ -32,6 +32,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: BrickItem
       objectReference: {fileID: 0}
+    - target: {fileID: 3320174856384885130, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Size.x
+      value: 1.0475
+      objectReference: {fileID: 0}
+    - target: {fileID: 3320174856384885130, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Size.y
+      value: 1.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 3320174856384885130, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -6103888666325555554, guid: 92abcfdac561eabfe915584baca99257, type: 3}
+    - target: {fileID: 3320174856384885130, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3599087220505950698, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: m_Size.x
       value: 4.19
@@ -91,6 +107,22 @@ PrefabInstance:
     - target: {fileID: 5270320571875375237, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5601728166809097791, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5601728166809097791, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6644710968671229558, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -6103888666325555554, guid: 92abcfdac561eabfe915584baca99257, type: 3}
+    - target: {fileID: 6644710968671229558, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8569902203551738096, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: itemType
