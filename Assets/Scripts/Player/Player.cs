@@ -134,9 +134,10 @@ public class Player : MonoBehaviour
     /// </summary>
     public void DropHeldItem()
     {
-        if (!IsHolding)
+        if (!IsHolding || (HeldItem.state != Item.ItemState.Held))
             return;
 
+        HeldItem.state = Item.ItemState.Transitioning;
         IsHolding = false;
         grabbingLerp.TryCancel();
         rotationLerp.TryCancel();
@@ -166,6 +167,8 @@ public class Player : MonoBehaviour
         }
         else
             item.transform.localPosition = Vector2.zero;
+
+        item.state = Item.ItemState.Held;
     }
 
     private void OnGameEnded()
