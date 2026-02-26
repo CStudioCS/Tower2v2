@@ -18,7 +18,7 @@ public class Item : Interactable
     [SerializeField] private float minimumEjectionSpeedRatio;
     [SerializeField] private float grabbingTime;
     public enum ItemState { Held, Dropped, Transitioning };
-    public ItemState state;
+    public ItemState State { get; set; }
 
 
     public float GrabbingTime => grabbingTime;
@@ -29,14 +29,14 @@ public class Item : Interactable
     {
         base.Awake(); // Initialize highlight system
         itemCollider.enabled = false;
-        state = ItemState.Dropped;
+        State = ItemState.Dropped;
         LevelManager.Instance.GameEnded += Disappear;
     }
 
-    public override bool CanInteract(Player player) => (!player.IsHolding) && (state == ItemState.Dropped);
+    public override bool CanInteract(Player player) => (!player.IsHolding) && (State == ItemState.Dropped);
     public override void Interact(Player player)
     {
-        state = ItemState.Transitioning;
+        State = ItemState.Transitioning;
         player.GrabItem(this, true);
     }
 
@@ -67,7 +67,7 @@ public class Item : Interactable
         LastOwner = null;
 
 
-        state = ItemState.Dropped;
+        State = ItemState.Dropped;
         audioSourceDrop.Play();
     }
 
