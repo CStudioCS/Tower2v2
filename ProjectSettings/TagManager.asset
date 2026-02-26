@@ -11,7 +11,7 @@ TagManager:
   - 
   - Water
   - UI
-  - Player
+  - NoItemCollision
   - 
   - Item
   - 
@@ -40,6 +40,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: OnTop
+    uniqueID: 3293246313
     locked: 0
   m_RenderingLayers:
   - Default

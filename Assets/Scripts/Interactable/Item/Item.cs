@@ -8,7 +8,7 @@ public class Item : Interactable
     [Header("Item")]
     [SerializeField] private Type itemType;
     public Type ItemType => itemType;
-    public Player LastOwner;
+    public Player LastOwner { get; set; }
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Collider2D itemCollider;
     [SerializeField] private float ejectionSpeedMultiplier;
@@ -23,19 +23,24 @@ public class Item : Interactable
 
     public float GrabbingTime => grabbingTime;
 
-    private void Awake()
+    [SerializeField] private AudioSource audioSourceDrop;
+
+    protected override void Awake()
     {
+        base.Awake(); // Initialize highlight system
         itemCollider.enabled = false;
         state = ItemState.Dropped;
+        LevelManager.Instance.GameEnded += Disappear;
     }
 
-    protected override bool CanInteractPrimary(Player player) => (!player.IsHolding) && (state == ItemState.Dropped);
-    protected override void InteractPrimary(Player player)
+    public override bool CanInteract(Player player) => (!player.IsHolding) && (state == ItemState.Dropped);
+    public override void Interact(Player player)
     {
         state = ItemState.Transitioning;
         player.GrabItem(this, true);
     }
 
+    public override float GetInteractionTime() => 0;
     public void Immobilize()
     {
         rb.linearVelocity = Vector2.zero;
@@ -55,11 +60,24 @@ public class Item : Interactable
 
         Vector2 lastSpeed = LastOwner.PlayerMovement.LastSpeed;
         Vector2 speedDirection =lastSpeed.normalized;
+
         float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(Mathf.Abs(lastSpeed.magnitude), minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);//speed if not null else a percentage of max speed
         rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionDeviation;
         rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
         LastOwner = null;
 
+
         state = ItemState.Dropped;
+        audioSourceDrop.Play();
+    }
+
+    private void Disappear()
+    {
+        Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        LevelManager.Instance.GameEnded -= Disappear;
     }
 }

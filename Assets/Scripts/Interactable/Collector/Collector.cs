@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 /// <summary>
 /// This is everything from wood collectors, cement collectors and dirt collectors. When interacted with, it makes a player hold the itemPrefab gameobject
@@ -6,13 +7,31 @@ using UnityEngine;
 /// </summary>
 public class Collector : Interactable
 {
+    [SerializeField] private float interactionTime;
     [Header("Collector")]
     [SerializeField] private Item itemPrefab;
 
-    protected override bool CanInteractPrimary(Player player) => !player.IsHolding;
+    [SerializeField] private AudioSource audioSource;
 
-    protected override void InteractPrimary(Player player)
+    public override bool CanInteract(Player player) => !player.IsHolding;
+
+    public override void Interact(Player player)
     {
         player.GrabNewItem(itemPrefab);
+    }
+
+    public override float GetInteractionTime() => interactionTime;
+
+    private void Update()
+    {
+        if (IsAlreadyInteractedWith && !audioSource.isPlaying)
+        {
+            audioSource.Play();
+        }
+
+        if (!IsAlreadyInteractedWith && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
     }
 }

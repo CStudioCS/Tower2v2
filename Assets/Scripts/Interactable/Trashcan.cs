@@ -1,9 +1,15 @@
+using UnityEngine;
+
 public class Trashcan : Interactable
-{   
-    protected override void InteractPrimary(Player player)
+{
+    [SerializeField] private AudioSource audioSource;
+    public override void Interact(Player player)
     {
+        audioSource.Play();
         player.ConsumeCurrentItem();
     }
 
-    protected override bool CanInteractPrimary(Player player) => player.IsHolding;
+    public override float GetInteractionTime() => 0;
+
+    public override bool CanInteract(Player player) => player.IsHolding;
 }

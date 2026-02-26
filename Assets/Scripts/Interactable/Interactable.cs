@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -5,42 +6,37 @@ using UnityEngine;
 /// trigger collider and if CanInteract(player) is evaluated to true, the player can call the Interact function of the Interactable.
 /// </summary>
 public abstract class Interactable : MonoBehaviour
-{
-    public enum InteractionType { Primary, Secondary }
-    
-    [Header("Interaction Times")]
-    [SerializeField] float interactionTime;
-    [SerializeField] float interactionTimeSecondary;
-    
+{        
     public bool IsAlreadyInteractedWith { get; set; }
-    private bool isHighlighted = false;
+    private int highlightedPlayerCount = 0;
 
-    public virtual void Interact(InteractionType type, Player player)
+    [Header("Highlight Settings")]
+    [SerializeField] private float outlineThickness = 5f;
+    [SerializeField] private Color outlineColor = Color.white;
+
+    [SerializeField] protected SpriteRenderer spriteRenderer;
+    private MaterialPropertyBlock propBlock;
+
+    public virtual void Interact(Player player) { }
+    public abstract float GetInteractionTime();
+
+    public virtual bool CanInteract(Player player) => false;
+
+    protected virtual void Awake()
     {
-        switch (type)
-        {
-            case InteractionType.Primary: InteractPrimary(player); break;
-            case InteractionType.Secondary: InteractSecondary(player); break;
-        }
+        InitializeHighlight();
     }
 
-    protected virtual void InteractPrimary(Player player) { }
-    protected virtual void InteractSecondary(Player player) { }
-
-    public float GetInteractionTime(InteractionType type) => type == InteractionType.Primary ? interactionTime : interactionTimeSecondary;
-
-    public virtual bool CanInteract(InteractionType type, Player player)
+    protected void InitializeHighlight()
     {
-        switch (type)
-        {
-            case InteractionType.Primary: return CanInteractPrimary(player);
-            case InteractionType.Secondary: return CanInteractSecondary(player);
-        }
-        return false;
-    }
+        if (propBlock != null) 
+            return;
 
-    protected virtual bool CanInteractPrimary(Player player) => false;
-    protected virtual bool CanInteractSecondary(Player player) => false;
+        if (spriteRenderer == null)
+            return;
+
+        propBlock = new MaterialPropertyBlock();
+    }
 
     // When the player walks inside the interactable, we tell it that it is inside
     private void OnTriggerEnter2D(Collider2D collision)
@@ -52,10 +48,7 @@ public abstract class Interactable : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractableList.Contains(this))
-        {
-            this.Highlight(false);
             player.insideInteractableList.Remove(this);
-        }
     }
     
     private void Start()
@@ -66,10 +59,33 @@ public abstract class Interactable : MonoBehaviour
 
     public virtual void Highlight(bool highlighted)
     {
-        if (isHighlighted == highlighted) 
+        if (highlighted) 
+            highlightedPlayerCount++;
+        else 
+            highlightedPlayerCount--;
+
+        if (!highlighted && highlightedPlayerCount > 0) 
             return;
-        
-        isHighlighted = highlighted;
+
+        if (highlighted && highlightedPlayerCount >= 2) 
+            return;
+
+        if (spriteRenderer == null || propBlock == null)
+            return;
+
+        spriteRenderer.GetPropertyBlock(propBlock);
+
+        if (highlighted)
+        {
+            propBlock.SetFloat("_OutlineSize", outlineThickness);
+            propBlock.SetColor("_OutlineColor", outlineColor);
+        }
+        else
+        {
+            propBlock.SetFloat("_OutlineSize", 0f);
+        }
+
+        spriteRenderer.SetPropertyBlock(propBlock);
     }
     protected virtual void OnGameAboutToStart()
     {

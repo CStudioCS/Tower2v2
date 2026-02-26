@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Furnace : Interactable
 {
@@ -7,11 +8,13 @@ public class Furnace : Interactable
     [SerializeField] private float cookTime = 4;
     [SerializeField] private Item brickItemPrefab;
     [SerializeField] private ProgressBar progressBar;
+    [SerializeField] private AudioSource audioSourceFire;
+    [SerializeField] private AudioSource audioSourceBricks;
 
     private State state;
     private enum State { Empty, Cooking, Cooked }
 
-    protected override bool CanInteractPrimary(Player player)
+    public override bool CanInteract(Player player)
     {
         switch (state)
         {
@@ -26,7 +29,7 @@ public class Furnace : Interactable
         }
     }
 
-    protected override void InteractPrimary(Player player)
+    public override void Interact(Player player)
     {
         switch (state)
         {
@@ -35,6 +38,8 @@ public class Furnace : Interactable
                 player.ConsumeCurrentItem();
                 break;
             case State.Cooked:
+                audioSourceBricks.Play();
+
                 player.GrabNewItem(brickItemPrefab);
                 state = State.Empty;
                 progressBar.ResetProgress();
@@ -42,8 +47,12 @@ public class Furnace : Interactable
         }
     }
 
+    public override float GetInteractionTime() => 0;
+
     private IEnumerator Cook()
     {
+        audioSourceFire.Play();
+
         state = State.Cooking;
 
         progressBar.StartProgress();
@@ -58,6 +67,8 @@ public class Furnace : Interactable
         }
         progressBar.SetProgressMax();
         state = State.Cooked;
+
+        audioSourceFire.Stop();
     }
     
     protected override void OnGameEnded()
