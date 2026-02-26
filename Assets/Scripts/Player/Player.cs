@@ -155,9 +155,10 @@ public class Player : MonoBehaviour
     /// </summary>
     public void DropHeldItem()
     {
-        if (!IsHolding)
+        if (!IsHolding || (HeldItem.State != Item.ItemState.Held))
             return;
 
+        HeldItem.State = Item.ItemState.Transitioning;
         playerAnimationController.Drop();
 
         IsHolding = false;
@@ -191,6 +192,8 @@ public class Player : MonoBehaviour
         }
         else
             item.transform.localPosition = Vector2.zero;
+
+        item.State = Item.ItemState.Held;
     }
 
     private void OnGameEnded()
