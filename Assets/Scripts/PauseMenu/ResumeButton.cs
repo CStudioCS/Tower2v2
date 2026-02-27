@@ -2,14 +2,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class QuitPauseButton : NoActionButton
+public class ResumeButton : NoActionButton
 {
     [SerializeField] private Button pauseButton;
-    [SerializeField] private GameObject pauseMenuGameObject;
+    [SerializeField] private GameObject pauseMenu;
 
     public override void OnClick()
     {
-        pauseMenuGameObject.SetActive(false);
+        pauseMenu.SetActive(false);
         pauseButton.gameObject.SetActive(true);
         Time.timeScale = 1.0f;
     }

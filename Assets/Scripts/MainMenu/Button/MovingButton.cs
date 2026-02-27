@@ -6,18 +6,18 @@ using System.Collections;
 /*Gere Le mouvement des boutons qui se déplace vers la gauche en générales*/
 public class MovingButton : ActionButton
 {
-    [SerializeField] private float finalPositionButtonAfterMove;
-    [SerializeField] private float speedButtonWhenClicked;
+    [SerializeField] private float xOffset;
+    [SerializeField] private float pressedButtonSpeed;
     [SerializeField] private CameraZoomer camZoomer;
     [SerializeField] private ButtonManager buttonManager;
 
-    public float SpeedButtonWhenClicked => speedButtonWhenClicked;
+    public float PressedButtonSpeed => pressedButtonSpeed;
     public override void Action(){}
 
     protected virtual void Movement()
     {
-        Vector3 targetPosition = transform.position + new Vector3(finalPositionButtonAfterMove, 0f, 0f);
-        LMotion.Create(transform.position, targetPosition, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => transform.position = y);
+        Vector3 targetPosition = transform.position + new Vector3(xOffset, 0f, 0f);
+        LMotion.Create(transform.position, targetPosition, pressedButtonSpeed).WithEase(Ease.OutQuad).Bind(y => transform.position = y);
     }
     
     public override void OnClick()

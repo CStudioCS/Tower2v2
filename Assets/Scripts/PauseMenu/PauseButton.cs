@@ -4,13 +4,13 @@ using UnityEngine.InputSystem;
 
 public class PauseButton : NoActionButton
 {
-    [SerializeField] private GameObject pauseMenuGameObject;
+    [SerializeField] private GameObject pauseMenu;
 
     public override void OnClick()
     {
         Time.timeScale = 0f;
         gameObject.SetActive(false);
-        pauseMenuGameObject.SetActive(true);
+        pauseMenu.SetActive(true);
     }
     public void Update()
     {

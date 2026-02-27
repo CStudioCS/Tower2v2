@@ -5,14 +5,14 @@ using System.Collections;
 public class ExitSettingsButton : ActionButton
 {
     [SerializeField] private CameraZoomer camZoomer;
-    [SerializeField] private SettingsButton settingsButtonScript;
+    [SerializeField] private SettingsButton settingsButton;
     [SerializeField] private ButtonManager buttonManager;
 
     private Vector3 initialSettingsButtonPos;
 
     public void Start()
     {
-        initialSettingsButtonPos = settingsButtonScript.transform.position;
+        initialSettingsButtonPos = settingsButton.transform.position;
     }
     
     public override void Action()
@@ -35,9 +35,9 @@ public class ExitSettingsButton : ActionButton
 
     private IEnumerator WaitMovementSettingsButton()
     {
-        float speedButtonWhenClicked = settingsButtonScript.SpeedButtonWhenClicked;
-        LMotion.Create(settingsButtonScript.transform.position, initialSettingsButtonPos, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => settingsButtonScript.gameObject.transform.position = y); ;
-        yield return new WaitForSeconds(speedButtonWhenClicked);
+        float pressedButtonSpeed = settingsButton.PressedButtonSpeed;
+        LMotion.Create(settingsButton.transform.position, initialSettingsButtonPos, pressedButtonSpeed).WithEase(Ease.OutQuad).Bind(y => settingsButton.gameObject.transform.position = y); ;
+        yield return new WaitForSeconds(pressedButtonSpeed);
         buttonManager.ActivButton();
     }
 }
