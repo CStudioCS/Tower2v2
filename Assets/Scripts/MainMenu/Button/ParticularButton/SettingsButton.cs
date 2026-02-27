@@ -1,11 +1,12 @@
 using UnityEngine;
-
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 public class SettingsButton : MovingButton
 {
-    [SerializeField] private ButtonSelectionManager settingsSelectionManager;
-
+    [SerializeField] private Button quitSettingsButton;
     public override void Action()
     {
-        settingsSelectionManager.PauseSelection(false);
+        quitSettingsButton.interactable = true;
+        EventSystem.current.SetSelectedGameObject(quitSettingsButton.gameObject);
     }
 }

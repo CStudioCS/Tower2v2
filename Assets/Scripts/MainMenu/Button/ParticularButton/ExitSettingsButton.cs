@@ -6,8 +6,7 @@ public class ExitSettingsButton : ActionButton
 {
     [SerializeField] private CameraZoomer camZoomer;
     [SerializeField] private SettingsButton settingsButtonScript;
-    [SerializeField] private ButtonSelectionManager menuSelectionManager;
-    [SerializeField] private ButtonSelectionManager settingsSelectionManager;
+    [SerializeField] private ButtonManager buttonManager;
 
     private Vector3 initialSettingsButtonPos;
 
@@ -23,8 +22,7 @@ public class ExitSettingsButton : ActionButton
 
     public override void OnClick()
     {
-        settingsSelectionManager.PauseSelection(true);
-
+        Button.interactable = false;
         //La fonction doit retourner void pour le OnClick donc elle passe par une autre fonction qui lance l'action après le zoom
         StartCoroutine(ZoomOutCoroutineAction());
     }
@@ -40,6 +38,6 @@ public class ExitSettingsButton : ActionButton
         float speedButtonWhenClicked = settingsButtonScript.SpeedButtonWhenClicked;
         LMotion.Create(settingsButtonScript.transform.position, initialSettingsButtonPos, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => settingsButtonScript.gameObject.transform.position = y); ;
         yield return new WaitForSeconds(speedButtonWhenClicked);
-        menuSelectionManager.PauseSelection(false);
+        buttonManager.ActivButton();
     }
 }

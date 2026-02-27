@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class NoConfirmationButton : NoActionButton
 {
-    [SerializeField] private ButtonSelectionManager buttonSelection;
-    [SerializeField] private GameObject confirmationGameObject;
+    [SerializeField] private ConfirmationPopUp confirmationPopUp;
 
     public override void OnClick()
     {
-        confirmationGameObject.SetActive(false);
-        buttonSelection.PauseSelection(false);
+        confirmationPopUp.ClosePopUp();
     }
 }

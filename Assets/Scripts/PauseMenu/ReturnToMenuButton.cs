@@ -4,9 +4,7 @@ using UnityEngine.SceneManagement;
 public class ReturnToMenuButton : ActionButton
 {
     [SerializeField] private string menuSceneName;
-    [SerializeField] private GameObject returnMenuConfirmationGameObject;
-    [SerializeField] private ButtonSelectionManager buttonSelectionMenu ;
-    [SerializeField] private ButtonSelectionManager confirmationSelectionManager;
+    [SerializeField] private ConfirmationPopUp confirmationPopUp;
 
     public override void Action(){ 
         Time.timeScale = 1.0f;
@@ -15,8 +13,6 @@ public class ReturnToMenuButton : ActionButton
 
     public override void OnClick()
     {
-        returnMenuConfirmationGameObject.SetActive(true);
-        buttonSelectionMenu.PauseSelection(true);
-        confirmationSelectionManager.numOfButtons = 0;
+        confirmationPopUp.OpenPopUp();
     }
 }
