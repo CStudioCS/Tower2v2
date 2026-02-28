@@ -19,8 +19,8 @@ public class ItemRandomizer : MonoBehaviour
     private Dictionary<Item.Type, float> initialItemWight;
     private static Dictionary<Item.Type, int> itemCounter;
     private static System.Random random;
-    private static readonly List<Item.Type> sequence = new();
-    private static bool initialized = false;
+    private readonly List<Item.Type> sequence = new();
+    private bool initialized = false;
 
     public void Awake()
     {
@@ -53,7 +53,7 @@ public class ItemRandomizer : MonoBehaviour
         initialized = true;
     }
 
-    public static void Reset()
+    public void Reset()
     {
         initialized = false;
         sequence.Clear();

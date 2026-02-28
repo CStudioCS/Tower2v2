@@ -48,11 +48,7 @@ public class Tower : Interactable
         ResetTower();
     }
 
-    public override bool CanInteract(Player player)
-    {
-        // Check if the player is holding the correct item for the recipe
-        return player.IsHolding;
-    }
+    public override bool CanInteract(Player player) => player.IsHolding;
 
     private bool IsItemCorrect(Player player) => recipesList.CurrentNeededItemType == player.HeldItem.ItemType;
     
@@ -63,10 +59,7 @@ public class Tower : Interactable
             TriedBuildingWithIncorrectItemType?.Invoke();
             return;
         }
-        
-        // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
-        // and with the way Unity handles rendering, the new object is rendered on top of the old one
-        
+
         if (!TowerPieceMap.TryGetValue(player.HeldItem.ItemType, out GameObject towerPiece))
         {
             Debug.LogError("Could not find tower piece associated with " + player.HeldItem.ItemType + " held item");
