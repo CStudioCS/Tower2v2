@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class NoConfirmationButton : NoActionButton
 {
-    [SerializeField] private ConfirmationPopUp confirmationPopUp;
+    [SerializeField] private ConfirmationPopupContainer confirmationPopupContainer;
 
     public override void OnClick()
     {
-        confirmationPopUp.ClosePopUp();
+        confirmationPopupContainer.ClosePopUp();
     }
 }

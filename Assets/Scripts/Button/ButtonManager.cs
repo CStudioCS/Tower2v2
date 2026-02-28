@@ -4,16 +4,11 @@ using UnityEngine.UI;
 public class ButtonManager : MonoBehaviour
 {
 
-    [SerializeField] private Button[] boutonsMenu;
+    [SerializeField] private Button[] buttons;
 
-    public void DesactivButton()
+    public void SetButtonsInteractable(bool interactable = true)
     {
-        foreach (var b in boutonsMenu)
-            b.interactable = false;
-    }
-    public void ActivButton()
-    {
-        foreach (var b in boutonsMenu)
-            b.interactable = true;
+        foreach (Button button in buttons)
+            button.interactable = interactable;
     }
 }

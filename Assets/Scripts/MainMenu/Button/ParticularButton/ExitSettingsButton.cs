@@ -35,9 +35,9 @@ public class ExitSettingsButton : ActionButton
 
     private IEnumerator WaitMovementSettingsButton()
     {
-        float pressedButtonSpeed = settingsButton.PressedButtonSpeed;
-        LMotion.Create(settingsButton.transform.position, initialSettingsButtonPos, pressedButtonSpeed).WithEase(Ease.OutQuad).Bind(y => settingsButton.gameObject.transform.position = y); ;
-        yield return new WaitForSeconds(pressedButtonSpeed);
-        buttonManager.ActivButton();
+        float buttonPressAnimationDuration = settingsButton.ButtonPressAnimationDuration;
+        LMotion.Create(settingsButton.transform.position, initialSettingsButtonPos, buttonPressAnimationDuration).WithEase(Ease.OutQuad).Bind(y => settingsButton.gameObject.transform.position = y);
+        yield return new WaitForSeconds(buttonPressAnimationDuration);
+        buttonManager.SetButtonsInteractable(true);
     }
 }

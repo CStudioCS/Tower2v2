@@ -7,23 +7,23 @@ using System.Collections;
 public class MovingButton : ActionButton
 {
     [SerializeField] private float xOffset;
-    [SerializeField] private float pressedButtonSpeed;
+    [SerializeField] private float buttonPressAnimationDuration;
     [SerializeField] private CameraZoomer camZoomer;
     [SerializeField] private ButtonManager buttonManager;
 
-    public float PressedButtonSpeed => pressedButtonSpeed;
+    public float ButtonPressAnimationDuration => buttonPressAnimationDuration;
     public override void Action(){}
 
     protected virtual void Movement()
     {
         Vector3 targetPosition = transform.position + new Vector3(xOffset, 0f, 0f);
-        LMotion.Create(transform.position, targetPosition, pressedButtonSpeed).WithEase(Ease.OutQuad).Bind(y => transform.position = y);
+        LMotion.Create(transform.position, targetPosition, buttonPressAnimationDuration).WithEase(Ease.OutQuad).Bind(y => transform.position = y);
     }
     
     public override void OnClick()
     {
         Movement();
-        buttonManager.DesactivButton();
+        buttonManager.SetButtonsInteractable(false);
         //La fonction doit retourner void pour le OnClick donc elle passe par une autre fonction qui lance l'action après le zoom
         StartCoroutine(ZoomInCoroutineAction());
     }

@@ -130,6 +130,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &336926543 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5756224847907927930, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
+  m_PrefabInstance: {fileID: 5518414563250001341}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c4f74528899a3489b469ade4ac6538, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &540472160 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7887014308757947402, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
@@ -158,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3483b49bd1295bf4b987df1810695709, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultButton: {fileID: 1323694357}
+  defaultSelectedGameObject: {fileID: 1323694357}
 --- !u!114 &624498650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b043385cbe25264d81aa0858e6aa886, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boutonsMenu:
+  buttons:
   - {fileID: 1323694359}
   - {fileID: 245975078}
   - {fileID: 540472160}
@@ -455,6 +466,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2939744326286691645, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
+      propertyPath: xOffset
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2939744326286691645, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
       propertyPath: camZoomer
       value: 
       objectReference: {fileID: 747379113}
@@ -462,6 +477,10 @@ PrefabInstance:
       propertyPath: buttonManager
       value: 
       objectReference: {fileID: 624498650}
+    - target: {fileID: 2939744326286691645, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
+      propertyPath: buttonPressAnimationDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3389047808999493239, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
       propertyPath: m_Name
       value: MenuCanvas
@@ -479,8 +498,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 624498650}
     - target: {fileID: 3726981318974969058, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
+      propertyPath: settingsButton
+      value: 
+      objectReference: {fileID: 336926543}
+    - target: {fileID: 3726981318974969058, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
       propertyPath: defaultSelectedSettingsButton
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5756224847907927930, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
+      propertyPath: xOffset
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5756224847907927930, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
       propertyPath: camZoomer
@@ -494,6 +521,10 @@ PrefabInstance:
       propertyPath: quitSettingsButton
       value: 
       objectReference: {fileID: 1864247425}
+    - target: {fileID: 5756224847907927930, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
+      propertyPath: buttonPressAnimationDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5756224847907927930, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
       propertyPath: defaultSelectedSettingsButton
       value: 
@@ -587,6 +618,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9010183459094501969, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
+      propertyPath: xOffset
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 9010183459094501969, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
       propertyPath: camZoomer
       value: 
       objectReference: {fileID: 747379113}
@@ -594,6 +629,10 @@ PrefabInstance:
       propertyPath: buttonManager
       value: 
       objectReference: {fileID: 624498650}
+    - target: {fileID: 9010183459094501969, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
+      propertyPath: buttonPressAnimationDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9171483310033564379, guid: 8093f81c047b37c43bf4ad384b71f667, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 0
