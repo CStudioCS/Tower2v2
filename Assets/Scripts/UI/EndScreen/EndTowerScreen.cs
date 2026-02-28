@@ -48,7 +48,7 @@ public class EndTowerScreen : MonoBehaviour
         doOnceDebug = true;
 
         ItemRandomizer.Instance.GetAt(15);
-        StartCoroutine(Dropdown(11, 15)); //debug
+        StartCoroutine(Dropdown(15, 11)); //debug
     }
 
     public IEnumerator Dropdown(int scoreLeft, int scoreRight)
@@ -57,7 +57,7 @@ public class EndTowerScreen : MonoBehaviour
 
         bool leftWon = scoreLeft >= scoreRight;
         int minScore = leftWon ? scoreRight : scoreLeft;
-
+        
         for (int i = 0; i < minScore; i++)
         {
             Item.Type towerPieceType = ItemRandomizer.Instance.GetAt(i);
