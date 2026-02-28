@@ -18,10 +18,23 @@ public class Recipe : MonoBehaviour
     
     [SerializeField] private RectTransform rectTransform;
     
-    private RecipeSlot slotTarget;
-    private Vector2 targetPosition;
-    private float targetScale;
-    
+    private RecipeSlot targetSlot;
+    private RecipeSlot TargetSlot
+    {
+        get => targetSlot;
+        set
+        {
+            if (targetSlot)
+                targetSlot.ResolutionChanged -= OnResolutionChanged;
+            if (value)
+                value.ResolutionChanged += OnResolutionChanged;
+            targetSlot = value;
+        }
+    }
+    private Vector2 TargetPosition => TargetSlot.RecipePosition;
+    private bool overrideTargetScaleTo0;
+    private float TargetScale => overrideTargetScaleTo0 ? 0 : TargetSlot.RecipeScale;
+
     private Vector2 velocity;
     private float scaleVelocity;
 
@@ -36,17 +49,15 @@ public class Recipe : MonoBehaviour
         if (animate)
         {
             SetScale(0);
-            slotTarget = slot;
-            targetPosition = slotTarget.RecipePosition;
-            targetScale = 0; 
+            TargetSlot = slot;
+            overrideTargetScaleTo0 = true;
             ReachTargetPosition();
             MoveToRecipeSlot(slot);
         }
         else
         {
             SetSlotAsTarget(slot);
-            ReachTargetPosition();
-            ReachTargetScale();
+            ReachTarget();
         }
     }
 
@@ -70,16 +81,16 @@ public class Recipe : MonoBehaviour
 
     private void SetSlotAsTarget(RecipeSlot slot)
     {
-        slotTarget = slot;
-        targetPosition = slotTarget.RecipePosition;
-        targetScale = slotTarget.RecipeScale;
+        TargetSlot = slot;
+        overrideTargetScaleTo0 = false;
     }
 
     private void SetPosition(Vector2 position) => rectTransform.position = position;
     private void SetScale(float scale) => rectTransform.localScale = scale * Vector3.one;
 
-    private void ReachTargetPosition() => SetPosition(targetPosition);
-    private void ReachTargetScale() => SetScale(targetScale);
+    private void ReachTargetPosition() => SetPosition(TargetPosition);
+    private void ReachTargetScale() => SetScale(TargetScale);
+    private void ReachTarget() { ReachTargetPosition(); ReachTargetScale(); }
 
     public void Disappear(bool animate = false)
     {
@@ -88,7 +99,7 @@ public class Recipe : MonoBehaviour
         
         if (animate)
         {
-            targetScale = 0;
+            overrideTargetScaleTo0 = true;
             CancelCurrentAnimation(); 
             Destroy(gameObject, transitionTime * 2);
         }
@@ -100,11 +111,11 @@ public class Recipe : MonoBehaviour
 
     private void Update()
     {
-        SetPosition(Vector2.SmoothDamp(rectTransform.position, targetPosition, ref velocity, transitionTime));
+        SetPosition(Vector2.SmoothDamp(rectTransform.position, TargetPosition, ref velocity, transitionTime));
         
         if (!isAnimatingScale)
         {
-            SetScale(Mathf.SmoothDamp(rectTransform.localScale.x, targetScale, ref scaleVelocity, transitionTime));
+            SetScale(Mathf.SmoothDamp(rectTransform.localScale.x, TargetScale, ref scaleVelocity, transitionTime));
         }
     }
 
@@ -131,7 +142,7 @@ public class Recipe : MonoBehaviour
         isAnimatingScale = true;
 
         Vector3 startScale = rectTransform.localScale;
-        Vector3 peakScale = Vector3.one * (popValidateAnimationScaleMultiplier * targetScale);
+        Vector3 peakScale = Vector3.one * (popValidateAnimationScaleMultiplier * TargetScale);
 
         try
         {
@@ -164,7 +175,7 @@ public class Recipe : MonoBehaviour
         isAnimatingScale = true;
 
         Vector3 startScale = rectTransform.localScale;
-        Vector3 peakScale = Vector3.one * (popInvalidateAnimationScaleMultiplier * targetScale);
+        Vector3 peakScale = Vector3.one * (popInvalidateAnimationScaleMultiplier * TargetScale);
 
         try
         {
@@ -178,5 +189,17 @@ public class Recipe : MonoBehaviour
             isAnimatingScale = false; 
         }
         catch (OperationCanceledException) { }
+    }
+
+    private void OnResolutionChanged()
+    {
+        velocity = Vector2.zero;
+        scaleVelocity = 0f;
+        ReachTarget();
+    }
+
+    private void OnDisable()
+    {
+        TargetSlot = null;
     }
 }
