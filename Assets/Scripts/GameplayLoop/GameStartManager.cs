@@ -32,6 +32,7 @@ public class GameStartManager : MonoBehaviour
     }
 
     private readonly List<PlayerInput> players = new();
+    public PlayerInput[] PlayerInputs => players.ToArray();
     public int PlayerCount => players.Count;
     // Player Balance counts +1 for right team and -1 for left team. If sum is 0, teams are balanced.
     private int PlayerBalance =>

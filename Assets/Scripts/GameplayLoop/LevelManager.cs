@@ -11,7 +11,7 @@ public class LevelManager : MonoBehaviour
     public float LevelTimer { get; private set; }
     private PlayerTeam.Team winningTeam;
     
-    public enum State { Lobby, Starting, Game }
+    public enum State { Lobby, Starting, Game, EndScreen }
     public State GameState { get; private set; } = State.Lobby;
 
     //I don't really know what's the point of these lists being serializedfield-ed if you're going full linker mode, since you can't add shit through the inspector
@@ -59,7 +59,7 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         //idk if doing it this way is the best way to do it, feel free to tell me better ways
-        activateOnlyInLobby.Add(CanvasLinker.Instance.MenuUI);
+        activateOnlyInLobby.Add(CanvasLinker.Instance.LobbyUI);
         activateOnlyInGame.Add(CanvasLinker.Instance.InGameUI);
 
         ActivateLobbyObjects(true);
@@ -138,13 +138,13 @@ public class LevelManager : MonoBehaviour
 
     private void EndLevel(PlayerTeam.Team winner)
     {
-        GameState = State.Lobby;
-        ActivateLobbyObjects(true);
+        GameState = State.EndScreen;
+        //ActivateLobbyObjects(true);
         ActivateInGameObjects(false);
         Debug.Log($"Level has ended with winner {winner}");
 
-        CanvasLinker.Instance.winnerText.gameObject.SetActive(true);
-        CanvasLinker.Instance.winnerText.text = (winner == PlayerTeam.Team.Left ? "Left" : "Right") + " team wins!";
+        //CanvasLinker.Instance.winnerText.gameObject.SetActive(true);
+        //CanvasLinker.Instance.winnerText.text = (winner == PlayerTeam.Team.Left ? "Left" : "Right") + " team wins!";
         GameEnded?.Invoke();
     }
 }

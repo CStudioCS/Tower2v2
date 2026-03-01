@@ -3,9 +3,11 @@ using LitMotion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using TMPro;
 
-public class EndTowerScreen : MonoBehaviour
+public class TowerCard : MonoBehaviour
 {
+    [Header("Position Data")]
     [SerializeField] private Vector2 dropdownOffset;
     [SerializeField] private float towerBaseYPos;
     [SerializeField] private float towerPieceVerticalOffset;
@@ -15,6 +17,7 @@ public class EndTowerScreen : MonoBehaviour
     [SerializeField] private float towerCenterOffset = 250;
     [SerializeField] private float losingTowerFinalRotation = 180;
 
+    [Header("Times")]
     [SerializeField] private float dropdownTime;
     [SerializeField] private float towerPieceScrollTime;
     [SerializeField] private float towerPieceWaitTime;
@@ -22,15 +25,17 @@ public class EndTowerScreen : MonoBehaviour
     [SerializeField] private float towerKickTime = 0.7f;
     [SerializeField] private float towerComeBackTime = 0.7f;
 
+    [Header("References")]
     [SerializeField] private RectTransform leftTowerUI;
     [SerializeField] private RectTransform rightTowerUI;
     [SerializeField] private RectTransform brickTowerPieceUIPrefab;
     [SerializeField] private RectTransform strawTowerPieceUIPrefab;
     [SerializeField] private RectTransform woodTowerPieceUIPrefab;
+    [SerializeField] private TMP_Text leftScoreText;
+    [SerializeField] private TMP_Text rightScoreText;
+
 
     private Dictionary<Item.Type, RectTransform> towerPiecesUI;
-
-    private bool doOnceDebug;
 
     private void Awake()
     {
@@ -42,21 +47,19 @@ public class EndTowerScreen : MonoBehaviour
         };
     }
 
-    private void LateUpdate()
+    public IEnumerator Dropdown()
     {
-        if (doOnceDebug) return;
-        doOnceDebug = true;
-
-        ItemRandomizer.Instance.GetAt(15);
-        StartCoroutine(Dropdown(15, 11)); //debug
-    }
-
-    public IEnumerator Dropdown(int scoreLeft, int scoreRight)
-    {
-        yield return LMotion.Create(dropdownOffset, Vector2.zero, dropdownTime).WithEase(Ease.OutCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
-
+        int scoreLeft = WorldLinker.Instance.towerLeft.Height;
+        int scoreRight = WorldLinker.Instance.towerRight.Height;
         bool leftWon = scoreLeft >= scoreRight;
         int minScore = leftWon ? scoreRight : scoreLeft;
+
+        leftScoreText.text = scoreLeft.ToString();
+        rightScoreText.text = scoreRight.ToString();
+
+
+        yield return LMotion.Create(dropdownOffset, Vector2.zero, dropdownTime).WithEase(Ease.OutCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
+
         
         for (int i = 0; i < minScore; i++)
         {
@@ -81,8 +84,12 @@ public class EndTowerScreen : MonoBehaviour
         int mirrorMult = leftWon ? 1 : -1;
 
         //kick
-        LMotion.Create(winningTowerUI.eulerAngles.z, mirrorMult * towerKickRotation, towerKickTime).WithEase(Ease.InBack).Bind((r) => winningTowerUI.rotation = Quaternion.Euler(0, 0, r));
-        yield return LMotion.Create(leftTowerUI.anchoredPosition, new Vector2(mirrorMult * towerKickOffset, 0), towerKickTime).WithEase(Ease.InBack).Bind((v) => winningTowerUI.anchoredPosition = v).ToYieldInstruction();
+
+        if(minScore > 0)
+        {
+            LMotion.Create(winningTowerUI.eulerAngles.z, mirrorMult * towerKickRotation, towerKickTime).WithEase(Ease.InBack).Bind((r) => winningTowerUI.rotation = Quaternion.Euler(0, 0, r));
+            yield return LMotion.Create(leftTowerUI.anchoredPosition, new Vector2(mirrorMult * towerKickOffset, 0), towerKickTime).WithEase(Ease.InBack).Bind((v) => winningTowerUI.anchoredPosition = v).ToYieldInstruction();
+        }
 
         //comes to middle
         leftTowerUI.GetComponent<RectMask2D>().enabled = false;
@@ -100,7 +107,8 @@ public class EndTowerScreen : MonoBehaviour
         //TODO: FIX (ça me pète les couilles j'aurais pas du faire ça comme ça bref pg)
 
 
-        //Transition into next screen
+        yield return new WaitUntil(() => Input.anyKey);
+
     }
 
     private void ScrollTowerPiece(Item.Type type, bool left, int index)
