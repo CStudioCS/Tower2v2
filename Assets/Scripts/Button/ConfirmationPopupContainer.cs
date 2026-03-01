@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class ConfirmationPopupContainer : MonoBehaviour
 {
-
     [SerializeField] private ButtonManager buttonManager;
     [SerializeField] private GameObject popup;
     [SerializeField] private GameObject selectedButtonWhenOpenPopUp;
@@ -19,9 +18,7 @@ public class ConfirmationPopupContainer : MonoBehaviour
 
     public void ClosePopUp()
     {
-
         buttonManager.SetButtonsInteractable(true);
-
         popup.SetActive(false);
         EventSystem.current.SetSelectedGameObject(selectedButtonWhenQuitPopUp);
     }
