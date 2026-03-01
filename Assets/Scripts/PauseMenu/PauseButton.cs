@@ -12,6 +12,7 @@ public class PauseButton : NoActionButton
         gameObject.SetActive(false);
         pauseMenu.SetActive(true);
     }
+    
     public void Update()
     {
         if(Gamepad.current != null)
