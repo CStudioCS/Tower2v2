@@ -111,6 +111,8 @@ public class Recipe : MonoBehaviour
 
     private void Update()
     {
+        if (TargetSlot == null) return;
+        
         SetPosition(Vector2.SmoothDamp(rectTransform.position, TargetPosition, ref velocity, transitionTime));
         
         if (!isAnimatingScale)

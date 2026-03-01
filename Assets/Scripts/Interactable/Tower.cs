@@ -12,20 +12,23 @@ public class Tower : Interactable
     [SerializeField] private Vector3 blockOffset;
     [SerializeField] private TMP_Text onTowerHeightText;
     [SerializeField] private RectTransform onTowerCanvas;
-    [SerializeField] private GameObject strawTowerPiecePrefab;
-    [SerializeField] private GameObject woodTowerPiecePrefab;
-    [SerializeField] private GameObject brickTowerPiecePrefab;
+    [SerializeField] private TowerPiece strawTowerPiecePrefab;
+    [SerializeField] private TowerPiece woodTowerPiecePrefab;
+    [SerializeField] private TowerPiece brickTowerPiecePrefab;
+    
+    [SerializeField] private Transform towerPiecesParent;
+    [SerializeField] private Collider2D colliderToActivateUponBuilding;
 
     [SerializeField] private AudioSource audioSource;
 
-    private readonly List<GameObject> towerPieces = new();
+    private readonly List<TowerPiece> towerPieces = new();
     
-    private Dictionary<Item.Type, GameObject> towerPieceMap;
-    private Dictionary<Item.Type, GameObject> TowerPieceMap
+    private Dictionary<Item.Type, TowerPiece> towerPieceMap;
+    private Dictionary<Item.Type, TowerPiece> TowerPieceMap
     {
         get
         {
-            towerPieceMap ??= new Dictionary<Item.Type, GameObject>
+            towerPieceMap ??= new Dictionary<Item.Type, TowerPiece>
             {
                 { Item.Type.Straw, strawTowerPiecePrefab },
                 { Item.Type.WoodPlank, woodTowerPiecePrefab },
@@ -67,7 +70,7 @@ public class Tower : Interactable
         // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
         // and with the way Unity handles rendering, the new object is rendered on top of the old one
         
-        if (!TowerPieceMap.TryGetValue(player.HeldItem.ItemType, out GameObject towerPiece))
+        if (!TowerPieceMap.TryGetValue(player.HeldItem.ItemType, out TowerPiece towerPiece))
         {
             Debug.LogError("Could not find tower piece associated with " + player.HeldItem.ItemType + " held item");
             return;
@@ -75,7 +78,9 @@ public class Tower : Interactable
 
         audioSource.Play();
 
-        GameObject towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * Height, Quaternion.identity, transform);
+        colliderToActivateUponBuilding.enabled = true;
+        TowerPiece towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * Height, Quaternion.identity, towerPiecesParent);
+        towerPieceInstance.Initialize(this, Height);
         towerPieces.Add(towerPieceInstance);
         LastPlacedTime = LevelManager.Instance.LevelTimer;
 
@@ -116,8 +121,9 @@ public class Tower : Interactable
 
     private void ResetTower()
     {
-        foreach (GameObject towerPiece in towerPieces)
-            Destroy(towerPiece);
+        colliderToActivateUponBuilding.enabled = false;
+        foreach (TowerPiece towerPiece in towerPieces)
+            Destroy(towerPiece.gameObject);
         towerPieces.Clear();
         LastPlacedTime = float.MaxValue;
         UpdateTowerTopUI();
