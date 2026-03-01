@@ -7,8 +7,5 @@ public class Grass : MonoBehaviour
 
     private Color RandomColor => colorGradient.Evaluate(Random.Range(0f, 1f));
     
-    public void ApplyRandomColor()
-    {
-        spriteRenderer.color = RandomColor;
-    }
+    public void ApplyRandomColor() => spriteRenderer.color = RandomColor;
 }
