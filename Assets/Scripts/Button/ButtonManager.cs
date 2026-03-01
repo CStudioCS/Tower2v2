@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class ButtonManager : MonoBehaviour
 {
-
     [SerializeField] private Button[] buttons;
 
     public void SetButtonsInteractable(bool interactable = true)
