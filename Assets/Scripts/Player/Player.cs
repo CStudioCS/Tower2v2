@@ -23,6 +23,7 @@ public class Player : MonoBehaviour
     public PlayerMovement PlayerMovement => playerMovement;
 
     [SerializeField] private PlayerAnimationController playerAnimationController;
+    [SerializeField] private Transform itemParent;
 
     private InputAction interactAction;
     private Interactable closestInteractable;
@@ -183,7 +184,7 @@ public class Player : MonoBehaviour
 
         item.Immobilize();
         item.LastOwner = this;
-        item.transform.SetParent(transform);
+        item.transform.SetParent(itemParent);
 
         if (interpolatePosition)
         {

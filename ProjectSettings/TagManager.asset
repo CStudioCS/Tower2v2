@@ -12,9 +12,9 @@ TagManager:
   - Water
   - UI
   - NoItemCollision
-  - Player
+  - Velocity
   - Item
-  - 
+  - Invisible
   - 
   - 
   - 
