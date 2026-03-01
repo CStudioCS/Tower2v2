@@ -6,6 +6,7 @@ public class SetDefaultSelectedButton : MonoBehaviour
     [SerializeField] private GameObject defaultSelectedGameObject;
 
     private GameObject lastSelected;
+    
     void Start()
     {
         EventSystem.current.SetSelectedGameObject(defaultSelectedGameObject);
