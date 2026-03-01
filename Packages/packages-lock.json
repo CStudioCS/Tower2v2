@@ -1,13 +1,13 @@
 {
   "dependencies": {
     "com.aarthificial.pixelgraphics": {
-      "version": "https://github.com/thomasbringer-madbox/pixelgraphics.git",
+      "version": "https://github.com/CStudioCS/pixelgraphics.git",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.render-pipelines.universal": "10.4.0"
       },
-      "hash": "74cf5e7531dcf8fe440fc9c8a0d97884f2a3f197"
+      "hash": "8f551afc5493a75e761130d210fdffc857742605"
     },
     "com.annulusgames.lit-motion": {
       "version": "https://github.com/annulusgames/LitMotion.git?path=src/LitMotion/Assets/LitMotion",
