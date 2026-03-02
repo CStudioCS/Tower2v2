@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,43 +7,60 @@ public class RecipeSlot : MonoBehaviour
 {
     [SerializeField] private float referenceRecipeWidth = 100f;
 
-    private bool initialized;
-    private Vector2 recipePosition;
+    [SerializeField] private RectTransform rectTransform;
+    [SerializeField] private RectTransform parentLayout;
+    
+    // Cached values — recomputed whenever the layout is dirty (on enable, on resolution change).
+    private bool layoutDirty = true;
+    private Vector2 cachedPosition;
+    private float cachedScale;
+
     public Vector2 RecipePosition
     {
         get
         {
-            if (initialized) return recipePosition;
-            Initialize();
-            return recipePosition;
+            if (layoutDirty) Recalculate();
+            return cachedPosition;
         }
     }
     
-    private float recipeScale;
     public float RecipeScale
     {
         get
         {
-            if (initialized) return recipeScale;
-            Initialize();
-            return recipeScale;
+            if (layoutDirty) Recalculate();
+            return cachedScale;
         }
     }
-    
-    [SerializeField] private RectTransform rectTransform;
 
     public event Action ResolutionChanged;
 
-    private void Initialize()
+    private void OnEnable()
     {
-        // This looks scary, but this is forced to get the correct width of a child of a parent with a layout group.
-        // It's fine because it's only called once in the initialization, and it avoids entering the width manually.
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform.parent.GetComponent<RectTransform>());
+        layoutDirty = true;
+        StartCoroutine(RecalculateAfterLayout());
+    }
+
+    private IEnumerator RecalculateAfterLayout()
+    {
+        // Wait one full frame so the Canvas layout system has completed its pass for newly activated UI.
+        yield return null;
         
-        recipeScale = 1920f / Screen.width * rectTransform.lossyScale.x * rectTransform.rect.width / referenceRecipeWidth;
-        recipePosition = (Vector2) rectTransform.position + .5f * Screen.width / 1920f * new Vector2(rectTransform.rect.width, rectTransform.rect.height);
+        // Force a fresh layout rebuild now that the Canvas has had time to settle.
+        layoutDirty = true;
+        Recalculate();
+        ResolutionChanged?.Invoke();
+    }
+    
+    private void Recalculate()
+    {
+        // Force the parent layout group to recalculate child sizes immediately.
+        LayoutRebuilder.ForceRebuildLayoutImmediate(parentLayout);
         
-        initialized = true;
+        cachedScale = 1920f / Screen.width * rectTransform.lossyScale.x * rectTransform.rect.width / referenceRecipeWidth;
+        cachedPosition = (Vector2) rectTransform.position + .5f * Screen.width / 1920f * new Vector2(rectTransform.rect.width, rectTransform.rect.height);
+        
+        layoutDirty = false;
     }
     
 #if UNITY_EDITOR
@@ -61,10 +79,11 @@ public class RecipeSlot : MonoBehaviour
         StartCoroutine(ReinitializeAfterCanvasUpdate());
     }
 
-    private System.Collections.IEnumerator ReinitializeAfterCanvasUpdate()
+    private IEnumerator ReinitializeAfterCanvasUpdate()
     {
-        yield return new WaitForEndOfFrame(); 
-        Initialize();
+        yield return new WaitForEndOfFrame();
+        layoutDirty = true;
+        Recalculate();
         ResolutionChanged?.Invoke();
     }
 #endif

@@ -90,7 +90,12 @@ public class Recipe : MonoBehaviour
 
     private void ReachTargetPosition() => SetPosition(TargetPosition);
     private void ReachTargetScale() => SetScale(TargetScale);
-    private void ReachTarget() { ReachTargetPosition(); ReachTargetScale(); }
+
+    private void ReachTarget()
+    {
+        Debug.Log($"Recipe {gameObject.name} reaching {TargetPosition}");
+        ReachTargetPosition(); ReachTargetScale();
+    }
 
     public void Disappear(bool animate = false)
     {

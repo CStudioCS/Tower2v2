@@ -1017,6 +1017,10 @@ PrefabInstance:
       propertyPath: m_CastShadows
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1817156382024450942, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1874016077549588914, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
       propertyPath: m_Creator
       value: 
