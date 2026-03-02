@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.8187, y: 1.8187, z: 3.1063395}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1442881949721379615}
@@ -101,7 +101,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.5, y: 1.5}
+  m_Size: {x: 2.75, y: 2.75}
   m_EdgeRadius: 0
 --- !u!82 &-4849768380355466772
 AudioSource:
@@ -326,8 +326,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.36374, y: 0.36374, z: 0.36374}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7989610107362915503}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -514,7 +514,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 208.2, y: 205.4}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4192769744490775396
 Canvas:
@@ -613,11 +613,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 536852676888573386, guid: 0d196e6ecbed57f489fd6f55e9d4c14b, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 536852676888573386, guid: 0d196e6ecbed57f489fd6f55e9d4c14b, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 536852676888573386, guid: 0d196e6ecbed57f489fd6f55e9d4c14b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -653,7 +653,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 536852676888573386, guid: 0d196e6ecbed57f489fd6f55e9d4c14b, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 70
+      value: 130
       objectReference: {fileID: 0}
     - target: {fileID: 536852676888573386, guid: 0d196e6ecbed57f489fd6f55e9d4c14b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -670,6 +670,10 @@ PrefabInstance:
     - target: {fileID: 6651289244175237827, guid: 0d196e6ecbed57f489fd6f55e9d4c14b, type: 3}
       propertyPath: m_Name
       value: ProgressBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 8882399510868196296, guid: 0d196e6ecbed57f489fd6f55e9d4c14b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 200
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
