@@ -31909,10 +31909,6 @@ PrefabInstance:
       value: PathSpriteShape
       objectReference: {fileID: 0}
     - target: {fileID: 1786049143004799395, guid: 5dcb3267071cd764a92a79e7b7bc07f5, type: 3}
-      propertyPath: m_SortingOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1786049143004799395, guid: 5dcb3267071cd764a92a79e7b7bc07f5, type: 3}
       propertyPath: m_DynamicOccludee
       value: 0
       objectReference: {fileID: 0}

@@ -61,6 +61,8 @@ public class Tower : Interactable
     
     public override void Interact(Player player)
     {
+        Debug.Log("////////// Interact with tower");
+        
         if (!IsItemCorrect(player))
         {
             TriedBuildingWithIncorrectItemType?.Invoke();
