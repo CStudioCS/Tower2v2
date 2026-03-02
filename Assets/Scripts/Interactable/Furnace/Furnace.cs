@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -13,6 +14,9 @@ public class Furnace : Interactable
 
     private State state;
     private enum State { Empty, Cooking, Cooked }
+
+    public event Action StartedCooking;
+    public event Action StoppedCooking;
 
     public override bool CanInteract(Player player)
     {
@@ -37,9 +41,9 @@ public class Furnace : Interactable
                 StartCoroutine(Cook());
                 player.ConsumeCurrentItem();
                 break;
+
             case State.Cooked:
                 audioSourceBricks.Play();
-
                 player.GrabNewItem(brickItemPrefab);
                 state = State.Empty;
                 progressBar.ResetProgress();
@@ -51,6 +55,7 @@ public class Furnace : Interactable
 
     private IEnumerator Cook()
     {
+        StartedCooking?.Invoke();
         audioSourceFire.Play();
 
         state = State.Cooking;
@@ -68,12 +73,19 @@ public class Furnace : Interactable
         progressBar.SetProgressMax();
         state = State.Cooked;
 
-        audioSourceFire.Stop();
+        StopCooking();
     }
     
     protected override void OnGameEnded()
     {
         base.OnGameEnded();
         state = State.Empty;
+        StopCooking();
+    }
+
+    private void StopCooking()
+    {
+        audioSourceFire.Stop();
+        StoppedCooking?.Invoke();
     }
 }

@@ -43,9 +43,26 @@ public class RecipesList : MonoBehaviour
     [SerializeField] private float colorStayDuration = 0.2f;
 
     private MotionHandle colorTweenHandle;
+    private bool subscribed;
+
+    private void OnEnable()
+    {
+        // OnEnable runs before Awake on other objects, so singletons may not exist yet.
+        // In that case, Start() will handle the first subscription.
+        if (CanvasLinker.Instance == null || WorldLinker.Instance == null) return;
+        Subscribe();
+    }
 
     private void Start()
     {
+        if (!subscribed)
+            Subscribe();
+    }
+
+    private void Subscribe()
+    {
+        subscribed = true;
+        
         Tower.PieceBuilt += OnPieceBuilt;
         Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
         randomIndex = 0;
@@ -145,8 +162,12 @@ public class RecipesList : MonoBehaviour
     
     private void OnDisable()
     {
-        Tower.PieceBuilt -= OnPieceBuilt;
-        Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
+        if (subscribed && CanvasLinker.Instance != null && WorldLinker.Instance != null)
+        {
+            Tower.PieceBuilt -= OnPieceBuilt;
+            Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
+        }
+        subscribed = false;
 
         if (colorTweenHandle.IsActive())
         {
