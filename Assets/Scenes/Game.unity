@@ -320,7 +320,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 0000000069f34ac4
+  m_ApplyToSortingLayers: 0000000069f34ac443ad4677
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -1013,21 +1013,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 579876997301953407, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
-      propertyPath: m_CastShadows
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1817156382024450942, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1874016077549588914, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
       propertyPath: m_Creator
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2381285585572388083, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
-      propertyPath: m_PolyMesh.name
-      value: PolybrushMesh-20356
       objectReference: {fileID: 0}
     - target: {fileID: 2381285585572388083, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
       propertyPath: m_PolyMesh.m_Mesh
@@ -1048,10 +1036,6 @@ PrefabInstance:
     - target: {fileID: 5085563546327574621, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
       propertyPath: m_Name
       value: World
-      objectReference: {fileID: 0}
-    - target: {fileID: 6171435215985309882, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
-      propertyPath: m_CastShadows
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6941577674923723632, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
       propertyPath: m_Camera
@@ -1098,9 +1082,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 3411239035547177707, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
-    - {fileID: 7058792906835647850, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 70aca79125959f74cadb6775855b59cf, type: 3}

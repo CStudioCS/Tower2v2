@@ -40,10 +40,14 @@ public class Tower : Interactable
 
     public event Action TriedBuildingWithIncorrectItemType;
     public event Action PieceBuilt;
-    private bool isLeftTower => this == WorldLinker.Instance.towerLeft;
-    private RecipesList recipesList => isLeftTower ? CanvasLinker.Instance.recipesListLeft : CanvasLinker.Instance.recipesListRight;
-    private RectTransform offTowerCanvas => isLeftTower ? CanvasLinker.Instance.offTowerHeightCanvasLeft : CanvasLinker.Instance.offTowerHeightCanvasRight;
-    private TMP_Text offTowerHeightText => isLeftTower ? CanvasLinker.Instance.offTowerHeightTextLeft : CanvasLinker.Instance.offTowerHeightTextRight;
+    private bool IsLeftTower => this == WorldLinker.Instance.towerLeft;
+    private RecipesList RecipesList => IsLeftTower ? CanvasLinker.Instance.recipesListLeft : CanvasLinker.Instance.recipesListRight;
+    private RectTransform OffTowerCanvas => IsLeftTower ? CanvasLinker.Instance.offTowerHeightCanvasLeft : CanvasLinker.Instance.offTowerHeightCanvasRight;
+    private TMP_Text OffTowerHeightText => IsLeftTower ? CanvasLinker.Instance.offTowerHeightTextLeft : CanvasLinker.Instance.offTowerHeightTextRight;
+
+    public Vector2 PreviousPiecePosition => transform.position + blockOffset * (Height - 1);
+    private Vector2 NewPiecePosition => transform.position + blockOffset * Height;
+    private int NextPieceSortingOrder => Height;
 
     protected override void OnGameAboutToStart()
     {
@@ -57,12 +61,10 @@ public class Tower : Interactable
         return player.IsHolding;
     }
 
-    private bool IsItemCorrect(Player player) => recipesList.CurrentNeededItemType == player.HeldItem.ItemType;
+    private bool IsItemCorrect(Player player) => RecipesList.CurrentNeededItemType == player.HeldItem.ItemType;
     
     public override void Interact(Player player)
     {
-        Debug.Log("////////// Interact with tower");
-        
         if (!IsItemCorrect(player))
         {
             TriedBuildingWithIncorrectItemType?.Invoke();
@@ -81,8 +83,8 @@ public class Tower : Interactable
         audioSource.Play();
 
         colliderToActivateUponBuilding.enabled = true;
-        TowerPiece towerPieceInstance = Instantiate(towerPiece, transform.position + blockOffset * Height, Quaternion.identity, towerPiecesParent);
-        towerPieceInstance.Initialize(this, Height);
+        TowerPiece towerPieceInstance = Instantiate(towerPiece, NewPiecePosition, Quaternion.identity, towerPiecesParent);
+        towerPieceInstance.Initialize(this, NextPieceSortingOrder);
         towerPieces.Add(towerPieceInstance);
         LastPlacedTime = LevelManager.Instance.LevelTimer;
 
@@ -106,14 +108,14 @@ public class Tower : Interactable
         {
             //onTowerCanvas.gameObject.SetActive(false); //remove the gray bases of the tower if u want
             
-            offTowerCanvas.gameObject.SetActive(true);
-            offTowerHeightText.text = Height.ToString();
-            float yPos = offTowerCanvas.position.y;
-            offTowerCanvas.position = new Vector3(screenPoint.x, yPos, 0);
+            OffTowerCanvas.gameObject.SetActive(true);
+            OffTowerHeightText.text = Height.ToString();
+            float yPos = OffTowerCanvas.position.y;
+            OffTowerCanvas.position = new Vector3(screenPoint.x, yPos, 0);
         }
         else
         {
-            offTowerCanvas.gameObject.SetActive(false);
+            OffTowerCanvas.gameObject.SetActive(false);
             onTowerCanvas.gameObject.SetActive(true);
             onTowerHeightText.text = Height.ToString();
         }
