@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: UIRecipeRoundCorners
+  m_Name: UIRecipeRoundCornersMaterial
   m_Shader: {fileID: -6465566751694194690, guid: 616a6936f30bb4c4a9493b45bb4c022c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
