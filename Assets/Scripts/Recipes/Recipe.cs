@@ -93,7 +93,6 @@ public class Recipe : MonoBehaviour
 
     private void ReachTarget()
     {
-        Debug.Log($"Recipe {gameObject.name} reaching {TargetPosition}");
         ReachTargetPosition(); ReachTargetScale();
     }
 

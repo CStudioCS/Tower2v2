@@ -42,8 +42,8 @@ VisualEffect:
   m_GameObject: {fileID: 4473471778990671531}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: 17f3582332efa0145b0ab639908f12c3, type: 3}
-  m_InitialEventName: OnPlay
-  m_InitialEventNameOverriden: 0
+  m_InitialEventName: 
+  m_InitialEventNameOverriden: 1
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
   m_AllowInstancing: 1
@@ -111,6 +111,6 @@ VFXRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingLayerID: 2001120579
+  m_SortingLayer: 1
+  m_SortingOrder: 0

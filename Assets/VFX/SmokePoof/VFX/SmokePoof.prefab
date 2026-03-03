@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7450858607293295730}
   - component: {fileID: 3829119486599433389}
   m_Layer: 0
-  m_Name: SmokePoofBase
+  m_Name: SmokePoof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,8 +42,8 @@ VisualEffect:
   m_GameObject: {fileID: 9049856591930446441}
   m_Enabled: 1
   m_Asset: {fileID: 8926484042661614526, guid: fd248335063b96e41ae258dc9197484a, type: 3}
-  m_InitialEventName: OnPlay
-  m_InitialEventNameOverriden: 0
+  m_InitialEventName: 
+  m_InitialEventNameOverriden: 1
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
   m_AllowInstancing: 1
