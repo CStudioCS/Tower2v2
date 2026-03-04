@@ -245,8 +245,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -467,7 +467,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
-  m_LocalScale: {x: 1.708, y: 1.708, z: 1.708}
+  m_LocalScale: {x: 1, y: 1, z: 1.708}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7428609469738332248}
@@ -490,7 +490,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 8607870785891123332}
-  blockOffset: {x: 0, y: 0.2, z: -0.1}
+  onStrawBlockOffset: {x: 0, y: 0.27}
+  onWoodBlockOffset: {x: 0, y: 0.11}
+  onBrickBlockOffset: {x: 0, y: 0.3}
   onTowerHeightText: {fileID: 312890316318916640}
   onTowerCanvas: {fileID: 7428609469738332248}
   strawTowerPiecePrefab: {fileID: 3481221118022266669, guid: 50c8ea5a07072f24393c6bd798ddc9dc, type: 3}
@@ -557,7 +559,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2, y: 2}
   m_EdgeRadius: 0
 --- !u!82 &5449655964840863782
 AudioSource:
@@ -682,8 +684,8 @@ Transform:
   m_GameObject: {fileID: 9036056661443125684}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.2, y: 0.25, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.315, y: 0.45, z: 0}
+  m_LocalScale: {x: 1.7, y: 1.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3951223848953282961}
