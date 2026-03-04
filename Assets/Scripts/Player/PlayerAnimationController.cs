@@ -60,7 +60,7 @@ public class PlayerAnimationController : MonoBehaviour
     void Update()
     {
         animator.SetFloat(speedId, rb.linearVelocity.magnitude);
-        if(rb.linearVelocity.x > 0.1f)
+        if (rb.linearVelocity.x > 0.1f)
         {
             spriteRenderer.flipX = true;
         }
