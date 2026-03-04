@@ -123,14 +123,14 @@ public class Tower : Interactable
         onTowerHeightText.text = Height.ToString();
     }
 
-    public override void CheckIfCanBeHighlighted(Player player)
+    public override bool CheckIfCanBeHighlighted(Player player)
     {
         base.CheckIfCanBeHighlighted(player);
 
         if (player.IsHolding && IsItemCorrect(player))
-            canBeHighlighted = true;
+            return true;
         else
-            canBeHighlighted = false;
+            return false;
     }
 
     private void ResetTower()
