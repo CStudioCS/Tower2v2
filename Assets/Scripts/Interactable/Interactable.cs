@@ -87,13 +87,7 @@ public abstract class Interactable : MonoBehaviour
     {
         IsAlreadyInteractedWith = false;
     }
-    public virtual bool CheckIfCanBeHighlighted(Player player)
-    {
-        if (spriteRenderer == null || propBlock == null)
-            return false;
-
-        return true;
-    }
+    public virtual bool CheckIfCanBeHighlighted(Player player) => spriteRenderer != null && propBlock != null;
 
     protected virtual void OnGameEnded()
     {
