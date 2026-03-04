@@ -20,6 +20,8 @@ public class StatsCard : MonoBehaviour
         yield return LMotion.Create(dropdownOffset, Vector2.zero, dropdownTime).WithEase(Ease.OutCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
 
         yield return new WaitUntil(() => Input.anyKey);
+
+        yield return LMotion.Create((Vector2)transform.position, -dropdownOffset, dropdownTime).WithEase(Ease.OutCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
     }
 
     private void DisplayStats()

@@ -10,7 +10,6 @@ public class EndScreen : MonoBehaviour
     private void Start()
     {
         LevelManager.Instance.GameEnded += GameEnded;
-        //GameEnded();
     }
 
     private void GameEnded()
@@ -20,6 +19,7 @@ public class EndScreen : MonoBehaviour
 
     private IEnumerator OnGameEndedCoroutine()
     {
+        //animate this
         BigEndText.SetActive(true);
 
         yield return new WaitForSeconds(2);
@@ -31,8 +31,11 @@ public class EndScreen : MonoBehaviour
         yield return StatsCard.Dropdown();
 
         //The player quits using the UI so idk ??????
-        //TowerCard.gameObject.SetActive(false);
-        //StatsCard.gameObject.SetActive(false);
+        BigEndText.SetActive(false);
+        TowerCard.gameObject.SetActive(false);
+        StatsCard.gameObject.SetActive(false);
+
+        LevelManager.Instance.SetGameStateToLobby();
     }
 
     private void OnDisable()

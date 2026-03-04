@@ -147,4 +147,9 @@ public class LevelManager : MonoBehaviour
         //CanvasLinker.Instance.winnerText.text = (winner == PlayerTeam.Team.Left ? "Left" : "Right") + " team wins!";
         GameEnded?.Invoke();
     }
+
+    public void SetGameStateToLobby()
+    {
+        GameState = State.Lobby;
+    }
 }

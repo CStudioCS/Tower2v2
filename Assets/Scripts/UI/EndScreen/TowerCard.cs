@@ -12,20 +12,16 @@ public class TowerCard : MonoBehaviour
     [SerializeField] private float towerBaseYPos;
     [SerializeField] private float towerPieceVerticalOffset;
     [SerializeField] private float initLeftTowerPiecesOffset;
-    [SerializeField] private float towerKickOffset = 500;
-    [SerializeField] private float towerKickRotation = 10;
-    [SerializeField] private float towerCenterOffset = 250;
-    [SerializeField] private float losingTowerFinalRotation = 180;
+
 
     [Header("Times")]
     [SerializeField] private float dropdownTime;
     [SerializeField] private float towerPieceScrollTime;
     [SerializeField] private float towerPieceWaitTime;
     [SerializeField] private float inBetweenWaitTime;
-    [SerializeField] private float towerKickTime = 0.7f;
-    [SerializeField] private float towerComeBackTime = 0.7f;
 
     [Header("References")]
+    [SerializeField] private Animator towerAnimator;
     [SerializeField] private RectTransform leftTowerUI;
     [SerializeField] private RectTransform rightTowerUI;
     [SerializeField] private RectTransform brickTowerPieceUIPrefab;
@@ -51,8 +47,9 @@ public class TowerCard : MonoBehaviour
     {
         //int scoreLeft = WorldLinker.Instance.towerLeft.Height;
         //int scoreRight = WorldLinker.Instance.towerRight.Height;
-        int scoreLeft = 17;
-        int scoreRight = 12;
+        Debug.LogError("this shit still in debug !!");
+        int scoreLeft = 12;
+        int scoreRight = 17;
         bool leftWon = scoreLeft >= scoreRight;
         int minScore = leftWon ? scoreRight : scoreLeft;
 
@@ -86,28 +83,12 @@ public class TowerCard : MonoBehaviour
         int mirrorMult = leftWon ? 1 : -1;
 
         //kick
+        if(leftWon)
+            towerAnimator.SetTrigger("KickToRight");
+        else
+            towerAnimator.SetTrigger("KickToLeft");
 
-        if(minScore > 0)
-        {
-            LMotion.Create(winningTowerUI.eulerAngles.z, mirrorMult * towerKickRotation, towerKickTime).WithEase(Ease.InBack).Bind((r) => winningTowerUI.rotation = Quaternion.Euler(0, 0, r));
-            yield return LMotion.Create(leftTowerUI.anchoredPosition, new Vector2(mirrorMult * towerKickOffset, 0), towerKickTime).WithEase(Ease.InBack).Bind((v) => winningTowerUI.anchoredPosition = v).ToYieldInstruction();
-        }
-
-        //comes to middle
-        leftTowerUI.GetComponent<RectMask2D>().enabled = false;
-        rightTowerUI.GetComponent<RectMask2D>().enabled = false;
-
-        LMotion.Create(losingTowerUI.eulerAngles.z, mirrorMult * losingTowerFinalRotation, towerComeBackTime).WithEase(Ease.OutQuad).Bind((r) => losingTowerUI.rotation = Quaternion.Euler(0, 0, r));
-        LMotion.Create(losingTowerUI.anchoredPosition, new Vector2(mirrorMult * towerCenterOffset, 0), towerComeBackTime).Bind((v) => losingTowerUI.anchoredPosition = v);
-
-        LMotion.Create(winningTowerUI.eulerAngles.z, 0, towerComeBackTime).WithEase(Ease.OutQuad).Bind((r) => winningTowerUI.rotation = Quaternion.Euler(0, 0, mirrorMult * r));
-        yield return LMotion.Create(winningTowerUI.anchoredPosition, new Vector2(mirrorMult * towerCenterOffset, 0), towerComeBackTime).WithEase(Ease.OutQuad).Bind((v) => winningTowerUI.anchoredPosition = v).ToYieldInstruction();
-
-        leftTowerUI.GetComponent<RectMask2D>().enabled = true;
-        rightTowerUI.GetComponent<RectMask2D>().enabled = true;
-
-        //TODO: FIX (ça me pète les couilles j'aurais pas du faire ça comme ça bref pg)
-
+        //TODO: Here add scrolling of the text of the score of winning and losing teams from left and right
 
         yield return new WaitUntil(() => Input.anyKey);
 

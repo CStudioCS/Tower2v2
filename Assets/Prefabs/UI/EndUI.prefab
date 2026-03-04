@@ -747,16 +747,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4734718478599434425}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8372207184825829582}
+  m_Father: {fileID: 1774478126212368539}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -350, y: 0}
   m_SizeDelta: {x: 300, y: 800}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1299578241108970758
@@ -797,16 +797,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4872426695928593788}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8372207184825829582}
+  m_Father: {fileID: 1774478126212368539}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 350.00003, y: 0}
   m_SizeDelta: {x: 300, y: 800}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &8075441245950539684
@@ -1017,9 +1017,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dropdownTime: 1
   dropdownOffset: {x: 0, y: 970}
-  playerStatsDisplays:
-  - {fileID: 1401983648166272571}
-  - {fileID: 3584179549410375781}
+  blueStatsDisplays: {fileID: 1401983648166272571}
+  redStatsDisplays: {fileID: 3584179549410375781}
 --- !u!222 &6265527635947674199
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1093,8 +1092,7 @@ RectTransform:
   - {fileID: 4162267732668226662}
   - {fileID: 102419118599650907}
   - {fileID: 7886466157473353726}
-  - {fileID: 1896102132661063250}
-  - {fileID: 2169370884036153643}
+  - {fileID: 1774478126212368539}
   m_Father: {fileID: 1886562324621851225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1121,6 +1119,7 @@ MonoBehaviour:
   towerKickOffset: 500
   towerKickRotation: 10
   towerCenterOffset: 250
+  losingTowerKickedOffset: 500
   losingTowerFinalRotation: 180
   dropdownTime: 1.5
   towerPieceScrollTime: 0.4
@@ -1128,6 +1127,7 @@ MonoBehaviour:
   inBetweenWaitTime: 1
   towerKickTime: 0.7
   towerComeBackTime: 0.7
+  losingTowerKickedTime: 0.3
   leftTowerUI: {fileID: 1896102132661063250}
   rightTowerUI: {fileID: 2169370884036153643}
   brickTowerPieceUIPrefab: {fileID: 1897930136580960759, guid: 7a38bd969ddea6a4c94bc59c3ce634ca, type: 3}
@@ -1173,6 +1173,43 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &7571794540250484737
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1774478126212368539}
+  m_Layer: 5
+  m_Name: Towers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1774478126212368539
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7571794540250484737}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1896102132661063250}
+  - {fileID: 2169370884036153643}
+  m_Father: {fileID: 8372207184825829582}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7812381003779308947
 GameObject:
   m_ObjectHideFlags: 0
