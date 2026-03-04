@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -5,13 +6,34 @@ using UnityEngine;
 /// trigger collider and if CanInteract(player) is evaluated to true, the player can call the Interact function of the Interactable.
 /// </summary>
 public abstract class Interactable : MonoBehaviour
-{        
+{
+    private static readonly int OutlineEnabled = Shader.PropertyToID("_OutlineEnabled");
     public bool IsAlreadyInteractedWith { get; set; }
+    private int highlightedPlayerCount = 0;
+
+    [SerializeField] protected SpriteRenderer spriteRenderer;
+    private MaterialPropertyBlock propBlock;
 
     public virtual void Interact(Player player) { }
     public abstract float GetInteractionTime();
 
     public virtual bool CanInteract(Player player) => false;
+
+    protected virtual void Awake()
+    {
+        InitializeHighlight();
+    }
+
+    protected void InitializeHighlight()
+    {
+        if (propBlock != null) 
+            return;
+
+        if (spriteRenderer == null)
+            return;
+
+        propBlock = new MaterialPropertyBlock();
+    }
 
     // When the player walks inside the interactable, we tell it that it is inside
     private void OnTriggerEnter2D(Collider2D collision)
@@ -32,9 +54,34 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
-    public void Highlight(bool highlighted)
+    public virtual void Highlight(bool highlighted)
     {
-        //à remplir par la PR de highlight
+        if (highlighted) 
+            highlightedPlayerCount++;
+        else 
+            highlightedPlayerCount--;
+
+        if (!highlighted && highlightedPlayerCount > 0) 
+            return;
+
+        if (highlighted && highlightedPlayerCount >= 2) 
+            return;
+
+        if (spriteRenderer == null || propBlock == null)
+            return;
+
+        spriteRenderer.GetPropertyBlock(propBlock);
+
+        if (highlighted)
+        {
+            propBlock.SetFloat(OutlineEnabled, 1f);
+        }
+        else
+        {
+            propBlock.SetFloat(OutlineEnabled, 0f);
+        }
+
+        spriteRenderer.SetPropertyBlock(propBlock);
     }
     protected virtual void OnGameAboutToStart()
     {

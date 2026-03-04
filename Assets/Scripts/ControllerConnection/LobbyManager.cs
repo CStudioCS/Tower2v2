@@ -165,6 +165,7 @@ public class LobbyManager : MonoBehaviour
             return;
         }
 
+        playerInput.transform.position = WorldLinker.Instance.startPoints[0].transform.position; // TODO: change the start points for different players
 
         PlayerControlBadge badge = playerInput.GetComponent<Player>().PlayerControlBadge;
         if (badge != null)

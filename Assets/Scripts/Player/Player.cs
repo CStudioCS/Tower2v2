@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public List<Interactable> insideInteractableList { get; private set; } = new();
-    private Interactable currentInteractable;
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
     public bool Interacting { get; private set; }
@@ -23,8 +22,11 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
 
+    [SerializeField] private PlayerAnimationController playerAnimationController;
+    [SerializeField] private Transform itemParent;
+
     private InputAction interactAction;
-    private InputAction secondaryAction;
+    private Interactable closestInteractable;
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
@@ -32,7 +34,6 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
-        secondaryAction = playerInput.actions.FindAction("Gameplay/CutWood");
     }
 
     private void Start()
@@ -51,30 +52,52 @@ public class Player : MonoBehaviour
 
     private void GameUpdate()
     {
+        UpdateClosestInteractable();
+
         if (interactAction.WasPressedThisFrame())
             Interact();
+
+        playerAnimationController.HasItem(HeldItem != null);
     }
 
+    private void UpdateClosestInteractable()
+    {
+        Interactable newClosestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
+
+        if (closestInteractable != newClosestInteractable)
+        {
+            if (closestInteractable != null)
+                closestInteractable.Highlight(false);
+            
+            if (newClosestInteractable != null)
+                newClosestInteractable.Highlight(true);
+        }
+
+        closestInteractable = newClosestInteractable;
+    }
     private void Interact()
     {
-        Interactable closestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
-
         if (closestInteractable != null)
         {
-            if (currentInteractable && currentInteractable != closestInteractable)
-                currentInteractable.Highlight(false);
-
-            currentInteractable = closestInteractable;
-            currentInteractable.Highlight(true);
-
             float time = closestInteractable.GetInteractionTime();
             if (time > 0)
+            {
+                if (closestInteractable is Workbench)
+                    playerAnimationController.StartCutting();
+                else if (closestInteractable is Collector)
+                    playerAnimationController.StartCollecting();
+                else
+                    Debug.LogError("This Interactable is not currently supported by the animator");
+                    //no interactable in the game takes time aside from Collector and Workbench as of rn
+                
                 StartCoroutine(InteractTimer(closestInteractable, time));
+            }
             else
                 closestInteractable.Interact(this);
         }
         else if (HeldItem != null)
             DropHeldItem();
+
     }
 
     private void LobbyUpdate()
@@ -111,6 +134,7 @@ public class Player : MonoBehaviour
 
     private void StopInteracting(Interactable insideInteractable)
     {
+        playerAnimationController.EndInteraction();
         Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
         progressBar.ResetProgress();
@@ -132,8 +156,11 @@ public class Player : MonoBehaviour
     /// </summary>
     public void DropHeldItem()
     {
-        if (!IsHolding)
+        if (!IsHolding || (HeldItem.State != Item.ItemState.Held))
             return;
+
+        HeldItem.State = Item.ItemState.Transitioning;
+        playerAnimationController.Drop();
 
         IsHolding = false;
         grabbingLerp.TryCancel();
@@ -150,12 +177,14 @@ public class Player : MonoBehaviour
 
     public void GrabItem(Item item, bool interpolatePosition)
     {
+        playerAnimationController.Grab();
+
         IsHolding = true;
         HeldItem = item;
 
         item.Immobilize();
         item.LastOwner = this;
-        item.transform.SetParent(transform);
+        item.transform.SetParent(itemParent);
 
         if (interpolatePosition)
         {
@@ -164,6 +193,8 @@ public class Player : MonoBehaviour
         }
         else
             item.transform.localPosition = Vector2.zero;
+
+        item.State = Item.ItemState.Held;
     }
 
     private void OnGameEnded()
