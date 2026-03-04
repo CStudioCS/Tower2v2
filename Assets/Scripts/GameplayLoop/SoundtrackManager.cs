@@ -12,21 +12,21 @@ public class SoundtrackManager : MonoBehaviour
         lobbyMusic.Play();
     }
 
-    private void OnDisable()
-    {
-        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-        LevelManager.Instance.GameEnded -= OnGameEnded;
-    }
-
     private void OnGameAboutToStart()
     {
         lobbyMusic.Play();
         inGameMusic.Play();        
     }
+
     private void OnGameEnded()
     {
         lobbyMusic.Play();
         inGameMusic.Stop();
     }
-}
 
+    private void OnDisable()
+    {
+        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.Instance.GameEnded -= OnGameEnded;
+    }
+}
