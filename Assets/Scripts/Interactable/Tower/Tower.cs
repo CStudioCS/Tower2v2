@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEditor.UI;
 using UnityEngine;
 
@@ -74,12 +75,7 @@ public class Tower : Interactable
     public override bool CanInteract(Player player)
     {
         // Check if the player is holding the correct item for the recipe
-        bool playerIsCorrectTeam = player.PlayerTeam.CurrentTeam switch
-        {
-            PlayerTeam.Team.Left => IsLeftTower,
-            _ => !IsLeftTower,
-        };
-
+        bool playerIsCorrectTeam = (player.PlayerTeam.CurrentTeam == PlayerTeam.Team.Left)? IsLeftTower : !IsLeftTower;
         return player.IsHolding && playerIsCorrectTeam;
     }
 
