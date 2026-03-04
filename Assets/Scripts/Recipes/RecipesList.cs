@@ -42,8 +42,15 @@ public class RecipesList : MonoBehaviour
     [SerializeField] private float colorFlashDuration = 0.1f;
     [SerializeField] private float colorStayDuration = 0.2f;
 
+    private Color LayoutDefaultColor;
     private MotionHandle colorTweenHandle;
     private bool subscribed;
+
+    private void Awake()
+    {
+        LayoutDefaultColor = mainPanelToColorize.color;
+        Debug.Log(LayoutDefaultColor);
+    }
 
     private void OnEnable()
     {
@@ -149,7 +156,7 @@ public class RecipesList : MonoBehaviour
             
             await colorTweenHandle;
 
-            colorTweenHandle = LMotion.Create(flashColor, Color.white, colorFlashDuration)
+            colorTweenHandle = LMotion.Create(flashColor, LayoutDefaultColor, colorFlashDuration)
                 .WithEase(Ease.InQuad)
                 .BindToColor(mainPanelToColorize);
             
@@ -175,7 +182,7 @@ public class RecipesList : MonoBehaviour
         }
         if (mainPanelToColorize != null)
         {
-            mainPanelToColorize.color = Color.white; 
+            mainPanelToColorize.color = LayoutDefaultColor; 
         }
     }
 }
