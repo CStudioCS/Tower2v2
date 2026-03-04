@@ -10,6 +10,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private string hasItemId;
     [SerializeField] private string dropTriggerId;
     [SerializeField] private string speedId;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     public void StartCutting()
         => animator.SetBool(isCuttingId, true);
@@ -39,5 +40,13 @@ public class PlayerAnimationController : MonoBehaviour
     void Update()
     {
         animator.SetFloat(speedId, rb.linearVelocity.magnitude);
+        if(rb.linearVelocity.x > 0.1f)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (rb.linearVelocity.x < -0.1f)
+        {
+            spriteRenderer.flipX = false;
+        }
     }
 }
