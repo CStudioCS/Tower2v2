@@ -54,8 +54,11 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
-    public virtual void Highlight(bool highlighted)
+    public virtual void Highlight(bool highlighted, Player player)
     {
+        if (!CheckIfCanBeHighlighted(player) && highlighted)
+            return;
+
         if (highlighted) 
             highlightedPlayerCount++;
         else 
@@ -65,9 +68,6 @@ public abstract class Interactable : MonoBehaviour
             return;
 
         if (highlighted && highlightedPlayerCount >= 2) 
-            return;
-
-        if (spriteRenderer == null || propBlock == null)
             return;
 
         spriteRenderer.GetPropertyBlock(propBlock);
@@ -87,7 +87,8 @@ public abstract class Interactable : MonoBehaviour
     {
         IsAlreadyInteractedWith = false;
     }
-    
+    public virtual bool CheckIfCanBeHighlighted(Player player) => spriteRenderer != null && propBlock != null;
+
     protected virtual void OnGameEnded()
     {
         IsAlreadyInteractedWith = false;

@@ -67,10 +67,10 @@ public class Player : MonoBehaviour
         if (closestInteractable != newClosestInteractable)
         {
             if (closestInteractable != null)
-                closestInteractable.Highlight(false);
+                closestInteractable.Highlight(false, this);
             
             if (newClosestInteractable != null)
-                newClosestInteractable.Highlight(true);
+                newClosestInteractable.Highlight(true, this);
         }
 
         closestInteractable = newClosestInteractable;
