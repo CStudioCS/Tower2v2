@@ -13,7 +13,6 @@ public class PlayerStats : MonoBehaviour
 
     public float distanceTravelled;
 
-
     private void Awake()
     {
         LevelManager.Instance.GameStarted += ResetStats;
@@ -48,6 +47,8 @@ public class PlayerStats : MonoBehaviour
         woodLogsCollected = 0;
         clayCollected = 0;
         bricksCooked = 0;
+
+        distanceTravelled = 0;
     }
 
     private void OnDisable()
