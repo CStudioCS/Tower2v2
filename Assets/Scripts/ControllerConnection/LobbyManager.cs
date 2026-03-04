@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 
 public class LobbyManager : MonoBehaviour
 {
@@ -221,7 +219,6 @@ public class LobbyManager : MonoBehaviour
         
         return bestStartPoint.transform.position;
     }
-
 
     public void OnPlayerLeft(PlayerInput playerInput)
     {
