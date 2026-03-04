@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 
 public class LobbyManager : MonoBehaviour
 {
@@ -165,7 +168,7 @@ public class LobbyManager : MonoBehaviour
             return;
         }
 
-        playerInput.transform.position = WorldLinker.Instance.startPoints[0].transform.position; // TODO: change the start points for different players
+        playerInput.transform.position = CalculateSpawnPosition();
 
         PlayerControlBadge badge = playerInput.GetComponent<Player>().PlayerControlBadge;
         if (badge != null)
@@ -174,6 +177,44 @@ public class LobbyManager : MonoBehaviour
         Debug.Log($"Player Joined! Device: {device.name} | Scheme: {controlScheme}");
         PlayerJoined?.Invoke(playerInput);
     }
+
+    private Vector2 CalculateSpawnPosition()
+    {
+        StartPoint[] startPoints = WorldLinker.Instance.startPoints;
+        int startPointCount = startPoints.Length;
+        bool[] startPointOccupied = new bool[startPointCount];
+
+        List<PlayerInput> players = GameStartManager.Instance.Players;
+
+        foreach (PlayerInput player in players)
+        {
+            float minDistance = Mathf.Infinity;
+            int closestStartPointIndex = 0;
+
+            for (int i = 0; i < startPointCount; i++)
+            {
+                float distance = Vector3.SqrMagnitude(startPoints[i].transform.position - player.transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestStartPointIndex = i;
+                }
+            }
+
+            startPointOccupied[closestStartPointIndex] = true;
+        }
+
+        for (int i=0; i < startPointCount; i++)
+        {
+            if (!startPointOccupied[i])
+            {
+                return startPoints[i].transform.position;
+            }
+        }  
+        
+        return Vector2.zero;
+    }
+
 
     public void OnPlayerLeft(PlayerInput playerInput)
     {
