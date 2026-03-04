@@ -9,12 +9,9 @@ public class PlayerTeam : MonoBehaviour
     
     public event Action TeamChanged;
     
-    
     [Header("Colors")]
     [SerializeField] private Color leftTeamColor;
     [SerializeField] private Color rightTeamColor;
-
-    [SerializeField] private PlayerAnimationController playerAnimationController;
 
     private Dictionary<Team, Color> teamColors;
     public Dictionary<Team, Color> TeamColors
