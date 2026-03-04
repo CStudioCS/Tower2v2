@@ -34,10 +34,13 @@ public class StatsCard : MonoBehaviour
         {
             TeamStatsDisplay teamStatsDisplay = players[i].PlayerTeam.CurrentTeam == PlayerTeam.Team.Left ? blueStatsDisplays : redStatsDisplays;
 
-            teamStatsDisplay.Stat1Text.text = "Items placed : " + players[i].PlayerStats.itemsPlaced;
-            teamStatsDisplay.Stat2Text.text = "Wood cut : " + players[i].PlayerStats.woodCut;
-            teamStatsDisplay.Stat3Text.text = "Items stolen : " + players[i].PlayerStats.stolenItems;
+            teamStatsDisplay.teamItemsStolen += players[i].PlayerStats.stolenItems;
+            teamStatsDisplay.teamWoodCut += players[i].PlayerStats.woodCut;
+            teamStatsDisplay.teamDistanceTravelled += players[i].PlayerStats.distanceTravelled;
             
         }
+
+        blueStatsDisplays.UpdateText();
+        redStatsDisplays.UpdateText();
     }
 }
