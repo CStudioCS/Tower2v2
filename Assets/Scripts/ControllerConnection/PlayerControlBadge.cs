@@ -16,7 +16,7 @@ public class PlayerControlBadge : MonoBehaviour
     [Header("Graphics")]
     [SerializeField] private GameObject graphics;
 
-    public enum ControlSchemes { WASD, TFGH, IJKL, ArrowKeys, Gamepad }
+    public enum ControlSchemes { WASD, TFGH, IJKL, ArrowKeys, Switch, PlayStation, Xbox }
 
     [Header("Ready")]
     [SerializeField] private GameObject readyKey;
@@ -86,18 +86,22 @@ public class PlayerControlBadge : MonoBehaviour
     {
         switch (controlScheme)
         {
-            case ControlSchemes.Gamepad: SetupControlSchemeGamepad(); break;
+            case ControlSchemes.Switch:
+            case ControlSchemes.Xbox:
+            case ControlSchemes.PlayStation: SetupControlSchemeGamepad(controlScheme); break;
             case ControlSchemes.ArrowKeys: SetupControlSchemeArrowKeys(); break;
             default: SetupControlSchemeGenericKeys(controlScheme); break;
         }
     }
 
-    private void SetupControlSchemeGamepad()
+    private void SetupControlSchemeGamepad(ControlSchemes controlScheme)
     {
+        string interactKey = GetInteractKeyString(controlScheme);
         readyKey.SetActive(true);
-        readyGamepadA.SetActive(true);
+        readyGamepadA.SetActive(false);
         readyEnter.SetActive(false);
-        readyGenericInteractKey.SetActive(false);
+        readyGenericInteractKey.SetActive(true);
+        readyGenericInteractKeyText.text = interactKey;
         readyCheck.SetActive(false);
         
         gamepad.SetActive(true);
@@ -144,7 +148,9 @@ public class PlayerControlBadge : MonoBehaviour
     {
         switch (controlScheme)
         {
-            case ControlSchemes.Gamepad: return "A";
+            case ControlSchemes.Switch: return "B";
+            case ControlSchemes.Xbox: return "A";
+            case ControlSchemes.PlayStation: return "X";
             case ControlSchemes.ArrowKeys: return "Enter";
             case ControlSchemes.WASD: return "E";
             case ControlSchemes.TFGH: return "Y";
@@ -159,7 +165,9 @@ public class PlayerControlBadge : MonoBehaviour
     {
         switch (controlScheme)
         {
-            case ControlSchemes.Gamepad: return "";
+            case ControlSchemes.Switch:
+            case ControlSchemes.Xbox:
+            case ControlSchemes.PlayStation: return "";
             case ControlSchemes.ArrowKeys: return "Up";
             case ControlSchemes.WASD: return "Z";
             case ControlSchemes.TFGH: return "T";
@@ -174,7 +182,9 @@ public class PlayerControlBadge : MonoBehaviour
     {
         switch (controlScheme)
         {
-            case ControlSchemes.Gamepad: return "";
+            case ControlSchemes.Switch:
+            case ControlSchemes.Xbox:
+            case ControlSchemes.PlayStation: return "";
             case ControlSchemes.ArrowKeys: return "Left";
             case ControlSchemes.WASD: return "Q";
             case ControlSchemes.TFGH: return "F";

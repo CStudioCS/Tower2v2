@@ -1069,6 +1069,7 @@ MonoBehaviour:
   finalPositionButtonAfterMove: 15
   speedButtonWhenClicked: 0.8
   camZoomer: {fileID: 0}
+  loadedSceneName: 
 --- !u!1 &7333372375036529568
 GameObject:
   m_ObjectHideFlags: 0

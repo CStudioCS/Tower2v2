@@ -13,7 +13,8 @@ public class Furnace : Interactable
     [SerializeField] private AudioSource audioSourceBricks;
 
     private State state;
-    private enum State { Empty, Cooking, Cooked }
+    public State FurnaceState => state;
+    public enum State { Empty, Cooking, Cooked }
 
     public event Action StartedCooking;
     public event Action StoppedCooking;
@@ -53,7 +54,8 @@ public class Furnace : Interactable
 
     public override float GetInteractionTime() => 0;
 
-    private IEnumerator Cook()
+
+    public IEnumerator Cook()
     {
         StartedCooking?.Invoke();
         audioSourceFire.Play();

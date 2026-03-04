@@ -14,6 +14,9 @@ public class Workbench : Interactable
     [SerializeField] private AudioSource audioSourceSaw;
     [SerializeField] private AudioSource audioSourceWood;
 
+    [SerializeField] private GameObject woodOnTable;
+    [SerializeField] private GameObject woodPlanckOnTable;
+
     private enum State { Empty, HasWoodLog, HasWoodPlank }
 
     public override bool CanInteract(Player player)
@@ -41,13 +44,14 @@ public class Workbench : Interactable
                 state = State.HasWoodLog;
                 player.ConsumeCurrentItem();
                 currentInteractionTime = cutWoodInteractionTime;
-                spriteRenderer.color = Color.red;
+                woodOnTable.SetActive(true);
                 break;
             
             case State.HasWoodLog:
                 state = State.HasWoodPlank;
                 currentInteractionTime = putOrPickUpItemInteractionTime;
-                spriteRenderer.color = Color.blue;
+                woodOnTable.SetActive(false);
+                woodPlanckOnTable.SetActive(true);
                 break;
             
             case State.HasWoodPlank:
@@ -55,7 +59,7 @@ public class Workbench : Interactable
 
                 state = State.Empty;
                 player.GrabNewItem(woodPlankItemPrefab);
-                spriteRenderer.color = Color.white;
+                woodPlanckOnTable.SetActive(false);
                 break;
         }
     }
@@ -66,7 +70,8 @@ public class Workbench : Interactable
     {
         base.OnGameEnded();
         state = State.Empty;
-        spriteRenderer.color = Color.white;
+        woodOnTable.SetActive(false);
+        woodPlanckOnTable.SetActive(false);
     }
 
     private void Update()

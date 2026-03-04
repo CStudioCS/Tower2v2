@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -117,16 +118,56 @@ public class LobbyManager : MonoBehaviour
             }
         }
 
+        string deviceName = Gamepad.current.displayName.ToLower();
+        string description = Gamepad.current.description.product.ToLower();
+
         // Join using the Gamepad device. 
         // Leave controlScheme null or set to "Gamepad" if you have a specific scheme named that.
-        playerInputManager.JoinPlayer(
+        if (IsSwitchController(deviceName, description))
+        {
+            playerInputManager.JoinPlayer(
             playerIndex: -1,
             splitScreenIndex: -1,
-            controlScheme: PlayerControlBadge.ControlSchemes.Gamepad.ToString(),
+            controlScheme: (PlayerControlBadge.ControlSchemes.Switch).ToString(),
             pairWithDevice: gamepad
-        );
+            );
+        }
+        else if (IsPlayStationController(deviceName, description))
+        {
+            playerInputManager.JoinPlayer(
+            playerIndex: -1,
+            splitScreenIndex: -1,
+            controlScheme: (PlayerControlBadge.ControlSchemes.PlayStation).ToString(),
+            pairWithDevice: gamepad
+            );
+        }
+        else
+        {
+            playerInputManager.JoinPlayer(
+            playerIndex: -1,
+            splitScreenIndex: -1,
+            controlScheme: PlayerControlBadge.ControlSchemes.Xbox.ToString(),
+            pairWithDevice: gamepad
+            );
+        }
     }
-    
+    bool IsSwitchController(string name, string product)
+    {
+        return name.Contains("switch") ||
+               name.Contains("joy-con") ||
+               product.Contains("switch") ||
+               product.Contains("joy-con") ||
+               product.Contains("pro controller");
+    }
+    bool IsPlayStationController(string name, string product)
+    {
+        return name.Contains("dualshock") ||
+               name.Contains("dualsense") ||
+               name.Contains("wireless controller") ||
+               product.Contains("dualshock") ||
+               product.Contains("dualsense");
+    }
+
     private void JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes controlSchemeName)
     {
         // 1. Check if we are already at the player limit
@@ -165,7 +206,7 @@ public class LobbyManager : MonoBehaviour
             return;
         }
 
-        playerInput.transform.position = WorldLinker.Instance.startPoints[0].transform.position; // TODO: change the start points for different players
+        playerInput.transform.position = CalculateSpawnPosition();
 
         PlayerControlBadge badge = playerInput.GetComponent<Player>().PlayerControlBadge;
         if (badge != null)
@@ -173,6 +214,50 @@ public class LobbyManager : MonoBehaviour
         
         Debug.Log($"Player Joined! Device: {device.name} | Scheme: {controlScheme}");
         PlayerJoined?.Invoke(playerInput);
+    }
+
+    private Vector2 CalculateSpawnPosition()
+    {
+        StartPoint[] startPoints = WorldLinker.Instance.startPoints;
+        int startPointCount = startPoints.Length;
+        bool[] startPointOccupied = new bool[startPointCount];
+
+        List<PlayerInput> players = GameStartManager.Instance.Players;
+
+        foreach (PlayerInput player in players)
+        {
+            float minDistance = Mathf.Infinity;
+            int closestStartPointIndex = 0;
+
+            for (int i = 0; i < startPointCount; i++)
+            {
+                float distance = Vector3.SqrMagnitude(startPoints[i].transform.position - player.transform.position);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestStartPointIndex = i;
+                }
+            }
+
+            startPointOccupied[closestStartPointIndex] = true;
+        }
+
+        PlayerTeam.Team preferredTeam = GameStartManager.Instance.PlayerBalance >= 0 ? PlayerTeam.Team.Left : PlayerTeam.Team.Right;
+        StartPoint bestStartPoint = startPoints[0];
+
+        for (int i = 0; i < startPointCount; i++)
+        {
+            if (!startPointOccupied[i])
+            {
+                if (startPoints[i].Team == preferredTeam)
+                {
+                    return startPoints[i].transform.position;
+                }
+                bestStartPoint = startPoints[i];
+            }
+        }  
+        
+        return bestStartPoint.transform.position;
     }
 
     public void OnPlayerLeft(PlayerInput playerInput)

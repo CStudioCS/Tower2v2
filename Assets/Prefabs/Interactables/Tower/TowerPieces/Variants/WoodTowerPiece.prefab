@@ -8,10 +8,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 280273046450051927, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 1.1583333
+      objectReference: {fileID: 0}
+    - target: {fileID: 280273046450051927, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 1.1566666
+      objectReference: {fileID: 0}
     - target: {fileID: 4033631931683956610, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 8957324059118975939, guid: 661b6a1b5b52df3458e15c197723bf33, type: 3}
+      objectReference: {fileID: 21300000, guid: 079ae40d391d3c35d9ac9538966bc132, type: 3}
     - target: {fileID: 4033631931683956610, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
@@ -20,6 +28,14 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
+    - target: {fileID: 5447477023065441515, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5447477023065441515, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5447477023065441515, guid: 3fa5647ac56eb9b47876889674ebc70e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
