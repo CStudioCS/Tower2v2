@@ -6,24 +6,24 @@ using System.Collections;
 /*Gere Le mouvement des boutons qui se déplace vers la gauche en générales*/
 public class MovingButton : ActionButton
 {
-    [SerializeField] private float finalPositionButtonAfterMove;
-    [SerializeField] private float speedButtonWhenClicked;
+    [SerializeField] private float xOffset;
+    [SerializeField] private float buttonPressAnimationDuration;
     [SerializeField] private CameraZoomer camZoomer;
+    [SerializeField] private ButtonManager buttonManager;
 
-    public float SpeedButtonWhenClicked => speedButtonWhenClicked;
+    public float ButtonPressAnimationDuration => buttonPressAnimationDuration;
     public override void Action(){}
 
     protected virtual void Movement()
     {
-        Vector3 targetPosition = transform.position + new Vector3(finalPositionButtonAfterMove, 0f, 0f);
-        LMotion.Create(transform.position, targetPosition, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => transform.position = y);
+        Vector3 targetPosition = transform.position + new Vector3(xOffset, 0f, 0f);
+        LMotion.Create(transform.position, targetPosition, buttonPressAnimationDuration).WithEase(Ease.OutQuad).Bind(y => transform.position = y);
     }
     
     public override void OnClick()
     {
         Movement();
-
-        Button.interactable = false;
+        buttonManager.SetButtonsInteractable(false);
         //La fonction doit retourner void pour le OnClick donc elle passe par une autre fonction qui lance l'action après le zoom
         StartCoroutine(ZoomInCoroutineAction());
     }
@@ -32,6 +32,5 @@ public class MovingButton : ActionButton
     {
         yield return camZoomer.ZoomIn(transform.position);
         Action();
-        Button.interactable = true;
     }
 }

@@ -603,8 +603,8 @@ Mesh:
   m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
-  'm_MeshMetrics[0]': 1
-  'm_MeshMetrics[1]': 1
+  m_MeshMetrics[0]: 1
+  m_MeshMetrics[1]: 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
     serializedVersion: 2
@@ -625,7 +625,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2914927600258276031, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: DebugMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5951444765711152512, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: m_Name
@@ -767,30 +767,6 @@ PrefabInstance:
     - target: {fileID: 2090285879150248889, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2121756531582142018, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
-      propertyPath: tower
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2749844364795511604, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2749844364795511604, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2749844364795511604, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2749844364795511604, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2749844364795511604, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3641484414836359582, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
       propertyPath: m_Pivot.x
@@ -995,10 +971,6 @@ PrefabInstance:
     - target: {fileID: 8865706132707144194, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
       propertyPath: m_Name
       value: Canvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 9069920082358236167, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
-      propertyPath: tower
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

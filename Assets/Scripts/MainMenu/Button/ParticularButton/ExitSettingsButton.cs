@@ -1,12 +1,12 @@
 using UnityEngine;
 using LitMotion;
-using LitMotion.Extensions;
 using System.Collections;
 
 public class ExitSettingsButton : ActionButton
 {
     [SerializeField] private CameraZoomer camZoomer;
     [SerializeField] private SettingsButton settingsButton;
+    [SerializeField] private ButtonManager buttonManager;
 
     private Vector3 initialSettingsButtonPos;
 
@@ -17,9 +17,7 @@ public class ExitSettingsButton : ActionButton
     
     public override void Action()
     {
-        float speedButtonWhenClicked = settingsButton.SpeedButtonWhenClicked;
-        
-        LMotion.Create(settingsButton.transform.position, initialSettingsButtonPos, speedButtonWhenClicked).WithEase(Ease.OutQuad).Bind(y => settingsButton.gameObject.transform.position = y);
+        StartCoroutine(WaitMovementSettingsButton());
     }
 
     public override void OnClick()
@@ -33,6 +31,13 @@ public class ExitSettingsButton : ActionButton
     {
         yield return camZoomer.ReturnToNormalState();
         Action();
-        Button.interactable = true;
+    }
+
+    private IEnumerator WaitMovementSettingsButton()
+    {
+        float buttonPressAnimationDuration = settingsButton.ButtonPressAnimationDuration;
+        LMotion.Create(settingsButton.transform.position, initialSettingsButtonPos, buttonPressAnimationDuration).WithEase(Ease.OutQuad).Bind(y => settingsButton.gameObject.transform.position = y);
+        yield return new WaitForSeconds(buttonPressAnimationDuration);
+        buttonManager.SetButtonsInteractable(true);
     }
 }
