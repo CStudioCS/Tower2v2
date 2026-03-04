@@ -274,6 +274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftTeamColor: {r: 1, g: 1, b: 1, a: 1}
   rightTeamColor: {r: 1, g: 1, b: 1, a: 1}
+  playerAnimationController: {fileID: -6306556956286896828}
   spriteRenderer: {fileID: 441991705434926209}
 --- !u!114 &-6306556956286896828
 MonoBehaviour:
@@ -294,6 +295,10 @@ MonoBehaviour:
   hasItemId: hasItem
   dropTriggerId: drop
   speedId: speed
+  spriteRenderer: {fileID: 441991705434926209}
+  animatorOverrideController: {fileID: 22100000, guid: f6ec37777b242f4459d2e3cd9dd37c10, type: 2}
+  animatorController: {fileID: 9100000, guid: 8e677c9689be0ae4e8871b096c9ceccb, type: 2}
+  playerTeam: {fileID: 4720667436485828352}
 --- !u!50 &176917095401970236
 Rigidbody2D:
   serializedVersion: 5
@@ -411,7 +416,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -433596857244166201, guid: 57807cd139a565703a61428a4c73eb6d, type: 3}
+  m_Sprite: {fileID: -1985962654531997010, guid: f419fcfef3e0ef24ba71b1040f463ac5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
