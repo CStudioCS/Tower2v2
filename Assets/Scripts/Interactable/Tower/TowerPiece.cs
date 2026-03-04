@@ -15,12 +15,7 @@ public class TowerPiece : Interactable
         tower.Highlight(highlighted, player);
     }
 
-    public override bool CheckIfCanBeHighlighted(Player player)
-    {
-        tower.CheckIfCanBeHighlighted(player);
-
-        return true;
-    }
+    public override bool CheckIfCanBeHighlighted(Player player) => tower.CheckIfCanBeHighlighted(player);
 
     public void Initialize(Tower tower, int sortingOrder)
     {
