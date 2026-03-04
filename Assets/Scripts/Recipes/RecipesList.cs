@@ -49,7 +49,6 @@ public class RecipesList : MonoBehaviour
     private void Awake()
     {
         LayoutDefaultColor = mainPanelToColorize.color;
-        Debug.Log(LayoutDefaultColor);
     }
 
     private void OnEnable()
