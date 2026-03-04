@@ -10,6 +10,7 @@ public abstract class Interactable : MonoBehaviour
     private static readonly int OutlineEnabled = Shader.PropertyToID("_OutlineEnabled");
     public bool IsAlreadyInteractedWith { get; set; }
     private int highlightedPlayerCount = 0;
+    protected bool canBeHighlighted = true;
 
     [SerializeField] protected SpriteRenderer spriteRenderer;
     private MaterialPropertyBlock propBlock;
@@ -54,8 +55,13 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
-    public virtual void Highlight(bool highlighted)
+    public virtual void Highlight(bool highlighted, Player player)
     {
+        CheckIfCanBeHighlighted(player);
+
+        if (!canBeHighlighted && highlighted)
+            return;
+
         if (highlighted) 
             highlightedPlayerCount++;
         else 
@@ -65,9 +71,6 @@ public abstract class Interactable : MonoBehaviour
             return;
 
         if (highlighted && highlightedPlayerCount >= 2) 
-            return;
-
-        if (spriteRenderer == null || propBlock == null)
             return;
 
         spriteRenderer.GetPropertyBlock(propBlock);
@@ -87,7 +90,12 @@ public abstract class Interactable : MonoBehaviour
     {
         IsAlreadyInteractedWith = false;
     }
-    
+    public virtual void CheckIfCanBeHighlighted(Player player)
+    {
+        if (spriteRenderer == null || propBlock == null)
+            canBeHighlighted = false;
+    }
+
     protected virtual void OnGameEnded()
     {
         IsAlreadyInteractedWith = false;

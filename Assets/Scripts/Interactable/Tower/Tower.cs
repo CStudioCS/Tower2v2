@@ -61,7 +61,7 @@ public class Tower : Interactable
         return player.IsHolding;
     }
 
-    private bool IsItemCorrect(Player player) => RecipesList.CurrentNeededItemType == player.HeldItem.ItemType;
+    private bool IsItemCorrect(Player player) => RecipesList.CurrentNeededItemType == player.HeldItem?.ItemType;
     
     public override void Interact(Player player)
     {
@@ -121,6 +121,16 @@ public class Tower : Interactable
         }
 
         onTowerHeightText.text = Height.ToString();
+    }
+
+    public override void CheckIfCanBeHighlighted(Player player)
+    {
+        base.CheckIfCanBeHighlighted(player);
+
+        if (player.IsHolding && IsItemCorrect(player))
+            canBeHighlighted = true;
+        else
+            canBeHighlighted = false;
     }
 
     private void ResetTower()
