@@ -11,6 +11,9 @@ public class PlayerStats : MonoBehaviour
     public int clayCollected;
     public int bricksCooked;
 
+    public float distanceTravelled;
+
+
     private void Awake()
     {
         LevelManager.Instance.GameStarted += ResetStats;

@@ -49,8 +49,10 @@ public class TowerCard : MonoBehaviour
 
     public IEnumerator Dropdown()
     {
-        int scoreLeft = WorldLinker.Instance.towerLeft.Height;
-        int scoreRight = WorldLinker.Instance.towerRight.Height;
+        //int scoreLeft = WorldLinker.Instance.towerLeft.Height;
+        //int scoreRight = WorldLinker.Instance.towerRight.Height;
+        int scoreLeft = 17;
+        int scoreRight = 12;
         bool leftWon = scoreLeft >= scoreRight;
         int minScore = leftWon ? scoreRight : scoreLeft;
 

@@ -10,6 +10,7 @@ public class EndScreen : MonoBehaviour
     private void Start()
     {
         LevelManager.Instance.GameEnded += GameEnded;
+        //GameEnded();
     }
 
     private void GameEnded()
@@ -28,7 +29,6 @@ public class EndScreen : MonoBehaviour
 
         StatsCard.gameObject.SetActive(true);
         yield return StatsCard.Dropdown();
-
 
         //The player quits using the UI so idk ??????
         //TowerCard.gameObject.SetActive(false);
