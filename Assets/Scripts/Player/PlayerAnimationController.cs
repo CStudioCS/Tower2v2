@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerAnimationController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+    public Animator Animator => animator;
     [SerializeField] private Rigidbody2D rb;
 
     [SerializeField] private string isCuttingId;
