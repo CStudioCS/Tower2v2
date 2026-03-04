@@ -117,16 +117,56 @@ public class LobbyManager : MonoBehaviour
             }
         }
 
+        string deviceName = Gamepad.current.displayName.ToLower();
+        string description = Gamepad.current.description.product.ToLower();
+
         // Join using the Gamepad device. 
         // Leave controlScheme null or set to "Gamepad" if you have a specific scheme named that.
-        playerInputManager.JoinPlayer(
+        if (IsSwitchController(deviceName, description))
+        {
+            playerInputManager.JoinPlayer(
             playerIndex: -1,
             splitScreenIndex: -1,
-            controlScheme: PlayerControlBadge.ControlSchemes.Gamepad.ToString(),
+            controlScheme: (PlayerControlBadge.ControlSchemes.Switch).ToString(),
             pairWithDevice: gamepad
-        );
+            );
+        }
+        else if (IsPlayStationController(deviceName, description))
+        {
+            playerInputManager.JoinPlayer(
+            playerIndex: -1,
+            splitScreenIndex: -1,
+            controlScheme: (PlayerControlBadge.ControlSchemes.PlayStation).ToString(),
+            pairWithDevice: gamepad
+            );
+        }
+        else
+        {
+            playerInputManager.JoinPlayer(
+            playerIndex: -1,
+            splitScreenIndex: -1,
+            controlScheme: PlayerControlBadge.ControlSchemes.Xbox.ToString(),
+            pairWithDevice: gamepad
+            );
+        }
     }
-    
+    bool IsSwitchController(string name, string product)
+    {
+        return name.Contains("switch") ||
+               name.Contains("joy-con") ||
+               product.Contains("switch") ||
+               product.Contains("joy-con") ||
+               product.Contains("pro controller");
+    }
+    bool IsPlayStationController(string name, string product)
+    {
+        return name.Contains("dualshock") ||
+               name.Contains("dualsense") ||
+               name.Contains("wireless controller") ||
+               product.Contains("dualshock") ||
+               product.Contains("dualsense");
+    }
+
     private void JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes controlSchemeName)
     {
         // 1. Check if we are already at the player limit
