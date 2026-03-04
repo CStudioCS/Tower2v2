@@ -297,6 +297,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 441991705434926209}
   animatorOverrideController: {fileID: 22100000, guid: f6ec37777b242f4459d2e3cd9dd37c10, type: 2}
   animatorController: {fileID: 9100000, guid: 8e677c9689be0ae4e8871b096c9ceccb, type: 2}
+  playerTeam: {fileID: 4720667436485828352}
 --- !u!50 &176917095401970236
 Rigidbody2D:
   serializedVersion: 5

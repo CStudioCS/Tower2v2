@@ -61,13 +61,6 @@ public class PlayerTeam : MonoBehaviour
 
     public void SetTeam(Team team)
     {
-        if(CurrentTeam != team)
-        {
-            if(team == Team.Left)
-                playerAnimationController.SetAnimatorControllerToBlue();
-            else
-                playerAnimationController.SetAnimatorControllerToRed();
-        }
         CurrentTeam = team;
         UpdateColor();
         TeamChanged?.Invoke();

@@ -1,3 +1,4 @@
+using System;
 using UnityEditor.Animations;
 using UnityEngine;
 
@@ -15,15 +16,20 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private AnimatorOverrideController animatorOverrideController;
     [SerializeField] private AnimatorController animatorController;
+    [SerializeField] private PlayerTeam playerTeam;
 
-    public void SetAnimatorControllerToRed()
+    private void OnEnable()
     {
-        animator.runtimeAnimatorController = animatorOverrideController;
+        playerTeam.TeamChanged += OnTeamChanged;
+        OnTeamChanged();
     }
 
-    public void SetAnimatorControllerToBlue()
+    private void OnTeamChanged()
     {
-        animator.runtimeAnimatorController = animatorController;
+        if (playerTeam.CurrentTeam == PlayerTeam.Team.Left)
+            animator.runtimeAnimatorController = animatorController;
+        else
+            animator.runtimeAnimatorController = animatorOverrideController;
     }
 
     public void StartCutting()
@@ -62,5 +68,10 @@ public class PlayerAnimationController : MonoBehaviour
         {
             spriteRenderer.flipX = false;
         }
+    }
+
+    private void OnDisable()
+    {
+        playerTeam.TeamChanged -= OnTeamChanged;
     }
 }
