@@ -111,3 +111,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   referenceRecipeWidth: 100
   rectTransform: {fileID: 5774087308355632350}
+  parentLayout: {fileID: 0}
