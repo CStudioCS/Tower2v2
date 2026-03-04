@@ -32,11 +32,6 @@ public class Player : MonoBehaviour
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
 
-    [SerializeField] private AnimatorOverrideController animatorOverrideController ;
-    [SerializeField] private AnimatorController animatorController;
-
-    private PlayerTeam.Team pastCurrentTeam;
-
     private void Awake()
     {
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
@@ -44,10 +39,6 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        if (playerTeam.CurrentTeam == PlayerTeam.Team.Left)
-            playerAnimationController.Animator.runtimeAnimatorController = animatorController;
-        else
-            playerAnimationController.Animator.runtimeAnimatorController = animatorOverrideController;
         LevelManager.Instance.GameEnded += OnGameEnded;
     }
 
@@ -58,18 +49,6 @@ public class Player : MonoBehaviour
             case LevelManager.State.Game: GameUpdate(); break;
             case LevelManager.State.Lobby: LobbyUpdate(); break;
         }
-
-          
-
-        if (playerTeam.CurrentTeam != pastCurrentTeam)
-        {
-            Debug.Log("aa");
-            if(playerTeam.CurrentTeam == PlayerTeam.Team.Left)
-                playerAnimationController.Animator.runtimeAnimatorController = animatorController;
-            else
-                playerAnimationController.Animator.runtimeAnimatorController = animatorOverrideController;
-        }
-        pastCurrentTeam = playerTeam.CurrentTeam;
     }
 
     private void GameUpdate()

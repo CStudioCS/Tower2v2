@@ -1,3 +1,4 @@
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
@@ -12,6 +13,18 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private string dropTriggerId;
     [SerializeField] private string speedId;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private AnimatorOverrideController animatorOverrideController;
+    [SerializeField] private AnimatorController animatorController;
+
+    public void SetAnimatorControllerToRed()
+    {
+        animator.runtimeAnimatorController = animatorOverrideController;
+    }
+
+    public void SetAnimatorControllerToBlue()
+    {
+        animator.runtimeAnimatorController = animatorController;
+    }
 
     public void StartCutting()
         => animator.SetBool(isCuttingId, true);

@@ -13,7 +13,9 @@ public class PlayerTeam : MonoBehaviour
     [Header("Colors")]
     [SerializeField] private Color leftTeamColor;
     [SerializeField] private Color rightTeamColor;
-    
+
+    [SerializeField] private PlayerAnimationController playerAnimationController;
+
     private Dictionary<Team, Color> teamColors;
     public Dictionary<Team, Color> TeamColors
     {
@@ -59,6 +61,13 @@ public class PlayerTeam : MonoBehaviour
 
     public void SetTeam(Team team)
     {
+        if(CurrentTeam != team)
+        {
+            if(team == Team.Left)
+                playerAnimationController.SetAnimatorControllerToBlue();
+            else
+                playerAnimationController.SetAnimatorControllerToRed();
+        }
         CurrentTeam = team;
         UpdateColor();
         TeamChanged?.Invoke();
