@@ -204,15 +204,22 @@ public class LobbyManager : MonoBehaviour
             startPointOccupied[closestStartPointIndex] = true;
         }
 
-        for (int i=0; i < startPointCount; i++)
+        PlayerTeam.Team preferredTeam = GameStartManager.Instance.PlayerBalance >= 0 ? PlayerTeam.Team.Left : PlayerTeam.Team.Right;
+        StartPoint bestStartPoint = startPoints[0];
+
+        for (int i = 0; i < startPointCount; i++)
         {
             if (!startPointOccupied[i])
             {
-                return startPoints[i].transform.position;
+                if (startPoints[i].Team == preferredTeam)
+                {
+                    return startPoints[i].transform.position;
+                }
+                bestStartPoint = startPoints[i];
             }
         }  
         
-        return Vector2.zero;
+        return bestStartPoint.transform.position;
     }
 
 
