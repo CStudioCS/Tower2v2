@@ -12,6 +12,18 @@ PrefabInstance:
       propertyPath: m_Resource
       value: 
       objectReference: {fileID: 8300000, guid: 0dc861394fd09c94ab0c0e51d44acc25, type: 3}
+    - target: {fileID: -256997523848646438, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_SpriteTilingProperty.pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -256997523848646438, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 6.87
+      objectReference: {fileID: 0}
+    - target: {fileID: -256997523848646438, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 4.95
+      objectReference: {fileID: 0}
     - target: {fileID: 2585688832917479558, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: m_Name
       value: WoodPlankItem
@@ -19,7 +31,7 @@ PrefabInstance:
     - target: {fileID: 3599087220505950698, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 52257085778016806, guid: d18649a6c458e11409368aaefaed8fe2, type: 3}
+      objectReference: {fileID: 7493817811585513928, guid: dc66d50f6a610d6499d95a10b8f992ec, type: 3}
     - target: {fileID: 3599087220505950698, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
