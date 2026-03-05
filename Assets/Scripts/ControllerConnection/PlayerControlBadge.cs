@@ -2,16 +2,12 @@ using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 public class PlayerControlBadge : MonoBehaviour
 {
     [Header("Player")]
     [SerializeField] private Player player;
     [SerializeField] private PlayerTeam playerTeam;
-    
-    [Header("Color")]
-    [SerializeField] private Graphic[] teamColorGraphics;
     
     [Header("Graphics")]
     [SerializeField] private GameObject graphics;
@@ -46,7 +42,6 @@ public class PlayerControlBadge : MonoBehaviour
     public void Initialize(int playerIndex, ControlSchemes controlScheme)
     {
         playerTeam.TeamChanged += OnTeamChanged;
-        UpdateColor();
         SetupControlScheme(controlScheme);
         LevelManager.Instance.GameStarted += OnGameStarted;
         LevelManager.Instance.GameEnded += OnGameEnded;
@@ -70,16 +65,6 @@ public class PlayerControlBadge : MonoBehaviour
     private void OnTeamChanged()
     {
         TryUnsetReady();
-        UpdateColor();
-    }
-
-    private void UpdateColor() => ChangeColor(playerTeam.TeamColors[playerTeam.CurrentTeam]);
-    private void ChangeColor(Color color)
-    {
-        foreach (Graphic graphic in teamColorGraphics)
-        {
-            graphic.color = color;
-        }
     }
     
     private void SetupControlScheme(ControlSchemes controlScheme)
