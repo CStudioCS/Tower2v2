@@ -13,15 +13,17 @@ public class StatsCard : MonoBehaviour
     [SerializeField] private TeamStatsDisplay blueStatsDisplays;
     [SerializeField] private TeamStatsDisplay redStatsDisplays;
 
-    public IEnumerator Dropdown()
+    public IEnumerator Dropdown(TowerCard towerCard)
     {
         DisplayStats();
 
         yield return LMotion.Create(dropdownOffset, Vector2.zero, dropdownTime).WithEase(Ease.OutCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
 
+        towerCard.gameObject.SetActive(false);
+
         yield return new WaitUntil(() => Input.anyKey);
 
-        yield return LMotion.Create((Vector2)transform.position, -dropdownOffset, dropdownTime).WithEase(Ease.OutCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
+        yield return LMotion.Create((Vector2)transform.localPosition, -dropdownOffset, dropdownTime).WithEase(Ease.OutCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
     }
 
     private void DisplayStats()

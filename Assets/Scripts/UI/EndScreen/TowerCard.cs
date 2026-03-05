@@ -1,9 +1,10 @@
-using UnityEngine;
 using LitMotion;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
+using System.Security.Cryptography.X509Certificates;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class TowerCard : MonoBehaviour
 {
@@ -88,10 +89,17 @@ public class TowerCard : MonoBehaviour
         else
             towerAnimator.SetTrigger("KickToLeft");
 
-        //TODO: Here add scrolling of the text of the score of winning and losing teams from left and right
+        
+        yield return null; //wait one frame for animator to change state (kinda ghetto)
+        yield return new WaitForSeconds(towerAnimator.GetCurrentAnimatorStateInfo(0).length);
+
+        towerAnimator.SetTrigger("DisplayScore");
+
+        yield return null;
+        yield return new WaitForSeconds(towerAnimator.GetCurrentAnimatorStateInfo(0).length);
+
 
         yield return new WaitUntil(() => Input.anyKey);
-
     }
 
     private void ScrollTowerPiece(Item.Type type, bool left, int index)
