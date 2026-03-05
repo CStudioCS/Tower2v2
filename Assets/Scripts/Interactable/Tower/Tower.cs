@@ -13,7 +13,8 @@ public class Tower : Interactable
     [SerializeField] private Vector2 onWoodBlockOffset;
     [SerializeField] private Vector2 onBrickBlockOffset;
     [SerializeField] private TMP_Text onTowerHeightText;
-    [SerializeField] private RectTransform onTowerCanvas;
+    [SerializeField] private Transform onTowerFlag;
+    [SerializeField] private Vector2 flagOffset;
     [SerializeField] private TowerPiece strawTowerPiecePrefab;
     [SerializeField] private TowerPiece woodTowerPiecePrefab;
     [SerializeField] private TowerPiece brickTowerPiecePrefab;
@@ -115,11 +116,11 @@ public class Tower : Interactable
     private void UpdateTowerTopUI()
     {
         if (Height > 0)
-            onTowerCanvas.position = (Vector2)towerPieces[^1].transform.position + blockOffset;
+            onTowerFlag.position = (Vector2)towerPieces[^1].transform.position + blockOffset + flagOffset;
         else
-            onTowerCanvas.position = gameObject.transform.position;
+            onTowerFlag.position = (Vector2)gameObject.transform.position + flagOffset;
 
-        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, onTowerCanvas.position);
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, onTowerFlag.position);
 
         if (screenPoint.y > Screen.height)
         {
@@ -133,7 +134,7 @@ public class Tower : Interactable
         else
         {
             OffTowerCanvas.gameObject.SetActive(false);
-            onTowerCanvas.gameObject.SetActive(true);
+            onTowerFlag.gameObject.SetActive(true);
             onTowerHeightText.text = Height.ToString();
         }
 
