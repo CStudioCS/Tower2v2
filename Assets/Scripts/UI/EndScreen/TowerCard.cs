@@ -60,7 +60,7 @@ public class TowerCard : MonoBehaviour
 
         yield return LMotion.Create(dropdownOffset, Vector2.zero, dropdownTime).WithEase(Ease.OutCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
 
-        
+
         for (int i = 0; i < minScore; i++)
         {
             Item.Type towerPieceType = ItemRandomizer.Instance.GetAt(i);
