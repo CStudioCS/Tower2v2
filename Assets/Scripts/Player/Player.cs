@@ -201,6 +201,9 @@ public class Player : MonoBehaviour
     {
         Interacting = false;
         ConsumeCurrentItem();
+
+        if (closestInteractable != null)
+            closestInteractable.Highlight(false, this);
     }
     
     private void OnDisable()
