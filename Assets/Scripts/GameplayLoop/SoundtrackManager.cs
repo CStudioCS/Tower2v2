@@ -7,25 +7,33 @@ public class SoundtrackManager : MonoBehaviour
 {
     [SerializeField] AudioSource inGameMusic;
     [SerializeField] AudioSource lobbyMusic;
-    [SerializeField] private float transitionTime;
-
+    [SerializeField] private float initFadeInDuration;
+    [SerializeField] private Ease initFadeInEase = Ease.Linear;
+    [SerializeField] private float startFadeInDuration;
+    [SerializeField] private Ease startFadeInEase = Ease.Linear;
+    [SerializeField] private float startFadeOutDuration;
+    [SerializeField] private Ease startFadeOutEase = Ease.Linear;
+    [SerializeField] private float endFadeInDuration;
+    [SerializeField] private Ease endFadeInEase = Ease.Linear;
+    [SerializeField] private float endFadeOutDuration;
+    [SerializeField] private Ease endFadeOutEase = Ease.Linear;
     private void Start()
     {
         LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
         LevelManager.Instance.GameEnded += OnGameEnded;
-        StartCoroutine(SmoothMusicFadeIn(lobbyMusic));
+        SmoothMusicFadeIn(lobbyMusic, initFadeInDuration, initFadeInEase);
     }
 
     private void OnGameAboutToStart()
     {
-        StartCoroutine(SmoothMusicFadeIn(inGameMusic));  
-        StartCoroutine(SmoothMusicFadeOut(lobbyMusic));
+        SmoothMusicFadeIn(inGameMusic, startFadeInDuration, startFadeInEase);
+        StartCoroutine(SmoothMusicFadeOut(lobbyMusic, startFadeOutDuration, startFadeOutEase));
     }
 
     private void OnGameEnded()
     {
-        StartCoroutine(SmoothMusicFadeIn(lobbyMusic));
-        StartCoroutine(SmoothMusicFadeOut(inGameMusic));
+        SmoothMusicFadeIn(lobbyMusic, endFadeInDuration, endFadeInEase);
+        StartCoroutine(SmoothMusicFadeOut(inGameMusic, endFadeOutDuration, endFadeOutEase));
     }
 
     private void OnDisable()
@@ -34,14 +42,16 @@ public class SoundtrackManager : MonoBehaviour
         LevelManager.Instance.GameEnded -= OnGameEnded;
     }
 
-    private IEnumerator SmoothMusicFadeIn(AudioSource targetAudioSource)
+    private void SmoothMusicFadeIn(AudioSource targetAudioSource,float transitionTime, Ease ease)
     {
+        targetAudioSource.volume = 0;
         targetAudioSource.Play();
-        yield return LMotion.Create(0, 1, transitionTime).Bind(volume => targetAudioSource.volume = volume).ToYieldInstruction();
+        LMotion.Create(0f, 1f, transitionTime).WithEase(ease).Bind(volume => targetAudioSource.volume = volume);
     }
-    private IEnumerator SmoothMusicFadeOut(AudioSource actualAudioSource)
+    private IEnumerator SmoothMusicFadeOut(AudioSource actualAudioSource, float transitionTime, Ease ease)
     {
-        yield return LMotion.Create(1, 0, transitionTime).Bind(volume => actualAudioSource.volume = volume).ToYieldInstruction();
+        LMotion.Create(1f, 0f, transitionTime).WithEase(ease).Bind(volume => actualAudioSource.volume = volume);
+        yield return new WaitForSeconds(transitionTime);
         actualAudioSource.Stop();
     }
 }

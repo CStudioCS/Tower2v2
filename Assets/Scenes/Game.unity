@@ -629,9 +629,57 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2233086918350289950, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: timerLimit
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: endFadeInEase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: endFadeOutEase
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: initFadeInEase
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: transitionTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: startFadeInEase
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: startFadeOutEase
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: endFadeInDuration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: endFadeOutDuration
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: initFadeInDuration
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: startFadeInDuration
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: startFadeOutDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2914927600258276031, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: DebugMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5117167974699339292, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: Loop
