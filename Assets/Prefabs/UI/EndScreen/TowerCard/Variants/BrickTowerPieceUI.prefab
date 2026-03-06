@@ -90,11 +90,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3954092880439904520, guid: bef59298154b9f04db67b2696960522c, type: 3}
       propertyPath: m_Color.b
-      value: 0.43867922
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3954092880439904520, guid: bef59298154b9f04db67b2696960522c, type: 3}
       propertyPath: m_Color.g
-      value: 0.43867922
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3954092880439904520, guid: bef59298154b9f04db67b2696960522c, type: 3}
       propertyPath: m_Color.r
@@ -102,7 +102,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6786246522712386673, guid: bef59298154b9f04db67b2696960522c, type: 3}
       propertyPath: m_Name
-      value: TowerPieceUIBrick
+      value: BrickTowerPieceUI
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
