@@ -23,6 +23,7 @@ public class LevelManager : MonoBehaviour
     public event Action GameAboutToStart;
     public event Action GameStarted;
     public event Action GameEnded;
+    public event Action OnBackToLobby;
 
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
@@ -139,7 +140,6 @@ public class LevelManager : MonoBehaviour
     private void EndLevel(PlayerTeam.Team winner)
     {
         GameState = State.EndScreen;
-        //ActivateLobbyObjects(true);
         ActivateInGameObjects(false);
         Debug.Log($"Level has ended with winner {winner}");
 
@@ -150,6 +150,9 @@ public class LevelManager : MonoBehaviour
 
     public void SetGameStateToLobby()
     {
+        ActivateLobbyObjects(true);
         GameState = State.Lobby;
+
+        OnBackToLobby.Invoke();
     }
 }

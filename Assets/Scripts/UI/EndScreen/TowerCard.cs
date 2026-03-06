@@ -43,16 +43,21 @@ public class TowerCard : MonoBehaviour
 
     public IEnumerator Dropdown()
     {
-        //int scoreLeft = WorldLinker.Instance.towerLeft.Height;
-        //int scoreRight = WorldLinker.Instance.towerRight.Height;
-        Debug.LogError("this shit still in debug !!");
-        int scoreLeft = 12;
-        int scoreRight = 17;
+        int scoreLeft = WorldLinker.Instance.towerLeft.Height;
+        int scoreRight = WorldLinker.Instance.towerRight.Height;
         bool leftWon = scoreLeft >= scoreRight;
         int minScore = leftWon ? scoreRight : scoreLeft;
 
-        leftScoreText.text = scoreLeft.ToString();
-        rightScoreText.text = scoreRight.ToString();
+        if(scoreLeft == 0 && scoreRight == 0)
+        {
+            leftScoreText.text = "huh ?\n0";
+            rightScoreText.text = "draw ?\n0";
+        }
+        else
+        {
+            leftScoreText.text = (leftWon ? "BLUE WINS !\n" : "\n") + scoreLeft;
+            rightScoreText.text = (!leftWon ? "RED WINS !\n" : "\n") + scoreRight;
+        }
 
         //reset
         foreach (Transform child in leftTowerUI.transform)
@@ -78,7 +83,8 @@ public class TowerCard : MonoBehaviour
             yield return new WaitForSeconds(towerPieceWaitTime);
         }
 
-        yield return new WaitForSeconds(inBetweenWaitTime);
+        if(scoreLeft != 0 || scoreRight != 0)
+            yield return new WaitForSeconds(inBetweenWaitTime);
 
         for (int i = minScore; i < (leftWon ? scoreLeft : scoreRight); i++)
         {

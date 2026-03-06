@@ -41,7 +41,7 @@ public class StatsCard : MonoBehaviour
 
             teamStatsDisplay.teamItemsStolen += players[i].PlayerStats.stolenItems;
             teamStatsDisplay.teamWoodCut += players[i].PlayerStats.woodCut;
-            teamStatsDisplay.teamDistanceTravelled += players[i].PlayerStats.distanceTravelled;
+            teamStatsDisplay.teamDistanceTraveled += players[i].PlayerStats.distanceTraveled;
             
         }
 

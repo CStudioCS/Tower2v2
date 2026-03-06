@@ -35,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (gameStartingLock || player.Interacting)
+        if (gameStartingLock || player.Interacting || LevelManager.Instance.GameState == LevelManager.State.EndScreen)
         {
             rb.linearVelocity = Vector2.zero;
             return;
@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
             lastSpeed = rb.linearVelocity;
         }
 
-        player.PlayerStats.distanceTravelled += rb.linearVelocity.magnitude * Time.deltaTime;
+        player.PlayerStats.distanceTraveled += rb.linearVelocity.magnitude * Time.deltaTime;
     }
 
 
