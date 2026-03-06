@@ -23,6 +23,24 @@ public class SettingsSign: Interactable
 
 		PlayerInput playerInput = player.GetComponent<PlayerInput>();
 		playerInput.SwitchCurrentActionMap("UI");
-		CanvasLinker.Instance.settingsMenu.Open(playerInput);
+
+		SettingsMenu menu = CanvasLinker.Instance.settingsMenu;
+		menu.Closed += OnSettingsClosed;
+		menu.Open(playerInput);
+	}
+
+	private void OnSettingsClosed()
+	{
+		CanvasLinker.Instance.settingsMenu.Closed -= OnSettingsClosed;
+
+		if (interactingPlayer == null)
+			return;
+
+		PlayerInput playerInput = interactingPlayer.GetComponent<PlayerInput>();
+		playerInput.SwitchCurrentActionMap("Gameplay");
+
+		interactingPlayer.LockInSettingsMenu(false);
+		interactingPlayer.PlayerControlBadge.ShowReadyLabel(true);
+		interactingPlayer = null;
 	}
 }
