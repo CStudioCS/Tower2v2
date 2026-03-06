@@ -6,6 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Manually drives UI navigation for the settings menu using a specific player's input actions.
 /// This replaces InputSystemUIInputModule for per-player UI control in local multiplayer.
+/// Navigation is index-based using an ordered list of selectables from SettingsMenu.
 /// When a Slider is selected, left/right adjusts its value instead of navigating away.
 /// </summary>
 public class SettingsMenuInputHandler : MonoBehaviour
@@ -25,17 +26,19 @@ public class SettingsMenuInputHandler : MonoBehaviour
 
     private EventSystem eventSystem;
     private SettingsMenu settingsMenu;
+    private Selectable[] selectables;
+    private int currentIndex;
     private float nextMoveTime;
     private Vector2 lastDirection;
 
     /// <summary>
     /// Binds this handler to a specific player's input actions and event system.
-    /// Call this when a player opens the settings menu.
     /// </summary>
     public void Bind(PlayerInput playerInput, EventSystem targetEventSystem, SettingsMenu menu)
     {
         eventSystem = targetEventSystem;
         settingsMenu = menu;
+        selectables = menu.Selectables;
 
         navigateAction = playerInput.actions.FindAction("UI/Navigate");
         submitAction = playerInput.actions.FindAction("UI/Submit");
@@ -43,11 +46,17 @@ public class SettingsMenuInputHandler : MonoBehaviour
 
         nextMoveTime = 0f;
         lastDirection = Vector2.zero;
+
+        // Select the default selectable (e.g. Credits button)
+        currentIndex = Mathf.Clamp(menu.DefaultSelectedIndex, 0, selectables.Length - 1);
+        if (selectables != null && selectables.Length > 0)
+            SelectCurrent();
+
         enabled = true;
     }
 
     /// <summary>
-    /// Unbinds this handler. Call when the player closes the settings menu.
+    /// Unbinds this handler.
     /// </summary>
     public void Unbind()
     {
@@ -56,6 +65,7 @@ public class SettingsMenuInputHandler : MonoBehaviour
         cancelAction = null;
         eventSystem = null;
         settingsMenu = null;
+        selectables = null;
         enabled = false;
     }
 
@@ -72,7 +82,6 @@ public class SettingsMenuInputHandler : MonoBehaviour
     {
         Vector2 input = navigateAction.ReadValue<Vector2>();
 
-        // Apply deadzone
         if (input.magnitude < deadzone)
         {
             lastDirection = Vector2.zero;
@@ -80,54 +89,41 @@ public class SettingsMenuInputHandler : MonoBehaviour
             return;
         }
 
-        // Check if the currently selected object is a Slider
+        // If on a slider and pushing left/right, adjust the slider value continuously
         Slider activeSlider = GetSelectedSlider();
-
         if (activeSlider != null && Mathf.Abs(input.x) > Mathf.Abs(input.y))
         {
-            // Left/right on a slider: adjust value continuously
             float range = activeSlider.maxValue - activeSlider.minValue;
             activeSlider.value += input.x * sliderSpeed * range * Time.unscaledDeltaTime;
             return;
         }
 
-        // Standard discrete navigation for up/down (and left/right when not on a slider)
-        MoveDirection direction = GetMoveDirection(input);
-
+        // Discrete navigation (up/down moves through the list)
         if (Time.unscaledTime < nextMoveTime)
             return;
+
+        int vertical = 0;
+        if (Mathf.Abs(input.y) >= Mathf.Abs(input.x))
+            vertical = input.y > 0 ? -1 : 1; // up = previous index, down = next index
+
+        if (vertical == 0) return;
 
         bool isNewDirection = lastDirection == Vector2.zero || Vector2.Dot(input.normalized, lastDirection.normalized) < 0.5f;
         nextMoveTime = Time.unscaledTime + (isNewDirection ? repeatDelay : repeatRate);
         lastDirection = input;
 
-        GameObject selected = eventSystem.currentSelectedGameObject;
-        if (selected == null)
-        {
-            if (eventSystem.firstSelectedGameObject != null)
-                eventSystem.SetSelectedGameObject(eventSystem.firstSelectedGameObject);
-            return;
-        }
+        // Move index with wrapping
+        int newIndex = currentIndex + vertical;
+        if (newIndex < 0) newIndex = selectables.Length - 1;
+        if (newIndex >= selectables.Length) newIndex = 0;
 
-        Selectable current = selected.GetComponent<Selectable>();
-        if (current == null) return;
-
-        Selectable next = direction switch
-        {
-            MoveDirection.Up => current.FindSelectableOnUp(),
-            MoveDirection.Down => current.FindSelectableOnDown(),
-            MoveDirection.Left => current.FindSelectableOnLeft(),
-            MoveDirection.Right => current.FindSelectableOnRight(),
-            _ => null
-        };
-
-        if (next != null)
-            eventSystem.SetSelectedGameObject(next.gameObject);
+        currentIndex = newIndex;
+        SelectCurrent();
     }
 
     private void HandleSubmit()
     {
-        if (!submitAction.WasPressedThisFrame()) return;
+        if (submitAction == null || !submitAction.WasPressedThisFrame()) return;
 
         GameObject selected = eventSystem.currentSelectedGameObject;
         if (selected == null) return;
@@ -139,13 +135,15 @@ public class SettingsMenuInputHandler : MonoBehaviour
     {
         if (cancelAction == null || !cancelAction.WasPressedThisFrame()) return;
 
-        // B button / Cancel closes the entire settings menu
         settingsMenu.Close();
     }
 
-    /// <summary>
-    /// Returns the Slider component if the currently selected object is a Slider or a child of one.
-    /// </summary>
+    private void SelectCurrent()
+    {
+        if (selectables == null || selectables.Length == 0) return;
+        eventSystem.SetSelectedGameObject(selectables[currentIndex].gameObject);
+    }
+
     private Slider GetSelectedSlider()
     {
         GameObject selected = eventSystem.currentSelectedGameObject;
@@ -153,13 +151,6 @@ public class SettingsMenuInputHandler : MonoBehaviour
         return selected.GetComponentInParent<Slider>() ?? selected.GetComponent<Slider>();
     }
 
-    private MoveDirection GetMoveDirection(Vector2 input)
-    {
-        if (Mathf.Abs(input.x) > Mathf.Abs(input.y))
-            return input.x > 0 ? MoveDirection.Right : MoveDirection.Left;
-        else
-            return input.y > 0 ? MoveDirection.Up : MoveDirection.Down;
-    }
 
     private void Awake()
     {

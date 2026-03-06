@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 6291729249014857453}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!1 &6156361913908104820
@@ -470,7 +470,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 20
     m_Bottom: 20
-  m_ChildAlignment: 4
+  m_ChildAlignment: 7
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
@@ -581,6 +581,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8979111321436333720, guid: e2000a79f7285c248a980949c8a45b5f, type: 3}
   m_PrefabInstance: {fileID: 3791657086196153198}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6291729249014857453 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7191714711931929987, guid: e2000a79f7285c248a980949c8a45b5f, type: 3}
+  m_PrefabInstance: {fileID: 3791657086196153198}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4759496209646860718
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -627,7 +632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5866177190018377921, guid: 14aff456a8c45114791ecb66ee00d398, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 265
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 5866177190018377921, guid: 14aff456a8c45114791ecb66ee00d398, type: 3}
       propertyPath: m_SizeDelta.y

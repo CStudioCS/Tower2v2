@@ -13,12 +13,19 @@ public class SettingsMenu: MonoBehaviour
 	public SettingsMenuInputHandler InputHandler => inputHandler;
 
 	[Header("Navigation")]
+	[Tooltip("Ordered list of selectables for gamepad navigation (top to bottom).")]
+	[SerializeField] private Selectable[] selectables;
+	public Selectable[] Selectables => selectables;
+
+	[Tooltip("Index in the selectables array to select by default when the menu opens.")]
+	[SerializeField] private int defaultSelectedIndex = 1;
+	public int DefaultSelectedIndex => defaultSelectedIndex;
+
 	[Tooltip("The close (X) button in the top right")]
 	[SerializeField] private Button closeButton;
-	[Tooltip("The first selectable in the vertical layout (e.g. the Slider)")]
-	[SerializeField] private Selectable firstVerticalSelectable;
-	[Tooltip("The last selectable in the vertical layout (e.g. the Quit button)")]
-	[SerializeField] private Selectable lastVerticalSelectable;
+
+	[Tooltip("The credits panel that may be open when the menu closes.")]
+	[SerializeField] private GameObject creditsPanel;
 
 	/// <summary>
 	/// Fired when the settings menu is closed (by the close button or cancel).
@@ -29,49 +36,22 @@ public class SettingsMenu: MonoBehaviour
 
 	private void Start()
 	{
-		SetupNavigation();
-		// Close button should call Close() when submitted via gamepad
 		if (closeButton != null)
 			closeButton.onClick.AddListener(Close);
 	}
 
-	/// <summary>
-	/// Wire up explicit navigation so the close button is reachable from the vertical layout.
-	/// CloseButton ↔ first item (up/down), last item → down wraps to CloseButton.
-	/// </summary>
-	private void SetupNavigation()
+	private void Update()
 	{
-		if (closeButton == null || firstVerticalSelectable == null) return;
-		
-		// CloseButton: down → first vertical item, up → last vertical item (wrap)
-		Navigation closeNav = new Navigation
-		{
-			mode = Navigation.Mode.Explicit,
-			selectOnDown = firstVerticalSelectable,
-			selectOnUp = lastVerticalSelectable != null ? lastVerticalSelectable : firstVerticalSelectable
-		};
-		closeButton.navigation = closeNav;
+		// Handle mouse click on the close button manually since there is no InputModule for pointer events.
+		if (!settings.activeSelf) return;
+		if (closeButton == null) return;
+		if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame) return;
 
-		// First vertical item: up → CloseButton (rest stays automatic via Explicit + FindSelectable)
-		Navigation firstNav = new Navigation
-		{
-			mode = Navigation.Mode.Explicit,
-			selectOnUp = closeButton,
-			selectOnDown = firstVerticalSelectable.FindSelectableOnDown()
-		};
-		firstVerticalSelectable.navigation = firstNav;
+		Vector2 mousePos = Mouse.current.position.ReadValue();
+		RectTransform closeRect = closeButton.GetComponent<RectTransform>();
 
-		// Last vertical item: down → CloseButton (rest stays wired)
-		if (lastVerticalSelectable != null && lastVerticalSelectable != firstVerticalSelectable)
-		{
-			Navigation lastNav = new Navigation
-			{
-				mode = Navigation.Mode.Explicit,
-				selectOnUp = lastVerticalSelectable.FindSelectableOnUp(),
-				selectOnDown = closeButton
-			};
-			lastVerticalSelectable.navigation = lastNav;
-		}
+		if (RectTransformUtility.RectangleContainsScreenPoint(closeRect, mousePos))
+			Close();
 	}
 
 	/// <summary>
@@ -80,16 +60,18 @@ public class SettingsMenu: MonoBehaviour
 	public void Open(PlayerInput playerInput)
 	{
 		settings.SetActive(true);
-		eventSystem.SetSelectedGameObject(eventSystem.firstSelectedGameObject);
 		inputHandler.Bind(playerInput, eventSystem, this);
 	}
 
 	/// <summary>
 	/// Closes the settings menu and unbinds input.
-	/// Called by the close button (via Inspector OnClick) or programmatically.
 	/// </summary>
 	public void Close()
 	{
+		// Make sure credits panel is closed
+		if (creditsPanel != null)
+			creditsPanel.SetActive(false);
+
 		inputHandler.Unbind();
 		eventSystem.SetSelectedGameObject(null);
 		settings.SetActive(false);

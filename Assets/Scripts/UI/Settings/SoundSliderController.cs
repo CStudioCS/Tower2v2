@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,18 @@ public class SoundSliderController : MonoBehaviour
     private const string VolumePrefKey = "MasterVolume";
 
     [SerializeField] private Slider slider;
+    [SerializeField] private Image volumeIconImage;
+    [SerializeField] private SoundVolumeIcon[] icons;
+
+    /// <summary>
+    /// Applies saved volume at game startup, before any scene loads.
+    /// This runs even if the settings panel is inactive.
+    /// </summary>
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void ApplySavedVolume()
+    {
+        AudioListener.volume = PlayerPrefs.GetFloat(VolumePrefKey, 1f);
+    }
 
     private void Awake()
     {
@@ -19,12 +32,28 @@ public class SoundSliderController : MonoBehaviour
         AudioListener.volume = savedVolume;
 
         slider.onValueChanged.AddListener(OnVolumeChanged);
+        UpdateVolumeIcon(savedVolume);
     }
 
     private void OnVolumeChanged(float value)
     {
         AudioListener.volume = value;
         PlayerPrefs.SetFloat(VolumePrefKey, value);
+        UpdateVolumeIcon(value);
+    }
+
+    private void UpdateVolumeIcon(float value)
+    {
+        foreach (SoundVolumeIcon icon in icons)
+        {
+            if (value <= icon.maxVolume)
+            {
+                volumeIconImage.sprite = icon.sprite;
+                return;
+            }
+        }
+        // If value is greater than all maxVolumes, use the last icon
+        volumeIconImage.sprite = icons[^1].sprite;
     }
 
     private void OnDestroy()
@@ -33,3 +62,9 @@ public class SoundSliderController : MonoBehaviour
     }
 }
 
+[Serializable]
+public class SoundVolumeIcon
+{
+    public Sprite sprite;
+    public float maxVolume;
+}
