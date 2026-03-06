@@ -1,8 +1,11 @@
+using System;
+using UnityEditor.Animations;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+    public Animator Animator => animator;
     [SerializeField] private Rigidbody2D rb;
 
     [SerializeField] private string isCuttingId;
@@ -10,6 +13,24 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private string hasItemId;
     [SerializeField] private string dropTriggerId;
     [SerializeField] private string speedId;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private AnimatorOverrideController animatorOverrideController;
+    [SerializeField] private AnimatorController animatorController;
+    [SerializeField] private PlayerTeam playerTeam;
+
+    private void OnEnable()
+    {
+        playerTeam.TeamChanged += OnTeamChanged;
+        OnTeamChanged();
+    }
+
+    private void OnTeamChanged()
+    {
+        if (playerTeam.CurrentTeam == PlayerTeam.Team.Left)
+            animator.runtimeAnimatorController = animatorController;
+        else
+            animator.runtimeAnimatorController = animatorOverrideController;
+    }
 
     public void StartCutting()
         => animator.SetBool(isCuttingId, true);
@@ -39,5 +60,18 @@ public class PlayerAnimationController : MonoBehaviour
     void Update()
     {
         animator.SetFloat(speedId, rb.linearVelocity.magnitude);
+        if (rb.linearVelocity.x > 0.1f)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (rb.linearVelocity.x < -0.1f)
+        {
+            spriteRenderer.flipX = false;
+        }
+    }
+
+    private void OnDisable()
+    {
+        playerTeam.TeamChanged -= OnTeamChanged;
     }
 }

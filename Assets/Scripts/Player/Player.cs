@@ -1,5 +1,4 @@
 using LitMotion;
-using LitMotion.Adapters;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +25,7 @@ public class Player : MonoBehaviour
     public PlayerStats PlayerStats => playerStats;
 
     [SerializeField] private ProgressBar progressBar;
+    [SerializeField] private Transform itemParent;
 
     private InputAction interactAction;
     private Interactable closestInteractable;
@@ -69,10 +69,10 @@ public class Player : MonoBehaviour
         if (closestInteractable != newClosestInteractable)
         {
             if (closestInteractable != null)
-                closestInteractable.Highlight(false);
+                closestInteractable.Highlight(false, this);
             
             if (newClosestInteractable != null)
-                newClosestInteractable.Highlight(true);
+                newClosestInteractable.Highlight(true, this);
         }
 
         closestInteractable = newClosestInteractable;
@@ -158,9 +158,10 @@ public class Player : MonoBehaviour
     /// </summary>
     public void DropHeldItem()
     {
-        if (!IsHolding)
+        if (!IsHolding || (HeldItem.State != Item.ItemState.Held))
             return;
 
+        HeldItem.State = Item.ItemState.Transitioning;
         playerAnimationController.Drop();
 
         IsHolding = false;
@@ -194,7 +195,7 @@ public class Player : MonoBehaviour
 
         item.Immobilize();
         item.LastOwner = this;
-        item.transform.SetParent(transform);
+        item.transform.SetParent(itemParent);
 
         if (interpolatePosition)
         {
@@ -203,6 +204,8 @@ public class Player : MonoBehaviour
         }
         else
             item.transform.localPosition = Vector2.zero;
+
+        item.State = Item.ItemState.Held;
     }
 
     private void OnGameEnded()

@@ -16,6 +16,9 @@ public class Workbench : Interactable
 
     private PlayerTeam.Team cutLastByTeam;
 
+    [SerializeField] private GameObject woodOnTable;
+    [SerializeField] private GameObject woodPlanckOnTable;
+
     private enum State { Empty, HasWoodLog, HasWoodPlank }
 
     public override bool CanInteract(Player player)
@@ -43,7 +46,7 @@ public class Workbench : Interactable
                 state = State.HasWoodLog;
                 player.ConsumeCurrentItem();
                 currentInteractionTime = cutWoodInteractionTime;
-                spriteRenderer.color = Color.red;
+                woodOnTable.SetActive(true);
                 break;
             
             case State.HasWoodLog:
@@ -51,7 +54,8 @@ public class Workbench : Interactable
                 currentInteractionTime = putOrPickUpItemInteractionTime;
                 player.PlayerStats.woodCut++;
                 cutLastByTeam = player.PlayerTeam.CurrentTeam;
-                spriteRenderer.color = Color.blue;
+                woodOnTable.SetActive(false);
+                woodPlanckOnTable.SetActive(true);
                 break;
             
             case State.HasWoodPlank:
@@ -62,7 +66,7 @@ public class Workbench : Interactable
                 //imo we should instantiate the item after the cut is done
                 //and leave it on the workbench. then picking it up would look like (not be coded like, only look like)
                 //picking up an item from the ground with sum LitMotion action
-                spriteRenderer.color = Color.white;
+                woodPlanckOnTable.SetActive(false);
                 break;
         }
     }
@@ -73,7 +77,8 @@ public class Workbench : Interactable
     {
         base.OnGameEnded();
         state = State.Empty;
-        spriteRenderer.color = Color.white;
+        woodOnTable.SetActive(false);
+        woodPlanckOnTable.SetActive(false);
     }
 
     private void Update()
