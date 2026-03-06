@@ -32,10 +32,11 @@ public class EndScreen : MonoBehaviour
         TowerCard.gameObject.SetActive(true);
         yield return TowerCard.Dropdown();
 
+        BigEnd.gameObject.SetActive(false);
+
         StatsCard.gameObject.SetActive(true);
         yield return StatsCard.Dropdown(TowerCard);
 
-        BigEnd.gameObject.SetActive(false);
         //TowerCard.gameObject.SetActive(false); already done within StatsCard
         StatsCard.gameObject.SetActive(false);
 

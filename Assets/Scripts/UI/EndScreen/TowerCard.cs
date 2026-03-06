@@ -9,14 +9,11 @@ using UnityEngine.UI;
 public class TowerCard : MonoBehaviour
 {
     [Header("Position Data")]
-    [SerializeField] private Vector2 dropdownOffset;
     [SerializeField] private float towerBaseYPos;
     [SerializeField] private float towerPieceVerticalOffset;
     [SerializeField] private float initLeftTowerPiecesOffset;
 
-
     [Header("Times")]
-    [SerializeField] private float dropdownTime;
     [SerializeField] private float towerPieceScrollTime;
     [SerializeField] private float towerPieceWaitTime;
     [SerializeField] private float inBetweenWaitTime;
@@ -57,9 +54,19 @@ public class TowerCard : MonoBehaviour
         leftScoreText.text = scoreLeft.ToString();
         rightScoreText.text = scoreRight.ToString();
 
+        //reset
+        foreach (Transform child in leftTowerUI.transform)
+            Destroy(child.gameObject);
+        foreach (Transform child in rightTowerUI.transform)
+            Destroy(child.gameObject);
 
-        yield return LMotion.Create(dropdownOffset, Vector2.zero, dropdownTime).WithEase(Ease.OutCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
 
+        towerAnimator.SetTrigger("Dropdown");
+
+        yield return null; //wait one frame for animator to change state (kinda ghetto)
+        yield return new WaitForSeconds(towerAnimator.GetCurrentAnimatorStateInfo(0).length);
+
+        towerAnimator.SetTrigger("TowerStacking");
 
         for (int i = 0; i < minScore; i++)
         {

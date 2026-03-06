@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -550, y: 26.45}
+  m_AnchoredPosition: {x: -600, y: 26.45}
   m_SizeDelta: {x: 300, y: 47.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4008806795264031529
@@ -195,11 +195,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d3f10fa2ef6ee74d8c3c33745549e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dropdownOffset: {x: 0, y: 970}
   towerBaseYPos: -240
   towerPieceVerticalOffset: 30
   initLeftTowerPiecesOffset: -200
-  dropdownTime: 1.5
   towerPieceScrollTime: 0.4
   towerPieceWaitTime: 0.2
   inBetweenWaitTime: 0.7
