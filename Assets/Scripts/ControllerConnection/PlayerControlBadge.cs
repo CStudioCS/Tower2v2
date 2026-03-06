@@ -44,7 +44,7 @@ public class PlayerControlBadge : MonoBehaviour
         playerTeam.TeamChanged += OnTeamChanged;
         SetupControlScheme(controlScheme);
         LevelManager.Instance.GameStarted += OnGameStarted;
-        LevelManager.Instance.OnBackToLobby += OnBackToLobby;
+        LevelManager.Instance.OnBackToLobby += ReturnedToLobby;
 
 #if DEBUG
         if (LobbyManager.Instance.DebugMode)
@@ -60,7 +60,7 @@ public class PlayerControlBadge : MonoBehaviour
 
     private void OnGameStarted() => graphics.SetActive(false);
 
-    private void OnBackToLobby() => graphics.SetActive(true);
+    private void ReturnedToLobby() => graphics.SetActive(true);
 
     private void OnTeamChanged()
     {
@@ -215,6 +215,6 @@ public class PlayerControlBadge : MonoBehaviour
     {
         playerTeam.TeamChanged -= OnTeamChanged;
         LevelManager.Instance.GameStarted -= OnGameStarted;
-        LevelManager.Instance.GameEnded -= OnBackToLobby;
+        LevelManager.Instance.GameEnded -= ReturnedToLobby;
     }
 }
