@@ -1,6 +1,7 @@
 using LitMotion;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -28,10 +29,10 @@ public class StatsCard : MonoBehaviour
 
     private void DisplayStats()
     {
-        PlayerInput[] playerInputs = GameStartManager.Instance.PlayerInputs; //dirty but idc at this point
-        Player[] players = new Player[playerInputs.Length];
+        List<PlayerInput> playerInputs = GameStartManager.Instance.Players; //dirty but idc at this point
+        Player[] players = new Player[playerInputs.Count];
 
-        for (int i = 0; i < playerInputs.Length; i++)
+        for (int i = 0; i < playerInputs.Count; i++)
             players[i] = playerInputs[i].GetComponent<Player>();
 
         for (int i = 0; i < players.Length; i++)

@@ -63,9 +63,6 @@ public class Workbench : Interactable
 
                 state = State.Empty;
                 player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam); //ownership for wood is determined by who cut it, not who collected it 
-                //imo we should instantiate the item after the cut is done
-                //and leave it on the workbench. then picking it up would look like (not be coded like, only look like)
-                //picking up an item from the ground with sum LitMotion action
                 woodPlanckOnTable.SetActive(false);
                 break;
         }
