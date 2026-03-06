@@ -38,7 +38,7 @@ public class Item : Interactable
         LevelManager.Instance.GameEnded += Disappear;
     }
 
-    public override bool CanInteract(Player player) => (!player.IsHolding) && (State == ItemState.Dropped);
+    public override bool CanInteract(Player player) => !player.IsHolding && State == ItemState.Dropped && LevelManager.InGame;
     public override void Interact(Player player)
     {
         State = ItemState.Transitioning;

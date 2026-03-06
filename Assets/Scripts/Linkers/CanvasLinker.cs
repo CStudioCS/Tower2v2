@@ -17,6 +17,7 @@ public class CanvasLinker : MonoBehaviour
     public Animator countdown;
     public GameObject MenuUI;
     public GameObject InGameUI;
+    public SettingsMenu settingsMenu;
 
     private void Awake()
     {

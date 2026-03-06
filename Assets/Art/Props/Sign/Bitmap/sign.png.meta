@@ -57,7 +57,7 @@ TextureImporter:
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 200
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -111,62 +111,62 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 60
-        height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 240
+        height: 270
+      alignment: 9
+      pivot: {x: 0.524, y: 0.14}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 7fcf31aeb06cb7360800000000000000
+      spriteID: c87cc31027979224da06c1ab4a5809ab
       internalID: 7168540986364394743
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sign_gear_icon
+      name: sign_icon_gear
       rect:
         serializedVersion: 2
-        x: 60
+        x: 240
         y: 0
-        width: 60
-        height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 240
+        height: 270
+      alignment: 9
+      pivot: {x: 0.524, y: 0.14}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: f0c7bd98c27809170800000000000000
-      internalID: 8183189148293364751
+      spriteID: 80243b89bd86a664ca9b4ad503981f2d
+      internalID: 1577721321
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: sign_map_icon
+      name: sign_icon_map
       rect:
         serializedVersion: 2
-        x: 120
+        x: 480
         y: 0
-        width: 60
-        height: 70
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        width: 240
+        height: 270
+      alignment: 9
+      pivot: {x: 0.524, y: 0.14}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: cddd462ee0d9fdaf0800000000000000
-      internalID: -369403957167727140
+      spriteID: ef5ba9cb2267f084bbefbadb68b456f1
+      internalID: -1834475515
       vertices: []
       indices: 
       edges: []
@@ -186,8 +186,8 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       sign: 7168540986364394743
-      sign_gear_icon: 8183189148293364751
-      sign_map_icon: -369403957167727140
+      sign_icon_gear: 1577721321
+      sign_icon_map: -1834475515
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

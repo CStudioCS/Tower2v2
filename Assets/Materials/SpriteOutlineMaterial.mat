@@ -54,6 +54,7 @@ Material:
     - _Angle: 0
     - _ConnectedAlpha: 0
     - _EnableExternalAlpha: 0
+    - _NoResizing: 0
     - _OutlineEnabled: 0
     - _OutlineMode: 0
     - _OutlinePosition: 1

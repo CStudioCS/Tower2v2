@@ -29,6 +29,9 @@
 		_ImageOutline ("Outline Color Base", Color) = (1,1,1,1)
 		[KeywordEnum(Stretch, Tile)] _TileMode("Frame mode", Float) = 0
 
+		[Header(Resize Settings)]
+		[MaterialToggle] _NoResizing ("No Resizing (outline on empty pixels only)", Float) = 0
+
 		[Header(ZWrite Settings)]
 		[MaterialToggle] _ZWrite ("Z Write", Float) = 0
     }
@@ -94,6 +97,7 @@
 			fixed4 _ImageOutline;
             fixed _TileMode;
 
+			fixed _NoResizing;
 			fixed _ZWrite;
 
 			v2f vert(appdata_t IN)
@@ -121,7 +125,11 @@
 			fixed4 SampleSpriteTexture (float2 uv)
 			{
 				float2 offsets;
-				if(_OutlinePosition != 2 && _OutlineShape == 1) // not outside and frame
+				if(_NoResizing != 0)
+				{
+					offsets = float2(0, 0);
+				}
+				else if(_OutlinePosition != 2 && _OutlineShape == 1) // not outside and frame
 				{
 					offsets = float2(0, 0);
 				}

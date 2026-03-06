@@ -1,3 +1,4 @@
+using System;
 using LitMotion;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
 
-    [SerializeField] private PlayerAnimationController playerAnimationController;
+    [SerializeField] private PlayerAnimationController playerAnimationController; // TODO remove reference, fix bad animation coupling
     [SerializeField] private Transform itemParent;
 
     private InputAction interactAction;
@@ -29,6 +30,9 @@ public class Player : MonoBehaviour
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
+    
+    public bool LockedInSettingsMenu { get; private set; }
+    public event Action LockedInSettingsMenuChanged;
 
     private void Awake()
     {
@@ -42,21 +46,18 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        switch (LevelManager.Instance.GameState)
-        {
-            case LevelManager.State.Game: GameUpdate(); break;
-            case LevelManager.State.Lobby: LobbyUpdate(); break;
-        }
-    }
-
-    private void GameUpdate()
-    {
         UpdateClosestInteractable();
 
-        if (interactAction.WasPressedThisFrame())
-            Interact();
+        if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu)
+        {
+            bool successfulInteraction = TryInteract();
+            if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
+            {
+                playerControlBadge.Interact();
+            }
+        }
 
-        playerAnimationController.HasItem(HeldItem != null);
+        playerAnimationController.HasItem(HeldItem != null); // TODO fix bad animation coupling
     }
 
     private void UpdateClosestInteractable()
@@ -74,7 +75,7 @@ public class Player : MonoBehaviour
 
         closestInteractable = newClosestInteractable;
     }
-    private void Interact()
+    private bool TryInteract()
     {
         if (closestInteractable != null)
         {
@@ -82,9 +83,9 @@ public class Player : MonoBehaviour
             if (time > 0)
             {
                 if (closestInteractable is Workbench)
-                    playerAnimationController.StartCutting();
+                    playerAnimationController.StartCutting(); // TODO fix bad animation coupling
                 else if (closestInteractable is Collector)
-                    playerAnimationController.StartCollecting();
+                    playerAnimationController.StartCollecting(); // TODO fix bad animation coupling
                 else
                     Debug.LogError("This Interactable is not currently supported by the animator");
                     //no interactable in the game takes time aside from Collector and Workbench as of rn
@@ -93,16 +94,16 @@ public class Player : MonoBehaviour
             }
             else
                 closestInteractable.Interact(this);
+
+            return true;
         }
-        else if (HeldItem != null)
+        if (HeldItem != null)
+        {
             DropHeldItem();
+            return true;
+        }
 
-    }
-
-    private void LobbyUpdate()
-    {
-        if (interactAction.WasPressedThisFrame())
-            playerControlBadge.Interact();
+        return false;
     }
 
     private IEnumerator InteractTimer(Interactable insideInteractable, float time)
@@ -133,7 +134,7 @@ public class Player : MonoBehaviour
 
     private void StopInteracting(Interactable insideInteractable)
     {
-        playerAnimationController.EndInteraction();
+        playerAnimationController.EndInteraction(); // TODO fix bad animation coupling
         Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
         progressBar.ResetProgress();
@@ -159,7 +160,7 @@ public class Player : MonoBehaviour
             return;
 
         HeldItem.State = Item.ItemState.Transitioning;
-        playerAnimationController.Drop();
+        playerAnimationController.Drop(); // TODO fix bad animation coupling
 
         IsHolding = false;
         grabbingLerp.TryCancel();
@@ -176,7 +177,7 @@ public class Player : MonoBehaviour
 
     public void GrabItem(Item item, bool interpolatePosition)
     {
-        playerAnimationController.Grab();
+        playerAnimationController.Grab(); // TODO fix bad animation coupling
 
         IsHolding = true;
         HeldItem = item;
@@ -223,5 +224,11 @@ public class Player : MonoBehaviour
         }
 
         return closest;
+    }
+
+    public void LockInSettingsMenu(bool locked = true)
+    {
+        LockedInSettingsMenu = locked;
+        LockedInSettingsMenuChanged?.Invoke();
     }
 }
