@@ -189,7 +189,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 8607870785891123332}
-  interactableInLobby: 0
   onStrawBlockOffset: {x: 0, y: 0.27}
   onWoodBlockOffset: {x: 0, y: 0.11}
   onBrickBlockOffset: {x: 0, y: 0.3}
@@ -446,7 +445,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!114 &2483470330270047218
 MonoBehaviour:
   m_ObjectHideFlags: 0

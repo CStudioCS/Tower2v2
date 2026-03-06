@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 4486257514894748930}
   - component: {fileID: 264058703337216757}
   m_Layer: 0
-  m_Name: path_round
+  m_Name: PathRound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -186,7 +186,7 @@ GameObject:
   - component: {fileID: 6195849415947808175}
   - component: {fileID: 2063706704965324696}
   m_Layer: 0
-  m_Name: Sign
+  m_Name: SettingsSign
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -259,7 +259,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 3344525384766691392}
-  interactableInLobby: 1
 --- !u!1 &7208252129415761920
 GameObject:
   m_ObjectHideFlags: 0
