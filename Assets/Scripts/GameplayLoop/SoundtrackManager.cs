@@ -14,14 +14,14 @@ public class SoundtrackManager : MonoBehaviour
 
     private void OnGameAboutToStart()
     {
-        lobbyMusic.Play();
+        lobbyMusic.Stop();
         inGameMusic.Play();        
     }
 
     private void OnGameEnded()
     {
-        lobbyMusic.Play();
         inGameMusic.Stop();
+        lobbyMusic.Play();
     }
 
     private void OnDisable()
