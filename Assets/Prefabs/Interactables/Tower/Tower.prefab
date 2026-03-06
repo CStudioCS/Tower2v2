@@ -88,6 +88,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6061288340007643942}
   - component: {fileID: 6557728422795905892}
+  - component: {fileID: 2043779014205834352}
   m_Layer: 0
   m_Name: SortingGroup
   m_TagString: Untagged
@@ -107,7 +108,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2849312022008744348}
   m_Father: {fileID: 3951223848953282961}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!210 &6557728422795905892
@@ -122,6 +124,19 @@ SortingGroup:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_SortAtRoot: 0
+--- !u!114 &2043779014205834352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7797019961936020617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6843b88e81844c24a3b206f40945b889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStatic: 1
 --- !u!1 &8286533885462722529
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,7 +174,6 @@ Transform:
   - {fileID: 3075145184962925948}
   - {fileID: 6061288340007643942}
   - {fileID: 1887465050556124665}
-  - {fileID: 2849312022008744348}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8641540001414929147
@@ -354,6 +368,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3075145184962925948}
   - component: {fileID: 8607870785891123332}
+  - component: {fileID: 2483470330270047218}
   m_Layer: 0
   m_Name: TowerSpotSprite
   m_TagString: Untagged
@@ -399,7 +414,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
+  - {fileID: 2100000, guid: c9e2f232f9e0aa841861688f596cbe5b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -431,13 +446,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2483470330270047218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9036056661443125684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6843b88e81844c24a3b206f40945b889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStatic: 1
 --- !u!1001 &5063255985997738963
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3951223848953282961}
+    m_TransformParent: {fileID: 6061288340007643942}
     m_Modifications:
     - target: {fileID: 7047718137425771087, guid: 2ca6e8364fa9abb4996d2f1b14e5cd05, type: 3}
       propertyPath: m_LocalPosition.x

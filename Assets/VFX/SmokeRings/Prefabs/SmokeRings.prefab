@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3842831307965126681}
   - component: {fileID: 7185380323072470623}
   - component: {fileID: 813099339067248419}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SmokeRings
   m_TagString: Untagged
   m_Icon: {fileID: 0}

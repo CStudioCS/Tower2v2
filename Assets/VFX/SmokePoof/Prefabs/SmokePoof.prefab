@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7876701375047527259}
   - component: {fileID: 1688364359511567734}
   - component: {fileID: 2022978442383516614}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SmokePoof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
