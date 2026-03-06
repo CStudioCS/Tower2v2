@@ -11,5 +11,5 @@ public class Trashcan : Interactable
 
     public override float GetInteractionTime() => 0;
 
-    public override bool CanInteract(Player player) => player.IsHolding;
+    public override bool CanInteract(Player player) => player.IsHolding && LevelManager.InGame;
 }

@@ -48,6 +48,8 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    public static bool InGame => Instance.GameState == State.Game;
+
     public void Awake()
     {
         if (Instance != null)
