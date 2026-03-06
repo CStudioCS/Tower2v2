@@ -14,6 +14,8 @@ public class Workbench : Interactable
     [SerializeField] private AudioSource audioSourceSaw;
     [SerializeField] private AudioSource audioSourceWood;
 
+    private PlayerTeam.Team cutLastByTeam;
+
     [SerializeField] private GameObject woodOnTable;
     [SerializeField] private GameObject woodPlanckOnTable;
 
@@ -52,6 +54,8 @@ public class Workbench : Interactable
             case State.HasWoodLog:
                 state = State.HasWoodPlank;
                 currentInteractionTime = putOrPickUpItemInteractionTime;
+                player.PlayerStats.woodCut++;
+                cutLastByTeam = player.PlayerTeam.CurrentTeam;
                 woodOnTable.SetActive(false);
                 woodPlanckOnTable.SetActive(true);
                 break;
@@ -60,7 +64,7 @@ public class Workbench : Interactable
                 audioSourceWood.Play();
 
                 state = State.Empty;
-                player.GrabNewItem(woodPlankItemPrefab);
+                player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam); //ownership for wood is determined by who cut it, not who collected it 
                 woodPlanckOnTable.SetActive(false);
                 break;
         }

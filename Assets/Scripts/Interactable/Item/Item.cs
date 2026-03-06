@@ -23,6 +23,7 @@ public class Item : Interactable
     public ItemState State { get; set; }
 
 
+    [HideInInspector] public PlayerTeam.Team originallyCollectedByTeam;
     public float GrabbingTime => grabbingTime;
 
     [SerializeField] private AudioSource audioSourceDrop;
