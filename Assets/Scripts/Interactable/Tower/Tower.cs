@@ -72,8 +72,10 @@ public class Tower : Interactable
 
     public override bool CanInteract(Player player)
     {
+        if (!LevelManager.InGame)
+            return false;
         // Check if the player is holding the correct item for the recipe
-        bool playerIsCorrectTeam = (player.PlayerTeam.CurrentTeam == PlayerTeam.Team.Left) ? IsLeftTower : !IsLeftTower;
+        bool playerIsCorrectTeam = player.PlayerTeam.CurrentTeam == PlayerTeam.Team.Left ? IsLeftTower : !IsLeftTower;
         return player.IsHolding && playerIsCorrectTeam;
     }
 

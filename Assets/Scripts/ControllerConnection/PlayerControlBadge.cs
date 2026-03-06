@@ -15,6 +15,7 @@ public class PlayerControlBadge : MonoBehaviour
     public enum ControlSchemes { WASD, TFGH, IJKL, ArrowKeys, Switch, PlayStation, Xbox }
 
     [Header("Ready")]
+    [SerializeField] private GameObject readyParent;
     [SerializeField] private GameObject readyKey;
     [SerializeField] private GameObject readyGamepadA;
     [SerializeField] private GameObject readyEnter;
@@ -206,10 +207,12 @@ public class PlayerControlBadge : MonoBehaviour
         if (IsReady) SetUnready();
     }
 
-    public void SetUnready()
+    public void SetUnready(bool fireEvent = false)
     {
-        SetReady(false, false);
+        SetReady(false, fireEvent);
     }
+
+    public void ShowReadyLabel(bool on) => readyParent.SetActive(on);
 
     private void OnDisable()
     {

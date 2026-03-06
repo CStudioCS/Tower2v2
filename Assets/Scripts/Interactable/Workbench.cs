@@ -23,6 +23,8 @@ public class Workbench : Interactable
 
     public override bool CanInteract(Player player)
     {
+        if (!LevelManager.InGame)
+            return false;
         switch (state)
         {
             case State.Empty:

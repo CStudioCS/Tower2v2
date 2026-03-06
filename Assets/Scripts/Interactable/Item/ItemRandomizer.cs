@@ -12,12 +12,12 @@ public class ItemRandomizer : MonoBehaviour
     [SerializeField] private float woodPlankProbability = 0.35f;
     [SerializeField] private float brickProbability = 0.15f;
     [SerializeField] private int contextSize = 6;
-    private static Item.Type[] values;
+    private Item.Type[] values;
 
-    private static Dictionary<Item.Type, float> itemWeights;
+    private Dictionary<Item.Type, float> itemWeights;
     
-    private Dictionary<Item.Type, float> initialItemWight;
-    private static Dictionary<Item.Type, int> itemCounter;
+    private Dictionary<Item.Type, float> initialItemWeight;
+    private Dictionary<Item.Type, int> itemCounter;
     private static System.Random random;
     private readonly List<Item.Type> sequence = new();
     private bool initialized = false;
@@ -42,13 +42,13 @@ public class ItemRandomizer : MonoBehaviour
             Item.Type.Brick
         };
 
-        initialItemWight = new () {
+        initialItemWeight = new () {
             {Item.Type.Straw, strawProbability},
             {Item.Type.WoodPlank, woodPlankProbability},
             {Item.Type.Brick, brickProbability},
         };
 
-        itemWeights = new Dictionary<Item.Type, float>(initialItemWight);
+        itemWeights = new Dictionary<Item.Type, float>(initialItemWeight);
 
         initialized = true;
     }
@@ -57,6 +57,8 @@ public class ItemRandomizer : MonoBehaviour
     {
         initialized = false;
         sequence.Clear();
+
+        itemWeights = new Dictionary<Item.Type, float>(initialItemWeight);
     }
 
     public Item.Type GetAt(int index)
@@ -87,10 +89,13 @@ public class ItemRandomizer : MonoBehaviour
             itemCounter[sequence[^i]]++; 
         }
 
+        //string itemProbabilityDebug = "Item weights : ";
         foreach(var item in values){
-            //Debug.Log("itemWeights :" + itemWeights[item] + " " + item.ToString());
-            itemWeights[item] = Mathf.Max(initialItemWight[item] + updateRate * (initialItemWight[item] -((float)itemCounter[item] /  Math.Min(contextSize, sequence.Count))), 0);
+            //itemProbabilityDebug += item.ToString() + "weights" + itemWeights[item] + ";";
+            itemWeights[item] = Mathf.Max(initialItemWeight[item] + updateRate * (initialItemWeight[item] -((float)itemCounter[item] /  Math.Min(contextSize, sequence.Count))), 0);
         }
+
+        //Debug.Log(itemProbabilityDebug);
     }
 
     public static Item.Type GetRandomWeightedItem(Dictionary<Item.Type, float> ItemWeights)

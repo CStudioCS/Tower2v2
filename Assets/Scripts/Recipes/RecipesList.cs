@@ -71,6 +71,8 @@ public class RecipesList : MonoBehaviour
         
         Tower.PieceBuilt += OnPieceBuilt;
         Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
+        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+
         randomIndex = 0;
         InitializeRecipes();
     }
@@ -95,7 +97,14 @@ public class RecipesList : MonoBehaviour
             AddRandomRecipe(i, i);
         }
     }
-    
+
+    private void OnGameAboutToStart()
+    {
+        randomIndex = 0;       
+        firstRecipeIndex = 0;  
+        InitializeRecipes();
+    }
+
     private void AddRecipe(Item.Type type, int recipesIndex, int slotIndex, bool animate = false)
     {
         if (!RecipesMap.TryGetValue(type, out Recipe recipe))
@@ -172,6 +181,7 @@ public class RecipesList : MonoBehaviour
         {
             Tower.PieceBuilt -= OnPieceBuilt;
             Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
+            LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
         }
         subscribed = false;
 

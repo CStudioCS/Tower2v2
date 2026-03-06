@@ -13,7 +13,7 @@ public class Collector : Interactable
 
     [SerializeField] private AudioSource audioSource;
 
-    public override bool CanInteract(Player player) => !player.IsHolding;
+    public override bool CanInteract(Player player) => !player.IsHolding && LevelManager.InGame;
 
     public override void Interact(Player player)
     {
