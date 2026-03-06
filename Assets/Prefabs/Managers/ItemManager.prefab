@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   updateRate: 0.3
-  strawProbability: 0.5
+  strawProbability: 0.35
   woodPlankProbability: 0.35
-  brickProbability: 0.15
+  brickProbability: 0.3
   contextSize: 6
