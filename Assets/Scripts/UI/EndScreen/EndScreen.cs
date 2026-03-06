@@ -7,7 +7,7 @@ public class EndScreen : MonoBehaviour
     [SerializeField] private float BigEndWaitTime = 1.5f;
     [SerializeField] private Vector2 dropdownOffset;
 
-    [SerializeField] private GameObject BigEndText;
+    [SerializeField] private BigEnd BigEnd;
     [SerializeField] private TowerCard TowerCard;
     [SerializeField] private StatsCard StatsCard;
 
@@ -24,7 +24,8 @@ public class EndScreen : MonoBehaviour
     private IEnumerator OnGameEndedCoroutine()
     {
         //animate this
-        BigEndText.SetActive(true);
+        BigEnd.gameObject.SetActive(true);
+        yield return BigEnd.Display();
 
         yield return new WaitForSeconds(BigEndWaitTime);
 
@@ -34,10 +35,8 @@ public class EndScreen : MonoBehaviour
         StatsCard.gameObject.SetActive(true);
         yield return StatsCard.Dropdown(TowerCard);
 
-
-        //The player quits using the UI so idk ??????
-        BigEndText.SetActive(false);
-        //TowerCard.gameObject.SetActive(false); already done withing StatsCard
+        BigEnd.gameObject.SetActive(false);
+        //TowerCard.gameObject.SetActive(false); already done within StatsCard
         StatsCard.gameObject.SetActive(false);
 
         LevelManager.Instance.SetGameStateToLobby();

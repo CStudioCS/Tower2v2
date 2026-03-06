@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7025795992628166332}
   - component: {fileID: 2806660492198647095}
   - component: {fileID: 7769884596002308765}
-  - component: {fileID: 7706106391698018163}
+  - component: {fileID: 137107492783732896}
   m_Layer: 5
   m_Name: BigEnd
   m_TagString: Untagged
@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7b27a59c08f0df47ad24bf89889cfba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 7706106391698018163}
+  animator: {fileID: 137107492783732896}
 --- !u!222 &2806660492198647095
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -152,7 +152,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!95 &7706106391698018163
+--- !u!95 &137107492783732896
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0

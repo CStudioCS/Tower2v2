@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BigEndWaitTime: 1.5
   dropdownOffset: {x: 0, y: 0}
-  BigEndText: {fileID: 5458278598190537045}
+  BigEnd: {fileID: 5533240779168227671}
   TowerCard: {fileID: 3011132168818844234}
   StatsCard: {fileID: 4700784411265087107}
 --- !u!1001 &1317117316083090042
@@ -445,6 +445,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: BigEnd
       objectReference: {fileID: 0}
+    - target: {fileID: 7418856166797756094, guid: e66af0ed1c121d249b1803e0aaa53c6d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7769884596002308765, guid: e66af0ed1c121d249b1803e0aaa53c6d, type: 3}
+      propertyPath: m_characterSpacing
+      value: 50
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -455,11 +463,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 476721372536116477, guid: e66af0ed1c121d249b1803e0aaa53c6d, type: 3}
   m_PrefabInstance: {fileID: 3263598001212481515}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &5458278598190537045 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7418856166797756094, guid: e66af0ed1c121d249b1803e0aaa53c6d, type: 3}
+--- !u!114 &5533240779168227671 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7025795992628166332, guid: e66af0ed1c121d249b1803e0aaa53c6d, type: 3}
   m_PrefabInstance: {fileID: 3263598001212481515}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7b27a59c08f0df47ad24bf89889cfba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8615899687821556471
 PrefabInstance:
   m_ObjectHideFlags: 0
