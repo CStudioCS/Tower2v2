@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 8837958186719799260}
   - component: {fileID: 4883743023721076936}
   - component: {fileID: -7181827642118760282}
+  - component: {fileID: 8480715531707753305}
+  - component: {fileID: 490388596546623095}
   m_Layer: 0
   m_Name: Workbench
   m_TagString: Untagged
@@ -298,6 +300,31 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!210 &8480715531707753305
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511365595929979999}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
+--- !u!114 &490388596546623095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511365595929979999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6843b88e81844c24a3b206f40945b889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStatic: 1
 --- !u!1 &5823992310519070248
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,7 +555,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
+  - {fileID: 2100000, guid: c9e2f232f9e0aa841861688f596cbe5b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

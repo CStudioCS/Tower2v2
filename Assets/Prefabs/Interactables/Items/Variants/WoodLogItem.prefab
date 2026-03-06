@@ -116,6 +116,22 @@ PrefabInstance:
       propertyPath: outlineThickness
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8634384408421064618, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Size.x
+      value: 1.2025
+      objectReference: {fileID: 0}
+    - target: {fileID: 8634384408421064618, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Size.y
+      value: 1.0525
+      objectReference: {fileID: 0}
+    - target: {fileID: 8634384408421064618, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1770322661694616754, guid: d2b359fc02133bbd8aa678a44b8ce2a9, type: 3}
+    - target: {fileID: 8634384408421064618, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
