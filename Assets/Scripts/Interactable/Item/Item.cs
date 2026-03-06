@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 public class Item : Interactable
 {
@@ -26,6 +28,9 @@ public class Item : Interactable
 
     [SerializeField] private AudioSource audioSourceDrop;
 
+    public event Action Grabbed;
+    public event Action Dropped;
+
     protected override void Awake()
     {
         base.Awake(); // Initialize highlight system
@@ -39,6 +44,7 @@ public class Item : Interactable
     {
         State = ItemState.Transitioning;
         player.GrabItem(this, true);
+        Grabbed?.Invoke();
     }
 
     public override float GetInteractionTime() => 0;
@@ -69,6 +75,7 @@ public class Item : Interactable
 
 
         State = ItemState.Dropped;
+        Dropped?.Invoke();
         audioSourceDrop.Play();
     }
 

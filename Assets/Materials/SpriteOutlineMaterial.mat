@@ -63,6 +63,7 @@ Material:
     - _TileMode: 0
     - _Weight: 1
     - _ZWrite: 0
+    - _ZWriteEnabled: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
