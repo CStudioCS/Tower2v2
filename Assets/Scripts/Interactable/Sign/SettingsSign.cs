@@ -1,6 +1,4 @@
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.UI;
 
 public class SettingsSign: Interactable
 {
@@ -22,12 +20,9 @@ public class SettingsSign: Interactable
 		player.PlayerControlBadge.SetUnready(true);
 		player.PlayerControlBadge.ShowReadyLabel(false);
 		player.LockInSettingsMenu();
-		CanvasLinker.Instance.settingsMenu.ShowSettings();
 
-		EventSystem eventSystem = CanvasLinker.Instance.settingsMenu.EventSystem;
-		InputSystemUIInputModule inputModule = CanvasLinker.Instance.settingsMenu.InputSystemUIInputModule;
-		eventSystem.SetSelectedGameObject(eventSystem.firstSelectedGameObject);
 		PlayerInput playerInput = player.GetComponent<PlayerInput>();
-		inputModule.actionsAsset = playerInput.actions;
+		playerInput.SwitchCurrentActionMap("UI");
+		CanvasLinker.Instance.settingsMenu.Open(playerInput);
 	}
 }
