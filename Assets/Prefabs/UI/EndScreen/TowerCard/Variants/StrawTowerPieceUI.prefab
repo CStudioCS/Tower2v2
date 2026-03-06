@@ -89,17 +89,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3954092880439904520, guid: bef59298154b9f04db67b2696960522c, type: 3}
-      propertyPath: m_Color.b
-      value: 0.43596476
-      objectReference: {fileID: 0}
-    - target: {fileID: 3954092880439904520, guid: bef59298154b9f04db67b2696960522c, type: 3}
-      propertyPath: m_Color.g
-      value: 0.82520086
-      objectReference: {fileID: 0}
-    - target: {fileID: 3954092880439904520, guid: bef59298154b9f04db67b2696960522c, type: 3}
-      propertyPath: m_Color.r
-      value: 0.9528302
-      objectReference: {fileID: 0}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 35e9cb68e588ebbc698b8f68e19f1904, type: 3}
     - target: {fileID: 6786246522712386673, guid: bef59298154b9f04db67b2696960522c, type: 3}
       propertyPath: m_Name
       value: StrawTowerPieceUI

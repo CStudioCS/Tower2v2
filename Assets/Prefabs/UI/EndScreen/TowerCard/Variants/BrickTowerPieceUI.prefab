@@ -89,17 +89,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3954092880439904520, guid: bef59298154b9f04db67b2696960522c, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3954092880439904520, guid: bef59298154b9f04db67b2696960522c, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3954092880439904520, guid: bef59298154b9f04db67b2696960522c, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 043c65f968c5ae1dda335d976d93b29f, type: 3}
     - target: {fileID: 6786246522712386673, guid: bef59298154b9f04db67b2696960522c, type: 3}
       propertyPath: m_Name
       value: BrickTowerPieceUI
