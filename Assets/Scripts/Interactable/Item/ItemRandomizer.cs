@@ -89,9 +89,9 @@ public class ItemRandomizer : MonoBehaviour
             itemCounter[sequence[^i]]++; 
         }
 
-        string itemProbabilityDebug = "Item weights : ";
+        //string itemProbabilityDebug = "Item weights : ";
         foreach(var item in values){
-            itemProbabilityDebug += item.ToString() + "weights" + itemWeights[item] + ";";
+            //itemProbabilityDebug += item.ToString() + "weights" + itemWeights[item] + ";";
             itemWeights[item] = Mathf.Max(initialItemWeight[item] + updateRate * (initialItemWeight[item] -((float)itemCounter[item] /  Math.Min(contextSize, sequence.Count))), 0);
         }
 
