@@ -94,7 +94,8 @@ public class ItemRandomizer : MonoBehaviour
             itemProbabilityDebug += item.ToString() + "weights" + itemWeights[item] + ";";
             itemWeights[item] = Mathf.Max(initialItemWeight[item] + updateRate * (initialItemWeight[item] -((float)itemCounter[item] /  Math.Min(contextSize, sequence.Count))), 0);
         }
-        Debug.Log(itemProbabilityDebug);
+
+        //Debug.Log(itemProbabilityDebug);
     }
 
     public static Item.Type GetRandomWeightedItem(Dictionary<Item.Type, float> ItemWeights)
