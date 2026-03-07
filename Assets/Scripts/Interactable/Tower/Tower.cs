@@ -44,7 +44,8 @@ public class Tower : Interactable
 
     public event Action TriedBuildingWithIncorrectItemType;
     public event Action PieceBuilt;
-    private bool IsLeftTower => this == WorldLinker.Instance.towerLeft; // TODO refactor to use PlayerTeam.Team instead of booleans
+    private bool IsLeftTower => this == WorldLinker.Instance.towerLeft;
+    public PlayerTeam.Team TowerTeam => IsLeftTower? PlayerTeam.Team.Left : PlayerTeam.Team.Right;
     private RecipesList RecipesList => IsLeftTower ? CanvasLinker.Instance.recipesListLeft : CanvasLinker.Instance.recipesListRight;
     private OffTowerCounter OffTowerCounter => IsLeftTower ? CanvasLinker.Instance.offTowerHeightCounterLeft : CanvasLinker.Instance.offTowerHeightCounterRight;
     private TMP_Text OffTowerHeightText => IsLeftTower ? CanvasLinker.Instance.offTowerHeightTextLeft : CanvasLinker.Instance.offTowerHeightTextRight;
@@ -73,7 +74,7 @@ public class Tower : Interactable
         if (!LevelManager.InGame)
             return false;
         // Check if the player is holding the correct item for the recipe
-        bool playerIsCorrectTeam = player.PlayerTeam.CurrentTeam == PlayerTeam.Team.Left ? IsLeftTower : !IsLeftTower;
+        bool playerIsCorrectTeam = player.PlayerTeam.CurrentTeam == TowerTeam;
         return player.IsHolding && playerIsCorrectTeam;
     }
 
