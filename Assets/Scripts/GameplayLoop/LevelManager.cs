@@ -75,8 +75,13 @@ public class LevelManager : MonoBehaviour
     
     private void ActivateInGameObjects(bool active = true, bool instantanious = false)
     {
-        if (instantanious) CanvasLinker.Instance.InGameUI.gameObject.SetActive(active);
-        SetActiveLobbyUI?.Invoke(active);
+        //The In game UI only starts as deactivated, then becomes active and never deactivates. This makes it so that
+        //implementing animations for when the game ends is easy. Some extra Update loops aren't too bad performance wise
+        //Also I don't think it breaks anything
+
+        if (instantanious || active) CanvasLinker.Instance.InGameUI.gameObject.SetActive(active);
+
+        SetActiveInGameUI?.Invoke(active);
     }
 
     private void Update()
@@ -104,6 +109,7 @@ public class LevelManager : MonoBehaviour
 
                 GameState = State.Lobby;
                 EndLevel(winningTeam);
+                CanvasLinker.Instance.timerDisplay.text = "0:00";
             }
         }
     }

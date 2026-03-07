@@ -8,6 +8,7 @@ public class RecipesList : MonoBehaviour
 {
     [SerializeField] private Recipe[] recipePrefabs;
     [SerializeField] private RecipeSlot[] recipeSlots;
+    [SerializeField] private Animator animator;
     
     private Dictionary<Item.Type, Recipe> recipesMap;
     private Dictionary<Item.Type, Recipe> RecipesMap
@@ -73,6 +74,8 @@ public class RecipesList : MonoBehaviour
         Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
         LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
         LevelManager.Instance.SetActiveInGameUI += OnUISetActive;
+
+        animator.SetBool("left", CanvasLinker.Instance.recipesListLeft == this);
 
         randomIndex = 0;
         InitializeRecipes();
@@ -199,6 +202,6 @@ public class RecipesList : MonoBehaviour
     
     private void OnUISetActive(bool active)
     {
-        //trigger an animation where it comes from right or left
+        animator.SetBool("active", active);
     }
 }

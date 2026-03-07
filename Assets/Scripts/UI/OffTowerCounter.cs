@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class OffTowerCounter : MonoBehaviour
 {
+    [SerializeField] private Animator animator;
     private void Start()
     {
         LevelManager.Instance.SetActiveInGameUI += DeactiveUIFromLevelManager;
@@ -16,8 +17,8 @@ public class OffTowerCounter : MonoBehaviour
 
     public void SetUIActive(bool active)
     {
-        gameObject.SetActive(active);
         //TODO: put an animation
+        animator.SetBool("active", active);
     }
 
     private void OnDisable()
