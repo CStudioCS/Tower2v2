@@ -218,7 +218,7 @@ public class LobbyManager : MonoBehaviour
 
     private Vector2 CalculateSpawnPosition()
     {
-        StartPoint[] startPoints = WorldLinker.Instance.startPoints;
+        StartPoint[] startPoints = StartPointLinker.Instance.startPoints;
         int startPointCount = startPoints.Length;
         bool[] startPointOccupied = new bool[startPointCount];
 

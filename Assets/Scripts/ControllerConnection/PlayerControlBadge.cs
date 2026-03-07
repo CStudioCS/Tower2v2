@@ -16,6 +16,7 @@ public class PlayerControlBadge : MonoBehaviour
 
     [Header("Ready")]
     [SerializeField] private GameObject readyParent;
+    [SerializeField] private TextMeshProUGUI readyText;
     [SerializeField] private GameObject readyKey;
     [SerializeField] private GameObject readyGamepadA;
     [SerializeField] private GameObject readyEnter;
@@ -44,6 +45,7 @@ public class PlayerControlBadge : MonoBehaviour
     {
         playerTeam.TeamChanged += OnTeamChanged;
         SetupControlScheme(controlScheme);
+        ResetReadyText();
         LevelManager.Instance.GameStarted += OnGameStarted;
         LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
 
@@ -220,6 +222,10 @@ public class PlayerControlBadge : MonoBehaviour
     }
 
     public void ShowReadyLabel(bool on) => readyParent.SetActive(on);
+
+    public void SetReadyText(string text = "Ready?") => readyText.text = text;
+
+    public void ResetReadyText() => SetReadyText();
 
     private void OnDisable()
     {
