@@ -19,6 +19,7 @@ public class Item : Interactable
     [SerializeField] private float rotationSpeedVariance;
     [SerializeField] private float minimumEjectionSpeedRatio;
     [SerializeField] private float grabbingTime;
+    [SerializeField] private TrailRenderer trailRenderer;
     public enum ItemState { Held, Dropped, Transitioning };
     public ItemState State { get; set; }
 
@@ -45,6 +46,7 @@ public class Item : Interactable
         State = ItemState.Transitioning;
         player.GrabItem(this, true);
         Grabbed?.Invoke();
+        DisableTrail();
     }
 
     public override float GetInteractionTime() => 0;
@@ -58,6 +60,7 @@ public class Item : Interactable
 
     public void Drop()
     {
+        EnableTrail();
         transform.SetParent(null);
         rb.simulated = true;
         itemCollider.enabled = true;
@@ -73,7 +76,6 @@ public class Item : Interactable
         rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
         LastOwner = null;
 
-
         State = ItemState.Dropped;
         Dropped?.Invoke();
         audioSourceDrop.Play();
@@ -82,6 +84,17 @@ public class Item : Interactable
     private void Disappear()
     {
         Destroy(gameObject);
+    }
+
+    private void EnableTrail()
+    {
+        trailRenderer.Clear();
+        trailRenderer.emitting = true;
+    }
+
+    private void DisableTrail()
+    {
+        trailRenderer.emitting = false;
     }
 
     private void OnDestroy()
