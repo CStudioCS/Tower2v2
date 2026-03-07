@@ -10,13 +10,13 @@ public class CanvasLinker : MonoBehaviour
     public TMP_Text waitingText;
     public TMP_Text offTowerHeightTextLeft;
     public TMP_Text offTowerHeightTextRight;
-    public RectTransform offTowerHeightCanvasLeft;
-    public RectTransform offTowerHeightCanvasRight;
+    public OffTowerCounter offTowerHeightCounterLeft;
+    public OffTowerCounter offTowerHeightCounterRight;
     public RecipesList recipesListLeft;
     public RecipesList recipesListRight;
     public Animator countdown;
-    public GameObject LobbyUI;
-    public GameObject InGameUI;
+    public CanvasGroup LobbyUI;
+    public CanvasGroup InGameUI;
     public SettingsMenu settingsMenu;
 
     private void Awake()

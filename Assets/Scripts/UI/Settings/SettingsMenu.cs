@@ -1,3 +1,4 @@
+using LitMotion;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -25,7 +26,7 @@ public class SettingsMenu: MonoBehaviour
 	[SerializeField] private Button closeButton;
 
 	[Tooltip("The credits panel that may be open when the menu closes.")]
-	[SerializeField] private GameObject creditsPanel;
+	[SerializeField] private GameObjectFadeIn credits;
 
 	/// <summary>
 	/// Fired when the settings menu is closed (by the close button or cancel).
@@ -69,10 +70,10 @@ public class SettingsMenu: MonoBehaviour
 	public void Close()
 	{
 		// Make sure credits panel is closed
-		if (creditsPanel != null)
-			creditsPanel.SetActive(false);
+		if (credits.FadedIn)
+			credits.Fade();
 
-		inputHandler.Unbind();
+        inputHandler.Unbind();
 		eventSystem.SetSelectedGameObject(null);
 		settings.SetActive(false);
 		Closed?.Invoke();
