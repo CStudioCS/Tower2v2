@@ -21,13 +21,13 @@ public class Player : MonoBehaviour
     public PlayerControlBadge PlayerControlBadge => playerControlBadge;
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
-    [SerializeField] private PlayerAnimationController playerAnimationController;
+    
     [SerializeField] private PlayerStats playerStats;
     public PlayerStats PlayerStats => playerStats;
 
     [SerializeField] private ProgressBar progressBar;
 
-    [SerializeField] private PlayerAnimationController playerAnimationController; // TODO remove reference, fix bad animation coupling
+    [SerializeField] private PlayerAnimationController playerAnimationController;  // TODO remove reference, fix bad animation coupling
     [SerializeField] private Transform itemParent;
 
     private InputAction interactAction;
