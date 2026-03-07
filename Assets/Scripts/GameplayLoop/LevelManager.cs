@@ -1,7 +1,9 @@
+using LitMotion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -10,13 +12,10 @@ public class LevelManager : MonoBehaviour
     
     public float LevelTimer { get; private set; }
     private PlayerTeam.Team winningTeam;
+    public float LobbyUIFadeInTime { get; private set; } = 0.5f;
     
     public enum State { Lobby, Starting, Game, EndScreen }
     public State GameState { get; private set; } = State.Lobby;
-
-    //I don't really know what's the point of these lists being serializedfield-ed if you're going full linker mode, since you can't add shit through the inspector
-    private List<GameObject> activateOnlyInLobby = new();
-    private List<GameObject> activateOnlyInGame = new();
 
     private static readonly int CountdownString = Animator.StringToHash("Countdown");
 
@@ -24,6 +23,9 @@ public class LevelManager : MonoBehaviour
     public event Action GameStarted;
     public event Action GameEnded;
     public event Action ReturnedToLobby;
+
+    public event Action<bool> SetActiveLobbyUI;
+    public event Action<bool> SetActiveInGameUI;
 
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
@@ -61,24 +63,25 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        //idk if doing it this way is the best way to do it, feel free to tell me better ways
-        activateOnlyInLobby.Add(CanvasLinker.Instance.LobbyUI);
-        activateOnlyInGame.Add(CanvasLinker.Instance.InGameUI);
-
         ActivateLobbyObjects(true);
         ActivateInGameObjects(false);
     }
 
     private void ActivateLobbyObjects(bool active = true)
     {
-        foreach (GameObject go in activateOnlyInLobby)
-            go.SetActive(active);
+        CanvasLinker.Instance.LobbyUI.gameObject.SetActive(active);
+        SetActiveLobbyUI?.Invoke(active);
     }
     
     private void ActivateInGameObjects(bool active = true)
     {
-        foreach (GameObject go in activateOnlyInGame)
-            go.SetActive(active);
+        CanvasLinker.Instance.InGameUI.gameObject.SetActive(active);
+        SetActiveLobbyUI?.Invoke(active);
+    }
+
+    private void FadeInOrOutAllChildren(List<GameObject> gameObjects, float time, bool fadeIn)
+    {
+        
     }
 
     private void Update()
@@ -155,6 +158,6 @@ public class LevelManager : MonoBehaviour
         ActivateLobbyObjects(true);
         GameState = State.Lobby;
 
-        ReturnedToLobby.Invoke();
+        ReturnedToLobby?.Invoke();
     }
 }

@@ -443,7 +443,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   playerTeam: {fileID: 0}
-  graphics: {fileID: 5765944297760505085}
+  graphics: {fileID: 8959490445713896152}
+  fadeTime: 0.7
   readyParent: {fileID: 7397512523854644250}
   readyKey: {fileID: 8326511394360499217}
   readyGamepadA: {fileID: 5309453904940665509}
@@ -1638,6 +1639,7 @@ GameObject:
   - component: {fileID: 4531339407610713786}
   - component: {fileID: 1644552684956420615}
   - component: {fileID: 225032593340942188}
+  - component: {fileID: 8959490445713896152}
   m_Layer: 5
   m_Name: Graphics
   m_TagString: Untagged
@@ -1704,6 +1706,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &8959490445713896152
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5765944297760505085}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &6131880739902979447
 GameObject:
   m_ObjectHideFlags: 0

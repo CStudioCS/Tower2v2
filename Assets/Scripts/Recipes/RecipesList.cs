@@ -72,6 +72,7 @@ public class RecipesList : MonoBehaviour
         Tower.PieceBuilt += OnPieceBuilt;
         Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
         LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.Instance.SetActiveInGameUI += OnUISetActive;
 
         randomIndex = 0;
         InitializeRecipes();
@@ -193,5 +194,10 @@ public class RecipesList : MonoBehaviour
         {
             mainPanelToColorize.color = LayoutDefaultColor; 
         }
+    }
+    
+    private void OnUISetActive(bool active)
+    {
+        //trigger an animation where it comes from right or left
     }
 }

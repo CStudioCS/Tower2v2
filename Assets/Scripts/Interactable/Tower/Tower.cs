@@ -48,7 +48,7 @@ public class Tower : Interactable
     public event Action PieceBuilt;
     private bool IsLeftTower => this == WorldLinker.Instance.towerLeft;
     private RecipesList RecipesList => IsLeftTower ? CanvasLinker.Instance.recipesListLeft : CanvasLinker.Instance.recipesListRight;
-    private RectTransform OffTowerCanvas => IsLeftTower ? CanvasLinker.Instance.offTowerHeightCanvasLeft : CanvasLinker.Instance.offTowerHeightCanvasRight;
+    private OffTowerCounter OffTowerCounter => IsLeftTower ? CanvasLinker.Instance.offTowerHeightCounterLeft : CanvasLinker.Instance.offTowerHeightCounterRight;
     private TMP_Text OffTowerHeightText => IsLeftTower ? CanvasLinker.Instance.offTowerHeightTextLeft : CanvasLinker.Instance.offTowerHeightTextRight;
 
     public Vector2 blockOffset => Height == 0 ? Vector2.zero : lastBlockType switch
@@ -128,14 +128,18 @@ public class Tower : Interactable
         {
             //onTowerCanvas.gameObject.SetActive(false); //remove the gray bases of the tower if u want
 
-            OffTowerCanvas.gameObject.SetActive(true);
+            if (!OffTowerCounter.isActiveAndEnabled)
+                OffTowerCounter.SetUIActive(true);
+            
             OffTowerHeightText.text = Height.ToString();
-            float yPos = OffTowerCanvas.position.y;
-            OffTowerCanvas.position = new Vector3(screenPoint.x, yPos, 0);
+            OffTowerCounter.transform.position = new Vector3(screenPoint.x, OffTowerCounter.transform.position.y, 0);
         }
         else
         {
-            OffTowerCanvas.gameObject.SetActive(false);
+            if (OffTowerCounter.isActiveAndEnabled)
+                OffTowerCounter.SetUIActive(false);
+
+            OffTowerCounter.gameObject.SetActive(false);
             onTowerFlag.gameObject.SetActive(true);
             onTowerHeightText.text = Height.ToString();
         }
