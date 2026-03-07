@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MapSign: Interactable
+public class MapSign: Sign
 {
 	[SerializeField] private GameObject[] worldPrefabs;
 	private int currentWorldIndex = 0;
@@ -16,13 +16,6 @@ public class MapSign: Interactable
 			SpawnCurrentWorld();
 		else
 			currentWorldInstance = firstMapInstance;
-	}
-
-	public override float GetInteractionTime() => 0;
-
-	public override bool CanInteract(Player player)
-	{
-		return true;
 	}
 
 	public override void Interact(Player player)

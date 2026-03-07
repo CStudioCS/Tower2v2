@@ -73,10 +73,10 @@ public class Player : MonoBehaviour
         if (closestInteractable != newClosestInteractable)
         {
             if (closestInteractable != null)
-                closestInteractable.Highlight(false, this);
+                closestInteractable.TryHighlight(false, this);
             
             if (newClosestInteractable != null)
-                newClosestInteractable.Highlight(true, this);
+                newClosestInteractable.TryHighlight(true, this);
         }
 
         closestInteractable = newClosestInteractable;
@@ -218,7 +218,7 @@ public class Player : MonoBehaviour
         ConsumeCurrentItem();
 
         if (closestInteractable != null)
-            closestInteractable.Highlight(false, this);
+            closestInteractable.TryHighlight(false, this);
     }
     
     private void OnDisable()

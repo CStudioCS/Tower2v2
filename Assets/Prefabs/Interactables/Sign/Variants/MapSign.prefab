@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6321233777359857249}
+  signText: Change Map
   worldPrefabs:
   - {fileID: 5085563546327574621, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
   - {fileID: 5085563546327574621, guid: a6608161434e622449504f4aac21e17f, type: 3}
