@@ -201,7 +201,19 @@ public class PlayerControlBadge : MonoBehaviour
         ToggleReady();
     }
 
-    private void ToggleReady() => SetReady(!IsReady);
+    private void ToggleReady()
+    {
+        if(!IsReady)
+        {
+            SoundManager.instance.PlaySound("PlayerReady");
+        }
+        else
+        {
+            SoundManager.instance.PlaySound("PlayerUnready");
+        }
+        SetReady(!IsReady);
+    }
+
     private void SetReady(bool ready, bool fireEvent = true)
     {
         IsReady = ready;

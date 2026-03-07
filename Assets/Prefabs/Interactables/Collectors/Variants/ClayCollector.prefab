@@ -21,6 +21,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: soundName
+      value: ClayCollect
+      objectReference: {fileID: 0}
+    - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: itemPrefab
       value: 
       objectReference: {fileID: 9046229091504955708, guid: ff195b21e2e2dc849ae9e1c4ef98a5f4, type: 3}

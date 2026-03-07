@@ -145,6 +145,8 @@ public class LevelManager : MonoBehaviour
 
     private void EndLevel(PlayerTeam.Team winner)
     {
+        SoundManager.instance.PlaySound("EndLevel");
+
         GameState = State.EndScreen;
         ActivateInGameObjects(false);
         Debug.Log($"Level has ended with winner {winner}");

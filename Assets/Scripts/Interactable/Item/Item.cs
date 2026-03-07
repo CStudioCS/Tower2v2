@@ -26,8 +26,6 @@ public class Item : Interactable
     [HideInInspector] public PlayerTeam.Team originallyCollectedByTeam;
     public float GrabbingTime => grabbingTime;
 
-    [SerializeField] private AudioSource audioSourceDrop;
-
     public event Action Grabbed;
     public event Action Dropped;
 
@@ -76,7 +74,7 @@ public class Item : Interactable
 
         State = ItemState.Dropped;
         Dropped?.Invoke();
-        audioSourceDrop.Play();
+        SoundManager.instance.PlaySound("ItemDrop");
     }
 
     private void Disappear()
