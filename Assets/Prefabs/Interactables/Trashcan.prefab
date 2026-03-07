@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c64bd10213a1cbf4ba1e0a95a2b90a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trashcan: {fileID: 7407042636727153949}
 --- !u!61 &2684369868467281204
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -255,7 +256,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: e42b17c920601c1418eb90e5df899671, type: 3}
+  m_Resource: {fileID: 8300000, guid: ea7b19da4685bb643943f0d94ee4afbc, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

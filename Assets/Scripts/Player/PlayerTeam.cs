@@ -13,8 +13,15 @@ public class PlayerTeam : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     public int TeamPlayerIndex { get; private set; }
 
-    private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left; 
+    private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left;
 
+    [SerializeField] private AudioSource changeTeamAudio1;
+    [SerializeField] private AudioSource changeTeamAudio2;
+
+    private void Awake()
+    {
+        SetTeam(CurrentPositionTeam);
+    }
     private void Update()
     {
         switch (LevelManager.Instance?.GameState)
@@ -29,7 +36,17 @@ public class PlayerTeam : MonoBehaviour
     {
         Team newTeam = CurrentPositionTeam;
         if (newTeam != CurrentTeam)
+        {
+            if(transform.position.x > 0)
+            {
+                changeTeamAudio1.Play();
+            }
+            else
+            {
+                changeTeamAudio2.Play();
+            }
             SetTeam(newTeam);
+        }
     }
 
     public void SetTeam(Team team)

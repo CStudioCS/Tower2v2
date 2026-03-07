@@ -3,9 +3,13 @@ using UnityEngine;
 public class Trashcan : Interactable
 {
     [SerializeField] private AudioSource audioSource;
-    public override void Interact(Player player)
+
+    public void PlaySound()
     {
         audioSource.Play();
+    }
+    public override void Interact(Player player)
+    {
         player.ConsumeCurrentItem();
     }
 
