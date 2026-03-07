@@ -17,7 +17,6 @@ public class OffTowerCounter : MonoBehaviour
 
     public void SetUIActive(bool active)
     {
-        //TODO: put an animation
         animator.SetBool("active", active);
     }
 
