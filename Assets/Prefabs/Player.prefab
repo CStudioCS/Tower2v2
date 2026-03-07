@@ -406,6 +406,7 @@ MonoBehaviour:
   animatorOverrideController: {fileID: 22100000, guid: f6ec37777b242f4459d2e3cd9dd37c10, type: 2}
   animatorController: {fileID: 9100000, guid: 8e677c9689be0ae4e8871b096c9ceccb, type: 2}
   playerTeam: {fileID: 4720667436485828352}
+  itemParent: {fileID: 441249502361782724}
 --- !u!114 &-7975852267515287093
 MonoBehaviour:
   m_ObjectHideFlags: 0
