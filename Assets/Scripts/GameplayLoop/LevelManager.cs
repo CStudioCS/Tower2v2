@@ -23,7 +23,7 @@ public class LevelManager : MonoBehaviour
     public event Action GameAboutToStart;
     public event Action GameStarted;
     public event Action GameEnded;
-    public event Action OnBackToLobby;
+    public event Action ReturnedToLobby;
 
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
@@ -155,6 +155,6 @@ public class LevelManager : MonoBehaviour
         ActivateLobbyObjects(true);
         GameState = State.Lobby;
 
-        OnBackToLobby.Invoke();
+        ReturnedToLobby.Invoke();
     }
 }
