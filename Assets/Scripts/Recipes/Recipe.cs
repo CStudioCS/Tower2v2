@@ -85,7 +85,7 @@ public class Recipe : MonoBehaviour
         overrideTargetScaleTo0 = false;
     }
 
-    private void SetPosition(Vector2 position) => rectTransform.position = position;
+    private void SetPosition(Vector2 position) => rectTransform.localPosition = position;
     private void SetScale(float scale) => rectTransform.localScale = scale * Vector3.one;
 
     private void ReachTargetPosition() => SetPosition(TargetPosition);
@@ -117,7 +117,7 @@ public class Recipe : MonoBehaviour
     {
         if (TargetSlot == null) return;
         
-        SetPosition(Vector2.SmoothDamp(rectTransform.position, TargetPosition, ref velocity, transitionTime));
+        SetPosition(Vector2.SmoothDamp(rectTransform.localPosition, TargetPosition, ref velocity, transitionTime));
         
         if (!isAnimatingScale)
         {

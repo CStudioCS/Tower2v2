@@ -57,8 +57,9 @@ public class RecipeSlot : MonoBehaviour
         // Force the parent layout group to recalculate child sizes immediately.
         LayoutRebuilder.ForceRebuildLayoutImmediate(parentLayout);
         
-        cachedScale = 1920f / Screen.width * rectTransform.lossyScale.x * rectTransform.rect.width / referenceRecipeWidth;
-        cachedPosition = (Vector2) rectTransform.position + .5f * Screen.width / 1920f * new Vector2(rectTransform.rect.width, rectTransform.rect.height);
+        float worldToLocal = 1f / parentLayout.lossyScale.x;
+        cachedScale = rectTransform.lossyScale.x * rectTransform.rect.width / referenceRecipeWidth * worldToLocal;
+        cachedPosition = ((Vector2)rectTransform.position + rectTransform.lossyScale.x * .5f * new Vector2(rectTransform.rect.width, rectTransform.rect.height) - (Vector2)parentLayout.position) * worldToLocal;
         
         layoutDirty = false;
     }

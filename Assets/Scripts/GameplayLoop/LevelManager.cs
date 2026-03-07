@@ -1,7 +1,9 @@
+using LitMotion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -10,13 +12,10 @@ public class LevelManager : MonoBehaviour
     
     public float LevelTimer { get; private set; }
     private PlayerTeam.Team winningTeam;
+    public float LobbyUIFadeTime = 1f;
     
     public enum State { Lobby, Starting, Game, EndScreen }
     public State GameState { get; private set; } = State.Lobby;
-
-    //I don't really know what's the point of these lists being serializedfield-ed if you're going full linker mode, since you can't add shit through the inspector
-    private List<GameObject> activateOnlyInLobby = new();
-    private List<GameObject> activateOnlyInGame = new();
 
     private static readonly int CountdownString = Animator.StringToHash("Countdown");
 
@@ -24,6 +23,9 @@ public class LevelManager : MonoBehaviour
     public event Action GameStarted;
     public event Action GameEnded;
     public event Action ReturnedToLobby;
+
+    public event Action<bool> SetActiveLobbyUI;
+    public event Action<bool> SetActiveInGameUI;
 
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
@@ -61,24 +63,25 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        //idk if doing it this way is the best way to do it, feel free to tell me better ways
-        activateOnlyInLobby.Add(CanvasLinker.Instance.LobbyUI);
-        activateOnlyInGame.Add(CanvasLinker.Instance.InGameUI);
-
         ActivateLobbyObjects(true);
-        ActivateInGameObjects(false);
+        ActivateInGameObjects(false, true);
     }
 
     private void ActivateLobbyObjects(bool active = true)
     {
-        foreach (GameObject go in activateOnlyInLobby)
-            go.SetActive(active);
+        FadeInNOutUtility.FadeInOrOut(CanvasLinker.Instance.LobbyUI, LobbyUIFadeTime, active);
+        SetActiveLobbyUI?.Invoke(active);
     }
     
-    private void ActivateInGameObjects(bool active = true)
+    private void ActivateInGameObjects(bool active = true, bool instantaneous = false)
     {
-        foreach (GameObject go in activateOnlyInGame)
-            go.SetActive(active);
+        //The In game UI only starts as deactivated, then becomes active and never deactivates. This makes it so that
+        //implementing animations for when the game ends is easy. Some extra Update loops aren't too bad performance wise
+        //Also I don't think it breaks anything
+
+        if (instantaneous || active) CanvasLinker.Instance.InGameUI.gameObject.SetActive(active);
+
+        SetActiveInGameUI?.Invoke(active);
     }
 
     private void Update()
@@ -106,6 +109,7 @@ public class LevelManager : MonoBehaviour
 
                 GameState = State.Lobby;
                 EndLevel(winningTeam);
+                CanvasLinker.Instance.timerDisplay.text = "0:00";
             }
         }
     }
@@ -157,6 +161,6 @@ public class LevelManager : MonoBehaviour
         ActivateLobbyObjects(true);
         GameState = State.Lobby;
 
-        ReturnedToLobby.Invoke();
+        ReturnedToLobby?.Invoke();
     }
 }
