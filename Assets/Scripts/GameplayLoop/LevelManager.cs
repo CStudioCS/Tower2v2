@@ -64,7 +64,7 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         ActivateLobbyObjects(true);
-        ActivateInGameObjects(false);
+        ActivateInGameObjects(false, true);
     }
 
     private void ActivateLobbyObjects(bool active = true)
@@ -73,9 +73,9 @@ public class LevelManager : MonoBehaviour
         SetActiveLobbyUI?.Invoke(active);
     }
     
-    private void ActivateInGameObjects(bool active = true)
+    private void ActivateInGameObjects(bool active = true, bool instantanious = false)
     {
-        CanvasLinker.Instance.InGameUI.gameObject.SetActive(active);
+        if (instantanious) CanvasLinker.Instance.InGameUI.gameObject.SetActive(active);
         SetActiveLobbyUI?.Invoke(active);
     }
 
