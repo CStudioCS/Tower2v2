@@ -139,6 +139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7324555036413155978}
   - component: {fileID: 3809310519727925464}
+  - component: {fileID: 5868846420980485048}
   m_Layer: 10
   m_Name: Sprite
   m_TagString: Untagged
@@ -216,6 +217,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 2
   m_SpriteSortPoint: 1
+--- !u!95 &5868846420980485048
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380226000688214398}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8e677c9689be0ae4e8871b096c9ceccb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4067928945899315388
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +257,6 @@ GameObject:
   - component: {fileID: -7975852267515287093}
   - component: {fileID: 176917095401970236}
   - component: {fileID: 4818485210361488442}
-  - component: {fileID: 4042930519934913343}
   - component: {fileID: 6257561639965638062}
   - component: {fileID: 7522748666585118936}
   m_Layer: 0
@@ -323,11 +345,11 @@ MonoBehaviour:
   playerInput: {fileID: 859528782026247002}
   playerTeam: {fileID: 4720667436485828352}
   playerControlBadge: {fileID: 5167199617259306430}
-  progressBar: {fileID: 7722397540325121459}
   playerMovement: {fileID: 4423661849542820139}
+  playerStats: {fileID: -7975852267515287093}
+  progressBar: {fileID: 7722397540325121459}
   playerAnimationController: {fileID: -6306556956286896828}
   itemParent: {fileID: 441249502361782724}
-  playerStats: {fileID: -7975852267515287093}
 --- !u!114 &4423661849542820139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,7 +395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7369c033c8f2fa641abc71f93028626a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 4042930519934913343}
+  animator: {fileID: 5868846420980485048}
   rb: {fileID: 176917095401970236}
   isCuttingId: isCutting
   isCollectingId: isCollecting
@@ -403,6 +425,7 @@ MonoBehaviour:
   woodLogsCollected: 0
   clayCollected: 0
   bricksCooked: 0
+  distanceTraveled: 0
 --- !u!50 &176917095401970236
 Rigidbody2D:
   serializedVersion: 5
@@ -476,28 +499,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.6, y: 0.8}
   m_EdgeRadius: 0
---- !u!95 &4042930519934913343
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4067928945899315388}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8e677c9689be0ae4e8871b096c9ceccb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!210 &6257561639965638062
 SortingGroup:
   m_ObjectHideFlags: 0
