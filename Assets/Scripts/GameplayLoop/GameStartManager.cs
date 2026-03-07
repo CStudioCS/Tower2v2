@@ -92,6 +92,7 @@ public class GameStartManager : MonoBehaviour
 
     private void OnPlayerJoined(PlayerInput playerInput)
     {
+        SoundManager.instance.PlaySound("PlayerConnect");
         players.Add(playerInput);
         Player player = playerInput.GetComponent<Player>();
         player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
@@ -150,6 +151,7 @@ public class GameStartManager : MonoBehaviour
         ChangeWaitState(WaitState.GameStarting);
         InitializeTeamPlayerIndices();
         LevelManager.Instance.StartGameDelayed();
+        SoundManager.instance.PlaySound("Countdown");
     }
     
     private void OnDisable()

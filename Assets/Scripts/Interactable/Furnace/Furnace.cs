@@ -9,8 +9,6 @@ public class Furnace : Interactable
     [SerializeField] private float cookTime = 4;
     [SerializeField] private Item brickItemPrefab;
     [SerializeField] private ProgressBar progressBar;
-    [SerializeField] private AudioSource audioSourceFire;
-    [SerializeField] private AudioSource audioSourceBricks;
 
     private PlayerTeam.Team itemCookedByTeam;
 
@@ -49,7 +47,7 @@ public class Furnace : Interactable
                 break;
 
             case State.Cooked:
-                audioSourceBricks.Play();
+                SoundManager.instance.PlaySound("FurnaceBricks");
                 player.GrabNewItem(brickItemPrefab, itemCookedByTeam);
                 player.PlayerStats.bricksCooked++;
                 state = State.Empty;
@@ -64,7 +62,7 @@ public class Furnace : Interactable
     public IEnumerator Cook()
     {
         StartedCooking?.Invoke();
-        audioSourceFire.Play();
+        int index = SoundManager.instance.PlaySound("FurnaceFire");
 
         state = State.Cooking;
 
@@ -81,6 +79,7 @@ public class Furnace : Interactable
         progressBar.SetProgressMax();
         state = State.Cooked;
 
+        SoundManager.instance.StopSound(index);
         StopCooking();
     }
     
@@ -93,7 +92,6 @@ public class Furnace : Interactable
 
     private void StopCooking()
     {
-        audioSourceFire.Stop();
         StoppedCooking?.Invoke();
     }
 }
