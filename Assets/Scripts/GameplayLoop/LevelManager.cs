@@ -12,7 +12,7 @@ public class LevelManager : MonoBehaviour
     
     public float LevelTimer { get; private set; }
     private PlayerTeam.Team winningTeam;
-    public float LobbyUIFadeInTime { get; private set; } = 0.5f;
+    public float LobbyUIFadeTime = 1f;
     
     public enum State { Lobby, Starting, Game, EndScreen }
     public State GameState { get; private set; } = State.Lobby;
@@ -69,7 +69,7 @@ public class LevelManager : MonoBehaviour
 
     private void ActivateLobbyObjects(bool active = true)
     {
-        CanvasLinker.Instance.LobbyUI.gameObject.SetActive(active);
+        FadeInNOutUtility.FadeInOrOut(CanvasLinker.Instance.LobbyUI, LobbyUIFadeTime, active);
         SetActiveLobbyUI?.Invoke(active);
     }
     
@@ -77,11 +77,6 @@ public class LevelManager : MonoBehaviour
     {
         CanvasLinker.Instance.InGameUI.gameObject.SetActive(active);
         SetActiveLobbyUI?.Invoke(active);
-    }
-
-    private void FadeInOrOutAllChildren(List<GameObject> gameObjects, float time, bool fadeIn)
-    {
-        
     }
 
     private void Update()

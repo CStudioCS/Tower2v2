@@ -25,7 +25,8 @@ public class GameStartManager : MonoBehaviour
                 { WaitState.NotEnoughPlayers, "Press a key to join. Waiting for players..." },
                 { WaitState.UnbalancedTeams, "Unbalanced teams! Waiting for someone to switch..." },
                 { WaitState.PlayersNotReady, "Waiting until everyone is ready..." },
-                { WaitState.GameStarting, "Game is starting!" }
+                { WaitState.GameStarting, "Waiting until everyone is ready..." }
+                //since the text is fading out, there is not point in changing it when the game starts, else it just looks bad
             };
             return waitingMessages;
         }

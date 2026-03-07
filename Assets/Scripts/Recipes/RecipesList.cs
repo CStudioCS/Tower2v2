@@ -183,6 +183,7 @@ public class RecipesList : MonoBehaviour
             Tower.PieceBuilt -= OnPieceBuilt;
             Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
             LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+            LevelManager.Instance.SetActiveInGameUI -= OnUISetActive;
         }
         subscribed = false;
 

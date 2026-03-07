@@ -11,7 +11,6 @@ public class PlayerControlBadge : MonoBehaviour
     
     [Header("Graphics")]
     [SerializeField] private CanvasGroup graphics;
-    [SerializeField] private float fadeTime = 0.7f;
 
     public enum ControlSchemes { WASD, TFGH, IJKL, ArrowKeys, Switch, PlayStation, Xbox }
 
@@ -62,14 +61,13 @@ public class PlayerControlBadge : MonoBehaviour
 
     private void OnGameStarted()
     {
-        graphics.gameObject.SetActive(false);
-        FadeInNOutUtility.FadeInOrOut((alpha) => graphics.alpha = alpha, fadeTime, false);
+        FadeInNOutUtility.FadeInOrOut(graphics, LevelManager.Instance.LobbyUIFadeTime, false);
     }
 
     private void OnReturnedToLobby()
     {
         graphics.gameObject.SetActive(true);
-        FadeInNOutUtility.FadeInOrOut((alpha) => graphics.alpha = alpha, fadeTime, true);
+        FadeInNOutUtility.FadeInOrOut(graphics, LevelManager.Instance.LobbyUIFadeTime, true);
     }
 
     private void OnTeamChanged()

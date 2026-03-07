@@ -6,7 +6,7 @@ public class OffTowerCounter : MonoBehaviour
 {
     private void Start()
     {
-        LevelManager.Instance.SetActiveLobbyUI += DeactiveUIFromLevelManager;
+        LevelManager.Instance.SetActiveInGameUI += DeactiveUIFromLevelManager;
     }
 
     private void DeactiveUIFromLevelManager(bool active)
@@ -22,6 +22,6 @@ public class OffTowerCounter : MonoBehaviour
 
     private void OnDisable()
     {
-        LevelManager.Instance.SetActiveLobbyUI -= DeactiveUIFromLevelManager;
+        LevelManager.Instance.SetActiveInGameUI -= DeactiveUIFromLevelManager;
     }
 }
