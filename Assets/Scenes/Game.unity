@@ -470,21 +470,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1111184483774740255, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: m_AllowJoining
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2914927600258276031, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: DebugMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5117167974699339292, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
-      propertyPath: Loop
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5951444765711152512, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: m_Name
       value: Managers
-      objectReference: {fileID: 0}
-    - target: {fileID: 6367124601265649982, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
-      propertyPath: Loop
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6860585624820578928, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: m_LocalPosition.x

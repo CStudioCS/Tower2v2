@@ -21,6 +21,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: soundName
+      value: HayCollect
+      objectReference: {fileID: 0}
+    - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: itemPrefab
       value: 
       objectReference: {fileID: 778211752214434399, guid: 32677b31fc7ed234f95fcad7cc73ebb0, type: 3}

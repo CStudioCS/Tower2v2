@@ -11,15 +11,14 @@ public class Workbench : Interactable
     [Header("References")]
     [SerializeField] private Item woodPlankItemPrefab;
 
-    [SerializeField] private AudioSource audioSourceSaw;
-    [SerializeField] private AudioSource audioSourceWood;
-
     private PlayerTeam.Team cutLastByTeam;
 
     [SerializeField] private GameObject woodOnTable;
     [SerializeField] private GameObject woodPlanckOnTable;
 
     private enum State { Empty, HasWoodLog, HasWoodPlank }
+
+    private int soundIndex = -1;
 
     public override bool CanInteract(Player player)
     {
@@ -43,7 +42,7 @@ public class Workbench : Interactable
         switch (state)
         {
             case State.Empty:
-                audioSourceWood.Play();
+                SoundManager.instance.PlaySound("WoodSound");
 
                 state = State.HasWoodLog;
                 player.ConsumeCurrentItem();
@@ -61,7 +60,7 @@ public class Workbench : Interactable
                 break;
             
             case State.HasWoodPlank:
-                audioSourceWood.Play();
+                SoundManager.instance.PlaySound("WoodSound");
 
                 state = State.Empty;
                 player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam); //ownership for wood is determined by who cut it, not who collected it 
@@ -82,14 +81,15 @@ public class Workbench : Interactable
 
     private void Update()
     {
-        if(IsAlreadyInteractedWith && !audioSourceSaw.isPlaying)
+        if(IsAlreadyInteractedWith && soundIndex == -1)
         {
-            audioSourceSaw.Play();
+            soundIndex = SoundManager.instance.PlaySound("Hammer");
         }
 
-        if (!IsAlreadyInteractedWith && audioSourceSaw.isPlaying)
+        if (!IsAlreadyInteractedWith && soundIndex != -1)
         {
-            audioSourceSaw.Stop();
+            SoundManager.instance.StopSound(soundIndex);
+            soundIndex = -1;
         }
     }
 }

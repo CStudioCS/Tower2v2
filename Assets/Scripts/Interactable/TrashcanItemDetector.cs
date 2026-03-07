@@ -7,7 +7,7 @@ public class TrashcanItemDetector : MonoBehaviour
     {
         if(collider != null && collider.gameObject.TryGetComponent<Item>(out Item item))
         {
-            trashcan.PlaySound();
+            SoundManager.instance.PlaySound("Trashcan");
             Destroy(collider.gameObject);
         }
     }

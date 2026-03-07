@@ -15,10 +15,8 @@ public class PlayerTeam : MonoBehaviour
 
     private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left;
 
-    [SerializeField] private AudioSource changeTeamAudio1;
-    [SerializeField] private AudioSource changeTeamAudio2;
 
-    private void Awake()
+    private void Start()
     {
         SetTeam(CurrentPositionTeam);
     }
@@ -39,11 +37,11 @@ public class PlayerTeam : MonoBehaviour
         {
             if(transform.position.x > 0)
             {
-                changeTeamAudio1.Play();
+                SoundManager.instance.PlaySound("ChangeTeam1");
             }
             else
             {
-                changeTeamAudio2.Play();
+                SoundManager.instance.PlaySound("ChangeTeam2");
             }
             SetTeam(newTeam);
         }

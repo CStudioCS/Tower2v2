@@ -2,14 +2,9 @@ using UnityEngine;
 
 public class Trashcan : Interactable
 {
-    [SerializeField] private AudioSource audioSource;
-
-    public void PlaySound()
-    {
-        audioSource.Play();
-    }
     public override void Interact(Player player)
     {
+        SoundManager.instance.PlaySound("Trashcan");
         player.ConsumeCurrentItem();
     }
 

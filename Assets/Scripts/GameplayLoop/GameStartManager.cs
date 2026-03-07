@@ -34,10 +34,6 @@ public class GameStartManager : MonoBehaviour
     private readonly List<PlayerInput> players = new();
     public List<PlayerInput> Players => players;
 
-    [SerializeField] private AudioSource countdownAudio;
-    [SerializeField] private AudioSource connectAudio;
-    [SerializeField] private AudioSource readyAudio;
-
     public int PlayerCount => players.Count;
     // Player Balance counts +1 for right team and -1 for left team. If sum is 0, teams are balanced.
     public int PlayerBalance =>
@@ -96,7 +92,7 @@ public class GameStartManager : MonoBehaviour
 
     private void OnPlayerJoined(PlayerInput playerInput)
     {
-        connectAudio.Play();
+        SoundManager.instance.PlaySound("PlayerConnect");
         players.Add(playerInput);
         Player player = playerInput.GetComponent<Player>();
         player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
@@ -155,7 +151,7 @@ public class GameStartManager : MonoBehaviour
         ChangeWaitState(WaitState.GameStarting);
         InitializeTeamPlayerIndices();
         LevelManager.Instance.StartGameDelayed();
-        countdownAudio.Play();
+        SoundManager.instance.PlaySound("Countdown");
     }
     
     private void OnDisable()
