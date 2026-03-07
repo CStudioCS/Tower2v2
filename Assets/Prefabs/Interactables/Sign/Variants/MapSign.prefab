@@ -70,7 +70,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2614931606482504819, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6487623852736187514}
+      addedObject: {fileID: 7023280080224001834}
   m_SourcePrefab: {fileID: 100100000, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
 --- !u!212 &6321233777359857249 stripped
 SpriteRenderer:
@@ -82,7 +82,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2614931606482504819, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
   m_PrefabInstance: {fileID: 8778550035499957793}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6487623852736187514
+--- !u!114 &7023280080224001834
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,8 +95,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6321233777359857249}
-  signText: Change Map
+  signText: Change Level
   worldPrefabs:
   - {fileID: 5085563546327574621, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
   - {fileID: 5085563546327574621, guid: a6608161434e622449504f4aac21e17f, type: 3}
   firstMapInstance: {fileID: 0}
+  worldWidth: 20
+  transitionDuration: 0.5
