@@ -1,6 +1,3 @@
-using UnityEngine;
-using static Interactable;
-
 public class TowerPiece : Interactable
 {
     private Tower tower;
@@ -10,9 +7,9 @@ public class TowerPiece : Interactable
 
     public override float GetInteractionTime() => 0;
 
-    public override void Highlight(bool highlighted, Player player) 
+    public override void TryHighlight(bool highlighted, Player player) 
     {
-        tower.Highlight(highlighted, player);
+        tower.TryHighlight(highlighted, player);
     }
 
     public override bool CheckIfCanBeHighlighted(Player player) => tower.CheckIfCanBeHighlighted(player);

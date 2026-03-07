@@ -33,10 +33,10 @@ public class LevelManager : MonoBehaviour
             if (startPointsMap == null)
             {
                 startPointsMap = new();
-                if (WorldLinker.Instance.startPoints.Length <= 0)
-                    Debug.LogError("Start Points haven't been defined in World Linker");
+                if (StartPointLinker.Instance.startPoints.Length <= 0)
+                    Debug.LogError("Start Points haven't been defined in Start Point Linker");
 
-                foreach (StartPoint startPoint in WorldLinker.Instance.startPoints)
+                foreach (StartPoint startPoint in StartPointLinker.Instance.startPoints)
                 {
                     if (startPointsMap.TryGetValue(startPoint.Team, out List<StartPoint> startPoints))
                     {

@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8778550035499957793
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -9.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2614931606482504819, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_Name
+      value: MapSign
+      objectReference: {fileID: 0}
+    - target: {fileID: 3344525384766691392, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_FlipX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7302854201255311375, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_FlipX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7302854201255311375, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1834475515, guid: 397ec412e45847b4faab1dd802129039, type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2614931606482504819, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7023280080224001834}
+  m_SourcePrefab: {fileID: 100100000, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+--- !u!212 &6321233777359857249 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3344525384766691392, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+  m_PrefabInstance: {fileID: 8778550035499957793}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6744622913122693714 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2614931606482504819, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
+  m_PrefabInstance: {fileID: 8778550035499957793}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7023280080224001834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6744622913122693714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f053a3c1f3f4113aed0984fcb2ae397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 6321233777359857249}
+  signText: Change Level
+  worldPrefabs:
+  - {fileID: 5812686374342393090, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
+  - {fileID: 3437490761702735893, guid: a6608161434e622449504f4aac21e17f, type: 3}
+  firstMapInstance: {fileID: 0}
+  worldWidth: 20
+  transitionDuration: 0.5

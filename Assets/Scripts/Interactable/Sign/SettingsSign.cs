@@ -1,15 +1,8 @@
 using UnityEngine.InputSystem;
 
-public class SettingsSign: Interactable
+public class SettingsSign: Sign
 {
 	private Player interactingPlayer = null;
-	
-	public override float GetInteractionTime() => 0;
-
-	public override bool CanInteract(Player player)
-	{
-		return true;
-	}
 
 	public override void Interact(Player player)
 	{
@@ -17,7 +10,6 @@ public class SettingsSign: Interactable
 			return;
 		
 		interactingPlayer = player;
-		player.PlayerControlBadge.SetUnready(true);
 		player.PlayerControlBadge.ShowReadyLabel(false);
 		player.LockInSettingsMenu();
 
