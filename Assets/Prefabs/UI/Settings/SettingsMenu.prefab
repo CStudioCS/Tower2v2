@@ -196,7 +196,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1040320090281647248}
     m_Modifications:
+    - target: {fileID: 1420404562711187107, guid: d579053a7d848404ca304eedf790b7b7, type: 3}
+      propertyPath: gameObjectToActivate
+      value: 
+      objectReference: {fileID: 8145921492498919488}
     - target: {fileID: 3035150061936208260, guid: d579053a7d848404ca304eedf790b7b7, type: 3}
+      propertyPath: gameObjectToActivate
+      value: 
+      objectReference: {fileID: 8145921492498919488}
+    - target: {fileID: 4699032231404597411, guid: d579053a7d848404ca304eedf790b7b7, type: 3}
       propertyPath: gameObjectToActivate
       value: 
       objectReference: {fileID: 8145921492498919488}
