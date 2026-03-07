@@ -128,18 +128,15 @@ public class Tower : Interactable
         {
             //onTowerCanvas.gameObject.SetActive(false); //remove the gray bases of the tower if u want
 
-            if (!OffTowerCounter.isActiveAndEnabled)
-                OffTowerCounter.SetUIActive(true);
+            OffTowerCounter.SetUIActive(true);
             
             OffTowerHeightText.text = Height.ToString();
             OffTowerCounter.transform.position = new Vector3(screenPoint.x, OffTowerCounter.transform.position.y, 0);
         }
         else
         {
-            if (OffTowerCounter.isActiveAndEnabled)
-                OffTowerCounter.SetUIActive(false);
+            OffTowerCounter.SetUIActive(false);
 
-            OffTowerCounter.gameObject.SetActive(false);
             onTowerFlag.gameObject.SetActive(true);
             onTowerHeightText.text = Height.ToString();
         }
