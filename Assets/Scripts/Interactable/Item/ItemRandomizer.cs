@@ -58,7 +58,8 @@ public class ItemRandomizer : MonoBehaviour
         initialized = false;
         sequence.Clear();
 
-        itemWeights = new Dictionary<Item.Type, float>(initialItemWeight);
+        if(initialItemWeight != null)
+            itemWeights = new Dictionary<Item.Type, float>(initialItemWeight);
     }
 
     public Item.Type GetAt(int index)

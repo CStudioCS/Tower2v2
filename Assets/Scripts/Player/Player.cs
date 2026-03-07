@@ -51,7 +51,8 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        UpdateClosestInteractable();
+        if(!Interacting)
+            UpdateClosestInteractable();
 
         if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu)
         {
@@ -72,10 +73,10 @@ public class Player : MonoBehaviour
         if (closestInteractable != newClosestInteractable)
         {
             if (closestInteractable != null)
-                closestInteractable.Highlight(false, this);
+                closestInteractable.TryHighlight(false, this);
             
             if (newClosestInteractable != null)
-                newClosestInteractable.Highlight(true, this);
+                newClosestInteractable.TryHighlight(true, this);
         }
 
         closestInteractable = newClosestInteractable;
@@ -217,7 +218,7 @@ public class Player : MonoBehaviour
         ConsumeCurrentItem();
 
         if (closestInteractable != null)
-            closestInteractable.Highlight(false, this);
+            closestInteractable.TryHighlight(false, this);
     }
     
     private void OnDisable()
@@ -232,7 +233,7 @@ public class Player : MonoBehaviour
 
         foreach (Interactable interactable in insideInteractableList)
         {
-            float sqrDistance = (interactable.transform.position - transform.position).sqrMagnitude;
+            float sqrDistance = ((Vector2)interactable.transform.position - (Vector2)transform.position).sqrMagnitude;
             if (sqrDistance < minSqrDistance && !interactable.IsAlreadyInteractedWith && interactable.CanInteract(this))
             {
                 minSqrDistance = sqrDistance;
