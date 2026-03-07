@@ -51,7 +51,8 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        UpdateClosestInteractable();
+        if(!Interacting)
+            UpdateClosestInteractable();
 
         if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu)
         {
@@ -232,7 +233,7 @@ public class Player : MonoBehaviour
 
         foreach (Interactable interactable in insideInteractableList)
         {
-            float sqrDistance = (interactable.transform.position - transform.position).sqrMagnitude;
+            float sqrDistance = ((Vector2)interactable.transform.position - (Vector2)transform.position).sqrMagnitude;
             if (sqrDistance < minSqrDistance && !interactable.IsAlreadyInteractedWith && interactable.CanInteract(this))
             {
                 minSqrDistance = sqrDistance;

@@ -46,7 +46,7 @@ public class Tower : Interactable
 
     public event Action TriedBuildingWithIncorrectItemType;
     public event Action PieceBuilt;
-    private bool IsLeftTower => this == WorldLinker.Instance.towerLeft;
+    private bool IsLeftTower => this == WorldLinker.Instance.towerLeft; // TODO refactor to use PlayerTeam.Team instead of booleans
     private RecipesList RecipesList => IsLeftTower ? CanvasLinker.Instance.recipesListLeft : CanvasLinker.Instance.recipesListRight;
     private OffTowerCounter OffTowerCounter => IsLeftTower ? CanvasLinker.Instance.offTowerHeightCounterLeft : CanvasLinker.Instance.offTowerHeightCounterRight;
     private TMP_Text OffTowerHeightText => IsLeftTower ? CanvasLinker.Instance.offTowerHeightTextLeft : CanvasLinker.Instance.offTowerHeightTextRight;
