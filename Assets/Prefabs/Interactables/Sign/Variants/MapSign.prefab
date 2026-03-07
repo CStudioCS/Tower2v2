@@ -10,11 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -9.5
       objectReference: {fileID: 0}
     - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -4.75
       objectReference: {fileID: 0}
     - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -26,15 +26,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -97,8 +97,8 @@ MonoBehaviour:
   spriteRenderer: {fileID: 6321233777359857249}
   signText: Change Level
   worldPrefabs:
-  - {fileID: 5085563546327574621, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
-  - {fileID: 5085563546327574621, guid: a6608161434e622449504f4aac21e17f, type: 3}
+  - {fileID: 5812686374342393090, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
+  - {fileID: 3437490761702735893, guid: a6608161434e622449504f4aac21e17f, type: 3}
   firstMapInstance: {fileID: 0}
   worldWidth: 20
   transitionDuration: 0.5

@@ -4,12 +4,12 @@ using LitMotion;
 
 public class MapSign: Sign
 {
-	[SerializeField] private GameObject[] worldPrefabs;
+	[SerializeField] private WorldPhysicsActivator[] worldPrefabs;
 	private int currentWorldIndex = 0;
-	private GameObject CurrentWorldPrefab => worldPrefabs[currentWorldIndex];
+	private WorldPhysicsActivator CurrentWorldPrefab => worldPrefabs[currentWorldIndex];
 	private int WorldCount => worldPrefabs.Length;
-	[SerializeField] private GameObject firstMapInstance;
-	private GameObject currentWorldInstance;
+	[SerializeField] private WorldPhysicsActivator firstMapInstance;
+	private WorldPhysicsActivator currentWorldInstance;
 	[SerializeField] private float worldWidth = 20;
 	[SerializeField] private float transitionDuration = 1f;
 	private bool transitioning;
@@ -37,39 +37,44 @@ public class MapSign: Sign
 		currentWorldIndex = (currentWorldIndex + 1) % WorldCount;
 		if (currentWorldInstance != null)
 		{
-			GameObject oldWorld = currentWorldInstance;
-			DisableWorld(oldWorld);
+			WorldPhysicsActivator oldWorld = currentWorldInstance;
+			oldWorld.DisablePhysics();
 			TransitionOldWorld(oldWorld);
 		}
 
 		SpawnCurrentWorld(Vector2.right * worldWidth);
+		if (currentWorldInstance == null)
+		{
+			transitioning = false;
+			return;
+		}
+		currentWorldInstance.DisablePhysics();
 		TransitionCurrentWorld();
 	}
 
-	private void SpawnCurrentWorld(Vector2 position) => currentWorldInstance = Instantiate(CurrentWorldPrefab, position, Quaternion.identity);
+	private void SpawnCurrentWorld(Vector2 position)
+	{
+		if (CurrentWorldPrefab == null)
+		{
+			Debug.LogError($"[MapSign] worldPrefabs[{currentWorldIndex}] is null! Make sure all slots are assigned in the inspector.");
+			return;
+		}
+		currentWorldInstance = Instantiate(CurrentWorldPrefab, position, Quaternion.identity);
+	}
 
-	private void TransitionOldWorld(GameObject oldWorld) => TransitionWorld(oldWorld, Vector2.left * worldWidth, () => Destroy(oldWorld));
-	private void TransitionCurrentWorld() => TransitionWorld(currentWorldInstance, Vector2.zero, () => transitioning = false);
+	private void TransitionOldWorld(WorldPhysicsActivator oldWorld) => TransitionWorld(oldWorld, Vector2.left * worldWidth, () => Destroy(oldWorld.gameObject));
+	private void TransitionCurrentWorld() => TransitionWorld(currentWorldInstance, Vector2.zero, () =>
+	{
+		transitioning = false;
+		currentWorldInstance.EnablePhysics();
+	});
 
-	private void TransitionWorld(GameObject world, Vector2 targetPosition, Action onComplete = null)
+	private void TransitionWorld(WorldPhysicsActivator world, Vector2 targetPosition, Action onComplete = null)
 	{
 		LMotion.Create((Vector2) world.transform.position, targetPosition, transitionDuration)
 			   .WithEase(Ease.OutQuad)
 			   .WithOnComplete(onComplete)
 			   .Bind(pos => world.transform.position = pos)
 			   .AddTo(world);
-	}
-	
-	// This is not super clean, this should probably be cached to avoid getting the components at runtime. TODO fix
-	public void DisableWorld(GameObject world)
-	{
-		foreach (Collider2D col in world.GetComponentsInChildren<Collider2D>())
-			col.enabled = false;
-
-		foreach (Rigidbody2D rb in world.GetComponentsInChildren<Rigidbody2D>())
-			rb.simulated = false;
-
-		foreach (MonoBehaviour behaviour in world.GetComponentsInChildren<MonoBehaviour>())
-			behaviour.enabled = false;
 	}
 }
