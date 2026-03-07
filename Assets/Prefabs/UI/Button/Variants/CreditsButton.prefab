@@ -17,10 +17,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2362700878289228671, guid: 398e9c03496e1804c99038415f93603d, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 8478304393767881677}
-    - target: {fileID: 2362700878289228671, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
@@ -120,6 +116,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CreditsButton
       objectReference: {fileID: 0}
+    - target: {fileID: 4139160764111887160, guid: 398e9c03496e1804c99038415f93603d, type: 3}
+      propertyPath: m_text
+      value: Credits
+      objectReference: {fileID: 0}
     - target: {fileID: 8237108275179391429, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: fadeInDuration
       value: 0.7
@@ -127,27 +127,5 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3942596168792816011, guid: 398e9c03496e1804c99038415f93603d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8478304393767881677}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 398e9c03496e1804c99038415f93603d, type: 3}
---- !u!1 &7191714711931929987 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3942596168792816011, guid: 398e9c03496e1804c99038415f93603d, type: 3}
-  m_PrefabInstance: {fileID: 6158936643787127816}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8478304393767881677
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7191714711931929987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37a4103cdb743844480f6421913c58a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameObjectToActivate: {fileID: 0}
-  fadeInDuration: 0.7

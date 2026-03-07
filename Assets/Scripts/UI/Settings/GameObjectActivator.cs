@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class GameObjectActivator: MonoBehaviour
 {
-	[SerializeField] protected GameObject gameObjectToActivate;
+	public GameObject GameObjectToActivate;
 	
-	public virtual void ToggleActivate() => gameObjectToActivate.SetActive(!gameObjectToActivate.activeSelf);
+	public virtual void ToggleActivate() => GameObjectToActivate.SetActive(!GameObjectToActivate.activeSelf);
 }
