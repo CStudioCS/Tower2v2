@@ -9,9 +9,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -5425020496588599279, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: m_Volume
+      value: 0.701
+      objectReference: {fileID: 0}
+    - target: {fileID: -5425020496588599279, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Resource
       value: 
-      objectReference: {fileID: 8300000, guid: 8c1f80c5a99260d4bb3a573216a0ab22, type: 3}
+      objectReference: {fileID: 8300000, guid: aaa6acb1ee5a22a47822ab4a108e1e8e, type: 3}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: givenItem
       value: 0

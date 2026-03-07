@@ -139,6 +139,7 @@ MonoBehaviour:
   rotationSpeedVariance: 0.2
   minimumEjectionSpeedRatio: 0.2
   grabbingTime: 0.3
+  originallyCollectedByTeam: 0
   audioSourceDrop: {fileID: -8064182893626633851}
 --- !u!61 &-256997523848646438
 BoxCollider2D:
@@ -224,9 +225,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 8445d2d58e01fb94bbe3d38bf42de960, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.61
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -300,7 +301,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0
       inSlope: 0
       outSlope: 0
       tangentMode: 0

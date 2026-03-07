@@ -22,7 +22,8 @@ public class Tower : Interactable
     [SerializeField] private Transform towerPiecesParent;
     [SerializeField] private Collider2D colliderToActivateUponBuilding;
 
-    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource constructionAudio;
+    [SerializeField] private AudioSource incorrectAudio;
 
     private readonly List<TowerPiece> towerPieces = new();
 
@@ -85,6 +86,7 @@ public class Tower : Interactable
     {
         if (!IsItemCorrect(player))
         {
+            incorrectAudio.Play();
             TriedBuildingWithIncorrectItemType?.Invoke();
             return;
         }
@@ -98,7 +100,7 @@ public class Tower : Interactable
             return;
         }
 
-        audioSource.Play();
+        constructionAudio.Play();
         
         colliderToActivateUponBuilding.enabled = true;
         NewPiecePosition += blockOffset;
