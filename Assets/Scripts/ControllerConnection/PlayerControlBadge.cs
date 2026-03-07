@@ -25,7 +25,9 @@ public class PlayerControlBadge : MonoBehaviour
     [SerializeField] private GameObject readyCheck;
 
     [Header("Gamepad")]
-    [SerializeField] private GameObject gamepad;
+    [SerializeField] private GameObject gamepadXbox;
+    [SerializeField] private GameObject gamepadSwitch;
+    [SerializeField] private GameObject gamepadPlaystation;
     
     [Header("Arrow Keys")]
     [SerializeField] private GameObject arrowKeys;
@@ -98,8 +100,19 @@ public class PlayerControlBadge : MonoBehaviour
         readyGenericInteractKey.SetActive(true);
         readyGenericInteractKeyText.text = interactKey;
         readyCheck.SetActive(false);
-        
-        gamepad.SetActive(true);
+
+        GameObject selectedGamepad = controlScheme switch
+        {
+            ControlSchemes.Xbox => gamepadXbox,
+            ControlSchemes.Switch => gamepadSwitch,
+            ControlSchemes.PlayStation => gamepadPlaystation,
+            _ => gamepadXbox,
+        };
+
+        gamepadXbox.SetActive(false);
+        gamepadSwitch.SetActive(false);
+        gamepadPlaystation.SetActive(false);
+        selectedGamepad.SetActive(true);
         arrowKeys.SetActive(false);
         genericKeys.SetActive(false);
     }
@@ -112,7 +125,9 @@ public class PlayerControlBadge : MonoBehaviour
         readyGenericInteractKey.SetActive(false);
         readyCheck.SetActive(false);
         
-        gamepad.SetActive(false);
+        gamepadXbox.SetActive(false);
+        gamepadSwitch.SetActive(false);
+        gamepadPlaystation.SetActive(false);
         arrowKeys.SetActive(true);
         genericKeys.SetActive(false);
     }
@@ -128,7 +143,9 @@ public class PlayerControlBadge : MonoBehaviour
         readyGenericInteractKeyText.text = interactKey;
         readyCheck.SetActive(false);
         
-        gamepad.SetActive(false);
+        gamepadXbox.SetActive(false);
+        gamepadSwitch.SetActive(false);
+        gamepadPlaystation.SetActive(false);
         arrowKeys.SetActive(false);
         genericKeys.SetActive(true);
 

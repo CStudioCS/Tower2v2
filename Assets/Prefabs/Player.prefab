@@ -1137,6 +1137,18 @@ PrefabInstance:
       propertyPath: playerTeam
       value: 
       objectReference: {fileID: 4720667436485828352}
+    - target: {fileID: 3895623661270033655, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+      propertyPath: gamepadXbox
+      value: 
+      objectReference: {fileID: 1732560200148769637}
+    - target: {fileID: 3895623661270033655, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+      propertyPath: gamepadSwitch
+      value: 
+      objectReference: {fileID: 3215128200538526238}
+    - target: {fileID: 3895623661270033655, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+      propertyPath: gamepadPlaystation
+      value: 
+      objectReference: {fileID: 8975839145036685389}
     - target: {fileID: 4030077082580419496, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -1194,6 +1206,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7615261420674204204, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+      propertyPath: m_Name
+      value: GamepadXbox
+      objectReference: {fileID: 0}
+    - target: {fileID: 7615261420674204204, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
@@ -1226,6 +1242,16 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+--- !u!1 &1732560200148769637 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7615261420674204204, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+  m_PrefabInstance: {fileID: 8189124914177710409}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3215128200538526238 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6718231175903415127, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+  m_PrefabInstance: {fileID: 8189124914177710409}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5167199617259306430 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3895623661270033655, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
@@ -1240,6 +1266,11 @@ MonoBehaviour:
 --- !u!224 &6261290548146840260 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2828558726226557837, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+  m_PrefabInstance: {fileID: 8189124914177710409}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8975839145036685389 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 951679668453914884, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
   m_PrefabInstance: {fileID: 8189124914177710409}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &9009894274951422519
