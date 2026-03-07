@@ -17,7 +17,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private AnimatorOverrideController animatorOverrideController;
     [SerializeField] private AnimatorController animatorController;
     [SerializeField] private PlayerTeam playerTeam;
-    [SerializeField] private Transform itemParent;
+    [SerializeField] private Player player;
 
     private void OnEnable()
     {
@@ -43,7 +43,6 @@ public class PlayerAnimationController : MonoBehaviour
     {
         animator.SetBool(isCuttingId, false);
         animator.SetBool(isCollectingId, false);
-        TurnedChildItem(spriteRenderer.flipX);
     }
 
     public void HasItem(bool hasItem)
@@ -65,20 +64,20 @@ public class PlayerAnimationController : MonoBehaviour
         if (rb.linearVelocity.x > 0.1f)
         {
             spriteRenderer.flipX = true;
-            TurnedChildItem(spriteRenderer.flipX);
         }
         else if (rb.linearVelocity.x < -0.1f)
         {
             spriteRenderer.flipX = false;
-            TurnedChildItem(spriteRenderer.flipX);
         }
+
+        FlipHeldItem();
     }
 
-    void TurnedChildItem(bool facingRight)
+    void FlipHeldItem()
     {
-        if (itemParent.childCount > 0 && itemParent.GetChild(0).TryGetComponent(out Item item))
+        if (player.IsHolding)
         {
-            item.SpriteRenderer.flipX = facingRight;
+            player.HeldItem.SpriteRenderer.flipX = spriteRenderer.flipX;
         }
     }
 
