@@ -55,13 +55,13 @@ MonoBehaviour:
   eventSystem: {fileID: 3557813585361569614}
   inputHandler: {fileID: 7524553189916488458}
   selectables:
+  - {fileID: 4030748453522744827}
+  - {fileID: 8943725625789912259}
   - {fileID: 3877428565262079330}
   - {fileID: 5630394889966474348}
   - {fileID: 8644833939454899885}
   - {fileID: 5190813521187518883}
-  - {fileID: 4030748453522744827}
-  - {fileID: 8943725625789912259}
-  defaultSelectedIndex: 1
+  defaultSelectedIndex: 2
   closeButton: {fileID: 4030748453522744827}
   creditsPanel: {fileID: 8145921492498919488}
 --- !u!114 &7524553189916488458
@@ -80,6 +80,7 @@ MonoBehaviour:
   repeatRate: 0.12
   deadzone: 0.5
   sliderSpeed: 1
+  mouseMovementThreshold: 2
 --- !u!1001 &1231901441398250607
 PrefabInstance:
   m_ObjectHideFlags: 0
