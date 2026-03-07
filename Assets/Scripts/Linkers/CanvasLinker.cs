@@ -15,8 +15,9 @@ public class CanvasLinker : MonoBehaviour
     public RecipesList recipesListLeft;
     public RecipesList recipesListRight;
     public Animator countdown;
-    public GameObject MenuUI;
+    public GameObject LobbyUI;
     public GameObject InGameUI;
+    public SettingsMenu settingsMenu;
 
     private void Awake()
     {

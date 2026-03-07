@@ -28,6 +28,12 @@
 		_FrameTex ("Frame Texture", 2D) = "white" {}
 		_ImageOutline ("Outline Color Base", Color) = (1,1,1,1)
 		[KeywordEnum(Stretch, Tile)] _TileMode("Frame mode", Float) = 0
+
+		[Header(Resize Settings)]
+		[MaterialToggle] _NoResizing ("No Resizing (outline on empty pixels only)", Float) = 0
+
+		[Header(ZWrite Settings)]
+		[MaterialToggle] _ZWrite ("Z Write", Float) = 0
     }
 
 	SubShader
@@ -43,8 +49,9 @@
 
 		Cull Off
 		Lighting Off
-		ZWrite Off
+		ZWrite [_ZWrite]
 		Blend One OneMinusSrcAlpha
+
 
 		Pass
 		{
@@ -90,6 +97,9 @@
 			fixed4 _ImageOutline;
             fixed _TileMode;
 
+			fixed _NoResizing;
+			fixed _ZWrite;
+
 			v2f vert(appdata_t IN)
 			{
 				v2f OUT;
@@ -115,7 +125,11 @@
 			fixed4 SampleSpriteTexture (float2 uv)
 			{
 				float2 offsets;
-				if(_OutlinePosition != 2 && _OutlineShape == 1) // not outside and frame
+				if(_NoResizing != 0)
+				{
+					offsets = float2(0, 0);
+				}
+				else if(_OutlinePosition != 2 && _OutlineShape == 1) // not outside and frame
 				{
 					offsets = float2(0, 0);
 				}
@@ -198,6 +212,15 @@
 				}
 
 				return outline;
+			}
+
+			// Clips fully transparent pixels when ZWrite is enabled
+			// to prevent them from writing to the depth buffer
+			fixed4 ClipIfZWrite(fixed4 col)
+			{
+				if(_ZWrite > 0.5)
+					clip(col.a - 0.01);
+				return col;
 			}
 
 			fixed4 frag(v2f IN) : SV_Target
@@ -397,16 +420,16 @@
 								fixed4 result;
 								result.rgb = c.rgb + outlineC.rgb * (1.0 - c.a);
 								result.a = c.a + outlineC.a * (1.0 - c.a);
-								return result;
+								return ClipIfZWrite(result);
 							}
 							else
 							{
-								return outlineC;
+								return ClipIfZWrite(outlineC);
 							}
 						}
 						else
 						{
-							return c;
+							return ClipIfZWrite(c);
 						}
 					}
 					else if(_OutlineShape == 0 && _Thickness > 0) // Contour
@@ -421,7 +444,7 @@
 							)
 						)
 						{
-							return outlineC;
+							return ClipIfZWrite(outlineC);
 						}
 						else if((_OutlinePosition == 2 || _OutlineShape != 1) && c.a < 1.0 && // outside or contour
 								(
@@ -435,24 +458,24 @@
 							fixed4 result;
 							result.rgb = c.rgb + outlineC.rgb * (1.0 - c.a);
 							result.a = c.a + outlineC.a * (1.0 - c.a);
-							return result;
+							return ClipIfZWrite(result);
 						}
 						else
 						{
-							return c;
+							return ClipIfZWrite(c);
 						}
 					}
 					else
 					{
-						return c;
+						return ClipIfZWrite(c);
 					}
 				}
 				else
 				{
-					return c;
+					return ClipIfZWrite(c);
 				}
 
-				return c;
+				return ClipIfZWrite(c);
 				//return c;
 			}
 		ENDCG

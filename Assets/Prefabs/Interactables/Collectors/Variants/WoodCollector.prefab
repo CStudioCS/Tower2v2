@@ -9,12 +9,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -5425020496588599279, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: Loop
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5425020496588599279, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Resource
       value: 
-      objectReference: {fileID: 8300000, guid: fab49258b3c7b5747b5797814f337b5a, type: 3}
+      objectReference: {fileID: 8300000, guid: 465760dcd11610f4d90d74a31aac0b52, type: 3}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: givenItem
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: soundName
+      value: Saw
       objectReference: {fileID: 0}
     - target: {fileID: 128775072928939164, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: itemPrefab
@@ -82,16 +90,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3680878637782089664, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Size.x
-      value: 0.855
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3680878637782089664, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Size.y
-      value: 1.35
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3680878637782089664, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 7440981132975211316, guid: 3afb6956e3ec17bca880c73906aa9644, type: 3}
+      objectReference: {fileID: 21300000, guid: 3afb6956e3ec17bca880c73906aa9644, type: 3}
     - target: {fileID: 3680878637782089664, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Color.b
       value: 1
@@ -108,10 +116,18 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3680878637782089664, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
+    - target: {fileID: 3685326476571313268, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: m_Size.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685326476571313268, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: m_Size.y
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 3685326476571313268, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.125
+      objectReference: {fileID: 0}
     - target: {fileID: 4215571851615593671, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -143,6 +159,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 7177215030695489216, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
     - {fileID: 8082030437566606097, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
+    - {fileID: 8122058454346053111, guid: c130b3b6841d7b4499da94ae4da39c86, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -189,17 +206,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.1}
+  m_Offset: {x: 0, y: 0.15}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.5, y: 0.3}
     oldSize: {x: 0.855, y: 1.35}
-    newSize: {x: 0.855, y: 1.35}
+    newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.855, y: 1}
+  m_Size: {x: 0.775, y: 0.9}
   m_EdgeRadius: 0
 --- !u!212 &8951723891140760563 stripped
 SpriteRenderer:

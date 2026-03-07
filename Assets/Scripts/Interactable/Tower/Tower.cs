@@ -22,8 +22,6 @@ public class Tower : Interactable
     [SerializeField] private Transform towerPiecesParent;
     [SerializeField] private Collider2D colliderToActivateUponBuilding;
 
-    [SerializeField] private AudioSource audioSource;
-
     private readonly List<TowerPiece> towerPieces = new();
 
     private Item.Type lastBlockType;
@@ -46,7 +44,7 @@ public class Tower : Interactable
 
     public event Action TriedBuildingWithIncorrectItemType;
     public event Action PieceBuilt;
-    private bool IsLeftTower => this == WorldLinker.Instance.towerLeft;
+    private bool IsLeftTower => this == WorldLinker.Instance.towerLeft; // TODO refactor to use PlayerTeam.Team instead of booleans
     private RecipesList RecipesList => IsLeftTower ? CanvasLinker.Instance.recipesListLeft : CanvasLinker.Instance.recipesListRight;
     private RectTransform OffTowerCanvas => IsLeftTower ? CanvasLinker.Instance.offTowerHeightCanvasLeft : CanvasLinker.Instance.offTowerHeightCanvasRight;
     private TMP_Text OffTowerHeightText => IsLeftTower ? CanvasLinker.Instance.offTowerHeightTextLeft : CanvasLinker.Instance.offTowerHeightTextRight;
@@ -72,41 +70,48 @@ public class Tower : Interactable
 
     public override bool CanInteract(Player player)
     {
+        if (!LevelManager.InGame)
+            return false;
         // Check if the player is holding the correct item for the recipe
-        bool playerIsCorrectTeam = (player.PlayerTeam.CurrentTeam == PlayerTeam.Team.Left) ? IsLeftTower : !IsLeftTower;
+        bool playerIsCorrectTeam = player.PlayerTeam.CurrentTeam == PlayerTeam.Team.Left ? IsLeftTower : !IsLeftTower;
         return player.IsHolding && playerIsCorrectTeam;
     }
 
-    private bool IsItemCorrect(Player player) => RecipesList.CurrentNeededItemType == player.HeldItem?.ItemType;
-    
+    public bool IsItemCorrect(Item item) => RecipesList.CurrentNeededItemType == item.ItemType;
+
     public override void Interact(Player player)
     {
-        if (!IsItemCorrect(player))
+        if (!IsItemCorrect(player.HeldItem))
         {
+            SoundManager.instance.PlaySound("TowerWrong");
             TriedBuildingWithIncorrectItemType?.Invoke();
             return;
         }
 
-        // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
-        // and with the way Unity handles rendering, the new object is rendered on top of the old one
+        ConstructPiece(player.HeldItem);
 
-        if (!TowerPieceMap.TryGetValue(player.HeldItem.ItemType, out TowerPiece towerPiece))
+        player.ConsumeCurrentItem();
+    }
+
+    // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
+    // and with the way Unity handles rendering, the new object is rendered on top of the old one
+    public void ConstructPiece(Item item)
+    {
+        if (!TowerPieceMap.TryGetValue(item.ItemType, out TowerPiece towerPiece))
         {
-            Debug.LogError("Could not find tower piece associated with " + player.HeldItem.ItemType + " held item");
+            Debug.LogError("Could not find tower piece associated with " + item.ItemType + " held item");
             return;
         }
 
-        audioSource.Play();
-        
+        SoundManager.instance.PlaySound("TowerBuild");
+
         colliderToActivateUponBuilding.enabled = true;
         NewPiecePosition += blockOffset;
         TowerPiece towerPieceInstance = Instantiate(towerPiece, NewPiecePosition, Quaternion.identity, towerPiecesParent);
         towerPieceInstance.Initialize(this, NextPieceSortingOrder);
         towerPieces.Add(towerPieceInstance);
-        lastBlockType = player.HeldItem.ItemType;
+        lastBlockType = item.ItemType;
         LastPlacedTime = LevelManager.Instance.LevelTimer;
-
-        player.ConsumeCurrentItem();
         UpdateTowerTopUI();
         PieceBuilt?.Invoke();
     }
@@ -141,7 +146,7 @@ public class Tower : Interactable
         onTowerHeightText.text = Height.ToString();
     }
 
-    public override bool CheckIfCanBeHighlighted(Player player) => base.CheckIfCanBeHighlighted(player) && player.IsHolding && IsItemCorrect(player);
+    public override bool CheckIfCanBeHighlighted(Player player) => base.CheckIfCanBeHighlighted(player) && player.IsHolding && IsItemCorrect(player.HeldItem);
 
     private void ResetTower()
     {

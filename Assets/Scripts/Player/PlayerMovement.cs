@@ -31,11 +31,17 @@ public class PlayerMovement : MonoBehaviour
     {
         LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
         LevelManager.Instance.GameStarted += OnGameStarted;
+        player.LockedInSettingsMenuChanged += OnLockedInSettingsMenuChanged;
+    }
+
+    private void OnLockedInSettingsMenuChanged()
+    {
+        rb.bodyType = player.LockedInSettingsMenu ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
     }
 
     private void FixedUpdate()
     {
-        if (gameStartingLock || player.Interacting)
+        if (gameStartingLock || player.Interacting || player.LockedInSettingsMenu || LevelManager.Instance.GameState == LevelManager.State.EndScreen)
         {
             rb.linearVelocity = Vector2.zero;
             return;
@@ -47,6 +53,8 @@ public class PlayerMovement : MonoBehaviour
         {
             lastSpeed = rb.linearVelocity;
         }
+
+        player.PlayerStats.distanceTraveled += rb.linearVelocity.magnitude * Time.deltaTime;
     }
 
 
@@ -96,5 +104,6 @@ public class PlayerMovement : MonoBehaviour
     {
         LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
         LevelManager.Instance.GameStarted -= OnGameStarted;
+        player.LockedInSettingsMenuChanged -= OnLockedInSettingsMenuChanged;
     }
 }

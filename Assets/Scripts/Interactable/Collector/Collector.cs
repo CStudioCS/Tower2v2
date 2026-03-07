@@ -11,27 +11,30 @@ public class Collector : Interactable
     [Header("Collector")]
     [SerializeField] private Item itemPrefab;
 
-    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private string soundName;
+    private int soundIndex;
 
-    public override bool CanInteract(Player player) => !player.IsHolding;
+    public override bool CanInteract(Player player) => !player.IsHolding && LevelManager.InGame;
 
     public override void Interact(Player player)
     {
         player.GrabNewItem(itemPrefab);
+        player.PlayerStats.OnCollectedItem(itemPrefab.ItemType);
     }
 
     public override float GetInteractionTime() => interactionTime;
 
     private void Update()
     {
-        if (IsAlreadyInteractedWith && !audioSource.isPlaying)
+        if (IsAlreadyInteractedWith && soundIndex == -1)
         {
-            audioSource.Play();
+            soundIndex = SoundManager.instance.PlaySound(soundName);
         }
 
-        if (!IsAlreadyInteractedWith && audioSource.isPlaying)
+        if (!IsAlreadyInteractedWith && soundIndex != -1)
         {
-            audioSource.Stop();
+            SoundManager.instance.StopSound(soundIndex);
+            soundIndex = -1;
         }
     }
 }

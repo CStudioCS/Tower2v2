@@ -15,6 +15,8 @@ public class PlayerControlBadge : MonoBehaviour
     public enum ControlSchemes { WASD, TFGH, IJKL, ArrowKeys, Switch, PlayStation, Xbox }
 
     [Header("Ready")]
+    [SerializeField] private GameObject readyParent;
+    [SerializeField] private TextMeshProUGUI readyText;
     [SerializeField] private GameObject readyKey;
     [SerializeField] private GameObject readyGamepadA;
     [SerializeField] private GameObject readyEnter;
@@ -43,8 +45,9 @@ public class PlayerControlBadge : MonoBehaviour
     {
         playerTeam.TeamChanged += OnTeamChanged;
         SetupControlScheme(controlScheme);
+        ResetReadyText();
         LevelManager.Instance.GameStarted += OnGameStarted;
-        LevelManager.Instance.GameEnded += OnGameEnded;
+        LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
 
 #if DEBUG
         if (LobbyManager.Instance.DebugMode)
@@ -60,7 +63,7 @@ public class PlayerControlBadge : MonoBehaviour
 
     private void OnGameStarted() => graphics.SetActive(false);
 
-    private void OnGameEnded() => graphics.SetActive(true);
+    private void OnReturnedToLobby() => graphics.SetActive(true);
 
     private void OnTeamChanged()
     {
@@ -191,7 +194,19 @@ public class PlayerControlBadge : MonoBehaviour
         ToggleReady();
     }
 
-    private void ToggleReady() => SetReady(!IsReady);
+    private void ToggleReady()
+    {
+        if(!IsReady)
+        {
+            SoundManager.instance.PlaySound("PlayerReady");
+        }
+        else
+        {
+            SoundManager.instance.PlaySound("PlayerUnready");
+        }
+        SetReady(!IsReady);
+    }
+
     private void SetReady(bool ready, bool fireEvent = true)
     {
         IsReady = ready;
@@ -206,15 +221,21 @@ public class PlayerControlBadge : MonoBehaviour
         if (IsReady) SetUnready();
     }
 
-    public void SetUnready()
+    public void SetUnready(bool fireEvent = false)
     {
-        SetReady(false, false);
+        SetReady(false, fireEvent);
     }
+
+    public void ShowReadyLabel(bool on) => readyParent.SetActive(on);
+
+    public void SetReadyText(string text = "Ready?") => readyText.text = text;
+
+    public void ResetReadyText() => SetReadyText();
 
     private void OnDisable()
     {
         playerTeam.TeamChanged -= OnTeamChanged;
         LevelManager.Instance.GameStarted -= OnGameStarted;
-        LevelManager.Instance.GameEnded -= OnGameEnded;
+        LevelManager.Instance.ReturnedToLobby -= OnReturnedToLobby;
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7047718137425771087}
   - component: {fileID: 3049913635688183214}
   - component: {fileID: 8627035743379761846}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: SmokePoofSquare
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,9 +57,9 @@ VisualEffect:
       - m_Value: 1
         m_Name: MaxLifetime
         m_Overridden: 0
-      - m_Value: 0.8
+      - m_Value: 1.5
         m_Name: BoxSize
-        m_Overridden: 0
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:

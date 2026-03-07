@@ -218,7 +218,7 @@ public class LobbyManager : MonoBehaviour
 
     private Vector2 CalculateSpawnPosition()
     {
-        StartPoint[] startPoints = WorldLinker.Instance.startPoints;
+        StartPoint[] startPoints = StartPointLinker.Instance.startPoints;
         int startPointCount = startPoints.Length;
         bool[] startPointOccupied = new bool[startPointCount];
 
@@ -231,7 +231,7 @@ public class LobbyManager : MonoBehaviour
 
             for (int i = 0; i < startPointCount; i++)
             {
-                float distance = Vector3.SqrMagnitude(startPoints[i].transform.position - player.transform.position);
+                float distance = Vector2.SqrMagnitude(startPoints[i].transform.position - player.transform.position);
                 if (distance < minDistance)
                 {
                     minDistance = distance;

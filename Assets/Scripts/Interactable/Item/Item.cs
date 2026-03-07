@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 public class Item : Interactable
 {
@@ -21,9 +23,11 @@ public class Item : Interactable
     public ItemState State { get; set; }
 
 
+    [HideInInspector] public PlayerTeam.Team originallyCollectedByTeam;
     public float GrabbingTime => grabbingTime;
 
-    [SerializeField] private AudioSource audioSourceDrop;
+    public event Action Grabbed;
+    public event Action Dropped;
 
     protected override void Awake()
     {
@@ -33,11 +37,12 @@ public class Item : Interactable
         LevelManager.Instance.GameEnded += Disappear;
     }
 
-    public override bool CanInteract(Player player) => (!player.IsHolding) && (State == ItemState.Dropped);
+    public override bool CanInteract(Player player) => !player.IsHolding && State == ItemState.Dropped && LevelManager.InGame;
     public override void Interact(Player player)
     {
         State = ItemState.Transitioning;
         player.GrabItem(this, true);
+        Grabbed?.Invoke();
     }
 
     public override float GetInteractionTime() => 0;
@@ -68,7 +73,8 @@ public class Item : Interactable
 
 
         State = ItemState.Dropped;
-        audioSourceDrop.Play();
+        Dropped?.Invoke();
+        SoundManager.instance.PlaySound("ItemDrop");
     }
 
     private void Disappear()

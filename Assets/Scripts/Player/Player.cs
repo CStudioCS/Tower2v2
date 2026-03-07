@@ -1,3 +1,4 @@
+using System;
 using LitMotion;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,16 +13,21 @@ public class Player : MonoBehaviour
     public bool Interacting { get; private set; }
 
     [Header("References")]
+
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerTeam playerTeam;
     public PlayerTeam PlayerTeam => playerTeam;
     [SerializeField] private PlayerControlBadge playerControlBadge;
     public PlayerControlBadge PlayerControlBadge => playerControlBadge;
-    [SerializeField] private ProgressBar progressBar;
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
+    
+    [SerializeField] private PlayerStats playerStats;
+    public PlayerStats PlayerStats => playerStats;
 
-    [SerializeField] private PlayerAnimationController playerAnimationController;
+    [SerializeField] private ProgressBar progressBar;
+
+    [SerializeField] private PlayerAnimationController playerAnimationController;  // TODO remove reference, fix bad animation coupling
     [SerializeField] private Transform itemParent;
 
     private InputAction interactAction;
@@ -29,6 +35,9 @@ public class Player : MonoBehaviour
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
+    
+    public bool LockedInSettingsMenu { get; private set; }
+    public event Action LockedInSettingsMenuChanged;
 
     private void Awake()
     {
@@ -42,21 +51,19 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        switch (LevelManager.Instance.GameState)
+        if(!Interacting)
+            UpdateClosestInteractable();
+
+        if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu)
         {
-            case LevelManager.State.Game: GameUpdate(); break;
-            case LevelManager.State.Lobby: LobbyUpdate(); break;
+            bool successfulInteraction = TryInteract();
+            if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
+            {
+                playerControlBadge.Interact();
+            }
         }
-    }
 
-    private void GameUpdate()
-    {
-        UpdateClosestInteractable();
-
-        if (interactAction.WasPressedThisFrame())
-            Interact();
-
-        playerAnimationController.HasItem(HeldItem != null);
+        playerAnimationController.HasItem(HeldItem != null); // TODO fix bad animation coupling
     }
 
     private void UpdateClosestInteractable()
@@ -66,15 +73,15 @@ public class Player : MonoBehaviour
         if (closestInteractable != newClosestInteractable)
         {
             if (closestInteractable != null)
-                closestInteractable.Highlight(false, this);
+                closestInteractable.TryHighlight(false, this);
             
             if (newClosestInteractable != null)
-                newClosestInteractable.Highlight(true, this);
+                newClosestInteractable.TryHighlight(true, this);
         }
 
         closestInteractable = newClosestInteractable;
     }
-    private void Interact()
+    private bool TryInteract()
     {
         if (closestInteractable != null)
         {
@@ -82,9 +89,9 @@ public class Player : MonoBehaviour
             if (time > 0)
             {
                 if (closestInteractable is Workbench)
-                    playerAnimationController.StartCutting();
+                    playerAnimationController.StartCutting(); // TODO fix bad animation coupling
                 else if (closestInteractable is Collector)
-                    playerAnimationController.StartCollecting();
+                    playerAnimationController.StartCollecting(); // TODO fix bad animation coupling
                 else
                     Debug.LogError("This Interactable is not currently supported by the animator");
                     //no interactable in the game takes time aside from Collector and Workbench as of rn
@@ -93,16 +100,16 @@ public class Player : MonoBehaviour
             }
             else
                 closestInteractable.Interact(this);
+
+            return true;
         }
-        else if (HeldItem != null)
+        if (HeldItem != null)
+        {
             DropHeldItem();
+            return true;
+        }
 
-    }
-
-    private void LobbyUpdate()
-    {
-        if (interactAction.WasPressedThisFrame())
-            playerControlBadge.Interact();
+        return false;
     }
 
     private IEnumerator InteractTimer(Interactable insideInteractable, float time)
@@ -133,7 +140,7 @@ public class Player : MonoBehaviour
 
     private void StopInteracting(Interactable insideInteractable)
     {
-        playerAnimationController.EndInteraction();
+        playerAnimationController.EndInteraction(); // TODO fix bad animation coupling
         Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
         progressBar.ResetProgress();
@@ -159,7 +166,7 @@ public class Player : MonoBehaviour
             return;
 
         HeldItem.State = Item.ItemState.Transitioning;
-        playerAnimationController.Drop();
+        playerAnimationController.Drop(); // TODO fix bad animation coupling
 
         IsHolding = false;
         grabbingLerp.TryCancel();
@@ -168,15 +175,24 @@ public class Player : MonoBehaviour
         HeldItem = null;
     }
 
-    public void GrabNewItem(Item itemPrefab)
+    /// <summary>
+    /// Makes the player grab a newly instantiated Item
+    /// </summary>
+    /// <param name="itemPrefab"></param>
+    /// <param name="originallyCollectedByTeam">The team this item was originally collected by. If left null this will be set as this player's team</param>
+    public void GrabNewItem(Item itemPrefab, PlayerTeam.Team? originallyCollectedByTeam = null)
     {
         Item itemInstance = Instantiate(itemPrefab);
-        GrabItem(itemInstance, false);        
+        GrabItem(itemInstance, false);
+        if (originallyCollectedByTeam is PlayerTeam.Team team)
+            itemInstance.originallyCollectedByTeam = team;
+        else
+            itemInstance.originallyCollectedByTeam = playerTeam.CurrentTeam;
     }
 
     public void GrabItem(Item item, bool interpolatePosition)
     {
-        playerAnimationController.Grab();
+        playerAnimationController.Grab(); // TODO fix bad animation coupling
 
         IsHolding = true;
         HeldItem = item;
@@ -200,6 +216,9 @@ public class Player : MonoBehaviour
     {
         Interacting = false;
         ConsumeCurrentItem();
+
+        if (closestInteractable != null)
+            closestInteractable.TryHighlight(false, this);
     }
     
     private void OnDisable()
@@ -214,7 +233,7 @@ public class Player : MonoBehaviour
 
         foreach (Interactable interactable in insideInteractableList)
         {
-            float sqrDistance = (interactable.transform.position - transform.position).sqrMagnitude;
+            float sqrDistance = ((Vector2)interactable.transform.position - (Vector2)transform.position).sqrMagnitude;
             if (sqrDistance < minSqrDistance && !interactable.IsAlreadyInteractedWith && interactable.CanInteract(this))
             {
                 minSqrDistance = sqrDistance;
@@ -223,5 +242,11 @@ public class Player : MonoBehaviour
         }
 
         return closest;
+    }
+
+    public void LockInSettingsMenu(bool locked = true)
+    {
+        LockedInSettingsMenu = locked;
+        LockedInSettingsMenuChanged?.Invoke();
     }
 }

@@ -1,0 +1,103 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3954158770987650752
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1964614383409617411}
+  - component: {fileID: 4311096865580974780}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1964614383409617411
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3954158770987650752}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.4505496, y: 3.0087652, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4311096865580974780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3954158770987650752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebdc07bff47db7947ac8298eecb4b35a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bufferSize: 10
+  index: 1
+  sounds:
+  - name: PlayerReady
+    clip: {fileID: 8300000, guid: 327dd526edf797d4abafaf77652f356a, type: 3}
+    volume: 1
+  - name: PlayerUnready
+    clip: {fileID: 8300000, guid: f8b2c8d11e35d044f84439d631ae0be4, type: 3}
+    volume: 1
+  - name: PlayerConnect
+    clip: {fileID: 8300000, guid: 6d8570deb73c1de4b86e8c5163ff024d, type: 3}
+    volume: 1
+  - name: ChangeTeam1
+    clip: {fileID: 8300000, guid: 4936a3f23329bf746b8dab8695400771, type: 3}
+    volume: 1
+  - name: ChangeTeam2
+    clip: {fileID: 8300000, guid: b3870e92760db1e47aeba6713ec85ea4, type: 3}
+    volume: 1
+  - name: Countdown
+    clip: {fileID: 8300000, guid: 69cde243fa9c4e34788b45011580b8f5, type: 3}
+    volume: 1
+  - name: Hammer
+    clip: {fileID: 8300000, guid: f6374c4873bfaab42aba8b3805f33df2, type: 3}
+    volume: 1
+  - name: WoodSound
+    clip: {fileID: 8300000, guid: d84ca9c0886761146b9e372bc8a33bc8, type: 3}
+    volume: 1
+  - name: Saw
+    clip: {fileID: 8300000, guid: 465760dcd11610f4d90d74a31aac0b52, type: 3}
+    volume: 1
+  - name: HayCollect
+    clip: {fileID: 8300000, guid: aaa6acb1ee5a22a47822ab4a108e1e8e, type: 3}
+    volume: 0.8
+  - name: ClayCollect
+    clip: {fileID: 8300000, guid: 578d899987109424cb7583ccdb740c46, type: 3}
+    volume: 1
+  - name: FurnaceFire
+    clip: {fileID: 8300000, guid: 4f0103caa5d417b4d876048af53b28b5, type: 3}
+    volume: 1
+  - name: FurnaceBricks
+    clip: {fileID: 8300000, guid: 346150b20ad019c4f940da6ac906acbc, type: 3}
+    volume: 1
+  - name: TowerBuild
+    clip: {fileID: 8300000, guid: 7baf26527f7b69d4e90625f248247a7a, type: 3}
+    volume: 1
+  - name: TowerWrong
+    clip: {fileID: 8300000, guid: 73b10bff6d7e11d4992630d65b0c0eb0, type: 3}
+    volume: 0.65
+  - name: Trashcan
+    clip: {fileID: 8300000, guid: ea7b19da4685bb643943f0d94ee4afbc, type: 3}
+    volume: 1
+  - name: ItemDrop
+    clip: {fileID: 8300000, guid: 8445d2d58e01fb94bbe3d38bf42de960, type: 3}
+    volume: 1
+  - name: EndLevel
+    clip: {fileID: 8300000, guid: f1fa581018e82784dbaf121f6bd5eb8f, type: 3}
+    volume: 1
