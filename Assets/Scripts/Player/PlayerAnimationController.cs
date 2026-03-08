@@ -1,5 +1,3 @@
-using System;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
@@ -15,7 +13,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private string speedId;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private AnimatorOverrideController animatorOverrideController;
-    [SerializeField] private AnimatorController animatorController;
+    [SerializeField] private RuntimeAnimatorController animatorController;
     [SerializeField] private PlayerTeam playerTeam;
     [SerializeField] private Player player;
 
