@@ -118,9 +118,7 @@ public class TowerCard : MonoBehaviour
 
     private void ScrollTowerPiece(Item.Type type, bool left, int index)
     {
-        Item.Type towerPieceType = ItemRandomizer.Instance.GetAt(index);
-
-        RectTransform towerPiece = Instantiate(towerPiecesUI[towerPieceType], left ? leftTowerUI : rightTowerUI);
+        RectTransform towerPiece = Instantiate(towerPiecesUI[type], left ? leftTowerUI : rightTowerUI);
 
         LMotion.Create(new Vector2(initLeftTowerPiecesOffset, towerBaseYPos + index * towerPieceVerticalOffset), new Vector2(0, towerBaseYPos + index * towerPieceVerticalOffset), towerPieceScrollTime).WithEase(Ease.OutCubic).Bind(
             (v) => {
