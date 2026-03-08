@@ -98,9 +98,15 @@ public class TowerCard : MonoBehaviour
 
         //kick
         if(leftWon)
+        {
             towerAnimator.SetTrigger("KickToRight");
+            SoundManager.instance.PlaySound("TowerKick");
+        } 
         else
+        {
             towerAnimator.SetTrigger("KickToLeft");
+            SoundManager.instance.PlaySound("TowerKick");
+        }
 
         
         yield return null; //wait one frame for animator to change state (kinda ghetto)
