@@ -292,8 +292,6 @@ MonoBehaviour:
   brickTowerPiecePrefab: {fileID: 926655756722358906, guid: d29e198529ac9e842ad823191db288ea, type: 3}
   towerPiecesParent: {fileID: 6061288340007643942}
   colliderToActivateUponBuilding: {fileID: 4106191732626392380}
-  constructionAudio: {fileID: 0}
-  incorrectAudio: {fileID: 0}
 --- !u!114 &1966643861661878256
 MonoBehaviour:
   m_ObjectHideFlags: 0
