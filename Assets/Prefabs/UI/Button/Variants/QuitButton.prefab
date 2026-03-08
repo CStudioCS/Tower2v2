@@ -122,7 +122,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4139160764111887160, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: m_text
-      value: Quit Game
+      value: Quit
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

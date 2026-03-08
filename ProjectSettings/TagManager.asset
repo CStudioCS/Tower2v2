@@ -11,18 +11,18 @@ TagManager:
   - 
   - Water
   - UI
-  - NoItemCollision
+  - PlayerBlueCollision
   - Velocity
-  - Item
+  - ItemCollision
   - Invisible
   - Player
   - IgnoreSilhouette
   - OnTop
-  - 
-  - 
-  - 
-  - 
-  - 
+  - RiverCollision
+  - PlayerRedCollision
+  - BridgeBlueCollision
+  - BridgeRedCollision
+  - Item
   - 
   - 
   - 

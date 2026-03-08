@@ -53,10 +53,10 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if(!Interacting)
+        if (!Interacting)
             UpdateClosestInteractable();
 
-        if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu)
+        if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
         {
             bool successfulInteraction = TryInteract();
             if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
@@ -204,11 +204,12 @@ public class Player : MonoBehaviour
         item.Immobilize();
         item.LastOwner = this;
         item.transform.SetParent(itemParent);
+        item.transform.localRotation = Quaternion.identity;
 
         if (interpolatePosition)
         {
-            grabbingLerp = LMotion.Create(item.transform.localPosition, Vector3.zero, item.GrabbingTime).Bind(x => { if (item != null) item.transform.localPosition = x; });
-            rotationLerp = LMotion.Create(item.transform.localRotation, Quaternion.identity, item.GrabbingTime).Bind(x => { if (item != null) item.transform.localRotation = x; });
+            grabbingLerp = LMotion.Create((Vector2) item.transform.localPosition, Vector2.zero, item.GrabbingTime).Bind(position => { if (item != null) item.transform.localPosition = position; });
+            rotationLerp = LMotion.Create(item.transform.localRotation, Quaternion.identity, item.GrabbingTime).Bind(rotation => { if (item != null) item.transform.localRotation = rotation; });
         }
         else
             item.transform.localPosition = Vector2.zero;

@@ -14,13 +14,15 @@ using UnityEngine.UI;
 public class SettingsMenuInputHandler: MonoBehaviour
 {
 	[Tooltip("Delay before repeated navigation when holding the stick")]
-	[SerializeField] private float repeatDelay = 0.4f;
+	[SerializeField] private float repeatDelay = 0.5f;
 	[Tooltip("Rate of repeated navigation while holding the stick")]
-	[SerializeField] private float repeatRate = 0.12f;
+	[SerializeField] private float repeatRate = 0.1f;
 	[Tooltip("Stick deadzone for navigation")]
 	[SerializeField] private float deadzone = 0.5f;
 	[Tooltip("How fast the slider moves per second when holding the stick")]
 	[SerializeField] private float sliderSpeed = 1f;
+	[Tooltip("Step size for discrete slider movement with controller")]
+	[SerializeField] private float sliderStepSize = 0.1f;
 	[Tooltip("Minimum mouse delta (pixels) to count as intentional mouse movement")]
 	[SerializeField] private float mouseMovementThreshold = 2f;
 
@@ -332,12 +334,20 @@ public class SettingsMenuInputHandler: MonoBehaviour
 			return;
 		}
 
-		// If on a slider and pushing left/right, adjust the slider value
+		// If on a slider and pushing left/right, adjust the slider value in steps
 		Slider activeSlider = GetSelectedSlider();
 		if (activeSlider != null && Mathf.Abs(input.x) > Mathf.Abs(input.y))
 		{
-			float range = activeSlider.maxValue - activeSlider.minValue;
-			activeSlider.value += input.x * sliderSpeed * range * Time.unscaledDeltaTime;
+			if (Time.unscaledTime >= nextMoveTime)
+			{
+				float direction = input.x > 0 ? 1f : -1f;
+				float newValue = activeSlider.value + direction * sliderStepSize;
+				activeSlider.value = Mathf.Clamp(newValue, activeSlider.minValue, activeSlider.maxValue);
+				
+				bool newSliderDirection = lastDirection == Vector2.zero || Vector2.Dot(input.normalized, lastDirection.normalized) < 0.5f;
+				nextMoveTime = Time.unscaledTime + (newSliderDirection ? repeatDelay : repeatRate);
+				lastDirection = input;
+			}
 			return;
 		}
 

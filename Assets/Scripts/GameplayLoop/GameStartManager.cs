@@ -76,10 +76,15 @@ public class GameStartManager : MonoBehaviour
         LobbyManager.Instance.PlayerJoined += OnPlayerJoined;
         LobbyManager.Instance.PlayerLeft += OnPlayerLeft;
         LevelManager.Instance.GameEnded += OnGameEnded;
+        LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
         ChangeWaitState(WaitState.NotEnoughPlayers);
     }
 
-    private void OnGameEnded()
+    private void OnGameEnded() => ResetPlayers();
+
+    private void OnReturnedToLobby() => ResetPlayers();
+
+    private void ResetPlayers()
     {
         foreach (PlayerInput playerInput in players)
         {
@@ -160,6 +165,7 @@ public class GameStartManager : MonoBehaviour
         LobbyManager.Instance.PlayerJoined -= OnPlayerJoined;
         LobbyManager.Instance.PlayerLeft -= OnPlayerLeft;
         LevelManager.Instance.GameEnded -= OnGameEnded;
+        LevelManager.Instance.ReturnedToLobby -= OnReturnedToLobby;
     }
 
     private void InitializeTeamPlayerIndices()

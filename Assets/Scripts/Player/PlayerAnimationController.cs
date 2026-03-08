@@ -17,6 +17,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private AnimatorOverrideController animatorOverrideController;
     [SerializeField] private AnimatorController animatorController;
     [SerializeField] private PlayerTeam playerTeam;
+    [SerializeField] private Player player;
 
     private void OnEnable()
     {
@@ -67,6 +68,16 @@ public class PlayerAnimationController : MonoBehaviour
         else if (rb.linearVelocity.x < -0.1f)
         {
             spriteRenderer.flipX = false;
+        }
+
+        FlipHeldItem();
+    }
+
+    void FlipHeldItem()
+    {
+        if (player.IsHolding)
+        {
+            player.HeldItem.SpriteRenderer.flipX = spriteRenderer.flipX;
         }
     }
 
