@@ -8,12 +8,13 @@ public class GameStartManager : MonoBehaviour
     public static GameStartManager Instance;
     public enum WaitState
     {
+        Logo,
         NotEnoughPlayers,
         UnbalancedTeams,
         PlayersNotReady,
         GameStarting
     }
-    private WaitState waitState = WaitState.NotEnoughPlayers;
+    private WaitState waitState = WaitState.Logo;
     
     private Dictionary<WaitState, string> waitingMessages;
     private Dictionary<WaitState, string> WaitingMessages
@@ -22,6 +23,7 @@ public class GameStartManager : MonoBehaviour
         {
             waitingMessages ??= new Dictionary<WaitState, string>
             {
+                { WaitState.Logo, "Press any button..." },
                 { WaitState.NotEnoughPlayers, "Press a key to join. Waiting for players..." },
                 { WaitState.UnbalancedTeams, "Unbalanced teams! Waiting for someone to switch..." },
                 { WaitState.PlayersNotReady, "Waiting until everyone is ready..." },
@@ -77,7 +79,7 @@ public class GameStartManager : MonoBehaviour
         LobbyManager.Instance.PlayerLeft += OnPlayerLeft;
         LevelManager.Instance.GameEnded += OnGameEnded;
         LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
-        ChangeWaitState(WaitState.NotEnoughPlayers);
+        ChangeWaitState(WaitState.Logo);
     }
 
     private void OnGameEnded() => ResetPlayers();
@@ -158,6 +160,17 @@ public class GameStartManager : MonoBehaviour
         InitializeTeamPlayerIndices();
         LevelManager.Instance.StartGameDelayed();
         SoundManager.instance.PlaySound("Countdown");
+    }
+
+    private void Update()
+    {
+        if (waitState != WaitState.Logo)
+            return;
+
+        if (!InputUtility.AnyInputPressed)
+            return;
+        
+        ChangeWaitState(WaitState.NotEnoughPlayers);
     }
     
     private void OnDisable()

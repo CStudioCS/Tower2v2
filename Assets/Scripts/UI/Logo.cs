@@ -1,5 +1,8 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.UI;
 
 public class Logo : MonoBehaviour
@@ -8,10 +11,9 @@ public class Logo : MonoBehaviour
     [SerializeField] private Animator animator;
     private bool droppedDown;
 
-
     private void Update()
     {
-        if (Input.anyKey && !droppedDown)
+        if (InputUtility.AnyInputPressed && !droppedDown)
             StartCoroutine(Dropdown());
     }
 
