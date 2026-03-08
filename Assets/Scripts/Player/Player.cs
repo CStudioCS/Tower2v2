@@ -51,10 +51,10 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if(!Interacting)
+        if (!Interacting)
             UpdateClosestInteractable();
 
-        if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu)
+        if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
         {
             bool successfulInteraction = TryInteract();
             if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
