@@ -15,10 +15,17 @@ public class Workbench : Interactable
 
     [SerializeField] private GameObject woodOnTable;
     [SerializeField] private GameObject woodPlanckOnTable;
+    [SerializeField] private GameObject axe;
 
     private enum State { Empty, HasWoodLog, HasWoodPlank }
 
     private int soundIndex = -1;
+
+    private void Awake()
+    {
+        base.Awake();
+        ResetGraphicsOnTable();
+    }
 
     public override bool CanInteract(Player player)
     {
@@ -48,6 +55,7 @@ public class Workbench : Interactable
                 player.ConsumeCurrentItem();
                 currentInteractionTime = cutWoodInteractionTime;
                 woodOnTable.SetActive(true);
+                axe.SetActive(false);
                 break;
             
             case State.HasWoodLog:
@@ -56,6 +64,7 @@ public class Workbench : Interactable
                 player.PlayerStats.woodCut++;
                 cutLastByTeam = player.PlayerTeam.CurrentTeam;
                 woodOnTable.SetActive(false);
+                axe.SetActive(false);
                 woodPlanckOnTable.SetActive(true);
                 break;
             
@@ -65,6 +74,7 @@ public class Workbench : Interactable
                 state = State.Empty;
                 player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam); //ownership for wood is determined by who cut it, not who collected it 
                 woodPlanckOnTable.SetActive(false);
+                axe.SetActive(true);
                 break;
         }
     }
@@ -75,8 +85,14 @@ public class Workbench : Interactable
     {
         base.OnGameEnded();
         state = State.Empty;
+        ResetGraphicsOnTable();
+    }
+
+    private void ResetGraphicsOnTable()
+    {
         woodOnTable.SetActive(false);
         woodPlanckOnTable.SetActive(false);
+        axe.SetActive(true);
     }
 
     private void Update()

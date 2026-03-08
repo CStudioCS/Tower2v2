@@ -123,10 +123,6 @@ public class Tower : Interactable
     private void UpdateTowerTopUI()
     {
         onTowerFlag.localPosition = newPieceLocalPosition;
-        // if (Height > 0)
-        //     onTowerFlag.position = (Vector2)towerPieces[^1].transform.position + blockOffset + flagOffset;
-        // else
-        //     onTowerFlag.position = (Vector2)gameObject.transform.position + flagOffset;
 
         Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, onTowerFlag.position);
 
