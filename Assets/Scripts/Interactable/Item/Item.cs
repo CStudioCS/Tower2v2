@@ -78,7 +78,7 @@ public class Item : Interactable
         float ejectionDeviation = Random.Range(1 - ejectionSpeedVariance, 1 + ejectionSpeedVariance);
         float rotationDeviation = Random.Range(1 - rotationSpeedVariance, 1 + rotationSpeedVariance);
 
-        Vector2 lastSpeed = LastOwner.PlayerMovement.LastSpeed;
+        Vector2 lastSpeed = LastOwner.PlayerMovement.LastNonZeroSpeed;
         Vector2 speedDirection = lastSpeed.normalized;
 
         float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(Mathf.Abs(LastOwner.PlayerMovement.Velocity.magnitude), minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);//speed if not null else a percentage of max speed

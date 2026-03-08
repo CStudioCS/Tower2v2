@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,8 +11,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float friction = 140f;
     [SerializeField] private float gamepadDeadzone = 0.05f;
     [SerializeField] private float gamepadmaxSpeedThreashold = 0.5f;
-    private Vector2 lastSpeed = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
-    public Vector2 LastSpeed => lastSpeed;
+    
+    private Vector2 lastNonZeroSpeed = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
+    public Vector2 LastNonZeroSpeed => lastNonZeroSpeed;
+    private Vector2 lastSpeed;
+
     public Vector2 Velocity => rb.linearVelocity;
 
     [Header("References")]
@@ -22,6 +26,8 @@ public class PlayerMovement : MonoBehaviour
     private InputAction moveAction;
 
     private bool gameStartingLock;
+
+    public bool Accelerating { get; private set; }
 
     private void Awake()
     {
@@ -50,10 +56,14 @@ public class PlayerMovement : MonoBehaviour
     
         rb.linearVelocity = VelocityApproach();
 
+        Accelerating = lastSpeed == Vector2.zero && rb.linearVelocity != Vector2.zero;
+
         if (rb.linearVelocity != Vector2.zero)
         {
-            lastSpeed = rb.linearVelocity;
+            lastNonZeroSpeed = rb.linearVelocity;
         }
+
+        lastSpeed = rb.linearVelocity;
 
         player.PlayerStats.distanceTraveled += rb.linearVelocity.magnitude * Time.deltaTime;
     }
