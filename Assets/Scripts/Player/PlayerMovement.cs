@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 lastSpeed = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
     public Vector2 LastSpeed => lastSpeed;
 
+    private Vector2 trueLastSpeed;
+
     [Header("References")]
     [SerializeField] private Player player;
     [SerializeField] private PlayerInput playerInput;
@@ -52,13 +54,15 @@ public class PlayerMovement : MonoBehaviour
     
         rb.linearVelocity = VelocityApproach();
 
-        if (lastSpeed.sqrMagnitude < rb.linearVelocity.sqrMagnitude)
+        if (trueLastSpeed == Vector2.zero && rb.linearVelocity != Vector2.zero)
             Accelerating?.Invoke();
 
         if (rb.linearVelocity != Vector2.zero)
         {
             lastSpeed = rb.linearVelocity;
         }
+
+        trueLastSpeed = rb.linearVelocity;
 
         player.PlayerStats.distanceTraveled += rb.linearVelocity.magnitude * Time.deltaTime;
 

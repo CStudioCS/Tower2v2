@@ -448,10 +448,8 @@ MonoBehaviour:
   accelerationSmokePoof: {fileID: 14116845370723126}
   spriteRenderer: {fileID: 3809310519727925464}
   leftAcceleratingParticulesPosition: {x: -0.147, y: 0.138}
-  leftAcceleratingParticulesRotation: 0
   rightAcceleratingParticulesPosition: {x: 0.147, y: 0.138}
-  rightAcceleratingParticulesRotation: 0
-  accelerationParticuleRate: 2
+  accelerationParticuleRate: 7
 --- !u!50 &176917095401970236
 Rigidbody2D:
   serializedVersion: 5
