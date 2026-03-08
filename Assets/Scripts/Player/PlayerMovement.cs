@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gamepadDeadzone = 0.05f;
     [SerializeField] private float gamepadmaxSpeedThreashold = 0.5f;
     private Vector2 lastNonZeroSpeed = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
-    public Vector2 LastSpeed => lastNonZeroSpeed;
+    public Vector2 LastNonZeroSpeed => lastNonZeroSpeed;
 
     private Vector2 lastSpeed;
 
@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool gameStartingLock;
 
-    public bool Accelerating;
+    public bool Accelerating { get; private set; }
 
     private void Awake()
     {
@@ -54,10 +54,7 @@ public class PlayerMovement : MonoBehaviour
     
         rb.linearVelocity = VelocityApproach();
 
-        if (lastSpeed == Vector2.zero && rb.linearVelocity != Vector2.zero)
-            Accelerating = true;
-        else
-            Accelerating = false;
+        Accelerating = lastSpeed == Vector2.zero && rb.linearVelocity != Vector2.zero;
 
         if (rb.linearVelocity != Vector2.zero)
         {

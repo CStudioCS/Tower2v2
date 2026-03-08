@@ -20,7 +20,7 @@ public class PlayerVFX : MonoBehaviour
     private void Update()
     {
         if (player.PlayerMovement.Accelerating)
-            OnAccelerating();
+            AcceleratingUpdate();
     }
 
     private void OnGrabbedNewItem()
@@ -28,13 +28,13 @@ public class PlayerVFX : MonoBehaviour
         grabItemSmokePoof.Play();
     }
 
-    private void OnPlayerCollision(Vector2 position)
+    private void PlayCollideWithPlayerSmokePoof(Vector2 position)
     {
         playerCollionSmokePoof.transform.position = position;
         playerCollionSmokePoof.Play();
     }
 
-    private void OnAccelerating()
+    private void AcceleratingUpdate()
     {
         if (!spriteRenderer.flipX)
             accelerationSmokePoof.transform.localPosition = rightAcceleratingParticulesPosition;
@@ -52,6 +52,6 @@ public class PlayerVFX : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.transform.parent != null && collision.collider.transform.parent.TryGetComponent<Player>(out Player _))
-            OnPlayerCollision(collision.GetContact(0).point);
+            PlayCollideWithPlayerSmokePoof(collision.GetContact(0).point);
     }
 }
