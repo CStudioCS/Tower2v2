@@ -4,7 +4,7 @@ public class PlayerItemCatcher : MonoBehaviour
 {
     [SerializeField] private PlayerTeam playerTeam;
     [SerializeField] private Player player;
-    [SerializeField] private float limitVelocity = 2f;
+    [SerializeField] private float minimumCatchingVelocity = 0.5f;
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
@@ -23,7 +23,7 @@ public class PlayerItemCatcher : MonoBehaviour
         if (item.State != Item.ItemState.Dropped)
             return;
 
-        if (Mathf.Abs(rb.linearVelocity.magnitude) < limitVelocity)
+        if (Mathf.Abs(rb.linearVelocity.magnitude) < minimumCatchingVelocity)
             return;
 
         if (player.IsHolding)
