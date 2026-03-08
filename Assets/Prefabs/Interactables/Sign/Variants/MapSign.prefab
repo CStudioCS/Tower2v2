@@ -99,6 +99,7 @@ MonoBehaviour:
   worldPrefabs:
   - {fileID: 5812686374342393090, guid: b29a579e45fe5824199bf598e56adeff, type: 3}
   - {fileID: 5812686374342393090, guid: 1f33f0861fd849b49bf03eaf9dad04b2, type: 3}
+  - {fileID: 5812686374342393090, guid: 81d9bbe6d24ab43498b797f9d2c36d7a, type: 3}
   firstMapInstance: {fileID: 0}
   worldWidth: 20
   transitionDuration: 0.5
