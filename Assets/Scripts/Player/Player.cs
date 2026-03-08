@@ -200,6 +200,7 @@ public class Player : MonoBehaviour
         item.Immobilize();
         item.LastOwner = this;
         item.transform.SetParent(itemParent);
+        item.transform.localRotation = Quaternion.identity;
 
         if (interpolatePosition)
         {
