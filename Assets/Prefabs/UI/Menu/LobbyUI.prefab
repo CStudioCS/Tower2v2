@@ -414,15 +414,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: Waiting for players...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
-  m_sharedMaterial: {fileID: -1372678212655353642, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d7114e9dc94b7854ba39e8df823dd52f, type: 2}
+  m_sharedMaterial: {fileID: -1372678212655353642, guid: d7114e9dc94b7854ba39e8df823dd52f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278586668
-  m_fontColor: {r: 0.17254902, g: 0.050980393, b: 0.023529412, a: 1}
+    rgba: 4291095295
+  m_fontColor: {r: 1, g: 0.91764706, b: 0.76862746, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

@@ -49,7 +49,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: -1162814141957900994}
-  audioSource: {fileID: 0}
 --- !u!212 &-1162814141957900994
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -236,3 +235,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c64bd10213a1cbf4ba1e0a95a2b90a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trashcan: {fileID: 0}

@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gamepadmaxSpeedThreashold = 0.5f;
     private Vector2 lastSpeed = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
     public Vector2 LastSpeed => lastSpeed;
+    public Vector2 Velocity => rb.linearVelocity;
 
     [Header("References")]
     [SerializeField] private Player player;

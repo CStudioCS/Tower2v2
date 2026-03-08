@@ -79,6 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameObjectToActivate: {fileID: 2957975605579920690}
+  activeInLobby: 1
 --- !u!1001 &2872984458699755646
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -93,7 +94,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7326122425180403159, guid: 15c09315ebc55b241938c1d69ba5a8dd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.5
+      value: -9.25
       objectReference: {fileID: 0}
     - target: {fileID: 7326122425180403159, guid: 15c09315ebc55b241938c1d69ba5a8dd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -155,7 +156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7326122425180403159, guid: 750fe89aa2f95e0459cac53f3ca9ed87, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.5
+      value: 9.25
       objectReference: {fileID: 0}
     - target: {fileID: 7326122425180403159, guid: 750fe89aa2f95e0459cac53f3ca9ed87, type: 3}
       propertyPath: m_LocalPosition.y

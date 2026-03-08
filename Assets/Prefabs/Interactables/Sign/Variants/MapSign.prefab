@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.5
+      value: -9.25
       objectReference: {fileID: 0}
     - target: {fileID: 2051443749557439478, guid: 2e8ee356f470e9e47a0ad0abbfcaf5e5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -97,8 +97,9 @@ MonoBehaviour:
   spriteRenderer: {fileID: 6321233777359857249}
   signText: Change Level
   worldPrefabs:
-  - {fileID: 5812686374342393090, guid: 70aca79125959f74cadb6775855b59cf, type: 3}
-  - {fileID: 3437490761702735893, guid: a6608161434e622449504f4aac21e17f, type: 3}
+  - {fileID: 5812686374342393090, guid: b29a579e45fe5824199bf598e56adeff, type: 3}
+  - {fileID: 5812686374342393090, guid: 1f33f0861fd849b49bf03eaf9dad04b2, type: 3}
+  - {fileID: 5812686374342393090, guid: 81d9bbe6d24ab43498b797f9d2c36d7a, type: 3}
   firstMapInstance: {fileID: 0}
   worldWidth: 20
   transitionDuration: 0.5
