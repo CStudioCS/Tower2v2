@@ -17,7 +17,9 @@ public class Workbench : Interactable
     [SerializeField] private GameObject woodPlanckOnTable;
     [SerializeField] private GameObject axe;
 
-    private enum State { Empty, HasWoodLog, HasWoodPlank }
+    public enum State { Empty, HasWoodLog, HasWoodPlank }
+
+    public State WorkbenchState => state;
 
     private int soundIndex = -1;
 
@@ -44,18 +46,23 @@ public class Workbench : Interactable
         }
     }
 
+    public void TakeWood()
+    {
+        SoundManager.instance.PlaySound("WoodSound");
+
+        state = State.HasWoodLog;
+        currentInteractionTime = cutWoodInteractionTime;
+        woodOnTable.SetActive(true);
+        axe.SetActive(false);
+    }
+
     public override void Interact(Player player)
     {
         switch (state)
         {
             case State.Empty:
-                SoundManager.instance.PlaySound("WoodSound");
-
-                state = State.HasWoodLog;
+                TakeWood();
                 player.ConsumeCurrentItem();
-                currentInteractionTime = cutWoodInteractionTime;
-                woodOnTable.SetActive(true);
-                axe.SetActive(false);
                 break;
             
             case State.HasWoodLog:
