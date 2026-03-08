@@ -22,8 +22,8 @@ public class LevelManager : MonoBehaviour
     public event Action GameEnded;
     public event Action ReturnedToLobby;
 
-    public event Action<bool> SetActiveLobbyUI;
-    public event Action<bool> SetActiveInGameUI;
+    public event Action<bool> SetActiveLobbyUI; // TODO refactor, this shouldn't be an event
+    public event Action<bool> SetActiveInGameUI; // TODO refactor, this shouldn't be an event
 
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
@@ -154,9 +154,11 @@ public class LevelManager : MonoBehaviour
         GameEnded?.Invoke();
     }
 
-    public void ReturnToLobby()
+    public void ForceReturnToLobby()
     {
         SetGameStateToLobby();
+        SetActiveInGameUI?.Invoke(false);
+        SetActiveLobbyUI?.Invoke(true);
     }
     
     public void SetGameStateToLobby()

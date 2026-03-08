@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,11 +11,23 @@ public class PauseMenu: MonoBehaviour
 	[SerializeField] private GameObject pausePanel;
 	[SerializeField] private EventSystem eventSystem;
 	[SerializeField] private Selectable firstSelectable;
-	private bool isPaused;
+	public bool IsPaused { get; private set; }
+
+	public event Action Paused;
+	public event Action Resumed;
+	
+	public static PauseMenu instance;
 
 	private bool PauseKeyPressed => Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7);
 	
-	private void Awake() => pausePanel.SetActive(false);
+	public void Awake()
+	{
+		if (instance != null)
+			Destroy(instance);
+
+		instance = this;
+		pausePanel.SetActive(false);
+	}
 	
 	private void Update()
 	{
@@ -23,14 +36,14 @@ public class PauseMenu: MonoBehaviour
 
 		if (PauseKeyPressed)
 		{
-			if (isPaused)
+			if (IsPaused)
 				Resume();
 			else
 				Pause();
 			return;
 		}
 		
-		if (isPaused && eventSystem.currentSelectedGameObject == null && AnyInputPressed)
+		if (IsPaused && eventSystem.currentSelectedGameObject == null && AnyInputPressed)
 		{
 			SelectFirstSelectable();
 		}
@@ -45,18 +58,21 @@ public class PauseMenu: MonoBehaviour
 
 			foreach (Gamepad gamepad in Gamepad.all)
 			{
-				if (gamepad.allControls.OfType<ButtonControl>().Any(button => button.isPressed))
+				if (gamepad.allControls.OfType<ButtonControl>().Any(button => button.wasPressedThisFrame))
 					return true;
 			}
 			return false;
 		}
 	}
 
-	public void Resume()
+	public void Resume() => Resume(true);
+	public void Resume(bool fireEvent)
 	{
 		pausePanel.SetActive(false);
 		Time.timeScale = 1f;
-		isPaused = false;
+		IsPaused = false;
+		if (fireEvent)
+			Resumed?.Invoke();
 	}
 
 	private void Pause()
@@ -64,7 +80,8 @@ public class PauseMenu: MonoBehaviour
 		pausePanel.SetActive(true);
 		SelectFirstSelectable();
 		Time.timeScale = 0f;
-		isPaused = true;
+		IsPaused = true;
+		Paused?.Invoke();
 	}
 	
 	private void SelectFirstSelectable() => eventSystem.SetSelectedGameObject(firstSelectable.gameObject);

@@ -231,18 +231,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6860585624820578928}
     m_Modifications:
-    - target: {fileID: 1130203545514264720, guid: 51290e6b3ed2fb64199d347cc0a5022d, type: 3}
-      propertyPath: m_Volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1130203545514264720, guid: 51290e6b3ed2fb64199d347cc0a5022d, type: 3}
-      propertyPath: m_Resource
-      value: 
-      objectReference: {fileID: 8300000, guid: f7587da4b4398e941bc68701fd8112fd, type: 3}
-    - target: {fileID: 1220489916931162034, guid: 51290e6b3ed2fb64199d347cc0a5022d, type: 3}
-      propertyPath: m_Resource
-      value: 
-      objectReference: {fileID: 8300000, guid: 31624a8a1d287a4439ee6f7890e4b841, type: 3}
     - target: {fileID: 5057231382565801044, guid: 51290e6b3ed2fb64199d347cc0a5022d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -285,7 +273,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6343109053449684845, guid: 51290e6b3ed2fb64199d347cc0a5022d, type: 3}
       propertyPath: m_Name
-      value: MusicManager
+      value: SoundtrackManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

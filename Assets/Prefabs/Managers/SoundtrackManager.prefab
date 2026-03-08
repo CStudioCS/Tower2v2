@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1220489916931162034}
   - component: {fileID: 1020314369903007501}
   m_Layer: 0
-  m_Name: MusicManager
+  m_Name: SoundtrackManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6343109053449684845}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -64,6 +64,10 @@ MonoBehaviour:
   endToLobbyFadeInEase: 1
   endToLobbyFadeOutDuration: 2.5
   endToLobbyFadeOutEase: 2
+  pauseTransitionDuration: 0.25
+  pauseTransitionEase: 0
+  resumeTransitionDuration: 0.25
+  resumeTransitionEase: 0
 --- !u!82 &1130203545514264720
 AudioSource:
   m_ObjectHideFlags: 0

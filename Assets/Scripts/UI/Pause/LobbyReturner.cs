@@ -6,7 +6,7 @@ public class LobbyReturner : MonoBehaviour
     
     public void ReturnToLobby()
     {
-        pauseMenu.Resume();
-        LevelManager.Instance.ReturnToLobby();
+        pauseMenu.Resume(fireEvent: false);
+        LevelManager.Instance.ForceReturnToLobby();
     } 
 }
