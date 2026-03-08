@@ -76,9 +76,6 @@ public abstract class Interactable : MonoBehaviour
 
     private void Highlight(bool highlighted = true)
     {
-        if (spriteRenderer == null || propBlock == null)
-            return;
-            
         spriteRenderer.GetPropertyBlock(propBlock);
         propBlock.SetFloat(OutlineEnabled, highlighted? 1f: 0f);
         spriteRenderer.SetPropertyBlock(propBlock);
