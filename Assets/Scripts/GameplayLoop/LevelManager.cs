@@ -105,7 +105,7 @@ public class LevelManager : MonoBehaviour
                 else
                     winningTeam = towerRight.Height > towerLeft.Height ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
 
-                SetGameStateToLobby();
+                GameState = State.Lobby;
                 EndLevel(winningTeam);
                 CanvasLinker.Instance.timerDisplay.text = "0:00";
             }
