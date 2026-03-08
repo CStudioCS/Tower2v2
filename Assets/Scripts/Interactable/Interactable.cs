@@ -11,6 +11,8 @@ public abstract class Interactable : MonoBehaviour
     private int highlightedPlayerCount = 0;
 
     [SerializeField] protected SpriteRenderer spriteRenderer;
+    public SpriteRenderer SpriteRenderer => spriteRenderer;
+
     private MaterialPropertyBlock propBlock;
 
     public virtual void Interact(Player player) { }
