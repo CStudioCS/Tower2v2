@@ -132,7 +132,8 @@ public class GameStartManager : MonoBehaviour
         }
         else if (waitState == WaitState.PlayersNotReady)
         {
-            ChangeWaitState(WaitState.UnbalancedTeams);
+            if (!TeamsBalanced)
+                ChangeWaitState(WaitState.UnbalancedTeams);
         }
     }
 
