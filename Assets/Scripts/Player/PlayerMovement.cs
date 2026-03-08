@@ -52,12 +52,17 @@ public class PlayerMovement : MonoBehaviour
     
         rb.linearVelocity = VelocityApproach();
 
+        if (lastSpeed.sqrMagnitude < rb.linearVelocity.sqrMagnitude)
+            Accelerating?.Invoke();
+
         if (rb.linearVelocity != Vector2.zero)
         {
             lastSpeed = rb.linearVelocity;
         }
 
         player.PlayerStats.distanceTraveled += rb.linearVelocity.magnitude * Time.deltaTime;
+
+        
     }
 
 
@@ -72,8 +77,6 @@ public class PlayerMovement : MonoBehaviour
         //We wanna move and we're not at top speed -> accelerate
         if (move.sqrMagnitude > gamepadDeadzone * gamepadDeadzone && rb.linearVelocity.sqrMagnitude < maxSpeed * maxSpeed)
         {
-            Accelerating?.Invoke();
-
             //Account for the fact that move can be of norm different than one (for controllers when moving slowly)
             Vector2 apporached = (move.sqrMagnitude > gamepadmaxSpeedThreashold * gamepadmaxSpeedThreashold ? move.normalized : move) * maxSpeed;
             return Approach(rb.linearVelocity, apporached, acceleration * Time.deltaTime);

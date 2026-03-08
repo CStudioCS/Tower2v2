@@ -8,10 +8,14 @@ public class PlayerVFX : MonoBehaviour
     [SerializeField] private VisualEffect grabItemSmokePoof;
     [SerializeField] private VisualEffect playerCollionSmokePoof;
     [SerializeField] private VisualEffect accelerationSmokePoof;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    [SerializeField] private Vector2 leftAcceleratingParticulesPosition;
+    [SerializeField] private Vector2 rightAcceleratingParticulesPosition;
 
     private int consecutiveAccelerationCount;
     [Tooltip("for X frame where we accelerate, we emit a particule")]
-    [SerializeField] private int accelerationParticuleRate = 10;
+    [SerializeField] private int accelerationParticuleRate = 3;
 
     private void OnEnable()
     {
@@ -35,6 +39,11 @@ public class PlayerVFX : MonoBehaviour
         if(consecutiveAccelerationCount % accelerationParticuleRate == 0)
         {
             consecutiveAccelerationCount = 0;
+            if (!spriteRenderer.flipX)
+                accelerationSmokePoof.transform.localPosition = rightAcceleratingParticulesPosition;
+            else
+                accelerationSmokePoof.transform.localPosition = leftAcceleratingParticulesPosition;
+
             accelerationSmokePoof.Play();
         }
 
