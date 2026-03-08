@@ -7,39 +7,56 @@ public class SoundtrackManager : MonoBehaviour
 {
     [SerializeField] AudioSource inGameMusic;
     [SerializeField] AudioSource lobbyMusic;
-    [SerializeField] private float initFadeInDuration;
-    [SerializeField] private Ease initFadeInEase = Ease.Linear;
-    [SerializeField] private float startFadeInDuration;
-    [SerializeField] private Ease startFadeInEase = Ease.Linear;
-    [SerializeField] private float startFadeOutDuration;
-    [SerializeField] private Ease startFadeOutEase = Ease.Linear;
-    [SerializeField] private float endFadeInDuration;
-    [SerializeField] private Ease endFadeInEase = Ease.Linear;
-    [SerializeField] private float endFadeOutDuration;
-    [SerializeField] private Ease endFadeOutEase = Ease.Linear;
+    [SerializeField] AudioSource endScreenMusic;
+
+    [SerializeField] private float noneToLobbyFadeInDuration;
+    [SerializeField] private Ease noneToLobbyFadeInEase = Ease.Linear;
+
+    [SerializeField] private float lobbyToGameFadeInDuration;
+    [SerializeField] private Ease lobbyToGameFadeInEase = Ease.Linear;
+    [SerializeField] private float lobbyToGameFadeOutDuration;
+    [SerializeField] private Ease lobbyToGameFadeOutEase = Ease.Linear;
+
+    [SerializeField] private float gameToEndFadeInDuration;
+    [SerializeField] private Ease gameToEndFadeInEase = Ease.Linear;
+    [SerializeField] private float gameToEndFadeOutDuration;
+    [SerializeField] private Ease gameToEndFadeOutEase = Ease.Linear;
+
+    [SerializeField] private float endToLobbyFadeInDuration;
+    [SerializeField] private Ease endToLobbyFadeInEase = Ease.Linear;
+    [SerializeField] private float endToLobbyFadeOutDuration;
+    [SerializeField] private Ease endToLobbyFadeOutEase = Ease.Linear;
     private void Start()
     {
         LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
         LevelManager.Instance.GameEnded += OnGameEnded;
-        SmoothMusicFadeIn(lobbyMusic, initFadeInDuration, initFadeInEase);
+        LevelManager.Instance.ReturnedToLobby += OnBackToLobby;
+        SmoothMusicFadeIn(lobbyMusic, noneToLobbyFadeInDuration, noneToLobbyFadeInEase);
     }
 
     private void OnGameAboutToStart()
     {
-        SmoothMusicFadeIn(inGameMusic, startFadeInDuration, startFadeInEase);
-        StartCoroutine(SmoothMusicFadeOut(lobbyMusic, startFadeOutDuration, startFadeOutEase));
+        SmoothMusicFadeIn(inGameMusic, lobbyToGameFadeInDuration, lobbyToGameFadeInEase);
+        StartCoroutine(SmoothMusicFadeOut(lobbyMusic, lobbyToGameFadeOutDuration, lobbyToGameFadeOutEase));
     }
 
     private void OnGameEnded()
     {
-        SmoothMusicFadeIn(lobbyMusic, endFadeInDuration, endFadeInEase);
-        StartCoroutine(SmoothMusicFadeOut(inGameMusic, endFadeOutDuration, endFadeOutEase));
+        SmoothMusicFadeIn(endScreenMusic, gameToEndFadeInDuration, gameToEndFadeInEase);
+        StartCoroutine(SmoothMusicFadeOut(inGameMusic, gameToEndFadeOutDuration, gameToEndFadeOutEase));
+    }
+
+    private void OnBackToLobby()
+    {
+        SmoothMusicFadeIn(lobbyMusic, endToLobbyFadeInDuration, endToLobbyFadeInEase);
+        StartCoroutine(SmoothMusicFadeOut(endScreenMusic, endToLobbyFadeOutDuration, endToLobbyFadeOutEase));
     }
 
     private void OnDisable()
     {
         LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
         LevelManager.Instance.GameEnded -= OnGameEnded;
+        LevelManager.Instance.ReturnedToLobby -= OnBackToLobby;
     }
 
     private void SmoothMusicFadeIn(AudioSource targetAudioSource,float transitionTime, Ease ease)
