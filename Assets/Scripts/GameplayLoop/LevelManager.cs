@@ -95,8 +95,10 @@ public class LevelManager : MonoBehaviour
             LevelTimer += Time.deltaTime;
             float timeRemaining = timerLimit - LevelTimer;
             int minutes = Mathf.FloorToInt(timeRemaining / 60);
-            int seconds = Mathf.CeilToInt(timeRemaining % 60);
-            if (seconds == 60) { minutes++; seconds = 0; }
+            // I'm not sure which logic is best... should it would down to 0 or to 1
+            int seconds = Mathf.FloorToInt(timeRemaining % 60);
+            // int seconds = Mathf.CeilToInt(timeRemaining % 60);
+            // if (seconds == 60) { minutes++; seconds = 0; }
             CanvasLinker.Instance.timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
 
             if (LevelTimer >= timerLimit)

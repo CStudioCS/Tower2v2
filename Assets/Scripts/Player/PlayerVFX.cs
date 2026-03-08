@@ -6,21 +6,15 @@ public class PlayerVFX : MonoBehaviour
     [SerializeField] private Player player;
     [SerializeField] private VisualEffect grabItemSmokePoof;
     [SerializeField] private VisualEffect playerCollionSmokePoof;
-    [SerializeField] private VisualEffect accelerationSmokePoof;
+    [SerializeField] private VisualEffect walkSmokePoof;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
-    [SerializeField] private Vector2 leftAcceleratingParticulesPosition;
-    [SerializeField] private Vector2 rightAcceleratingParticulesPosition;
+    [SerializeField] private float distanceBetweenPoofs = 1f;
+    private float accumulatedDistance;
 
     private void OnEnable()
     {
         player.GrabbedNewItem += OnGrabbedNewItem;
-    }
-
-    private void Update()
-    {
-        if (player.PlayerMovement.Accelerating)
-            AcceleratingUpdate();
     }
 
     private void OnGrabbedNewItem()
@@ -34,14 +28,15 @@ public class PlayerVFX : MonoBehaviour
         playerCollionSmokePoof.Play();
     }
 
-    private void AcceleratingUpdate()
+    private void FixedUpdate()
     {
-        if (!spriteRenderer.flipX)
-            accelerationSmokePoof.transform.localPosition = rightAcceleratingParticulesPosition;
-        else
-            accelerationSmokePoof.transform.localPosition = leftAcceleratingParticulesPosition;
+        accumulatedDistance += player.PlayerMovement.Rb.linearVelocity.magnitude * Time.deltaTime;
 
-        accelerationSmokePoof.Play();
+        if (accumulatedDistance >= distanceBetweenPoofs)
+        {
+            walkSmokePoof.Play();
+            accumulatedDistance -= distanceBetweenPoofs;
+        }
     }
 
     private void OnDisable()
