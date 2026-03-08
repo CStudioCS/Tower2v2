@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class Workbench : Interactable
 {
+    public enum State { Empty, HasWoodLog, HasWoodPlank }
     private State state;
+    public State WorkbenchState => state;
 
     [SerializeField] private float putOrPickUpItemInteractionTime = 0f;
     [SerializeField] private float cutWoodInteractionTime = 1f;
@@ -16,8 +18,6 @@ public class Workbench : Interactable
     [SerializeField] private GameObject woodOnTable;
     [SerializeField] private GameObject woodPlanckOnTable;
     [SerializeField] private GameObject axe;
-
-    private enum State { Empty, HasWoodLog, HasWoodPlank }
 
     private int soundIndex = -1;
 
@@ -44,18 +44,23 @@ public class Workbench : Interactable
         }
     }
 
+    public void PutWoodLog()
+    {
+        SoundManager.instance.PlaySound("WoodSound");
+
+        state = State.HasWoodLog;
+        currentInteractionTime = cutWoodInteractionTime;
+        woodOnTable.SetActive(true);
+        axe.SetActive(false);
+    }
+
     public override void Interact(Player player)
     {
         switch (state)
         {
             case State.Empty:
-                SoundManager.instance.PlaySound("WoodSound");
-
-                state = State.HasWoodLog;
+                PutWoodLog();
                 player.ConsumeCurrentItem();
-                currentInteractionTime = cutWoodInteractionTime;
-                woodOnTable.SetActive(true);
-                axe.SetActive(false);
                 break;
             
             case State.HasWoodLog:
