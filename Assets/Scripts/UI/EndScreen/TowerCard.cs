@@ -92,9 +92,9 @@ public class TowerCard : MonoBehaviour
             yield return new WaitForSeconds(towerPieceWaitTime);
         }
 
-        RectTransform winningTowerUI = leftWon ? leftTowerUI : rightTowerUI;
-        RectTransform losingTowerUI = leftWon ? rightTowerUI : leftTowerUI;
-        int mirrorMult = leftWon ? 1 : -1;
+        // RectTransform winningTowerUI = leftWon ? leftTowerUI : rightTowerUI;
+        // RectTransform losingTowerUI = leftWon ? rightTowerUI : leftTowerUI;
+        // int mirrorMult = leftWon ? 1 : -1;
 
         //kick
         if (leftWon)

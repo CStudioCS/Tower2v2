@@ -43,25 +43,9 @@ public class PauseMenu: MonoBehaviour
 			return;
 		}
 		
-		if (IsPaused && eventSystem.currentSelectedGameObject == null && AnyInputPressed)
+		if (IsPaused && eventSystem.currentSelectedGameObject == null && InputUtility.AnyInputPressed)
 		{
 			SelectFirstSelectable();
-		}
-	}
-
-	private bool AnyInputPressed
-	{
-		get
-		{
-			if (Input.anyKeyDown)
-				return true;
-
-			foreach (Gamepad gamepad in Gamepad.all)
-			{
-				if (gamepad.allControls.OfType<ButtonControl>().Any(button => button.wasPressedThisFrame))
-					return true;
-			}
-			return false;
 		}
 	}
 
