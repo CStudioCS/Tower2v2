@@ -1,20 +1,15 @@
-using TMPro;
 using UnityEngine;
 
 public class TeamStatsDisplay : MonoBehaviour
 {
-    [SerializeField] private TMP_Text Stat1Text;
-    [SerializeField] private TMP_Text Stat2Text;
-    [SerializeField] private TMP_Text Stat3Text;
+    [SerializeField] private StatDisplayer[] statDisplayers;
 
-    public float teamDistanceTraveled { get; set; }
-    public int teamItemsStolen { get; set; }
-    public int teamWoodCut { get; set; }
-
-    public void UpdateText()
+    public void Initialize(TeamStats stats)
     {
-        Stat1Text.text = "Distance traveled : " + Mathf.Round(teamDistanceTraveled);
-        Stat3Text.text = "Items stolen : " + teamItemsStolen;
-        Stat2Text.text = "Wood cut : " + teamWoodCut;
+        for (int i = 0; i < statDisplayers.Length; i++)
+        {
+            StatDisplayer statDisplayer = statDisplayers[i];
+            statDisplayer.Initialize(stats.stats[i]);
+        }
     }
 }

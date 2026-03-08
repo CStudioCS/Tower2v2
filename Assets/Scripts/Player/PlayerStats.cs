@@ -11,7 +11,7 @@ public class PlayerStats : MonoBehaviour
     public int clayCollected;
     public int bricksCooked;
 
-    public float distanceTraveled;
+    public float distanceTravelled;
 
     private void Awake()
     {
@@ -48,7 +48,7 @@ public class PlayerStats : MonoBehaviour
         clayCollected = 0;
         bricksCooked = 0;
 
-        distanceTraveled = 0;
+        distanceTravelled = 0;
     }
 
     private void OnDisable()
