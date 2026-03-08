@@ -118,12 +118,13 @@ public class LobbyManager : MonoBehaviour
             }
         }
 
+        string manufacturer = Gamepad.current.device.description.manufacturer.ToLower();
         string deviceName = Gamepad.current.displayName.ToLower();
         string description = Gamepad.current.description.product.ToLower();
 
         // Join using the Gamepad device. 
         // Leave controlScheme null or set to "Gamepad" if you have a specific scheme named that.
-        if (IsSwitchController(deviceName, description))
+        if (IsSwitchController(deviceName, description, manufacturer))
         {
             playerInputManager.JoinPlayer(
             playerIndex: -1,
@@ -132,7 +133,7 @@ public class LobbyManager : MonoBehaviour
             pairWithDevice: gamepad
             );
         }
-        else if (IsPlayStationController(deviceName, description))
+        else if (IsPlayStationController(deviceName, description, manufacturer))
         {
             playerInputManager.JoinPlayer(
             playerIndex: -1,
@@ -151,21 +152,23 @@ public class LobbyManager : MonoBehaviour
             );
         }
     }
-    bool IsSwitchController(string name, string product)
+    bool IsSwitchController(string name, string product, string manufacturer)
     {
         return name.Contains("switch") ||
                name.Contains("joy-con") ||
                product.Contains("switch") ||
                product.Contains("joy-con") ||
-               product.Contains("pro controller");
+               product.Contains("pro controller") ||
+               manufacturer.Contains("nintendo");
     }
-    bool IsPlayStationController(string name, string product)
+    bool IsPlayStationController(string name, string product, string manufacturer)
     {
         return name.Contains("dualshock") ||
                name.Contains("dualsense") ||
                name.Contains("wireless controller") ||
                product.Contains("dualshock") ||
-               product.Contains("dualsense");
+               product.Contains("dualsense") ||
+               manufacturer.Contains("sony");
     }
 
     private void JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes controlSchemeName)

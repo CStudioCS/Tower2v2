@@ -372,6 +372,9 @@ PrefabInstance:
     - target: {fileID: 2686114017756490575, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: endToLobbyFadeOutDuration
       value: 2.5
+    - target: {fileID: 2914927600258276031, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: DebugMode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5951444765711152512, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: m_Name
