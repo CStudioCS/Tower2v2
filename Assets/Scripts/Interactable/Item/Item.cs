@@ -64,9 +64,9 @@ public class Item : Interactable
         float rotationDeviation = Random.Range(1 - rotationSpeedVariance, 1 + rotationSpeedVariance);
 
         Vector2 lastSpeed = LastOwner.PlayerMovement.LastSpeed;
-        Vector2 speedDirection =lastSpeed.normalized;
+        Vector2 speedDirection = lastSpeed.normalized;
 
-        float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(Mathf.Abs(lastSpeed.magnitude), minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);//speed if not null else a percentage of max speed
+        float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(Mathf.Abs(LastOwner.PlayerMovement.Velocity.magnitude), minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);//speed if not null else a percentage of max speed
         rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionDeviation;
         rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
 

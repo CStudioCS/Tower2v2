@@ -26,7 +26,7 @@ public class Tower : Interactable
 
     private Item.Type lastBlockType;
 
-    private Vector2 NewPiecePosition;
+    private Vector2 newPieceLocalPosition;
     private Dictionary<Item.Type, TowerPiece> towerPieceMap;
     private Dictionary<Item.Type, TowerPiece> TowerPieceMap
     {
@@ -58,14 +58,14 @@ public class Tower : Interactable
         _ => Vector2.zero
     };
 
-    public Vector2 PreviousPiecePosition => NewPiecePosition - blockOffset;
+    public Vector2 PreviousPieceLocalPosition => newPieceLocalPosition - blockOffset;
 
     private int NextPieceSortingOrder => Height;
 
     protected override void OnGameAboutToStart()
     {
         base.OnGameAboutToStart();
-        NewPiecePosition = (Vector2)transform.position;
+        newPieceLocalPosition = Vector2.zero;
         ResetTower();
     }
 
@@ -107,8 +107,9 @@ public class Tower : Interactable
         SoundManager.instance.PlaySound("TowerBuild");
 
         colliderToActivateUponBuilding.enabled = true;
-        NewPiecePosition += blockOffset;
-        TowerPiece towerPieceInstance = Instantiate(towerPiece, NewPiecePosition, Quaternion.identity, towerPiecesParent);
+        newPieceLocalPosition += blockOffset;
+        TowerPiece towerPieceInstance = Instantiate(towerPiece, towerPiecesParent);
+        towerPieceInstance.transform.localPosition = newPieceLocalPosition;
         towerPieceInstance.Initialize(this, NextPieceSortingOrder);
         towerPieces.Add(towerPieceInstance);
         lastBlockType = item.ItemType;
@@ -121,10 +122,11 @@ public class Tower : Interactable
 
     private void UpdateTowerTopUI()
     {
-        if (Height > 0)
-            onTowerFlag.position = (Vector2)towerPieces[^1].transform.position + blockOffset + flagOffset;
-        else
-            onTowerFlag.position = (Vector2)gameObject.transform.position + flagOffset;
+        onTowerFlag.localPosition = newPieceLocalPosition;
+        // if (Height > 0)
+        //     onTowerFlag.position = (Vector2)towerPieces[^1].transform.position + blockOffset + flagOffset;
+        // else
+        //     onTowerFlag.position = (Vector2)gameObject.transform.position + flagOffset;
 
         Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, onTowerFlag.position);
 

@@ -18,7 +18,7 @@ public class TowerView : MonoBehaviour
 
     private void OnPieceBuilt()
     {
-        vfx.transform.position = tower.PreviousPiecePosition;
+        vfx.transform.localPosition = tower.PreviousPieceLocalPosition;
         vfx.Play();
     }
 
