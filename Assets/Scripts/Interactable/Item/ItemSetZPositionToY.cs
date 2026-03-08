@@ -3,6 +3,8 @@ using UnityEngine;
 public class ItemSetZPositionToY: MonoBehaviour
 {
 	[SerializeField] private Item item;
+	[SerializeField] private float droppedZOffset = .5f;
+	private float ZOffset => item.State == Item.ItemState.Dropped ? -droppedZOffset : 0;
 
 	private void OnEnable()
 	{
@@ -22,7 +24,7 @@ public class ItemSetZPositionToY: MonoBehaviour
 
 	private void UpdatePosition()
 	{
-		transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.y);
+		transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.y + ZOffset);
 	}
 
 	private void LateUpdate()

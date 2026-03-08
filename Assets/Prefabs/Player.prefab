@@ -215,7 +215,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 2
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 1
 --- !u!95 &5868846420980485048
 Animator:
@@ -256,7 +256,6 @@ GameObject:
   - component: {fileID: -6306556956286896828}
   - component: {fileID: -7975852267515287093}
   - component: {fileID: 176917095401970236}
-  - component: {fileID: 6257561639965638062}
   - component: {fileID: 5125476753773754566}
   - component: {fileID: 4519425206981744789}
   m_Layer: 0
@@ -454,18 +453,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!210 &6257561639965638062
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4067928945899315388}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_SortAtRoot: 0
 --- !u!58 &5125476753773754566
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -516,12 +503,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTeam: {fileID: 4720667436485828352}
   collisionGameObject: {fileID: 6781368016375779301}
-  playerBlueCollisionLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  playerRedCollisionLayerMask:
-    serializedVersion: 2
-    m_Bits: 16384
+  playerBlueCollisionLayerMaskName: PlayerBlueCollision
+  playerRedCollisionLayerMaskName: PlayerRedCollision
 --- !u!1 &4296346886437397786
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,6 +618,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1423836821886483448}
   - component: {fileID: 7485556060957296592}
+  - component: {fileID: 8193067979133919196}
   m_Layer: 0
   m_Name: ZOffset
   m_TagString: Untagged
@@ -672,6 +656,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStatic: 0
+--- !u!210 &8193067979133919196
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6454082161551069598}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &6631794234756490610
 GameObject:
   m_ObjectHideFlags: 0
