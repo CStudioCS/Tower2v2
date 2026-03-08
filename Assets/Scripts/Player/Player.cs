@@ -30,6 +30,8 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerAnimationController playerAnimationController;  // TODO remove reference, fix bad animation coupling
     [SerializeField] private Transform itemParent;
 
+    public Action GrabbedNewItem;
+
     private InputAction interactAction;
     private Interactable closestInteractable;
 
@@ -188,6 +190,8 @@ public class Player : MonoBehaviour
             itemInstance.originallyCollectedByTeam = team;
         else
             itemInstance.originallyCollectedByTeam = playerTeam.CurrentTeam;
+
+        GrabbedNewItem?.Invoke();
     }
 
     public void GrabItem(Item item, bool interpolatePosition)
