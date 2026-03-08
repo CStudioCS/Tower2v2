@@ -76,8 +76,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43c9a511ad3f4153b38cabd25ae13030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  repeatDelay: 0.4
-  repeatRate: 0.12
+  repeatDelay: 0.5
+  repeatRate: 0.1
   deadzone: 0.5
   sliderSpeed: 1
   mouseMovementThreshold: 2

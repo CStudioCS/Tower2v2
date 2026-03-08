@@ -412,6 +412,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pausePanel: {fileID: 2177388484796541356}
+  eventSystem: {fileID: 0}
+  firstSelectable: {fileID: 681037732567733768}
 --- !u!1 &6202233857561352140
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,3 +929,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8979111321436333720, guid: 3a2c04092d49ea449892ed4d8181fe12, type: 3}
   m_PrefabInstance: {fileID: 8989897224333425023}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &681037732567733768 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8480576962564173687, guid: 3a2c04092d49ea449892ed4d8181fe12, type: 3}
+  m_PrefabInstance: {fileID: 8989897224333425023}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
