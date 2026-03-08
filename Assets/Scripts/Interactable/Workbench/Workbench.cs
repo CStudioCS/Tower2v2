@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class Workbench : Interactable
 {
+    public enum State { Empty, HasWoodLog, HasWoodPlank }
     private State state;
+    public State WorkbenchState => state;
 
     [SerializeField] private float putOrPickUpItemInteractionTime = 0f;
     [SerializeField] private float cutWoodInteractionTime = 1f;
@@ -16,10 +18,6 @@ public class Workbench : Interactable
     [SerializeField] private GameObject woodOnTable;
     [SerializeField] private GameObject woodPlanckOnTable;
     [SerializeField] private GameObject axe;
-
-    public enum State { Empty, HasWoodLog, HasWoodPlank }
-
-    public State WorkbenchState => state;
 
     private int soundIndex = -1;
 
