@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 8569902203551738096}
+  droppedZOffset: 0.5
 --- !u!58 &5611164556063414744
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -447,7 +448,7 @@ GameObject:
   m_Component:
   - component: {fileID: 41565674148638315}
   - component: {fileID: 8634384408421064618}
-  m_Layer: 11
+  m_Layer: 17
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -462,7 +463,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6949819470700435689}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -492,7 +493,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c9e2f232f9e0aa841861688f596cbe5b, type: 2}
+  - {fileID: 2100000, guid: 434de2878be8c064fa8babed1c8893a9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -522,5 +523,5 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
-  m_MaskInteraction: 2
-  m_SpriteSortPoint: 0
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 1

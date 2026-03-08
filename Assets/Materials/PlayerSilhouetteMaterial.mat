@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SilhouetteMaterial
+  m_Name: PlayerSilhouetteMaterial
   m_Shader: {fileID: -6465566751694194690, guid: eeb526c93980c1b4588484a2a1a52bc0, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

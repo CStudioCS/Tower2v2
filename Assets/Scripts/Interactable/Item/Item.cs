@@ -5,11 +5,14 @@ using Random = UnityEngine.Random;
 
 public class Item : Interactable
 {
+    private static readonly int SilhouetteColorString = Shader.PropertyToID("_SilhouetteColor");
+
     public enum Type { Straw, WoodLog, WoodPlank, Clay, Brick }
 
     [Header("Item")]
     [SerializeField] private Type itemType;
     public Type ItemType => itemType;
+    [SerializeField] private Color silhouetteColor = Color.black;
     public Player LastOwner { get; set; }
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Collider2D itemCollider;
@@ -37,6 +40,15 @@ public class Item : Interactable
         State = ItemState.Dropped;
         LevelManager.Instance.GameEnded += Disappear;
         trailRenderer.emitting = false;
+        SetSilhouetteColor(silhouetteColor);
+    }
+
+    private void SetSilhouetteColor(Color color)
+    {
+        MaterialPropertyBlock propBlock = new();
+        spriteRenderer.GetPropertyBlock(propBlock);
+        propBlock.SetColor(SilhouetteColorString, color);
+        spriteRenderer.SetPropertyBlock(propBlock);
     }
 
     public override bool CanInteract(Player player) => !player.IsHolding && State == ItemState.Dropped && LevelManager.InGame;

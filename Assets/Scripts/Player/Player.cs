@@ -203,8 +203,8 @@ public class Player : MonoBehaviour
 
         if (interpolatePosition)
         {
-            grabbingLerp = LMotion.Create(item.transform.localPosition, Vector3.zero, item.GrabbingTime).Bind(x => { if (item != null) item.transform.localPosition = x; });
-            rotationLerp = LMotion.Create(item.transform.localRotation, Quaternion.identity, item.GrabbingTime).Bind(x => { if (item != null) item.transform.localRotation = x; });
+            grabbingLerp = LMotion.Create((Vector2) item.transform.localPosition, Vector2.zero, item.GrabbingTime).Bind(position => { if (item != null) item.transform.localPosition = position; });
+            rotationLerp = LMotion.Create(item.transform.localRotation, Quaternion.identity, item.GrabbingTime).Bind(rotation => { if (item != null) item.transform.localRotation = rotation; });
         }
         else
             item.transform.localPosition = Vector2.zero;
