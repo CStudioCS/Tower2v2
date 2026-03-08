@@ -13,6 +13,7 @@ public class Item : Interactable
     public Player LastOwner { get; set; }
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Collider2D itemCollider;
+    [SerializeField] private TrailRenderer trailRenderer;
     [SerializeField] private float ejectionSpeedMultiplier;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float ejectionSpeedVariance;
@@ -35,6 +36,7 @@ public class Item : Interactable
         itemCollider.enabled = false;
         State = ItemState.Dropped;
         LevelManager.Instance.GameEnded += Disappear;
+        trailRenderer.emitting = false;
     }
 
     public override bool CanInteract(Player player) => !player.IsHolding && State == ItemState.Dropped && LevelManager.InGame;
@@ -52,6 +54,7 @@ public class Item : Interactable
         rb.angularVelocity = 0;
         rb.simulated = false;
         itemCollider.enabled = false;
+        trailRenderer.emitting = false;
     }
 
     public void Drop()
@@ -70,6 +73,7 @@ public class Item : Interactable
         rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionDeviation;
         rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
 
+        trailRenderer.emitting = true;
         State = ItemState.Dropped;
         Dropped?.Invoke();
         SoundManager.instance.PlaySound("ItemDrop");
