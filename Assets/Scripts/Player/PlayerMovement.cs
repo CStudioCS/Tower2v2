@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
     private InputAction moveAction;
 
     private bool gameStartingLock;
+
+    public Action Accelerating;
 
     private void Awake()
     {
@@ -69,6 +72,8 @@ public class PlayerMovement : MonoBehaviour
         //We wanna move and we're not at top speed -> accelerate
         if (move.sqrMagnitude > gamepadDeadzone * gamepadDeadzone && rb.linearVelocity.sqrMagnitude < maxSpeed * maxSpeed)
         {
+            Accelerating?.Invoke();
+
             //Account for the fact that move can be of norm different than one (for controllers when moving slowly)
             Vector2 apporached = (move.sqrMagnitude > gamepadmaxSpeedThreashold * gamepadmaxSpeedThreashold ? move.normalized : move) * maxSpeed;
             return Approach(rb.linearVelocity, apporached, acceleration * Time.deltaTime);
