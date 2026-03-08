@@ -373,10 +373,10 @@
     "m_Guid": {
         "m_GuidSerialized": "75752b1b-e2f0-4229-8dbc-e6c23e625644"
     },
-    "m_Name": "Color",
+    "m_Name": "SilhouetteColor",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Color",
-    "m_DefaultReferenceName": "_Color",
+    "m_RefNameGeneratedByDisplayName": "SilhouetteColor",
+    "m_DefaultReferenceName": "_SilhouetteColor",
     "m_OverrideReferenceName": "",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
@@ -841,7 +841,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "e0e50015e87544eead5ee2544c65a9ff",
     "m_Id": 0,
-    "m_DisplayName": "Color",
+    "m_DisplayName": "SilhouetteColor",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
