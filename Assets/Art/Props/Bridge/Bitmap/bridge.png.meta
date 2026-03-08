@@ -57,7 +57,7 @@ TextureImporter:
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 200
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -110,18 +110,18 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 360
-        width: 220
-        height: 180
+        y: 720
+        width: 440
+        height: 360
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: fe0661c19fd0e09a0800000000000000
+      spriteID: 4b5af4090bd891f44b0908ade576425e
       internalID: -6265054668056534801
       vertices: []
       indices: 
@@ -132,18 +132,18 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 180
-        width: 220
-        height: 180
+        y: 360
+        width: 440
+        height: 360
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 17ad5a140a7a7caf0800000000000000
+      spriteID: 5cb16ba1b93a62040993deeb817d2079
       internalID: -376147737124152719
       vertices: []
       indices: 
@@ -155,17 +155,17 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 220
-        height: 180
+        width: 440
+        height: 360
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: b5554f177d11e9580800000000000000
+      spriteID: c603a05b6a89d334f833ff9e4d4ef5e1
       internalID: -8818591403317373605
       vertices: []
       indices: 
