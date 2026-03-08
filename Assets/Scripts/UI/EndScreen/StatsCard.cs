@@ -35,17 +35,19 @@ public class StatsCard : MonoBehaviour
         for (int i = 0; i < playerInputs.Count; i++)
             players[i] = playerInputs[i].GetComponent<Player>();
 
+        TeamStats blueTeamStats = new TeamStats(PlayerTeam.Team.Left);
+        TeamStats redTeamStats = new TeamStats(PlayerTeam.Team.Right);;
+        
         for (int i = 0; i < players.Length; i++)
         {
-            TeamStatsDisplay teamStatsDisplay = players[i].PlayerTeam.CurrentTeam == PlayerTeam.Team.Left ? blueStatsDisplays : redStatsDisplays;
+            TeamStats teamStats = players[i].PlayerTeam.CurrentTeam == PlayerTeam.Team.Left ? blueTeamStats : redTeamStats;
 
-            teamStatsDisplay.teamItemsStolen += players[i].PlayerStats.stolenItems;
-            teamStatsDisplay.teamWoodCut += players[i].PlayerStats.woodCut;
-            teamStatsDisplay.teamDistanceTraveled += players[i].PlayerStats.distanceTraveled;
-            
+            teamStats.itemsStolen.Add(players[i].PlayerStats.stolenItems);
+            teamStats.woodCut.Add(players[i].PlayerStats.woodCut);
+            teamStats.distanceTravelled.Add((int) players[i].PlayerStats.distanceTravelled);
         }
 
-        blueStatsDisplays.UpdateText();
-        redStatsDisplays.UpdateText();
+        blueStatsDisplays.Initialize(blueTeamStats);
+        redStatsDisplays.Initialize(redTeamStats);
     }
 }

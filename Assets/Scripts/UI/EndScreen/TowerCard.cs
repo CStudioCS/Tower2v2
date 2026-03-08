@@ -1,10 +1,8 @@
-using LitMotion;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
+using LitMotion;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TowerCard : MonoBehaviour
 {
@@ -48,15 +46,16 @@ public class TowerCard : MonoBehaviour
         bool leftWon = scoreLeft >= scoreRight;
         int minScore = leftWon ? scoreRight : scoreLeft;
 
-        if(scoreLeft == 0 && scoreRight == 0)
+        bool draw = scoreLeft == 0 && scoreRight == 0;
+        if (draw)
         {
-            leftScoreText.text = "huh ?\n0";
-            rightScoreText.text = "draw ?\n0";
+            leftScoreText.text = "huh?\n0";
+            rightScoreText.text = "draw?\n0";
         }
         else
         {
-            leftScoreText.text = (leftWon ? "BLUE WINS !\n" : "\n") + scoreLeft;
-            rightScoreText.text = (!leftWon ? "RED WINS !\n" : "\n") + scoreRight;
+            leftScoreText.text = (leftWon ? "BLUE WINS!\n" : "\n") + scoreLeft;
+            rightScoreText.text = (!leftWon ? "RED WINS!\n" : "\n") + scoreRight;
         }
 
         //reset
@@ -102,7 +101,8 @@ public class TowerCard : MonoBehaviour
         else
             towerAnimator.SetTrigger("KickToLeft");
 
-        SoundManager.instance.PlaySound("TowerKick");
+        if (!draw)
+            SoundManager.instance.PlaySound("TowerKick");
         
         yield return null; //wait one frame for animator to change state (kinda ghetto)
         yield return new WaitForSeconds(towerAnimator.GetCurrentAnimatorStateInfo(0).length);

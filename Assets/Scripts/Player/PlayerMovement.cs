@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
 
         lastSpeed = rb.linearVelocity;
 
-        player.PlayerStats.distanceTraveled += rb.linearVelocity.magnitude * Time.deltaTime;
+        player.PlayerStats.distanceTravelled += rb.linearVelocity.magnitude * Time.deltaTime;
     }
 
 
