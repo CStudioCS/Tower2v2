@@ -46,7 +46,7 @@ public class Workbench : Interactable
         }
     }
 
-    public void TakeWood()
+    public void PutWoodLog()
     {
         SoundManager.instance.PlaySound("WoodSound");
 
@@ -61,7 +61,7 @@ public class Workbench : Interactable
         switch (state)
         {
             case State.Empty:
-                TakeWood();
+                PutWoodLog();
                 player.ConsumeCurrentItem();
                 break;
             

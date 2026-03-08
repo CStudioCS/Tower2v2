@@ -18,7 +18,7 @@ public class WorkbenchItemCatcher : MonoBehaviour
             return;
 
 
-        workbench.TakeWood();
+        workbench.PutWoodLog();
         Destroy(collision.gameObject);
     }
 }
