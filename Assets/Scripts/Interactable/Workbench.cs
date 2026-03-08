@@ -21,7 +21,11 @@ public class Workbench : Interactable
 
     private int soundIndex = -1;
 
-    private void Awake() => ResetGraphicsOnTable();
+    private void Awake()
+    {
+        base.Awake();
+        ResetGraphicsOnTable();
+    }
 
     public override bool CanInteract(Player player)
     {
