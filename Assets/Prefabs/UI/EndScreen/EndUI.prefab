@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6785f5ffb6381c1458736cfdbf62be9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BigEndWaitTime: 1.5
+  BigEndWaitTime: 0.5
   dropdownOffset: {x: 0, y: 0}
   BigEnd: {fileID: 5533240779168227671}
   TowerCard: {fileID: 3011132168818844234}
