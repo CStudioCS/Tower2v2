@@ -19,18 +19,18 @@ PrefabInstance:
     - target: {fileID: 2362700878289228671, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1035167686123953700}
+      objectReference: {fileID: 7578732575783494053}
     - target: {fileID: 2362700878289228671, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2362700878289228671, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OpenLink
+      value: ReturnToLobby
       objectReference: {fileID: 0}
     - target: {fileID: 2362700878289228671, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LinkOpener, Assembly-CSharp
+      value: LobbyReturner, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2362700878289228671, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -118,7 +118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3942596168792816011, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: m_Name
-      value: ReturnToMenuButton
+      value: ReturnToLobbyButton
       objectReference: {fileID: 0}
     - target: {fileID: 4139160764111887160, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       propertyPath: m_text
@@ -130,14 +130,14 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3942596168792816011, guid: 398e9c03496e1804c99038415f93603d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1035167686123953700}
+      addedObject: {fileID: 7578732575783494053}
   m_SourcePrefab: {fileID: 100100000, guid: 398e9c03496e1804c99038415f93603d, type: 3}
 --- !u!1 &7191714711931929987 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3942596168792816011, guid: 398e9c03496e1804c99038415f93603d, type: 3}
   m_PrefabInstance: {fileID: 6158936643787127816}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1035167686123953700
+--- !u!114 &7578732575783494053
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7191714711931929987}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 594d7157bc024f8fa3be1fa63f637707, type: 3}
+  m_Script: {fileID: 11500000, guid: 8c206477fbf89884aaf2a118740bbf1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  url: https://forms.gle/Pb2vpkuN4zwG2oEW6
+  pauseMenu: {fileID: 0}

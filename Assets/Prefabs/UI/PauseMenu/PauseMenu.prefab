@@ -725,6 +725,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ReturnToMenuButton
       objectReference: {fileID: 0}
+    - target: {fileID: 7578732575783494053, guid: 20008ad1e63675741b0cb2eed3a8b98c, type: 3}
+      propertyPath: pauseMenu
+      value: 
+      objectReference: {fileID: 1246151284813255511}
     - target: {fileID: 8979111321436333720, guid: 20008ad1e63675741b0cb2eed3a8b98c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

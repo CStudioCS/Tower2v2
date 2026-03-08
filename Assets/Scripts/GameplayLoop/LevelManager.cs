@@ -1,9 +1,7 @@
-using LitMotion;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
@@ -107,7 +105,7 @@ public class LevelManager : MonoBehaviour
                 else
                     winningTeam = towerRight.Height > towerLeft.Height ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
 
-                GameState = State.Lobby;
+                SetGameStateToLobby();
                 EndLevel(winningTeam);
                 CanvasLinker.Instance.timerDisplay.text = "0:00";
             }
@@ -156,6 +154,11 @@ public class LevelManager : MonoBehaviour
         GameEnded?.Invoke();
     }
 
+    public void ReturnToLobby()
+    {
+        SetGameStateToLobby();
+    }
+    
     public void SetGameStateToLobby()
     {
         ActivateLobbyObjects(true);
