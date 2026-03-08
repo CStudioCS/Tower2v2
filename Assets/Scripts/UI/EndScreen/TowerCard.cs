@@ -97,11 +97,12 @@ public class TowerCard : MonoBehaviour
         int mirrorMult = leftWon ? 1 : -1;
 
         //kick
-        if(leftWon)
+        if (leftWon)
             towerAnimator.SetTrigger("KickToRight");
         else
             towerAnimator.SetTrigger("KickToLeft");
 
+        SoundManager.instance.PlaySound("TowerKick");
         
         yield return null; //wait one frame for animator to change state (kinda ghetto)
         yield return new WaitForSeconds(towerAnimator.GetCurrentAnimatorStateInfo(0).length);

@@ -101,3 +101,6 @@ MonoBehaviour:
   - name: EndLevel
     clip: {fileID: 8300000, guid: f1fa581018e82784dbaf121f6bd5eb8f, type: 3}
     volume: 1
+  - name: TowerKick
+    clip: {fileID: 8300000, guid: 6172633f0f4b2a14da3325f2631122e5, type: 3}
+    volume: 1

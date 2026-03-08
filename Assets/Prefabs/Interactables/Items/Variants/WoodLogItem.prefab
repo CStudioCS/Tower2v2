@@ -12,6 +12,22 @@ PrefabInstance:
       propertyPath: m_Resource
       value: 
       objectReference: {fileID: 8300000, guid: 0dc861394fd09c94ab0c0e51d44acc25, type: 3}
+    - target: {fileID: -7033350463006825601, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.b
+      value: 0.20784315
+      objectReference: {fileID: 0}
+    - target: {fileID: -7033350463006825601, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.g
+      value: 0.2392157
+      objectReference: {fileID: 0}
+    - target: {fileID: -7033350463006825601, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.r
+      value: 0.3803922
+      objectReference: {fileID: 0}
+    - target: {fileID: -7033350463006825601, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: m_Parameters.colorGradient.m_ColorSpace
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -256997523848646438, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
       value: 4.81
