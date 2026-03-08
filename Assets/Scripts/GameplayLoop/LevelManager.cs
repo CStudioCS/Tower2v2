@@ -131,13 +131,13 @@ public class LevelManager : MonoBehaviour
         if(delay > 0f)
             CanvasLinker.Instance.countdown.SetTrigger(CountdownString);
 
+        ItemRandomizer.Instance.Reset();
         GameAboutToStart?.Invoke();
 
         yield return new WaitForSeconds(delay);
 
         GameState = State.Game;
         LevelTimer = 0;
-        ItemRandomizer.Instance.Reset();
         ActivateInGameObjects(true);
         GameStarted?.Invoke();
     }
