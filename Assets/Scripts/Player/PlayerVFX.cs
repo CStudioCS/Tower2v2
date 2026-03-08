@@ -4,7 +4,6 @@ using UnityEngine.VFX;
 public class PlayerVFX : MonoBehaviour
 {
     [SerializeField] private Player player;
-    [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private VisualEffect grabItemSmokePoof;
     [SerializeField] private VisualEffect playerCollionSmokePoof;
     [SerializeField] private VisualEffect accelerationSmokePoof;
@@ -16,7 +15,12 @@ public class PlayerVFX : MonoBehaviour
     private void OnEnable()
     {
         player.GrabbedNewItem += OnGrabbedNewItem;
-        playerMovement.Accelerating += OnAccelerating;
+    }
+
+    private void Update()
+    {
+        if (player.PlayerMovement.Accelerating)
+            OnAccelerating();
     }
 
     private void OnGrabbedNewItem()
@@ -43,7 +47,6 @@ public class PlayerVFX : MonoBehaviour
     private void OnDisable()
     {
         player.GrabbedNewItem -= OnGrabbedNewItem;
-        playerMovement.Accelerating -= OnAccelerating;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
