@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
     [SerializeField] private float timerLimit = 120f;
+    [SerializeField] private float secondsBeforeGameEnd = 5f; //I literally cannot name any of the shit in this PR feel free to rename
     
     public float LevelTimer { get; private set; }
     private float TimeRemaining => timerLimit - LevelTimer;
@@ -25,6 +26,7 @@ public class LevelManager : MonoBehaviour
 
     public event Action<bool> SetActiveLobbyUI; // TODO refactor, this shouldn't be an event
     public event Action<bool> SetActiveInGameUI; // TODO refactor, this shouldn't be an event
+    public event Action SecondsBeforeGameEnd;
 
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
@@ -93,6 +95,8 @@ public class LevelManager : MonoBehaviour
 
         if (GameState == State.Game)
         {
+            bool alreadyXSecondsBeforeEnd = timerLimit - LevelTimer <= secondsBeforeGameEnd;
+
             LevelTimer += Time.deltaTime;
             float timeRemaining = TimeRemaining;
             int minutes = Mathf.FloorToInt(timeRemaining / 60);
@@ -101,6 +105,9 @@ public class LevelManager : MonoBehaviour
             // int seconds = Mathf.CeilToInt(timeRemaining % 60);
             // if (seconds == 60) { minutes++; seconds = 0; }
             CanvasLinker.Instance.timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
+
+            if (!alreadyXSecondsBeforeEnd && timerLimit - LevelTimer <= secondsBeforeGameEnd)
+                SecondsBeforeGameEnd?.Invoke();
 
             if (LevelTimer >= timerLimit)
             {
