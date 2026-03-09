@@ -8,8 +8,11 @@ public class TowerCard : MonoBehaviour
 {
     [Header("Position Data")]
     [SerializeField] private float towerBaseYPos;
-    [SerializeField] private float towerPieceVerticalOffset;
+    [SerializeField] private float defaultTowerPieceVerticalOffset;
     [SerializeField] private float initLeftTowerPiecesOffset;
+
+    [SerializeField] private float maxTowerPieceVerticalPosition;
+    [SerializeField] private float packingProportion = 2f / 3f;
 
     [Header("Times")]
     [SerializeField] private float towerPieceScrollTime;
@@ -43,8 +46,10 @@ public class TowerCard : MonoBehaviour
     {
         int scoreLeft = WorldLinker.Instance.towerLeft.Height;
         int scoreRight = WorldLinker.Instance.towerRight.Height;
+
         bool leftWon = scoreLeft >= scoreRight;
-        int minScore = leftWon ? scoreRight : scoreLeft;
+        int minScore = Mathf.Min(scoreLeft, scoreRight);
+        int maxScore = Mathf.Max(scoreLeft, scoreRight);
 
         bool draw = scoreLeft == 0 && scoreRight == 0;
         if (draw)
@@ -72,12 +77,34 @@ public class TowerCard : MonoBehaviour
 
         towerAnimator.SetTrigger("TowerStacking");
 
+        bool packing = maxScore * defaultTowerPieceVerticalOffset > maxTowerPieceVerticalPosition - towerBaseYPos;
+
+        float dynamicOffset = 0;
+        int numOfPackedTowerPieces = 0;
+        
+        if (packing)
+        {
+            numOfPackedTowerPieces = (int)Mathf.Ceil(packingProportion * maxScore);
+            dynamicOffset = 2 * ((maxTowerPieceVerticalPosition - towerBaseYPos) - (maxScore - numOfPackedTowerPieces) * defaultTowerPieceVerticalOffset) / (numOfPackedTowerPieces * (numOfPackedTowerPieces + 1)); //p
+        }
+
+        float GetOffset(int i)
+        {
+            if (packing)
+                return i > numOfPackedTowerPieces ? defaultTowerPieceVerticalOffset : (i + 1) * dynamicOffset;
+            else
+                return defaultTowerPieceVerticalOffset;
+        } 
+
+        float verticalPos = towerBaseYPos;
         for (int i = 0; i < minScore; i++)
         {
             Item.Type towerPieceType = ItemRandomizer.Instance.GetAt(i);
 
-            ScrollTowerPiece(towerPieceType, true, i);
-            ScrollTowerPiece(towerPieceType, false, i);
+            ScrollTowerPiece(towerPieceType, true, i, verticalPos);
+            ScrollTowerPiece(towerPieceType, false, i, verticalPos);
+
+            verticalPos += GetOffset(i);
 
             yield return new WaitForSeconds(towerPieceWaitTime);
         }
@@ -87,14 +114,11 @@ public class TowerCard : MonoBehaviour
 
         for (int i = minScore; i < (leftWon ? scoreLeft : scoreRight); i++)
         {
-            ScrollTowerPiece(ItemRandomizer.Instance.GetAt(i), leftWon, i);
+            ScrollTowerPiece(ItemRandomizer.Instance.GetAt(i), leftWon, i, verticalPos);
+            verticalPos += GetOffset(i);
             yield return new WaitForSeconds(towerPieceWaitTime);
         }
-
-        // RectTransform winningTowerUI = leftWon ? leftTowerUI : rightTowerUI;
-        // RectTransform losingTowerUI = leftWon ? rightTowerUI : leftTowerUI;
-        // int mirrorMult = leftWon ? 1 : -1;
-
+        
         //kick
         if (leftWon)
             towerAnimator.SetTrigger("KickToRight");
@@ -116,11 +140,11 @@ public class TowerCard : MonoBehaviour
         yield return new WaitUntil(() => Input.anyKey);
     }
 
-    private void ScrollTowerPiece(Item.Type type, bool left, int index)
+    private void ScrollTowerPiece(Item.Type type, bool left, int index, float verticalPos)
     {
         RectTransform towerPiece = Instantiate(towerPiecesUI[type], left ? leftTowerUI : rightTowerUI);
 
-        LMotion.Create(new Vector2(initLeftTowerPiecesOffset, towerBaseYPos + index * towerPieceVerticalOffset), new Vector2(0, towerBaseYPos + index * towerPieceVerticalOffset), towerPieceScrollTime).WithEase(Ease.OutCubic).Bind(
+        LMotion.Create(new Vector2(initLeftTowerPiecesOffset, verticalPos), new Vector2(0, verticalPos), towerPieceScrollTime).WithEase(Ease.OutCubic).Bind(
             (v) => {
                 if(left)
                     towerPiece.anchoredPosition = v;

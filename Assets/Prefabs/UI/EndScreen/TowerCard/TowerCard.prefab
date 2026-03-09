@@ -198,8 +198,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   towerBaseYPos: -215
-  towerPieceVerticalOffset: 18
+  defaultTowerPieceVerticalOffset: 18
   initLeftTowerPiecesOffset: -200
+  maxTowerPieceVerticalPosition: 280
+  packingProportion: 0.6666667
   towerPieceScrollTime: 0.4
   towerPieceWaitTime: 0.2
   inBetweenWaitTime: 0.7
