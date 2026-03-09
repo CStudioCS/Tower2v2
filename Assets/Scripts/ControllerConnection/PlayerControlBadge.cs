@@ -163,38 +163,6 @@ public class PlayerControlBadge : MonoBehaviour
         return "";
     }
 
-    private string GetUpKeyString(ControlSchemes controlScheme)
-    {
-        switch (controlScheme)
-        {
-            case ControlSchemes.Switch:
-            case ControlSchemes.Xbox:
-            case ControlSchemes.PlayStation: return "";
-            case ControlSchemes.ArrowKeys: return "Up";
-            case ControlSchemes.WASD: return "W";
-            case ControlSchemes.TFGH: return "T";
-            case ControlSchemes.IJKL: return "I";
-        }
-
-        return "";
-    }
-
-    private string GetLeftKeyString(ControlSchemes controlScheme)
-    {
-        switch (controlScheme)
-        {
-            case ControlSchemes.Switch:
-            case ControlSchemes.Xbox:
-            case ControlSchemes.PlayStation: return "";
-            case ControlSchemes.ArrowKeys: return "Left";
-            case ControlSchemes.WASD: return "A";
-            case ControlSchemes.TFGH: return "F";
-            case ControlSchemes.IJKL: return "J";
-        }
-
-        return "";
-    }
-
     public void OnDisconnect(InputAction.CallbackContext context)
     {
         if (context.performed)
