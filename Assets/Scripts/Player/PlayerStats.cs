@@ -13,8 +13,24 @@ public class PlayerStats : MonoBehaviour
 
     public float distanceTravelled;
 
-    private void Awake()
+    private bool subscribed;
+
+    private void Start()
     {
+        TrySubscribe();
+    }
+
+    private void OnEnable()
+    {
+        TrySubscribe();
+    }
+
+    private void TrySubscribe()
+    {
+        if (subscribed)
+            return;
+
+        subscribed = true;
         LevelManager.Instance.GameStarted += ResetStats;
     }
 
@@ -53,6 +69,10 @@ public class PlayerStats : MonoBehaviour
 
     private void OnDisable()
     {
-        LevelManager.Instance.GameStarted -= ResetStats;
+        if (subscribed)
+        {
+            subscribed = false;
+            LevelManager.Instance.GameStarted -= ResetStats;
+        }
     }
 }
