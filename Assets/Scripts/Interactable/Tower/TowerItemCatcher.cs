@@ -17,7 +17,7 @@ public class TowerItemCatcher : MonoBehaviour
         if (item.State != Item.ItemState.Dropped)
             return;
         
-        tower.ConstructPiece(item);
+        tower.ConstructPiece(item.ItemType);
         Destroy(collider.gameObject);
     }
 }

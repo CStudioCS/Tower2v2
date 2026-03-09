@@ -89,18 +89,18 @@ public class Tower : Interactable
             return;
         }
 
-        ConstructPiece(player.HeldItem);
+        ConstructPiece(player.HeldItem.ItemType);
 
         player.ConsumeCurrentItem();
     }
 
     // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
     // and with the way Unity handles rendering, the new object is rendered on top of the old one
-    public void ConstructPiece(Item item)
+    public void ConstructPiece(Item.Type itemType)
     {
-        if (!TowerPieceMap.TryGetValue(item.ItemType, out TowerPiece towerPiece))
+        if (!TowerPieceMap.TryGetValue(itemType, out TowerPiece towerPiece))
         {
-            Debug.LogError("Could not find tower piece associated with " + item.ItemType + " held item");
+            Debug.LogError("Could not find tower piece associated with " + itemType + " held item");
             return;
         }
 
@@ -112,7 +112,7 @@ public class Tower : Interactable
         towerPieceInstance.transform.localPosition = newPieceLocalPosition;
         towerPieceInstance.Initialize(this, NextPieceSortingOrder);
         towerPieces.Add(towerPieceInstance);
-        lastBlockType = item.ItemType;
+        lastBlockType = itemType;
         LastPlacedTime = LevelManager.Instance.LevelTimer;
         UpdateTowerTopUI();
         PieceBuilt?.Invoke();

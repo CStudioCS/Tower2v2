@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerTeam : MonoBehaviour
@@ -15,11 +14,11 @@ public class PlayerTeam : MonoBehaviour
 
     private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left;
 
-
-    private void Start()
+    public void InitializeTeam()
     {
         SetTeam(CurrentPositionTeam);
     }
+
     private void Update()
     {
         switch (LevelManager.Instance?.GameState)

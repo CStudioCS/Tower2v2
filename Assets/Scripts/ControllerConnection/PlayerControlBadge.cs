@@ -8,11 +8,12 @@ public class PlayerControlBadge : MonoBehaviour
     [Header("Player")]
     [SerializeField] private Player player;
     [SerializeField] private PlayerTeam playerTeam;
-    
+
     [Header("Graphics")]
     [SerializeField] private CanvasGroup graphics;
 
     public enum ControlSchemes { WASD, TFGH, IJKL, ArrowKeys, Switch, PlayStation, Xbox }
+    private ControlSchemes controlScheme;
 
     [Header("Ready")]
     [SerializeField] private GameObject readyParent;
@@ -28,10 +29,10 @@ public class PlayerControlBadge : MonoBehaviour
     [SerializeField] private GameObject gamepadXbox;
     [SerializeField] private GameObject gamepadSwitch;
     [SerializeField] private GameObject gamepadPlaystation;
-    
+
     [Header("Arrow Keys")]
     [SerializeField] private GameObject arrowKeys;
-    
+
     [Header("Keys")]
     [SerializeField] private GameObject genericKeys;
     [SerializeField] private TextMeshProUGUI genericInteractKeyText;
@@ -42,25 +43,15 @@ public class PlayerControlBadge : MonoBehaviour
 
     public bool IsReady { get; private set; }
     public event Action ReadyChanged;
-    
+
     public void Initialize(int playerIndex, ControlSchemes controlScheme)
     {
+        this.controlScheme = controlScheme;
         playerTeam.TeamChanged += OnTeamChanged;
-        SetupControlScheme(controlScheme);
+        SetupControlScheme();
         ResetReadyText();
         LevelManager.Instance.GameStarted += OnGameStarted;
         LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
-
-#if DEBUG
-        if (LobbyManager.Instance.DebugMode)
-        {
-            if (GameStartManager.Instance.PlayerCount % 2 == 0)
-                playerTeam.SetTeam(PlayerTeam.Team.Left);
-            else
-                playerTeam.SetTeam(PlayerTeam.Team.Right);
-            ToggleReady();
-        }
-#endif
     }
 
     private void OnGameStarted()
@@ -78,8 +69,8 @@ public class PlayerControlBadge : MonoBehaviour
     {
         TryUnsetReady();
     }
-    
-    private void SetupControlScheme(ControlSchemes controlScheme)
+
+    private void SetupControlScheme()
     {
         switch (controlScheme)
         {
@@ -124,7 +115,7 @@ public class PlayerControlBadge : MonoBehaviour
         readyEnter.SetActive(true);
         readyGenericInteractKey.SetActive(false);
         readyCheck.SetActive(false);
-        
+
         gamepadXbox.SetActive(false);
         gamepadSwitch.SetActive(false);
         gamepadPlaystation.SetActive(false);
@@ -135,14 +126,14 @@ public class PlayerControlBadge : MonoBehaviour
     private void SetupControlSchemeGenericKeys(ControlSchemes controlScheme)
     {
         string interactKey = GetInteractKeyString(controlScheme);
-        
+
         readyKey.SetActive(true);
         readyGamepadA.SetActive(false);
         readyEnter.SetActive(false);
         readyGenericInteractKey.SetActive(true);
         readyGenericInteractKeyText.text = interactKey;
         readyCheck.SetActive(false);
-        
+
         gamepadXbox.SetActive(false);
         gamepadSwitch.SetActive(false);
         gamepadPlaystation.SetActive(false);
@@ -169,10 +160,9 @@ public class PlayerControlBadge : MonoBehaviour
             case ControlSchemes.IJKL: return "O";
         }
 
-        Debug.LogError($"Control scheme {controlScheme} is not correctly handled");
         return "";
     }
-    
+
     private string GetUpKeyString(ControlSchemes controlScheme)
     {
         switch (controlScheme)
@@ -186,10 +176,9 @@ public class PlayerControlBadge : MonoBehaviour
             case ControlSchemes.IJKL: return "I";
         }
 
-        Debug.LogError($"Control scheme {controlScheme} is not correctly handled");
         return "";
     }
-    
+
     private string GetLeftKeyString(ControlSchemes controlScheme)
     {
         switch (controlScheme)
@@ -203,7 +192,6 @@ public class PlayerControlBadge : MonoBehaviour
             case ControlSchemes.IJKL: return "J";
         }
 
-        Debug.LogError($"Control scheme {controlScheme} is not correctly handled");
         return "";
     }
 
@@ -212,7 +200,7 @@ public class PlayerControlBadge : MonoBehaviour
         if (context.performed)
             Destroy(gameObject);
     }
-    
+
     public void Interact()
     {
         ToggleReady();
@@ -237,7 +225,9 @@ public class PlayerControlBadge : MonoBehaviour
         readyCheck.SetActive(ready);
         readyKey.SetActive(!ready);
         if (fireEvent)
+        {
             ReadyChanged?.Invoke();
+        }
     }
 
     private void TryUnsetReady()

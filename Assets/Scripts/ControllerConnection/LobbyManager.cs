@@ -13,10 +13,6 @@ public class LobbyManager : MonoBehaviour
     
     public static LobbyManager Instance;
 
-#if DEBUG
-    public bool DebugMode;
-#endif
-
     public void Awake()
     {
         if(Instance != null)
@@ -29,16 +25,6 @@ public class LobbyManager : MonoBehaviour
     {
         if (LevelManager.Instance.GameState != LevelManager.State.Lobby)
             return;
-        
-#if DEBUG
-        if (DebugMode)
-        {
-            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.WASD);
-            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.TFGH);
-            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.IJKL);
-            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.ArrowKeys);
-        }
-#endif
 
         HandleKeyboardJoinInput();
         HandleGamepadJoinInput();
@@ -171,26 +157,26 @@ public class LobbyManager : MonoBehaviour
                manufacturer.Contains("sony");
     }
 
-    private void JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes controlSchemeName)
+    private PlayerInput JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes controlSchemeName)
     {
         // 1. Check if we are already at the player limit
         if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
         {
             //This kept triggering on accident everytime I maximized Unity so I commented it (why ?)
             //Debug.Log("An extra keyboard tried to connect but player limit has been reached");
-            return;
+            return null;
         }
 
         // 2. Check if a player is already using this specific scheme
         foreach (PlayerInput playerInput in PlayerInput.all)
         {
             if (playerInput.currentControlScheme == controlSchemeName.ToString())
-                return;
+                return null;
         }
 
         // 3. Manually trigger the join
         // We pass -1 for playerIndex to let Unity assign the next available index (0, 1, 2, etc.)
-        playerInputManager.JoinPlayer(
+        return playerInputManager.JoinPlayer(
             playerIndex: -1, 
             splitScreenIndex: -1,
             controlScheme: controlSchemeName.ToString(), 
@@ -214,7 +200,7 @@ public class LobbyManager : MonoBehaviour
         PlayerControlBadge badge = playerInput.GetComponent<Player>().PlayerControlBadge;
         if (badge != null)
             badge.Initialize(playerInput.playerIndex, controlScheme);
-        
+
         Debug.Log($"Player Joined! Device: {device.name} | Scheme: {controlScheme}");
         PlayerJoined?.Invoke(playerInput);
     }
