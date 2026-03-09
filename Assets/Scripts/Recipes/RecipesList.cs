@@ -46,6 +46,7 @@ public class RecipesList : MonoBehaviour
     private Color LayoutDefaultColor;
     private MotionHandle colorTweenHandle;
     private bool subscribed;
+    private Tower subscribedTower;
 
     private void Awake()
     {
@@ -72,8 +73,9 @@ public class RecipesList : MonoBehaviour
 
         subscribed = true;
         
-        Tower.PieceBuilt += OnPieceBuilt;
-        Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
+        subscribedTower = Tower;
+        subscribedTower.PieceBuilt += OnPieceBuilt;
+        subscribedTower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
         LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
         LevelManager.Instance.SetActiveInGameUI += OnUISetActive;
 
@@ -106,6 +108,20 @@ public class RecipesList : MonoBehaviour
 
     private void OnGameAboutToStart()
     {
+        // Re-bind tower events if the tower instance changed (e.g. after a map change)
+        Tower currentTower = Tower;
+        if (subscribedTower != currentTower)
+        {
+            if (subscribedTower != null)
+            {
+                subscribedTower.PieceBuilt -= OnPieceBuilt;
+                subscribedTower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
+            }
+            subscribedTower = currentTower;
+            subscribedTower.PieceBuilt += OnPieceBuilt;
+            subscribedTower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
+        }
+
         randomIndex = 0;       
         firstRecipeIndex = 0;  
         InitializeRecipes();
@@ -183,14 +199,21 @@ public class RecipesList : MonoBehaviour
     
     private void OnDisable()
     {
-        if (subscribed && CanvasLinker.Instance != null && WorldLinker.Instance != null)
+        if (subscribed)
         {
-            Tower.PieceBuilt -= OnPieceBuilt;
-            Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
-            LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-            LevelManager.Instance.SetActiveInGameUI -= OnUISetActive;
+            if (subscribedTower != null)
+            {
+                subscribedTower.PieceBuilt -= OnPieceBuilt;
+                subscribedTower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
+            }
+            if (LevelManager.Instance != null)
+            {
+                LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+                LevelManager.Instance.SetActiveInGameUI -= OnUISetActive;
+            }
         }
         subscribed = false;
+        subscribedTower = null;
 
         if (colorTweenHandle.IsActive())
         {
