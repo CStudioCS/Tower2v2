@@ -1,4 +1,5 @@
 #if DEBUG
+using System.Collections;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -145,5 +146,28 @@ public class DebugManager: MonoBehaviour
 			Debug.LogError("Right tower not found in WorldLinker");
 		}
 	}
+
+    [Hotkey(KeyCode.B, "End Game instantly with high score")]
+    public void EndGameInstantly()
+    {
+		StartCoroutine(EndGameInstantlyRoutine());
+    }
+
+	private IEnumerator EndGameInstantlyRoutine(int scoreLeft = 30, int scoreRight = 18)
+	{
+        JoinKeyboardPlayers();
+
+		yield return new WaitForSeconds(3);
+
+        for (int i = 0; i < scoreLeft; i++)
+            ConstructPieceOnLeftTower();
+        for (int i = 0; i < scoreRight; i++)
+			ConstructPieceOnRightTower();
+
+		yield return null; //not sure this is useful but might as well
+
+        for (int i = 0; i < 8; i++)
+            DecrementTimer();
+    }
 }
 #endif
