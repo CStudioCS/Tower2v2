@@ -5,8 +5,24 @@ using UnityEngine;
 public class OffTowerCounter : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+    private bool subscribed;
+
+    private void OnEnable()
+    {
+        TrySubscribe();
+    }
+
     private void Start()
     {
+        TrySubscribe();
+    }
+
+    private void TrySubscribe()
+    {
+        if (subscribed || LevelManager.Instance == null)
+            return;
+
+        subscribed = true;
         LevelManager.Instance.SetActiveInGameUI += DeactiveUIFromLevelManager;
     }
 
@@ -22,6 +38,10 @@ public class OffTowerCounter : MonoBehaviour
 
     private void OnDisable()
     {
-        LevelManager.Instance.SetActiveInGameUI -= DeactiveUIFromLevelManager;
+        if (subscribed)
+        {
+            LevelManager.Instance.SetActiveInGameUI -= DeactiveUIFromLevelManager;
+            subscribed = false;
+        }
     }
 }
