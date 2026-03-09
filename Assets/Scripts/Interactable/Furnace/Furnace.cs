@@ -58,7 +58,6 @@ public class Furnace : Interactable
 
     public override float GetInteractionTime() => 0;
 
-
     public IEnumerator Cook()
     {
         StartedCooking?.Invoke();
@@ -87,11 +86,9 @@ public class Furnace : Interactable
             state = State.Cooked;
         }
         else
-        {
             progressBar.ResetProgress();
-        }
 
-            StopCooking();
+        StopCooking();
     }
     
     protected override void OnGameEnded()
