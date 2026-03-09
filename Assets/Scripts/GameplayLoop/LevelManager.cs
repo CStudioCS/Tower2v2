@@ -26,7 +26,7 @@ public class LevelManager : MonoBehaviour
 
     public event Action<bool> SetActiveLobbyUI; // TODO refactor, this shouldn't be an event
     public event Action<bool> SetActiveInGameUI; // TODO refactor, this shouldn't be an event
-    public event Action SecondsBeforeGameEnd;
+    public event Action FewSecondsBeforeGameEnded;
 
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
@@ -107,7 +107,7 @@ public class LevelManager : MonoBehaviour
             CanvasLinker.Instance.timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
 
             if (!alreadyXSecondsBeforeEnd && timerLimit - LevelTimer <= secondsBeforeGameEnd)
-                SecondsBeforeGameEnd?.Invoke();
+                FewSecondsBeforeGameEnded?.Invoke();
 
             if (LevelTimer >= timerLimit)
             {
