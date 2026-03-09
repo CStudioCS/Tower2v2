@@ -95,8 +95,6 @@ public class LevelManager : MonoBehaviour
 
         if (GameState == State.Game)
         {
-            bool alreadyXSecondsBeforeEnd = timerLimit - LevelTimer <= secondsBeforeGameEnd;
-
             LevelTimer += Time.deltaTime;
             float timeRemaining = TimeRemaining;
             int minutes = Mathf.FloorToInt(timeRemaining / 60);
