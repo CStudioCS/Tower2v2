@@ -9,9 +9,9 @@ public class Tower : Interactable
     public float LastPlacedTime { get; private set; } = float.MaxValue;
 
     [Header("Tower")]
-    [SerializeField] private Vector2 onStrawBlockOffset;
-    [SerializeField] private Vector2 onWoodBlockOffset;
-    [SerializeField] private Vector2 onBrickBlockOffset;
+    [SerializeField] private float targetHeight = 10f;
+    private float averageOffset;
+    private float collapseMultiplier;
     [SerializeField] private TMP_Text onTowerHeightText;
     [SerializeField] private Transform onTowerFlag;
     [SerializeField] private Vector2 flagOffset;
@@ -27,7 +27,6 @@ public class Tower : Interactable
 
     private Item.Type lastBlockType;
 
-    private Vector2 newPieceLocalPosition;
     private Dictionary<Item.Type, TowerPiece> towerPieceMap;
     private Dictionary<Item.Type, TowerPiece> TowerPieceMap
     {
@@ -51,22 +50,33 @@ public class Tower : Interactable
     private OffTowerCounter OffTowerCounter => IsLeftTower ? CanvasLinker.Instance.offTowerHeightCounterLeft : CanvasLinker.Instance.offTowerHeightCounterRight;
     private TMP_Text OffTowerHeightText => IsLeftTower ? CanvasLinker.Instance.offTowerHeightTextLeft : CanvasLinker.Instance.offTowerHeightTextRight;
 
-    public Vector2 blockOffset => Height == 0 ? Vector2.zero : lastBlockType switch
+    private float BlockOffset => Height == 0 ? 0 : lastBlockType switch
     {
-        Item.Type.Brick => onBrickBlockOffset,
-        Item.Type.WoodPlank => onWoodBlockOffset,
-        Item.Type.Straw => onStrawBlockOffset,
-        _ => Vector2.zero
+        Item.Type.Straw => strawTowerPiecePrefab.BasePieceHeight,
+        Item.Type.WoodPlank => woodTowerPiecePrefab.BasePieceHeight,
+        Item.Type.Brick => brickTowerPiecePrefab.BasePieceHeight,
+        _ => 0,
     };
 
-    public Vector2 PreviousPieceLocalPosition => newPieceLocalPosition - blockOffset;
+    private float nextPieceLocalYPosition;
+    private Vector2 NextPieceLocalPosition => nextPieceLocalYPosition * Vector2.up;
+    public float previousPieceLocalYPosition;
+    public Vector2 PreviousPieceLocalPosition => previousPieceLocalYPosition * Vector2.up;
 
     private int NextPieceSortingOrder => Height;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        averageOffset = (strawTowerPiecePrefab.BasePieceHeight + woodTowerPiecePrefab.BasePieceHeight + brickTowerPiecePrefab.BasePieceHeight) / 3f;
+        collapseMultiplier = 1 - averageOffset / targetHeight;
+    }
+    
     protected override void OnGameAboutToStart()
     {
         base.OnGameAboutToStart();
-        newPieceLocalPosition = Vector2.zero;
+        previousPieceLocalYPosition = 0;
+        nextPieceLocalYPosition = 0;
         ResetTower();
     }
 
@@ -111,22 +121,39 @@ public class Tower : Interactable
         SoundManager.instance.PlaySound("TowerBuild");
 
         colliderToActivateUponBuilding.enabled = true;
-        newPieceLocalPosition += blockOffset;
+
         TowerPiece towerPieceInstance = Instantiate(towerPiece, towerPiecesParent);
-        towerPieceInstance.transform.localPosition = newPieceLocalPosition;
-        towerPieceInstance.Initialize(this, NextPieceSortingOrder);
         towerPieces.Add(towerPieceInstance);
+        CollapsePieces();
+        towerPieceInstance.Initialize(this, NextPieceSortingOrder);
         lastBlockType = itemType;
         LastPlacedTime = LevelManager.Instance.LevelTimer;
         UpdateTowerTopUI();
         PieceBuilt?.Invoke();
     }
 
+    private void CollapsePieces()
+    {
+        float height = 0;
+        for (int i = 1; i < Height; i++)
+        {
+            TowerPiece belowTowerPiece = towerPieces[i - 1];
+            TowerPiece towerPiece = towerPieces[i];
+            if (i == Height - 1)
+                previousPieceLocalYPosition = height;
+            else
+                belowTowerPiece.Collapse(collapseMultiplier);
+            height += belowTowerPiece.PieceHeight;
+            towerPiece.transform.localPosition = height * Vector2.up;
+        }
+        nextPieceLocalYPosition = height;
+    }
+
     public override float GetInteractionTime() => 0;
 
     private void UpdateTowerTopUI()
     {
-        onTowerFlag.localPosition = newPieceLocalPosition;
+        onTowerFlag.localPosition = NextPieceLocalPosition;
 
         Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, (Vector2)onTowerFlag.position + flagUITransitionOffset);
 

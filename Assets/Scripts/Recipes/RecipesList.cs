@@ -69,11 +69,15 @@ public class RecipesList : MonoBehaviour
     private void Subscribe()
     {
         subscribed = true;
-        
+
         Tower.PieceBuilt += OnPieceBuilt;
         Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
-        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.Instance.SetActiveInGameUI += OnUISetActive;
+
+        if (LevelManager.Instance != null)
+        {
+            LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+            LevelManager.Instance.SetActiveInGameUI += OnUISetActive;
+        }
 
         animator.SetBool("left", CanvasLinker.Instance.recipesListLeft == this);
 

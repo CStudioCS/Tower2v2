@@ -1,5 +1,12 @@
+using UnityEngine;
+
 public class TowerPiece : Interactable
 {
+    [SerializeField] private float basePieceHeight;
+    public float BasePieceHeight => basePieceHeight;
+    public float PieceHeight { get; private set; }
+    public void Collapse(float multiplier) => PieceHeight *= multiplier;
+    
     private Tower tower;
     public override bool CanInteract(Player player) => tower.CanInteract(player);
 
@@ -21,6 +28,7 @@ public class TowerPiece : Interactable
     public void Initialize(Tower tower, int sortingOrder)
     {
         this.tower = tower;
-        spriteRenderer.sortingOrder = sortingOrder; 
+        spriteRenderer.sortingOrder = sortingOrder;
+        PieceHeight = basePieceHeight;
     }
 }
