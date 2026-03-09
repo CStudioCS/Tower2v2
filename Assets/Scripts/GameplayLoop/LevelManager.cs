@@ -28,6 +28,8 @@ public class LevelManager : MonoBehaviour
     public event Action<bool> SetActiveInGameUI; // TODO refactor, this shouldn't be an event
     public event Action FewSecondsBeforeGameEnded;
 
+    private bool isLessThanFewSecondsRemaining => TimeRemaining <= secondsBeforeGameEnd;
+
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
     {
@@ -95,6 +97,8 @@ public class LevelManager : MonoBehaviour
 
         if (GameState == State.Game)
         {
+            bool wasLessThanFewSecondsRemaining = isLessThanFewSecondsRemaining;
+
             LevelTimer += Time.deltaTime;
             float timeRemaining = TimeRemaining;
             int minutes = Mathf.FloorToInt(timeRemaining / 60);
@@ -104,7 +108,7 @@ public class LevelManager : MonoBehaviour
             // if (seconds == 60) { minutes++; seconds = 0; }
             CanvasLinker.Instance.timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
 
-            if (timerLimit - LevelTimer <= secondsBeforeGameEnd && timerLimit - (LevelTimer - Time.deltaTime) > secondsBeforeGameEnd)
+            if (!wasLessThanFewSecondsRemaining && isLessThanFewSecondsRemaining)
                 FewSecondsBeforeGameEnded?.Invoke();
 
             if (LevelTimer >= timerLimit)
