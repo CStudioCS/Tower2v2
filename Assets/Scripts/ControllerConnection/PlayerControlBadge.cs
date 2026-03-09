@@ -141,10 +141,13 @@ public class PlayerControlBadge : MonoBehaviour
         genericKeys.SetActive(true);
 
         genericInteractKeyText.text = interactKey;
-        genericUpKeyText.text = controlScheme.ToString()[0].ToString();
-        genericLeftKeyText.text = controlScheme.ToString()[1].ToString();
-        genericDownKeyText.text = controlScheme.ToString()[2].ToString();
-        genericRightKeyText.text = controlScheme.ToString()[3].ToString();
+
+        string controlSchemeString = controlScheme.ToString();
+
+        genericUpKeyText.text = controlSchemeString.Length > 0 ? controlSchemeString[0].ToString() : "";
+        genericLeftKeyText.text = controlSchemeString.Length > 1 ? controlSchemeString[1].ToString() : "";
+        genericDownKeyText.text = controlSchemeString.Length > 2 ? controlSchemeString[2].ToString() : "";
+        genericRightKeyText.text = controlSchemeString.Length > 3 ? controlSchemeString[3].ToString() : "";
     }
 
     private string GetInteractKeyString(ControlSchemes controlScheme)
