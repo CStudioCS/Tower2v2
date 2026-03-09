@@ -9,6 +9,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private float timerLimit = 120f;
     
     public float LevelTimer { get; private set; }
+    private float TimeRemaining => timerLimit - LevelTimer;
     private PlayerTeam.Team winningTeam;
     public float LobbyUIFadeTime = 1f;
     
@@ -93,7 +94,7 @@ public class LevelManager : MonoBehaviour
         if (GameState == State.Game)
         {
             LevelTimer += Time.deltaTime;
-            float timeRemaining = timerLimit - LevelTimer;
+            float timeRemaining = TimeRemaining;
             int minutes = Mathf.FloorToInt(timeRemaining / 60);
             // I'm not sure which logic is best... should it would down to 0 or to 1
             int seconds = Mathf.FloorToInt(timeRemaining % 60);
@@ -117,12 +118,7 @@ public class LevelManager : MonoBehaviour
     
     public void StartGameDelayed()
     {
-#if DEBUG
-        if (LobbyManager.Instance.DebugMode)
-            StartCoroutine(StartGameDelayedRoutine(0f));
-        else
-#endif
-            StartCoroutine(StartGameDelayedRoutine());
+        StartCoroutine(StartGameDelayedRoutine());
     }
 
     private IEnumerator StartGameDelayedRoutine(float delay = 3f)

@@ -103,6 +103,7 @@ public class GameStartManager : MonoBehaviour
         SoundManager.instance.PlaySound("PlayerConnect");
         players.Add(playerInput);
         Player player = playerInput.GetComponent<Player>();
+        player.PlayerTeam.InitializeTeam();
         player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
         player.PlayerControlBadge.ReadyChanged += OnPlayerReadyChanged;
         playerInput.GetComponent<PlayerInitPosition>().Initialize();
@@ -142,7 +143,9 @@ public class GameStartManager : MonoBehaviour
         if (waitState == WaitState.PlayersNotReady)
         {
             if (AllPlayersReady)
+            {
                 StartGame();
+            }
         }
     }
     
