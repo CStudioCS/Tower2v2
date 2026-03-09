@@ -85,9 +85,13 @@ public class Furnace : Interactable
             progressBar.SetProgressMax();
             SoundManager.instance.StopSound(index);
             state = State.Cooked;
-        }   
+        }
+        else
+        {
+            progressBar.ResetProgress();
+        }
 
-        StopCooking();
+            StopCooking();
     }
     
     protected override void OnGameEnded()
