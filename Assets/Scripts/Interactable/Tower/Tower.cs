@@ -92,6 +92,9 @@ public class Tower : Interactable
 
         ConstructPiece(player.HeldItem.ItemType);
 
+        if (player.HeldItem.originallyCollectedByTeam != TowerTeam)
+            player.PlayerStats.stolenItems++;
+
         player.ConsumeCurrentItem();
     }
 
