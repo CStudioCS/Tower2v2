@@ -12,7 +12,7 @@ public class TowerCard : MonoBehaviour
     [SerializeField] private float initLeftTowerPiecesOffset;
 
     [SerializeField] private float maxTowerPieceVerticalPosition;
-    [SerializeField] private float packingProportion = 2/3;
+    [SerializeField] private float packingProportion = 2f / 3f;
 
     [Header("Times")]
     [SerializeField] private float towerPieceScrollTime;
@@ -48,8 +48,8 @@ public class TowerCard : MonoBehaviour
         int scoreRight = WorldLinker.Instance.towerRight.Height;
 
         bool leftWon = scoreLeft >= scoreRight;
-        int minScore = leftWon ? scoreRight : scoreLeft;
-        int maxScore = leftWon ? scoreLeft : scoreRight;
+        int minScore = Mathf.Min(scoreLeft, scoreRight);
+        int maxScore = Mathf.Max(scoreLeft, scoreRight);
 
         bool draw = scoreLeft == 0 && scoreRight == 0;
         if (draw)
