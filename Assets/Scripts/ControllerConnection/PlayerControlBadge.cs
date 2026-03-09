@@ -171,7 +171,7 @@ public class PlayerControlBadge : MonoBehaviour
             case ControlSchemes.Xbox:
             case ControlSchemes.PlayStation: return "";
             case ControlSchemes.ArrowKeys: return "Up";
-            case ControlSchemes.WASD: return "Z";
+            case ControlSchemes.WASD: return "W";
             case ControlSchemes.TFGH: return "T";
             case ControlSchemes.IJKL: return "I";
         }
@@ -187,7 +187,7 @@ public class PlayerControlBadge : MonoBehaviour
             case ControlSchemes.Xbox:
             case ControlSchemes.PlayStation: return "";
             case ControlSchemes.ArrowKeys: return "Left";
-            case ControlSchemes.WASD: return "Q";
+            case ControlSchemes.WASD: return "A";
             case ControlSchemes.TFGH: return "F";
             case ControlSchemes.IJKL: return "J";
         }
