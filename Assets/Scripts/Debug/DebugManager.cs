@@ -90,7 +90,7 @@ public class DebugManager: MonoBehaviour
 	}
 
 	[Hotkey(KeyCode.X, "Decrement timer by 15 seconds")]
-	public void DecrementTimer(float decrement = 15f)
+	public void IncrementTimer(float increment = -15f)
 	{
 		if (LevelManager.InGame)
 		{
@@ -105,17 +105,17 @@ public class DebugManager: MonoBehaviour
 			}
 
 			float timerLimit = (float)timerLimitField.GetValue(LevelManager.Instance);
-			float newTimer = Mathf.Min(timerLimit - .05f, currentTimer + decrement);
+			float newTimer = Mathf.Clamp(currentTimer - increment, 0, timerLimit - .05f);
 
 			// Use reflection to set the LevelTimer since it's a private set
 			PropertyInfo levelTimerProperty = typeof(LevelManager).GetProperty("LevelTimer");
 			levelTimerProperty?.SetValue(LevelManager.Instance, newTimer);
 
-			Debug.Log($"Timer decremented by {decrement} seconds. New timer: {newTimer:F2}s");
+			Debug.Log($"Timer incremented by {increment} seconds. New timer: {newTimer:F2}s");
 		}
 		else
 		{
-			Debug.LogError("Cannot decrement timer - game is not in progress or LevelManager is null");
+			Debug.LogError("Cannot increment timer - game is not in progress or LevelManager is null");
 		}
 	}
 
@@ -167,7 +167,7 @@ public class DebugManager: MonoBehaviour
 		yield return null; //not sure this is useful but might as well
 
         for (int i = 0; i < 8; i++)
-            DecrementTimer();
+            IncrementTimer();
     }
 
 	[Hotkey(KeyCode.N, "Set time scale to 4 or back to 1")]
@@ -192,5 +192,8 @@ public class DebugManager: MonoBehaviour
 			}
 		}
 	}
+
+	[Hotkey(KeyCode.Comma, "Set timer to max")]
+	public void SetTimerToMax() => IncrementTimer(120f);
 }
 #endif
