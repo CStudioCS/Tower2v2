@@ -178,5 +178,19 @@ public class DebugManager: MonoBehaviour
 		else if (Mathf.Approximately(Time.timeScale, newTimeScale))
 			Time.timeScale = 1f;
 	}
+	
+	[Hotkey(KeyCode.M, "Toggle no clip for all players")]
+	public void ToggleNoClip()
+	{
+		foreach (PlayerInput playerInput in GameStartManager.Instance.Players)
+		{
+			Collider2D[] colliders = playerInput.GetComponentsInChildren<Collider2D>();
+			foreach (Collider2D collider in colliders)
+			{
+				if (!collider.isTrigger)
+					collider.enabled = !collider.enabled;
+			}
+		}
+	}
 }
 #endif
