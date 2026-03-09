@@ -79,10 +79,10 @@ public class Furnace : Interactable
             t += Time.deltaTime;
             yield return null;
         }
-        progressBar.SetProgressMax();
 
         if (state == State.Cooking)
         {
+            progressBar.SetProgressMax();
             SoundManager.instance.StopSound(index);
             state = State.Cooked;
         }   
