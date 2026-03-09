@@ -3,7 +3,11 @@ public class TowerPiece : Interactable
     private Tower tower;
     public override bool CanInteract(Player player) => tower.CanInteract(player);
 
-    public override void Interact(Player player) => tower.Interact(player);
+    public override void Interact(Player player)
+    {
+        tower.Interact(player);
+        player.DropHeldItem();
+    }
 
     public override float GetInteractionTime() => 0;
 
