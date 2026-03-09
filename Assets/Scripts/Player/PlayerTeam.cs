@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerTeam : MonoBehaviour
 {
@@ -55,5 +56,17 @@ public class PlayerTeam : MonoBehaviour
     public void InitTeamPlayerIndex(int teamPlayerIndex)
     {
         TeamPlayerIndex = teamPlayerIndex;
+    }
+
+    public Player GetTeamMate()
+    {
+        foreach (PlayerInput playerInput in GameStartManager.Instance.Players)
+        {
+            Player player = playerInput.GetComponent<Player>();
+            if (player.PlayerTeam.CurrentTeam == CurrentTeam && player.PlayerTeam.TeamPlayerIndex != TeamPlayerIndex)
+                return player;
+        }
+        Debug.LogError($"Could not find team mate for player in team {CurrentTeam} with team player index {TeamPlayerIndex}.");
+        return null;
     }
 }

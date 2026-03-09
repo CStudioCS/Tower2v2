@@ -24,6 +24,8 @@ public class Player : MonoBehaviour
     
     [SerializeField] private PlayerStats playerStats;
     public PlayerStats PlayerStats => playerStats;
+    [SerializeField] private PlayerInitPosition playerInitPosition;
+    public PlayerInitPosition PlayerInitPosition => playerInitPosition;
 
     [SerializeField] private ProgressBar progressBar;
 
