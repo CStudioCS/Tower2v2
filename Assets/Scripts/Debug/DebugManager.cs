@@ -169,5 +169,14 @@ public class DebugManager: MonoBehaviour
         for (int i = 0; i < 8; i++)
             DecrementTimer();
     }
+
+	[Hotkey(KeyCode.N, "Set time scale to 4 or back to 1")]
+	public void ToggleTimeScale(float newTimeScale = 4f)
+	{
+		if (Mathf.Approximately(Time.timeScale, 1f))
+			Time.timeScale = newTimeScale;
+		else if (Mathf.Approximately(Time.timeScale, newTimeScale))
+			Time.timeScale = 1f;
+	}
 }
 #endif
