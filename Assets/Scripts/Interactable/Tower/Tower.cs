@@ -15,6 +15,7 @@ public class Tower : Interactable
     [SerializeField] private TMP_Text onTowerHeightText;
     [SerializeField] private Transform onTowerFlag;
     [SerializeField] private Vector2 flagOffset;
+    [SerializeField] private Vector2 flagUITransitionOffset;
     [SerializeField] private TowerPiece strawTowerPiecePrefab;
     [SerializeField] private TowerPiece woodTowerPiecePrefab;
     [SerializeField] private TowerPiece brickTowerPiecePrefab;
@@ -124,7 +125,7 @@ public class Tower : Interactable
     {
         onTowerFlag.localPosition = newPieceLocalPosition;
 
-        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, onTowerFlag.position);
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(Camera.main, (Vector2)onTowerFlag.position + flagUITransitionOffset);
 
         if (screenPoint.y > Screen.height)
         {
