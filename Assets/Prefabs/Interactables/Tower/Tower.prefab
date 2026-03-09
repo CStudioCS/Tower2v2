@@ -287,7 +287,7 @@ MonoBehaviour:
   onTowerHeightText: {fileID: 312890316318916640}
   onTowerFlag: {fileID: 7517728899840116841}
   flagOffset: {x: 0, y: 0}
-  flagUITransitionOffset: {x: -0.5, y: 1}
+  flagUITransitionOffset: {x: 0, y: 1}
   strawTowerPiecePrefab: {fileID: 3481221118022266669, guid: 50c8ea5a07072f24393c6bd798ddc9dc, type: 3}
   woodTowerPiecePrefab: {fileID: 7050465274800737675, guid: 768e3f708f781a849b5f398d919c5071, type: 3}
   brickTowerPiecePrefab: {fileID: 926655756722358906, guid: d29e198529ac9e842ad823191db288ea, type: 3}
