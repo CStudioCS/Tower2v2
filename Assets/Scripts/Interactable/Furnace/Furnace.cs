@@ -19,11 +19,6 @@ public class Furnace : Interactable
     public event Action StartedCooking;
     public event Action StoppedCooking;
     
-    protected override void OnGameAboutToStart()
-    {
-        base.OnGameAboutToStart();
-        state = State.Empty;
-    }
     public override bool CanInteract(Player player)
     {
         if (!LevelManager.InGame)
@@ -76,22 +71,29 @@ public class Furnace : Interactable
 
         while (t < cookTime)
         {
+            if (state != State.Cooking)
+                break;
+            
             progressBar.UpdateProgress(t / cookTime);
 
             t += Time.deltaTime;
             yield return null;
         }
         progressBar.SetProgressMax();
-        state = State.Cooked;
 
-        SoundManager.instance.StopSound(index);
+        if (state == State.Cooking)
+        {
+            SoundManager.instance.StopSound(index);
+            state = State.Cooked;
+        }   
+
         StopCooking();
     }
     
     protected override void OnGameEnded()
     {
         base.OnGameEnded();
-        StopCooking();
+        state = State.Empty;
     }
 
     private void StopCooking()
