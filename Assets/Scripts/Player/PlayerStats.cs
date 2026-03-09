@@ -17,15 +17,15 @@ public class PlayerStats : MonoBehaviour
 
     private void Start()
     {
-        TrySubscritbe();
+        TrySubscribe();
     }
 
     private void OnEnable()
     {
-        TrySubscritbe();
+        TrySubscribe();
     }
 
-    private void TrySubscritbe()
+    private void TrySubscribe()
     {
         if (subscribed)
             return;
