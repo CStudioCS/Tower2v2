@@ -352,6 +352,7 @@ MonoBehaviour:
   playerControlBadge: {fileID: 5167199617259306430}
   playerMovement: {fileID: 4423661849542820139}
   playerStats: {fileID: -7975852267515287093}
+  playerInitPosition: {fileID: 305416469070274735}
   progressBar: {fileID: 7722397540325121459}
   playerAnimationController: {fileID: -6306556956286896828}
   itemParent: {fileID: 441249502361782724}
