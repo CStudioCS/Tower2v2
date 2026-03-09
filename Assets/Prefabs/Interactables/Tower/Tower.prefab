@@ -281,7 +281,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 8607870785891123332}
-  targetHeight: 12.5
+  targetHeight: 10
   onTowerHeightText: {fileID: 312890316318916640}
   onTowerFlag: {fileID: 7517728899840116841}
   flagOffset: {x: 0, y: 0}
