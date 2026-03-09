@@ -106,7 +106,7 @@ public class LevelManager : MonoBehaviour
             // if (seconds == 60) { minutes++; seconds = 0; }
             CanvasLinker.Instance.timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
 
-            if (!alreadyXSecondsBeforeEnd && timerLimit - LevelTimer <= secondsBeforeGameEnd)
+            if (timerLimit - LevelTimer <= secondsBeforeGameEnd && timerLimit - (LevelTimer - Time.deltaTime) > secondsBeforeGameEnd)
                 FewSecondsBeforeGameEnded?.Invoke();
 
             if (LevelTimer >= timerLimit)
