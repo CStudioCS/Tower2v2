@@ -175,7 +175,7 @@ public class DebugManager: MonoBehaviour
 	{
 		if (Mathf.Approximately(Time.timeScale, 1f))
 			Time.timeScale = newTimeScale;
-		else if (Mathf.Approximately(Time.timeScale, newTimeScale))
+		else if (!Mathf.Approximately(Time.timeScale, 0f))
 			Time.timeScale = 1f;
 	}
 	
@@ -195,5 +195,8 @@ public class DebugManager: MonoBehaviour
 
 	[Hotkey(KeyCode.Comma, "Set timer to max")]
 	public void SetTimerToMax() => IncrementTimer(120f);
+
+	[Hotkey(KeyCode.Period, "Set time scale to 0.1 or back to 1")]
+	public void ToggleTimeScaleSlow() => ToggleTimeScale(.1f);
 }
 #endif
