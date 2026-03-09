@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 8569902203551738096}
-  droppedZOffset: 0.5
+  droppedZOffset: 0.25
 --- !u!58 &5611164556063414744
 CircleCollider2D:
   m_ObjectHideFlags: 0
