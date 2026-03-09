@@ -18,7 +18,12 @@ public class Furnace : Interactable
 
     public event Action StartedCooking;
     public event Action StoppedCooking;
-
+    
+    protected override void OnGameAboutToStart()
+    {
+        base.OnGameAboutToStart();
+        state = State.Empty;
+    }
     public override bool CanInteract(Player player)
     {
         if (!LevelManager.InGame)
@@ -86,7 +91,6 @@ public class Furnace : Interactable
     protected override void OnGameEnded()
     {
         base.OnGameEnded();
-        state = State.Empty;
         StopCooking();
     }
 
