@@ -62,12 +62,14 @@ public class RecipesList : MonoBehaviour
 
     private void Start()
     {
-        if (!subscribed)
-            Subscribe();
+        Subscribe();
     }
 
     private void Subscribe()
     {
+        if (subscribed || LevelManager.Instance == null)
+            return;
+
         subscribed = true;
         
         Tower.PieceBuilt += OnPieceBuilt;
