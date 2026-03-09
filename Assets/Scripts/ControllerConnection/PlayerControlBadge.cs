@@ -141,8 +141,8 @@ public class PlayerControlBadge : MonoBehaviour
         genericKeys.SetActive(true);
 
         genericInteractKeyText.text = interactKey;
-        genericUpKeyText.text = GetUpKeyString(controlScheme);
-        genericLeftKeyText.text = GetLeftKeyString(controlScheme);
+        genericUpKeyText.text = controlScheme.ToString()[0].ToString();
+        genericLeftKeyText.text = controlScheme.ToString()[1].ToString();
         genericDownKeyText.text = controlScheme.ToString()[2].ToString();
         genericRightKeyText.text = controlScheme.ToString()[3].ToString();
     }
@@ -158,38 +158,6 @@ public class PlayerControlBadge : MonoBehaviour
             case ControlSchemes.WASD: return "E";
             case ControlSchemes.TFGH: return "Y";
             case ControlSchemes.IJKL: return "O";
-        }
-
-        return "";
-    }
-
-    private string GetUpKeyString(ControlSchemes controlScheme)
-    {
-        switch (controlScheme)
-        {
-            case ControlSchemes.Switch:
-            case ControlSchemes.Xbox:
-            case ControlSchemes.PlayStation: return "";
-            case ControlSchemes.ArrowKeys: return "Up";
-            case ControlSchemes.WASD: return "Z";
-            case ControlSchemes.TFGH: return "T";
-            case ControlSchemes.IJKL: return "I";
-        }
-
-        return "";
-    }
-
-    private string GetLeftKeyString(ControlSchemes controlScheme)
-    {
-        switch (controlScheme)
-        {
-            case ControlSchemes.Switch:
-            case ControlSchemes.Xbox:
-            case ControlSchemes.PlayStation: return "";
-            case ControlSchemes.ArrowKeys: return "Left";
-            case ControlSchemes.WASD: return "Q";
-            case ControlSchemes.TFGH: return "F";
-            case ControlSchemes.IJKL: return "J";
         }
 
         return "";
