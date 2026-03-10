@@ -28,7 +28,7 @@ public class TowerCard : MonoBehaviour
     [SerializeField] private RectTransform woodTowerPieceUIPrefab;
     [SerializeField] private TMP_Text leftScoreText;
     [SerializeField] private TMP_Text rightScoreText;
-
+    [SerializeField] private CanvasGroup pressAnyButtonCanvasGroup;
 
     private Dictionary<Item.Type, RectTransform> towerPiecesUI;
 
@@ -44,6 +44,8 @@ public class TowerCard : MonoBehaviour
 
     public IEnumerator Dropdown()
     {
+        pressAnyButtonCanvasGroup.alpha = 0f;
+
         int scoreLeft = WorldLinker.Instance.towerLeft.Height;
         int scoreRight = WorldLinker.Instance.towerRight.Height;
 
@@ -136,6 +138,7 @@ public class TowerCard : MonoBehaviour
         yield return null;
         yield return new WaitForSeconds(towerAnimator.GetCurrentAnimatorStateInfo(0).length);
 
+        LMotion.Create(0f, 1f, .5f).Bind(value => pressAnyButtonCanvasGroup.alpha = value);
 
         yield return new WaitUntil(() => Input.anyKey);
     }
