@@ -80,6 +80,7 @@ MonoBehaviour:
   repeatRate: 0.1
   deadzone: 0.5
   sliderSpeed: 1
+  sliderStepSize: 0.1
   mouseMovementThreshold: 2
 --- !u!1001 &1231901441398250607
 PrefabInstance:
