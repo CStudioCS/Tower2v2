@@ -93,6 +93,10 @@ PrefabInstance:
       value: MapSign
       objectReference: {fileID: 0}
     - target: {fileID: 7023280080224001834, guid: 15c09315ebc55b241938c1d69ba5a8dd, type: 3}
+      propertyPath: worldWidth
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 7023280080224001834, guid: 15c09315ebc55b241938c1d69ba5a8dd, type: 3}
       propertyPath: worldPrefabs.Array.size
       value: 4
       objectReference: {fileID: 0}
