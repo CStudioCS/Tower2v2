@@ -50,6 +50,12 @@ public class SoundtrackManager : MonoBehaviour
 
     private void OnGameEnded()
     {
+        StartCoroutine(StartEndMusicWithDelay());
+    }
+
+    private IEnumerator StartEndMusicWithDelay()
+    {
+        yield return new WaitForSeconds(3f);
         SmoothMusicFadeIn(endScreenMusic, gameToEndFadeInDuration, gameToEndFadeInEase);
         StartCoroutine(SmoothMusicFadeOut(inGameMusic, gameToEndFadeOutDuration, gameToEndFadeOutEase));
     }
