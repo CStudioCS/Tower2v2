@@ -19,6 +19,10 @@ public class TowerCard : MonoBehaviour
     [SerializeField] private float towerPieceWaitTime;
     [SerializeField] private float inBetweenWaitTime;
 
+    [Header("Sound")]
+    [SerializeField] private float minPitch = -1f;
+    [SerializeField] private float maxPitch = 3f;
+    
     [Header("References")]
     [SerializeField] private Animator towerAnimator;
     [SerializeField] private RectTransform leftTowerUI;
@@ -29,6 +33,7 @@ public class TowerCard : MonoBehaviour
     [SerializeField] private TMP_Text leftScoreText;
     [SerializeField] private TMP_Text rightScoreText;
     [SerializeField] private CanvasGroup pressAnyButtonCanvasGroup;
+    [SerializeField] private AudioSource dingAudioSource;
 
     private Dictionary<Item.Type, RectTransform> towerPiecesUI;
 
@@ -99,6 +104,9 @@ public class TowerCard : MonoBehaviour
         } 
 
         float verticalPos = towerBaseYPos;
+        dingAudioSource.pitch = minPitch;
+        float pitchIncrement = (maxPitch - minPitch) / (minScore - 1);
+
         for (int i = 0; i < minScore; i++)
         {
             Item.Type towerPieceType = ItemRandomizer.Instance.GetAt(i);
@@ -108,16 +116,21 @@ public class TowerCard : MonoBehaviour
 
             verticalPos += GetOffset(i);
 
+            dingAudioSource.Play();
+            dingAudioSource.pitch += pitchIncrement;
+
             yield return new WaitForSeconds(towerPieceWaitTime);
         }
 
         if(scoreLeft != 0 || scoreRight != 0)
             yield return new WaitForSeconds(inBetweenWaitTime);
 
+        dingAudioSource.pitch = 1f;
         for (int i = minScore; i < (leftWon ? scoreLeft : scoreRight); i++)
         {
             ScrollTowerPiece(ItemRandomizer.Instance.GetAt(i), leftWon, i, verticalPos);
             verticalPos += GetOffset(i);
+            dingAudioSource.Play();
             yield return new WaitForSeconds(towerPieceWaitTime);
         }
         
