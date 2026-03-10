@@ -92,6 +92,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MapSign
       objectReference: {fileID: 0}
+    - target: {fileID: 7023280080224001834, guid: 15c09315ebc55b241938c1d69ba5a8dd, type: 3}
+      propertyPath: worldPrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7023280080224001834, guid: 15c09315ebc55b241938c1d69ba5a8dd, type: 3}
+      propertyPath: 'worldPrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 5812686374342393090, guid: d3fe72d117ef80d4f94cab2466f7caee, type: 3}
     - target: {fileID: 7326122425180403159, guid: 15c09315ebc55b241938c1d69ba5a8dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.25
