@@ -213,6 +213,7 @@ MonoBehaviour:
   woodTowerPieceUIPrefab: {fileID: 9005808190309018301, guid: d2f275155150f0742be02c53b86d275d, type: 3}
   leftScoreText: {fileID: 4742502392614167076}
   rightScoreText: {fileID: 237072367592677838}
+  pressAnyButtonCanvasGroup: {fileID: 7871007269638554367}
 --- !u!222 &9013945945947335256
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -298,6 +299,7 @@ GameObject:
   - component: {fileID: 506641545801322238}
   - component: {fileID: 4213658177291608881}
   - component: {fileID: 3946262315904196147}
+  - component: {fileID: 7871007269638554367}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -424,6 +426,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!225 &7871007269638554367
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2153367881179404311}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3751363654435768203
 GameObject:
   m_ObjectHideFlags: 0
