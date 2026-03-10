@@ -80,6 +80,7 @@ MonoBehaviour:
   repeatRate: 0.1
   deadzone: 0.5
   sliderSpeed: 1
+  sliderStepSize: 0.1
   mouseMovementThreshold: 2
 --- !u!1001 &1231901441398250607
 PrefabInstance:
@@ -215,7 +216,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3382214586881146716, guid: 435f0453f6b3efd41ab64fcb64ae6afa, type: 3}
       propertyPath: m_SizeDelta.y
-      value: -200
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 3382214586881146716, guid: 435f0453f6b3efd41ab64fcb64ae6afa, type: 3}
       propertyPath: m_LocalPosition.x
@@ -251,7 +252,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3382214586881146716, guid: 435f0453f6b3efd41ab64fcb64ae6afa, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3382214586881146716, guid: 435f0453f6b3efd41ab64fcb64ae6afa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
