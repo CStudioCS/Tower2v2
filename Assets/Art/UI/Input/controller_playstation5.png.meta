@@ -103,10 +103,10 @@ TextureImporter:
       name: controller_playstation5_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 15
-        width: 50
-        height: 34
+        x: 15
+        y: 32
+        width: 97
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 7c4e05034e30367429edb2068e50db46
     internalID: 0
     vertices: []
     indices: 
