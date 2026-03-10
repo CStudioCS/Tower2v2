@@ -61,7 +61,7 @@ public class Furnace : Interactable
     public IEnumerator Cook()
     {
         StartedCooking?.Invoke();
-        int index = SoundManager.instance.PlaySound("FurnaceFire");
+        int soundIndex = SoundManager.instance.PlaySound("FurnaceFire");
 
         state = State.Cooking;
 
@@ -79,10 +79,11 @@ public class Furnace : Interactable
             yield return null;
         }
 
+        SoundManager.instance.StopSound(soundIndex);
+
         if (state == State.Cooking)
         {
             progressBar.SetProgressMax();
-            SoundManager.instance.StopSound(index);
             state = State.Cooked;
         }
         else
