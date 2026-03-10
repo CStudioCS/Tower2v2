@@ -58,10 +58,10 @@ MonoBehaviour:
     volume: 1
   - name: ChangeTeam1
     clip: {fileID: 8300000, guid: 4936a3f23329bf746b8dab8695400771, type: 3}
-    volume: 1
+    volume: 0.2
   - name: ChangeTeam2
     clip: {fileID: 8300000, guid: b3870e92760db1e47aeba6713ec85ea4, type: 3}
-    volume: 1
+    volume: 0.2
   - name: Countdown
     clip: {fileID: 8300000, guid: 69cde243fa9c4e34788b45011580b8f5, type: 3}
     volume: 1
