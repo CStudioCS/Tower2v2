@@ -496,7 +496,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "<b>VP Singe</b>\r\nFar\xE8s Gati\r\n\r\n<b>VP Dictateur</b>\r\nThomas
     Bringer\n\n<b>VP il manque un point virgule chef</b>\nPierre Fessart\n\r\n<b>Singes</b>\r\nJules
-    Marceau\r\nAmazigh Halil\nMathis Ramalho\nNathana\xEBl Tousch"
+    Marceau\r\nAmazigh Halil\nNathana\xEBl Tousch"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
   m_sharedMaterial: {fileID: -1372678212655353642, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
@@ -766,9 +766,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<b>VP Carry la moiti\xE9 du projet \xE0 elle seule</b>\r\nAur\xE9lie Wagner\n\n<b>VP
-    PR terrifiante</b>\nC\xE9dric Vilandrau\r\n\r\n<b>VP Big sons</b>\r\nMathis Ramalho\r\nNathana\xEBl
-    Tousch\r\n\r\n<b>VP L\xE9gende</b>\r\nHarry Hamilton"
+  m_text: "<b>VP carry la moiti\xE9 du projet \xE0 elle seule</b>\r\nAur\xE9lie Wagner\n\n<b>VP
+    PR terrifiante</b>\nC\xE9dric Vilandrau\r\n\r\n<b>VP lampe torche</b>\r\nMathis
+    Ramalho\r\n\r\n<b>VP L\xE9gende</b>\r\nHarry Hamilton"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
   m_sharedMaterial: {fileID: -1372678212655353642, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
