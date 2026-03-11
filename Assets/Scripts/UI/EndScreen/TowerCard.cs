@@ -54,7 +54,7 @@ public class TowerCard : MonoBehaviour
         int scoreLeft = WorldLinker.Instance.towerLeft.Height;
         int scoreRight = WorldLinker.Instance.towerRight.Height;
 
-        bool leftWon = scoreLeft >= scoreRight;
+        bool leftWon = scoreLeft == scoreRight ? WorldLinker.Instance.towerLeft.LastPlacedTime <= WorldLinker.Instance.towerRight.LastPlacedTime: scoreLeft >= scoreRight;
         int minScore = Mathf.Min(scoreLeft, scoreRight);
         int maxScore = Mathf.Max(scoreLeft, scoreRight);
 
