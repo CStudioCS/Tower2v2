@@ -78,12 +78,12 @@ public class Item : Interactable
         float ejectionDeviation = Random.Range(1 - ejectionSpeedVariance, 1 + ejectionSpeedVariance);
         float rotationDeviation = Random.Range(1 - rotationSpeedVariance, 1 + rotationSpeedVariance);
 
-        Vector2 lastSpeed = LastOwner.PlayerMovement.LastNonZeroSpeed;
-        Vector2 speedDirection = lastSpeed.normalized;
+        Vector2 throwSpeed = LastOwner.PlayerMovement.ItemThrowSpeed;
+        Vector2 throwDirection = throwSpeed.normalized;
 
-        float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(Mathf.Abs(LastOwner.PlayerMovement.Velocity.magnitude), minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);//speed if not null else a percentage of max speed
-        rb.linearVelocity = ejectionSpeedRecalibration * speedDirection * ejectionDeviation;
-        rb.angularVelocity = (new List<int> { -1, 1 })[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
+        float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(throwSpeed.magnitude, minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);
+        rb.linearVelocity = throwDirection * (ejectionSpeedRecalibration * ejectionDeviation);
+        rb.angularVelocity = new List<int> { -1, 1 }[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
 
         trailRenderer.emitting = true;
         State = ItemState.Dropped;
