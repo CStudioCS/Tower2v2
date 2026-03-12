@@ -13,8 +13,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gamepadmaxSpeedThreashold = 0.5f;
     
     private Vector2 lastNonZeroSpeed = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
-    public Vector2 LastNonZeroSpeed => lastNonZeroSpeed;
     private Vector2 lastSpeed;
+    public Vector2 ItemThrowSpeed { get; private set; } = Vector2.zero;
+    [SerializeField] private float itemThrowSpeedDecayTime = .25f;
+    private Vector2 itemThrowSpeedVelocity = Vector2.zero;
 
     public Vector2 Velocity => rb.linearVelocity;
 
@@ -53,7 +55,17 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
             return;
         }
-    
+
+        if (rb.linearVelocity.sqrMagnitude > ItemThrowSpeed.sqrMagnitude)
+        {
+            ItemThrowSpeed = rb.linearVelocity;
+            itemThrowSpeedVelocity = Vector2.zero;
+        }
+        else
+        {
+            ItemThrowSpeed = Vector2.SmoothDamp(ItemThrowSpeed, rb.linearVelocity, ref itemThrowSpeedVelocity, itemThrowSpeedDecayTime);
+        }
+
         rb.linearVelocity = VelocityApproach();
 
         Accelerating = lastSpeed == Vector2.zero && rb.linearVelocity != Vector2.zero;
