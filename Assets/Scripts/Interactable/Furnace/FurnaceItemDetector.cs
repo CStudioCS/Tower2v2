@@ -7,7 +7,7 @@ public class FurnaceItemDetector : MonoBehaviour
     {
         if(collider != null && collider.gameObject.TryGetComponent<Item>(out Item item) && item.ItemType == Item.Type.Clay && furnace.FurnaceState == Furnace.State.Empty)
         {
-            StartCoroutine(furnace.Cook());
+            furnace.PutClayIn(item.LastOwner.PlayerTeam.CurrentTeam);
             Destroy(collider.gameObject);
         }
     }

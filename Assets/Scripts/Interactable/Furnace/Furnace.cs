@@ -36,14 +36,19 @@ public class Furnace : Interactable
         }
     }
 
+    public void PutClayIn(PlayerTeam.Team team)
+    {
+        itemCookedByTeam = team;
+        StartCoroutine(Cook());
+    }
+
     public override void Interact(Player player)
     {
         switch (state)
         {
             case State.Empty:
-                StartCoroutine(Cook());
+                PutClayIn(player.PlayerTeam.CurrentTeam);
                 player.ConsumeCurrentItem();
-                itemCookedByTeam = player.PlayerTeam.CurrentTeam;
                 break;
 
             case State.Cooked:
