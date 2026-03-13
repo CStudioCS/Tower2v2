@@ -40,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
         LevelManager.Instance.GameStarted += OnGameStarted;
         player.LockedInSettingsMenuChanged += OnLockedInSettingsMenuChanged;
     }
+
     private void OnLockedInSettingsMenuChanged()
     {
         rb.bodyType = player.LockedInSettingsMenu ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
