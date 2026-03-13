@@ -11,6 +11,8 @@ public class Player : MonoBehaviour
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
     public bool Interacting { get; private set; }
+    
+    [SerializeField] private float throwSpeed = 10f;
 
     [Header("References")]
 
@@ -35,6 +37,7 @@ public class Player : MonoBehaviour
     public Action GrabbedNewItem;
 
     private InputAction interactAction;
+    private InputAction throwAction;
     private Interactable closestInteractable;
 
     private MotionHandle grabbingLerp;
@@ -46,6 +49,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
+        throwAction = playerInput.actions.FindAction("Gameplay/Throw");
     }
 
     private void Start()
@@ -58,16 +62,39 @@ public class Player : MonoBehaviour
         if (!Interacting)
             UpdateClosestInteractable();
 
-        if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
-        {
-            bool successfulInteraction = TryInteract();
-            if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
-            {
-                playerControlBadge.Interact();
-            }
-        }
+        if (!LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
+            HandleInput();
 
         playerAnimationController.HasItem(HeldItem != null); // TODO fix bad animation coupling
+    }
+
+    private void HandleInput()
+    {
+        if (HandleThrowInput())
+            return;
+        HandleInteractInput();
+    }
+
+    private bool HandleThrowInput()
+    {
+        if (!throwAction.WasPressedThisFrame())
+            return false;
+        
+        return TryDropHeldItem(throwSpeed * playerMovement.lastNonZeroSpeed.normalized);
+    }
+
+    private bool HandleInteractInput()
+    {
+        if (!interactAction.WasPressedThisFrame())
+            return false;
+        
+        bool successfulInteraction = TryInteract();
+        if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
+        {
+            playerControlBadge.Interact();
+        }
+
+        return true;
     }
 
     private void UpdateClosestInteractable()
@@ -87,33 +114,26 @@ public class Player : MonoBehaviour
     }
     private bool TryInteract()
     {
-        if (closestInteractable != null)
+        if (closestInteractable == null)
+            return TryDropHeldItem();
+        
+        float time = closestInteractable.GetInteractionTime();
+        if (time > 0)
         {
-            float time = closestInteractable.GetInteractionTime();
-            if (time > 0)
-            {
-                if (closestInteractable is Workbench)
-                    playerAnimationController.StartCutting(); // TODO fix bad animation coupling
-                else if (closestInteractable is Collector)
-                    playerAnimationController.StartCollecting(); // TODO fix bad animation coupling
-                else
-                    Debug.LogError("This Interactable is not currently supported by the animator");
-                    //no interactable in the game takes time aside from Collector and Workbench as of rn
-                
-                StartCoroutine(InteractTimer(closestInteractable, time));
-            }
+            if (closestInteractable is Workbench)
+                playerAnimationController.StartCutting(); // TODO fix bad animation coupling
+            else if (closestInteractable is Collector)
+                playerAnimationController.StartCollecting(); // TODO fix bad animation coupling
             else
-                closestInteractable.Interact(this);
-
-            return true;
+                Debug.LogError("This Interactable is not currently supported by the animator");
+            //no interactable in the game takes time aside from Collector and Workbench as of rn
+                
+            StartCoroutine(InteractTimer(closestInteractable, time));
         }
-        if (HeldItem != null)
-        {
-            DropHeldItem();
-            return true;
-        }
+        else
+            closestInteractable.Interact(this);
 
-        return false;
+        return true;
     }
 
     private IEnumerator InteractTimer(Interactable insideInteractable, float time)
@@ -161,13 +181,15 @@ public class Player : MonoBehaviour
         HeldItem = null;
     }
 
+    public bool TryDropHeldItem() => TryDropHeldItem(Vector2.zero);
+    
     /// <summary>
-    /// Drops to the ground the item currently held
+    /// If holding an item, drops to the ground the item currently held
     /// </summary>
-    public void DropHeldItem()
+    public bool TryDropHeldItem(Vector2 currentThrowSpeed)
     {
-        if (!IsHolding || (HeldItem.State != Item.ItemState.Held))
-            return;
+        if (!IsHolding || HeldItem.State != Item.ItemState.Held)
+            return false;
 
         HeldItem.State = Item.ItemState.Transitioning;
         playerAnimationController.Drop(); // TODO fix bad animation coupling
@@ -175,8 +197,9 @@ public class Player : MonoBehaviour
         IsHolding = false;
         grabbingLerp.TryCancel();
         rotationLerp.TryCancel();
-        HeldItem.Drop();
+        HeldItem.Drop(currentThrowSpeed);
         HeldItem = null;
+        return true;
     }
 
     /// <summary>

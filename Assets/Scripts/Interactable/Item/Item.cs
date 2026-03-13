@@ -69,7 +69,8 @@ public class Item : Interactable
         trailRenderer.emitting = false;
     }
 
-    public void Drop()
+    public void Drop() => Drop(Vector2.zero);
+    public void Drop(Vector2 throwSpeed)
     {
         transform.SetParent(null);
         rb.simulated = true;
@@ -78,7 +79,6 @@ public class Item : Interactable
         float ejectionDeviation = Random.Range(1 - ejectionSpeedVariance, 1 + ejectionSpeedVariance);
         float rotationDeviation = Random.Range(1 - rotationSpeedVariance, 1 + rotationSpeedVariance);
 
-        Vector2 throwSpeed = LastOwner.PlayerMovement.ItemThrowSpeed;
         Vector2 throwDirection = throwSpeed.normalized;
 
         float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(throwSpeed.magnitude, minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);
