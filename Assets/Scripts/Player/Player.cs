@@ -173,7 +173,7 @@ public class Player : MonoBehaviour
     private void HandleInputAimingLockedIn()
     {
         throwSpeedRatio = Mathf.Clamp01(throwSpeedRatio + aimSpeedRatioVelocity * Time.deltaTime);
-        if (throwAction.WasReleasedThisFrame() || interactAction.WasReleasedThisFrame())
+        if (interactAction.WasReleasedThisFrame() || throwAction.WasReleasedThisFrame())
         {
             ThrowAndExitAim(ThrowVelocity);
         }
@@ -228,7 +228,7 @@ public class Player : MonoBehaviour
         while(t < time)
         {
             // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
-            if (!interactAction.IsPressed() || LevelManager.Instance.GameState != LevelManager.State.Game)
+            if (interactAction.WasReleasedThisFrame() || throwAction.WasReleasedThisFrame() || LevelManager.Instance.GameState != LevelManager.State.Game)
             {
                 StopInteracting(insideInteractable);
                 yield break;
