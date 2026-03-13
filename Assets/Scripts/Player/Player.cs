@@ -12,7 +12,12 @@ public class Player : MonoBehaviour
     public Item HeldItem { get; private set; }
     public bool Interacting { get; private set; }
     
-    [SerializeField] private float throwSpeed = 10f;
+    [SerializeField] private float minThrowSpeed = 40f;
+    [SerializeField] private float maxThrowSpeed = 70f;
+    [SerializeField] private float aimChargeDuration = .5f;
+    private float aimSpeedRatioVelocity;
+    [SerializeField] private float timeBeforeAimCharge = .15f;
+    private float timerBeforeAimCharge;
 
     [Header("References")]
 
@@ -42,14 +47,25 @@ public class Player : MonoBehaviour
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
-    
+    public float throwSpeedRatio { get; private set; }
+    private float ThrowSpeed => throwSpeedRatio * (maxThrowSpeed - minThrowSpeed) + minThrowSpeed;
+    public Vector2 ThrowDirection => playerMovement.LastNonZeroInput;
+    public Vector2 ThrowVelocity => ThrowSpeed * ThrowDirection;
+
     public bool LockedInSettingsMenu { get; private set; }
     public event Action LockedInSettingsMenuChanged;
+
+    public event Action StartedAimingLockedIn;
+    public event Action StoppedAiming;
+    public enum AimingState { NotAiming, StartingToAim, AimingLockedIn }
+
+    public AimingState CurrentAimingState { get; private set; } = AimingState.NotAiming;
 
     private void Awake()
     {
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
         throwAction = playerInput.actions.FindAction("Gameplay/Throw");
+        aimSpeedRatioVelocity = 1 / aimChargeDuration;
     }
 
     private void Start()
@@ -70,32 +86,173 @@ public class Player : MonoBehaviour
 
     private void HandleInput()
     {
-        if (HandleThrowInput())
-            return;
-        HandleInteractInput();
+        if (LevelManager.InGame)
+            HandleInputGame();
+        else
+            HandleInputLobby();
     }
 
-    private bool HandleThrowInput()
+    private void HandleInputLobby()
     {
-        if (!throwAction.WasPressedThisFrame())
-            return false;
-        
-        return TryDropHeldItem(throwSpeed * playerMovement.lastNonZeroSpeed.normalized);
-    }
-
-    private bool HandleInteractInput()
-    {
-        if (!interactAction.WasPressedThisFrame())
-            return false;
-        
-        bool successfulInteraction = TryInteract();
-        if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
+        if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
         {
-            playerControlBadge.Interact();
+            if (!TryInteract())
+            {
+                playerControlBadge.Interact();
+            }
         }
-
-        return true;
     }
+
+    private void HandleInputGame()
+    {
+        switch (CurrentAimingState)
+        {
+            case AimingState.NotAiming:
+                HandleInputNotAiming();
+                break;
+            case AimingState.StartingToAim:
+                HandleInputStartingToAim();
+                break;
+            case AimingState.AimingLockedIn:
+                HandleInputAimingLockedIn();
+                break;
+        }
+    }
+
+    private void HandleInputNotAiming()
+    {
+        if (IsHolding)
+        {
+            bool interactActionPressed = interactAction.WasPressedThisFrame();
+            
+            if (interactActionPressed && TryInteract())
+                return;
+            
+            if (interactActionPressed || throwAction.WasPressedThisFrame())
+            {
+                CurrentAimingState = AimingState.StartingToAim;
+                throwSpeedRatio = 0f;
+                timerBeforeAimCharge = 0f;
+            }
+        }
+        else
+        {
+            if (interactAction.WasPressedThisFrame())
+                TryInteract();
+        }
+    }
+
+    private void HandleInputStartingToAim()
+    {
+        if (throwAction.WasReleasedThisFrame())
+        {
+            ThrowAndExitAim(ThrowVelocity);
+            return;
+        }
+        
+        if (interactAction.WasReleasedThisFrame())
+        {
+            ThrowAndExitAim();
+            return;
+        }
+        
+        timerBeforeAimCharge += Time.deltaTime;
+        if (timerBeforeAimCharge >= timeBeforeAimCharge)
+        {
+            Debug.Log($"LOCKED IN {timerBeforeAimCharge}, {timeBeforeAimCharge}");
+            CurrentAimingState = AimingState.AimingLockedIn;
+            StartedAimingLockedIn?.Invoke();
+        }
+    }
+
+    private void ThrowAndExitAim() => ThrowAndExitAim(Vector2.zero);
+    private void ThrowAndExitAim(Vector2 throwVelocity)
+    {
+        throwSpeedRatio = 0f;
+        CurrentAimingState = AimingState.NotAiming;
+        StoppedAiming?.Invoke();
+        TryDropHeldItem(throwVelocity);
+    }
+
+    private void HandleInputAimingLockedIn()
+    {
+        throwSpeedRatio = Mathf.Clamp01(throwSpeedRatio + aimSpeedRatioVelocity * Time.deltaTime);
+        if (throwAction.WasReleasedThisFrame() || interactAction.WasReleasedThisFrame())
+        {
+            ThrowAndExitAim(ThrowVelocity);
+        }
+    }
+
+    // private bool C()
+    // {
+    //     if (IsHolding)
+    //         return HandleThrowInput(throwAction);
+    //
+    //     return false;
+    // }
+    //
+    // private bool HandleThrowInput(InputAction action, bool throwWhenStartingToAim = true)
+    // {
+    //     if (action.WasPressedThisFrame())
+    //     {
+    //         CurrentAimingState = AimingState.StartingToAim;
+    //         throwSpeedRatio = 0f;
+    //         timerBeforeAimCharge = 0f;
+    //
+    //         return true;
+    //     }
+    //     if (action.WasReleasedThisFrame())
+    //     {
+    //         AimingState stateBeforeRelease = CurrentAimingState;
+    //         CurrentAimingState = AimingState.NotAiming;
+    //         StoppedAiming?.Invoke();
+    //
+    //         if (throwWhenStartingToAim)
+    //             return TryDropHeldItem(ThrowVelocity);
+    //
+    //         switch (stateBeforeRelease)
+    //         {
+    //             case AimingState.StartingToAim:
+    //                 return TryDropHeldItem();
+    //             case AimingState.AimingLockedIn:
+    //                 return TryDropHeldItem(ThrowVelocity);
+    //         }
+    //     }
+    //
+    //     switch (CurrentAimingState)
+    //     {
+    //         case AimingState.StartingToAim:
+    //             if (timerBeforeAimCharge >= timeBeforeAimCharge)
+    //             {
+    //                 CurrentAimingState = AimingState.AimingLockedIn;
+    //                 StartedAimingLockedIn?.Invoke();
+    //             }
+    //             timerBeforeAimCharge += Time.deltaTime;
+    //             return true;
+    //
+    //         case AimingState.AimingLockedIn:
+    //             throwSpeedRatio = Mathf.Clamp01(throwSpeedRatio + aimSpeedRatioVelocity * Time.deltaTime);
+    //             return true;
+    //     }
+    //     return false;
+    // }
+    //
+    // private bool A()
+    // {
+    //     if (IsHolding)
+    //         return HandleThrowInput(interactAction, false);
+    //     
+    //     if (!interactAction.WasPressedThisFrame())
+    //         return false;
+    //     
+    //     bool successfulInteraction = TryInteract();
+    //     if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
+    //     {
+    //         playerControlBadge.Interact();
+    //     }
+    //
+    //     return true;
+    // }
 
     private void UpdateClosestInteractable()
     {
@@ -115,7 +272,7 @@ public class Player : MonoBehaviour
     private bool TryInteract()
     {
         if (closestInteractable == null)
-            return TryDropHeldItem();
+            return false;
         
         float time = closestInteractable.GetInteractionTime();
         if (time > 0)
