@@ -8,8 +8,8 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
-   sodipodi:docname="arrow.svg"
-   inkscape:export-filename="..\Bitmap\arrow.png"
+   sodipodi:docname="arrow_outline.svg"
+   inkscape:export-filename="..\Bitmap\arrow_outline.png"
    inkscape:export-xdpi="192"
    inkscape:export-ydpi="192"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -42,7 +42,7 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.184763;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none;paint-order:stroke markers fill"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.11666656;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke markers fill;stroke-dasharray:none;stroke-opacity:1"
        d="m 1.9843749,4.6302082 3.9687499,1.9843748 -3.9687499,1.9843748 9.2604151,0 L 9.9218742,11.244791 17.859374,6.614583 9.9218742,1.9843749 11.24479,4.6302082 Z"
        id="path2"
        sodipodi:nodetypes="ccccccccc" />

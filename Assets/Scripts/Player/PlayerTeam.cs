@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,6 +15,15 @@ public class PlayerTeam : MonoBehaviour
     public int TeamPlayerIndex { get; private set; }
 
     private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left;
+
+    public static readonly Color LeftTeamColor = new Color32(92, 164, 218, 255);
+    public static readonly Color RightTeamColor = new Color32(217, 69, 58, 255);
+    private static Dictionary<Team, Color> s_teamColors;
+    public static Dictionary<Team, Color> TeamColors => s_teamColors ??= new Dictionary<Team, Color>
+    {
+        { Team.Left, LeftTeamColor },
+        { Team.Right, RightTeamColor }
+    };
 
     public void InitializeTeam()
     {
