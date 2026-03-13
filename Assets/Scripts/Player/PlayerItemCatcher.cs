@@ -9,7 +9,7 @@ public class PlayerItemCatcher : MonoBehaviour
     {
         if (player.Interacting)
             return;
-        
+
         if (collider == null || collider.transform.parent == null)
             return;
 
