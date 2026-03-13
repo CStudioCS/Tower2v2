@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public List<Interactable> insideInteractableList { get; private set; } = new();
+    public List<Interactable> insideInteractableList = new();
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
     public bool Interacting { get; private set; }
@@ -123,13 +123,10 @@ public class Player : MonoBehaviour
     {
         if (IsHolding)
         {
-            bool interactActionPressed = interactAction.WasPressedThisFrame();
-            
-            if (interactActionPressed && TryInteract())
-                return;
-            
-            if (interactActionPressed || throwAction.WasPressedThisFrame())
+            if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
             {
+                if (TryInteract())
+                    return;
                 CurrentAimingState = AimingState.StartingToAim;
                 throwSpeedRatio = 0f;
                 timerBeforeAimCharge = 0f;
@@ -137,7 +134,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if (interactAction.WasPressedThisFrame())
+            if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
                 TryInteract();
         }
     }
@@ -159,7 +156,6 @@ public class Player : MonoBehaviour
         timerBeforeAimCharge += Time.deltaTime;
         if (timerBeforeAimCharge >= timeBeforeAimCharge)
         {
-            Debug.Log($"LOCKED IN {timerBeforeAimCharge}, {timeBeforeAimCharge}");
             CurrentAimingState = AimingState.AimingLockedIn;
             StartedAimingLockedIn?.Invoke();
         }
@@ -182,77 +178,6 @@ public class Player : MonoBehaviour
             ThrowAndExitAim(ThrowVelocity);
         }
     }
-
-    // private bool C()
-    // {
-    //     if (IsHolding)
-    //         return HandleThrowInput(throwAction);
-    //
-    //     return false;
-    // }
-    //
-    // private bool HandleThrowInput(InputAction action, bool throwWhenStartingToAim = true)
-    // {
-    //     if (action.WasPressedThisFrame())
-    //     {
-    //         CurrentAimingState = AimingState.StartingToAim;
-    //         throwSpeedRatio = 0f;
-    //         timerBeforeAimCharge = 0f;
-    //
-    //         return true;
-    //     }
-    //     if (action.WasReleasedThisFrame())
-    //     {
-    //         AimingState stateBeforeRelease = CurrentAimingState;
-    //         CurrentAimingState = AimingState.NotAiming;
-    //         StoppedAiming?.Invoke();
-    //
-    //         if (throwWhenStartingToAim)
-    //             return TryDropHeldItem(ThrowVelocity);
-    //
-    //         switch (stateBeforeRelease)
-    //         {
-    //             case AimingState.StartingToAim:
-    //                 return TryDropHeldItem();
-    //             case AimingState.AimingLockedIn:
-    //                 return TryDropHeldItem(ThrowVelocity);
-    //         }
-    //     }
-    //
-    //     switch (CurrentAimingState)
-    //     {
-    //         case AimingState.StartingToAim:
-    //             if (timerBeforeAimCharge >= timeBeforeAimCharge)
-    //             {
-    //                 CurrentAimingState = AimingState.AimingLockedIn;
-    //                 StartedAimingLockedIn?.Invoke();
-    //             }
-    //             timerBeforeAimCharge += Time.deltaTime;
-    //             return true;
-    //
-    //         case AimingState.AimingLockedIn:
-    //             throwSpeedRatio = Mathf.Clamp01(throwSpeedRatio + aimSpeedRatioVelocity * Time.deltaTime);
-    //             return true;
-    //     }
-    //     return false;
-    // }
-    //
-    // private bool A()
-    // {
-    //     if (IsHolding)
-    //         return HandleThrowInput(interactAction, false);
-    //     
-    //     if (!interactAction.WasPressedThisFrame())
-    //         return false;
-    //     
-    //     bool successfulInteraction = TryInteract();
-    //     if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
-    //     {
-    //         playerControlBadge.Interact();
-    //     }
-    //
-    //     return true;
-    // }
 
     private void UpdateClosestInteractable()
     {
