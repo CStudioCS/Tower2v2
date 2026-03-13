@@ -1,9 +1,6 @@
 using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.UI;
 
 public class PauseMenu: MonoBehaviour
@@ -11,15 +8,14 @@ public class PauseMenu: MonoBehaviour
 	[SerializeField] private GameObject pausePanel;
 	[SerializeField] private EventSystem eventSystem;
 	[SerializeField] private Selectable firstSelectable;
+
 	public bool IsPaused { get; private set; }
 
 	public event Action Paused;
 	public event Action Resumed;
-	
+
 	public static PauseMenu instance;
 
-	private bool PauseKeyPressed => Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7);
-	
 	public void Awake()
 	{
 		if (instance != null)
@@ -28,28 +24,26 @@ public class PauseMenu: MonoBehaviour
 		instance = this;
 		pausePanel.SetActive(false);
 	}
-	
+
 	private void Update()
 	{
 		if (!LevelManager.InGame)
 			return;
 
-		if (PauseKeyPressed)
-		{
-			if (IsPaused)
-				Resume();
-			else
-				Pause();
-			return;
-		}
-		
 		if (IsPaused && eventSystem.currentSelectedGameObject == null && InputUtility.AnyInputPressed)
-		{
 			SelectFirstSelectable();
-		}
+	}
+
+	public void TogglePause()
+	{
+		if (IsPaused)
+			Resume();
+		else
+			Pause();
 	}
 
 	public void Resume() => Resume(true);
+
 	public void Resume(bool fireEvent)
 	{
 		pausePanel.SetActive(false);
@@ -67,6 +61,6 @@ public class PauseMenu: MonoBehaviour
 		IsPaused = true;
 		Paused?.Invoke();
 	}
-	
+
 	private void SelectFirstSelectable() => eventSystem.SetSelectedGameObject(firstSelectable.gameObject);
 }
