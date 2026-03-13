@@ -7,6 +7,9 @@ public class PlayerItemCatcher : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
+        if (player.Interacting)
+            return;
+        
         if (collider == null || collider.transform.parent == null)
             return;
 
