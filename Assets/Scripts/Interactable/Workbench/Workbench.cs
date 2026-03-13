@@ -86,9 +86,9 @@ public class Workbench : Interactable
 
     public override float GetInteractionTime() => currentInteractionTime;
     
-    protected override void OnGameEnded()
+    protected override void OnGameEndedOrReturnedToLobby()
     {
-        base.OnGameEnded();
+        base.OnGameEndedOrReturnedToLobby();
         state = State.Empty;
         ResetGraphicsOnTable();
     }

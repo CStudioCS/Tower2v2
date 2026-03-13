@@ -52,7 +52,7 @@ public abstract class Interactable : MonoBehaviour
     private void Start()
     {
         LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.Instance.GameEnded += OnGameEnded;
+        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
     }
 
     public virtual void TryHighlight(bool highlighted, Player player)
@@ -87,7 +87,7 @@ public abstract class Interactable : MonoBehaviour
     }
     public virtual bool CheckIfCanBeHighlighted(Player player) => spriteRenderer != null && propBlock != null;
 
-    protected virtual void OnGameEnded()
+    protected virtual void OnGameEndedOrReturnedToLobby()
     {
         IsAlreadyInteractedWith = false;
     }
@@ -95,6 +95,6 @@ public abstract class Interactable : MonoBehaviour
     private void OnDisable()
     {
         LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-        LevelManager.Instance.GameEnded -= OnGameEnded;
+        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
     }
 }
