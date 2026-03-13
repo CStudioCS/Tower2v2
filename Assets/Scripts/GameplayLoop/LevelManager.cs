@@ -23,6 +23,7 @@ public class LevelManager : MonoBehaviour
     public event Action GameStarted;
     public event Action GameEnded;
     public event Action ReturnedToLobby;
+    public event Action GameEndedOrReturnedToLobby;
 
     public event Action<bool> SetActiveLobbyUI; // TODO refactor, this shouldn't be an event
     public event Action<bool> SetActiveInGameUI; // TODO refactor, this shouldn't be an event
@@ -160,6 +161,7 @@ public class LevelManager : MonoBehaviour
         //CanvasLinker.Instance.winnerText.gameObject.SetActive(true);
         //CanvasLinker.Instance.winnerText.text = (winner == PlayerTeam.Team.Left ? "Left" : "Right") + " team wins!";
         GameEnded?.Invoke();
+        GameEndedOrReturnedToLobby?.Invoke();
     }
 
     public void ForceReturnToLobby()
@@ -175,5 +177,6 @@ public class LevelManager : MonoBehaviour
         GameState = State.Lobby;
 
         ReturnedToLobby?.Invoke();
+        GameEndedOrReturnedToLobby?.Invoke();
     }
 }

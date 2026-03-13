@@ -97,9 +97,9 @@ public class Furnace : Interactable
         StopCooking();
     }
     
-    protected override void OnGameEnded()
+    protected override void OnGameEndedOrReturnedToLobby()
     {
-        base.OnGameEnded();
+        base.OnGameEndedOrReturnedToLobby();
         state = State.Empty;
     }
 

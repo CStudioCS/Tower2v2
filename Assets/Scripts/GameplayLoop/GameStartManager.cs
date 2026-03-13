@@ -77,14 +77,11 @@ public class GameStartManager : MonoBehaviour
     {
         LobbyManager.Instance.PlayerJoined += OnPlayerJoined;
         LobbyManager.Instance.PlayerLeft += OnPlayerLeft;
-        LevelManager.Instance.GameEnded += OnGameEnded;
-        LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
+        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
         ChangeWaitState(WaitState.Logo);
     }
 
-    private void OnGameEnded() => ResetPlayers();
-
-    private void OnReturnedToLobby() => ResetPlayers();
+    private void OnGameEndedOrReturnedToLobby() => ResetPlayers();
 
     private void ResetPlayers()
     {
@@ -181,8 +178,7 @@ public class GameStartManager : MonoBehaviour
     {
         LobbyManager.Instance.PlayerJoined -= OnPlayerJoined;
         LobbyManager.Instance.PlayerLeft -= OnPlayerLeft;
-        LevelManager.Instance.GameEnded -= OnGameEnded;
-        LevelManager.Instance.ReturnedToLobby -= OnReturnedToLobby;
+        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
     }
 
     private void InitializeTeamPlayerIndices()

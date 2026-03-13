@@ -36,7 +36,7 @@ public class Item : Interactable
         base.Awake(); // Initialize highlight system
         itemCollider.enabled = false;
         State = ItemState.Dropped;
-        LevelManager.Instance.GameEnded += Disappear;
+        LevelManager.Instance.GameEndedOrReturnedToLobby += Disappear;
         trailRenderer.emitting = false;
         SetSilhouetteColor(silhouetteColor);
     }
@@ -91,6 +91,6 @@ public class Item : Interactable
 
     private void OnDestroy()
     {
-        LevelManager.Instance.GameEnded -= Disappear;
+        LevelManager.Instance.GameEndedOrReturnedToLobby -= Disappear;
     }
 }

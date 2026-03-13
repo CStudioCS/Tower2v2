@@ -70,7 +70,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        LevelManager.Instance.GameEnded += OnGameEnded;
+        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
     }
 
     private void Update()
@@ -329,7 +329,7 @@ public class Player : MonoBehaviour
         item.State = Item.ItemState.Held;
     }
 
-    private void OnGameEnded()
+    private void OnGameEndedOrReturnedToLobby()
     {
         Interacting = false;
         CurrentAimingState = AimingState.NotAiming;
@@ -342,7 +342,7 @@ public class Player : MonoBehaviour
     
     private void OnDisable()
     {
-        LevelManager.Instance.GameEnded -= OnGameEnded;
+        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
     }
 
     private Interactable GetClosestInteractable()
