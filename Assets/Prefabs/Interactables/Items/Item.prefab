@@ -125,9 +125,7 @@ MonoBehaviour:
   rb: {fileID: 3815938341415364146}
   itemCollider: {fileID: 5611164556063414744}
   trailRenderer: {fileID: -7033350463006825601}
-  ejectionSpeedMultiplier: 1.8
   rotationSpeed: 180
-  ejectionSpeedVariance: 0.2
   rotationSpeedVariance: 0.2
   minimumEjectionSpeedRatio: 0.1
   grabbingTime: 0.3
@@ -145,7 +143,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 2
+  m_LinearDamping: 4
   m_AngularDamping: 2
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -157,7 +155,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!114 &3298199191740817260
 MonoBehaviour:

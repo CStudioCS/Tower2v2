@@ -10,13 +10,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float acceleration = 100f;
     [SerializeField] private float friction = 140f;
     [SerializeField] private float gamepadDeadzone = 0.05f;
-    [SerializeField] private float gamepadmaxSpeedThreashold = 0.5f;
-    
-    private Vector2 lastNonZeroSpeed = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
+    [SerializeField] private float gamepadMaxSpeedThreshold = 0.5f;
+
+    [SerializeField] private float lastNonZeroInputDeadzone = .25f;
+    public Vector2 LastNonZeroInput { get; private set; } = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
     private Vector2 lastSpeed;
-    public Vector2 ItemThrowSpeed { get; private set; } = Vector2.zero;
-    [SerializeField] private float itemThrowSpeedDecayTime = .25f;
-    private Vector2 itemThrowSpeedVelocity = Vector2.zero;
 
     public Vector2 Velocity => rb.linearVelocity;
 
@@ -50,30 +48,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (gameStartingLock || player.Interacting || player.LockedInSettingsMenu || LevelManager.Instance.GameState == LevelManager.State.EndScreen)
+        Vector2 inputMovement = moveAction.ReadValue<Vector2>();
+        if (inputMovement.sqrMagnitude >= lastNonZeroInputDeadzone * lastNonZeroInputDeadzone)
+            LastNonZeroInput = inputMovement.normalized;
+        
+        if (gameStartingLock || player.Interacting || player.CurrentAimingState == Player.AimingState.AimingLockedIn || player.LockedInSettingsMenu || LevelManager.Instance.GameState == LevelManager.State.EndScreen)
         {
             rb.linearVelocity = Vector2.zero;
             return;
         }
 
-        if (rb.linearVelocity.sqrMagnitude > ItemThrowSpeed.sqrMagnitude)
-        {
-            ItemThrowSpeed = rb.linearVelocity;
-            itemThrowSpeedVelocity = Vector2.zero;
-        }
-        else
-        {
-            ItemThrowSpeed = Vector2.SmoothDamp(ItemThrowSpeed, rb.linearVelocity, ref itemThrowSpeedVelocity, itemThrowSpeedDecayTime);
-        }
-
-        rb.linearVelocity = VelocityApproach();
+        rb.linearVelocity = VelocityApproach(inputMovement);
 
         Accelerating = lastSpeed == Vector2.zero && rb.linearVelocity != Vector2.zero;
-
-        if (rb.linearVelocity != Vector2.zero)
-        {
-            lastNonZeroSpeed = rb.linearVelocity;
-        }
 
         lastSpeed = rb.linearVelocity;
 
@@ -85,16 +72,14 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
     /// Make your character accelerate or use friction depending on player input and current speed
     /// </summary>
-    private Vector2 VelocityApproach()
+    private Vector2 VelocityApproach(Vector2 inputMovement)
     {
-        Vector2 move = moveAction.ReadValue<Vector2>();
-
         //We wanna move and we're not at top speed -> accelerate
-        if (move.sqrMagnitude > gamepadDeadzone * gamepadDeadzone && rb.linearVelocity.sqrMagnitude < maxSpeed * maxSpeed)
+        if (inputMovement.sqrMagnitude > gamepadDeadzone * gamepadDeadzone && rb.linearVelocity.sqrMagnitude < maxSpeed * maxSpeed)
         {
             //Account for the fact that move can be of norm different than one (for controllers when moving slowly)
-            Vector2 apporached = (move.sqrMagnitude > gamepadmaxSpeedThreashold * gamepadmaxSpeedThreashold ? move.normalized : move) * maxSpeed;
-            return Approach(rb.linearVelocity, apporached, acceleration * Time.deltaTime);
+            Vector2 approached = (inputMovement.sqrMagnitude > gamepadMaxSpeedThreshold * gamepadMaxSpeedThreshold ? inputMovement.normalized : inputMovement) * maxSpeed;
+            return Approach(rb.linearVelocity, approached, acceleration * Time.deltaTime);
         }
 
         //We don't wanna move or we're at max speed -> friction (friction is just reverse acceleration, it's not a multiple of velocity)

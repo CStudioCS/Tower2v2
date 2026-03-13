@@ -7,10 +7,17 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public List<Interactable> insideInteractableList { get; private set; } = new();
+    public List<Interactable> insideInteractableList = new();
     public bool IsHolding { get; private set; }
     public Item HeldItem { get; private set; }
     public bool Interacting { get; private set; }
+    
+    [SerializeField] private float minThrowSpeed = 40f;
+    [SerializeField] private float maxThrowSpeed = 70f;
+    [SerializeField] private float aimChargeDuration = .5f;
+    private float aimSpeedRatioVelocity;
+    [SerializeField] private float timeBeforeAimCharge = .15f;
+    private float timerBeforeAimCharge;
 
     [Header("References")]
 
@@ -35,17 +42,30 @@ public class Player : MonoBehaviour
     public Action GrabbedNewItem;
 
     private InputAction interactAction;
+    private InputAction throwAction;
     private Interactable closestInteractable;
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
-    
+    public float throwSpeedRatio { get; private set; }
+    private float ThrowSpeed => throwSpeedRatio * (maxThrowSpeed - minThrowSpeed) + minThrowSpeed;
+    public Vector2 ThrowDirection => playerMovement.LastNonZeroInput;
+    public Vector2 ThrowVelocity => ThrowSpeed * ThrowDirection;
+
     public bool LockedInSettingsMenu { get; private set; }
     public event Action LockedInSettingsMenuChanged;
+
+    public event Action StartedAimingLockedIn;
+    public event Action StoppedAiming;
+    public enum AimingState { NotAiming, StartingToAim, AimingLockedIn }
+
+    public AimingState CurrentAimingState { get; private set; } = AimingState.NotAiming;
 
     private void Awake()
     {
         interactAction = playerInput.actions.FindAction("Gameplay/Interact");
+        throwAction = playerInput.actions.FindAction("Gameplay/Throw");
+        aimSpeedRatioVelocity = 1 / aimChargeDuration;
     }
 
     private void Start()
@@ -58,16 +78,110 @@ public class Player : MonoBehaviour
         if (!Interacting)
             UpdateClosestInteractable();
 
-        if (interactAction.WasPressedThisFrame() && !LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
+        if (!LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
+            HandleInput();
+
+        playerAnimationController.HasItem(HeldItem != null); // TODO fix bad animation coupling
+    }
+
+    private void HandleInput()
+    {
+        switch (LevelManager.Instance.GameState)
         {
-            bool successfulInteraction = TryInteract();
-            if (!successfulInteraction && LevelManager.Instance.GameState == LevelManager.State.Lobby)
+            case LevelManager.State.Game:
+                HandleInputGame();
+                break;
+            case LevelManager.State.Lobby:
+                HandleInputLobby();
+                break;
+        }
+    }
+
+    private void HandleInputLobby()
+    {
+        if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
+        {
+            if (!TryInteract())
             {
                 playerControlBadge.Interact();
             }
         }
+    }
 
-        playerAnimationController.HasItem(HeldItem != null); // TODO fix bad animation coupling
+    private void HandleInputGame()
+    {
+        switch (CurrentAimingState)
+        {
+            case AimingState.NotAiming:
+                HandleInputNotAiming();
+                break;
+            case AimingState.StartingToAim:
+                HandleInputStartingToAim();
+                break;
+            case AimingState.AimingLockedIn:
+                HandleInputAimingLockedIn();
+                break;
+        }
+    }
+
+    private void HandleInputNotAiming()
+    {
+        if (IsHolding)
+        {
+            if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
+            {
+                if (TryInteract()) // TODO TODO
+                    return;
+                CurrentAimingState = AimingState.StartingToAim;
+                throwSpeedRatio = 0f;
+                timerBeforeAimCharge = 0f;
+            }
+        }
+        else
+        {
+            if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
+                TryInteract();
+        }
+    }
+
+    private void HandleInputStartingToAim()
+    {
+        if (throwAction.WasReleasedThisFrame())
+        {
+            ThrowAndExitAim(ThrowVelocity);
+            return;
+        }
+        
+        if (interactAction.WasReleasedThisFrame())
+        {
+            ThrowAndExitAim();
+            return;
+        }
+        
+        timerBeforeAimCharge += Time.deltaTime;
+        if (timerBeforeAimCharge >= timeBeforeAimCharge)
+        {
+            CurrentAimingState = AimingState.AimingLockedIn;
+            StartedAimingLockedIn?.Invoke();
+        }
+    }
+
+    private void ThrowAndExitAim() => ThrowAndExitAim(Vector2.zero);
+    private void ThrowAndExitAim(Vector2 throwVelocity)
+    {
+        throwSpeedRatio = 0f;
+        CurrentAimingState = AimingState.NotAiming;
+        StoppedAiming?.Invoke();
+        TryDropHeldItem(throwVelocity);
+    }
+
+    private void HandleInputAimingLockedIn()
+    {
+        throwSpeedRatio = Mathf.Clamp01(throwSpeedRatio + aimSpeedRatioVelocity * Time.deltaTime);
+        if (interactAction.WasReleasedThisFrame() || throwAction.WasReleasedThisFrame())
+        {
+            ThrowAndExitAim(ThrowVelocity);
+        }
     }
 
     private void UpdateClosestInteractable()
@@ -87,33 +201,26 @@ public class Player : MonoBehaviour
     }
     private bool TryInteract()
     {
-        if (closestInteractable != null)
+        if (closestInteractable == null)
+            return false;
+        
+        float time = closestInteractable.GetInteractionTime();
+        if (time > 0)
         {
-            float time = closestInteractable.GetInteractionTime();
-            if (time > 0)
-            {
-                if (closestInteractable is Workbench)
-                    playerAnimationController.StartCutting(); // TODO fix bad animation coupling
-                else if (closestInteractable is Collector)
-                    playerAnimationController.StartCollecting(); // TODO fix bad animation coupling
-                else
-                    Debug.LogError("This Interactable is not currently supported by the animator");
-                    //no interactable in the game takes time aside from Collector and Workbench as of rn
-                
-                StartCoroutine(InteractTimer(closestInteractable, time));
-            }
+            if (closestInteractable is Workbench)
+                playerAnimationController.StartCutting(); // TODO fix bad animation coupling
+            else if (closestInteractable is Collector)
+                playerAnimationController.StartCollecting(); // TODO fix bad animation coupling
             else
-                closestInteractable.Interact(this);
-
-            return true;
+                Debug.LogError("This Interactable is not currently supported by the animator");
+            //no interactable in the game takes time aside from Collector and Workbench as of rn
+                
+            StartCoroutine(InteractTimer(closestInteractable, time));
         }
-        if (HeldItem != null)
-        {
-            DropHeldItem();
-            return true;
-        }
+        else
+            closestInteractable.Interact(this);
 
-        return false;
+        return closestInteractable.CheckIfCanBeHighlighted(this);
     }
 
     private IEnumerator InteractTimer(Interactable insideInteractable, float time)
@@ -126,7 +233,7 @@ public class Player : MonoBehaviour
         while(t < time)
         {
             // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
-            if (!interactAction.IsPressed() || LevelManager.Instance.GameState != LevelManager.State.Game)
+            if (interactAction.WasReleasedThisFrame() || throwAction.WasReleasedThisFrame() || LevelManager.Instance.GameState != LevelManager.State.Game)
             {
                 StopInteracting(insideInteractable);
                 yield break;
@@ -161,13 +268,15 @@ public class Player : MonoBehaviour
         HeldItem = null;
     }
 
+    public bool TryDropHeldItem() => TryDropHeldItem(Vector2.zero);
+    
     /// <summary>
-    /// Drops to the ground the item currently held
+    /// If holding an item, drops to the ground the item currently held
     /// </summary>
-    public void DropHeldItem()
+    public bool TryDropHeldItem(Vector2 currentThrowSpeed)
     {
-        if (!IsHolding || (HeldItem.State != Item.ItemState.Held))
-            return;
+        if (!IsHolding || HeldItem.State != Item.ItemState.Held)
+            return false;
 
         HeldItem.State = Item.ItemState.Transitioning;
         playerAnimationController.Drop(); // TODO fix bad animation coupling
@@ -175,8 +284,9 @@ public class Player : MonoBehaviour
         IsHolding = false;
         grabbingLerp.TryCancel();
         rotationLerp.TryCancel();
-        HeldItem.Drop();
+        HeldItem.Drop(currentThrowSpeed);
         HeldItem = null;
+        return true;
     }
 
     /// <summary>
@@ -222,6 +332,8 @@ public class Player : MonoBehaviour
     private void OnGameEnded()
     {
         Interacting = false;
+        CurrentAimingState = AimingState.NotAiming;
+        StoppedAiming?.Invoke();
         ConsumeCurrentItem();
 
         if (closestInteractable != null)

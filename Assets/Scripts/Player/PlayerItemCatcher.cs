@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PlayerItemCatcher : MonoBehaviour
 {
-    [SerializeField] private PlayerTeam playerTeam;
     [SerializeField] private Player player;
     [SerializeField] private float minimumCatchingVelocity = 0.5f;
 
@@ -11,13 +10,13 @@ public class PlayerItemCatcher : MonoBehaviour
         if (collider == null || collider.transform.parent == null)
             return;
 
-        if(!collider.transform.parent.TryGetComponent<Item>(out Item item) || !collider.transform.parent.TryGetComponent<Rigidbody2D>(out Rigidbody2D rb))
+        if (!collider.transform.parent.TryGetComponent(out Item item) || !collider.transform.parent.TryGetComponent(out Rigidbody2D rb))
             return;
 
-        if (item.LastOwner.PlayerTeam == playerTeam)
+        if (item.LastOwner == player)
             return;
 
-        if (item.LastOwner.PlayerTeam.CurrentTeam != playerTeam.CurrentTeam)
+        if (item.LastOwner.PlayerTeam.CurrentTeam != player.PlayerTeam.CurrentTeam)
             return;
 
         if (item.State != Item.ItemState.Dropped)

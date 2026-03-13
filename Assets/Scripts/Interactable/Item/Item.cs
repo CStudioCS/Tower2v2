@@ -17,9 +17,7 @@ public class Item : Interactable
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Collider2D itemCollider;
     [SerializeField] private TrailRenderer trailRenderer;
-    [SerializeField] private float ejectionSpeedMultiplier;
     [SerializeField] private float rotationSpeed;
-    [SerializeField] private float ejectionSpeedVariance;
     [SerializeField] private float rotationSpeedVariance;
     [SerializeField] private float minimumEjectionSpeedRatio;
     [SerializeField] private float grabbingTime;
@@ -69,20 +67,15 @@ public class Item : Interactable
         trailRenderer.emitting = false;
     }
 
-    public void Drop()
+    public void Drop() => Drop(Vector2.zero);
+    public void Drop(Vector2 throwSpeed)
     {
         transform.SetParent(null);
         rb.simulated = true;
         itemCollider.enabled = true;
 
-        float ejectionDeviation = Random.Range(1 - ejectionSpeedVariance, 1 + ejectionSpeedVariance);
+        rb.linearVelocity = throwSpeed;
         float rotationDeviation = Random.Range(1 - rotationSpeedVariance, 1 + rotationSpeedVariance);
-
-        Vector2 throwSpeed = LastOwner.PlayerMovement.ItemThrowSpeed;
-        Vector2 throwDirection = throwSpeed.normalized;
-
-        float ejectionSpeedRecalibration = ejectionSpeedMultiplier * Mathf.Clamp(throwSpeed.magnitude, minimumEjectionSpeedRatio * LastOwner.PlayerMovement.MaxSpeed, LastOwner.PlayerMovement.MaxSpeed);
-        rb.linearVelocity = throwDirection * (ejectionSpeedRecalibration * ejectionDeviation);
         rb.angularVelocity = new List<int> { -1, 1 }[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
 
         trailRenderer.emitting = true;
