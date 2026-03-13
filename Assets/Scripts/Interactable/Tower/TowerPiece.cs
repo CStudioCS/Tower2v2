@@ -10,7 +10,6 @@ public class TowerPiece : Interactable
     public override void Interact(Player player)
     {
         tower.Interact(player);
-        player.TryDropHeldItem();
     }
 
     public override float GetInteractionTime() => 0;

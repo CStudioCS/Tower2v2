@@ -3,9 +3,10 @@ using UnityEngine;
 public class WorkbenchItemCatcher : MonoBehaviour
 {
     [SerializeField] private Workbench workbench;
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision == null || !collision.gameObject.TryGetComponent<Item>(out Item item))
+        if (collision == null || !collision.gameObject.TryGetComponent(out Item item))
             return;
         
         if (item.ItemType != Item.Type.WoodLog)
@@ -16,7 +17,6 @@ public class WorkbenchItemCatcher : MonoBehaviour
 
         if (workbench.WorkbenchState != Workbench.State.Empty)
             return;
-
 
         workbench.PutWoodLog();
         Destroy(collision.gameObject);

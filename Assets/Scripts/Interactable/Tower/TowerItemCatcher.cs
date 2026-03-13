@@ -5,7 +5,7 @@ public class TowerItemCatcher : MonoBehaviour
     [SerializeField] private Tower tower;
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider == null || !collider.gameObject.TryGetComponent<Item>(out Item item))
+        if (collider == null || !collider.gameObject.TryGetComponent(out Item item))
             return;
         
         if (!tower.IsItemCorrect(item))

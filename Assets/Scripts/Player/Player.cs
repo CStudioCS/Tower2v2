@@ -86,10 +86,15 @@ public class Player : MonoBehaviour
 
     private void HandleInput()
     {
-        if (LevelManager.InGame)
-            HandleInputGame();
-        else
-            HandleInputLobby();
+        switch (LevelManager.Instance.GameState)
+        {
+            case LevelManager.State.Game:
+                HandleInputGame();
+                break;
+            case LevelManager.State.Lobby:
+                HandleInputLobby();
+                break;
+        }
     }
 
     private void HandleInputLobby()
@@ -125,7 +130,7 @@ public class Player : MonoBehaviour
         {
             if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
             {
-                if (TryInteract())
+                if (TryInteract()) // TODO TODO
                     return;
                 CurrentAimingState = AimingState.StartingToAim;
                 throwSpeedRatio = 0f;
@@ -215,7 +220,7 @@ public class Player : MonoBehaviour
         else
             closestInteractable.Interact(this);
 
-        return true;
+        return closestInteractable.CheckIfCanBeHighlighted(this);
     }
 
     private IEnumerator InteractTimer(Interactable insideInteractable, float time)
@@ -327,6 +332,8 @@ public class Player : MonoBehaviour
     private void OnGameEnded()
     {
         Interacting = false;
+        CurrentAimingState = AimingState.NotAiming;
+        StoppedAiming?.Invoke();
         ConsumeCurrentItem();
 
         if (closestInteractable != null)
