@@ -259,6 +259,7 @@ GameObject:
   - component: {fileID: 176917095401970236}
   - component: {fileID: 5125476753773754566}
   - component: {fileID: 4519425206981744789}
+  - component: {fileID: 3303994246176546071}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -531,6 +532,19 @@ MonoBehaviour:
   collisionGameObject: {fileID: 6781368016375779301}
   playerBlueCollisionLayerMaskName: PlayerBlueCollision
   playerRedCollisionLayerMaskName: PlayerRedCollision
+--- !u!114 &3303994246176546071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4067928945899315388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5eabb977f14d48ba780985a976effc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInput: {fileID: 859528782026247002}
 --- !u!1 &4296346886437397786
 GameObject:
   m_ObjectHideFlags: 0
@@ -1309,7 +1323,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7042194676524099843, guid: e60847b7ca4ca6040b3e1e41f320495e, type: 3}
       propertyPath: m_CastShadows
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8209709874712068200, guid: e60847b7ca4ca6040b3e1e41f320495e, type: 3}
       propertyPath: m_Name
