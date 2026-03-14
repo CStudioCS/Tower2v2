@@ -7,8 +7,8 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public List<Interactable> insideInteractableList = new();
-    public bool IsHolding { get; private set; }
+    public List<Interactable> insideInteractableList { get; } = new();
+    public bool IsHolding => HeldItem != null;
     public Item HeldItem { get; private set; }
     public bool Interacting { get; private set; }
     
@@ -262,7 +262,6 @@ public class Player : MonoBehaviour
     /// </summary>
     public void ConsumeCurrentItem()
     {
-        IsHolding = false;
         if (HeldItem != null)
             Destroy(HeldItem.gameObject);
         HeldItem = null;
@@ -281,7 +280,6 @@ public class Player : MonoBehaviour
         HeldItem.State = Item.ItemState.Transitioning;
         playerAnimationController.Drop(); // TODO fix bad animation coupling
 
-        IsHolding = false;
         grabbingLerp.TryCancel();
         rotationLerp.TryCancel();
         HeldItem.Drop(currentThrowSpeed);
@@ -310,7 +308,6 @@ public class Player : MonoBehaviour
     {
         playerAnimationController.Grab(); // TODO fix bad animation coupling
 
-        IsHolding = true;
         HeldItem = item;
 
         item.Immobilize();
