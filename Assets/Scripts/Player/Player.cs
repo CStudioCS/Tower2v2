@@ -151,8 +151,10 @@ public class Player : MonoBehaviour
             ThrowAndExitAim(ThrowVelocity);
             return;
         }
-        
-        if (interactAction.WasReleasedThisFrame())
+
+        // If the player releases the interact button BUT is still holding the throw button at the same time,
+        // their intention is probably to throw the item, so we should not drop it and stay in the StartingToAim state.
+        if (interactAction.WasReleasedThisFrame() && !throwAction.IsPressed())
         {
             ThrowAndExitAim();
             return;
