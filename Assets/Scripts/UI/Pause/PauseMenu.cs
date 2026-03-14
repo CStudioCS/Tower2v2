@@ -15,6 +15,7 @@ public class PauseMenu: MonoBehaviour
 	public event Action Resumed;
 
 	public static PauseMenu instance;
+	private bool toggledPauseThisFrame;
 
 	public void Awake()
 	{
@@ -34,8 +35,13 @@ public class PauseMenu: MonoBehaviour
 			SelectFirstSelectable();
 	}
 
+	private void LateUpdate() => toggledPauseThisFrame = false;
+
 	public void TogglePause()
 	{
+		if(toggledPauseThisFrame) return;
+		toggledPauseThisFrame = true;
+
 		if (IsPaused)
 			Resume();
 		else
