@@ -1,4 +1,5 @@
 using System;
+using LitMotion;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
@@ -54,15 +55,24 @@ public class PlayerControlBadge : MonoBehaviour
         LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
     }
 
+    private MotionHandle fadeMotionHandle;
+    
     private void OnGameStarted()
     {
-        FadeInNOutUtility.FadeInOrOut(graphics, LevelManager.Instance.LobbyUIFadeTime, false);
+        Fade(false);
     }
 
     private void OnReturnedToLobby()
     {
         graphics.gameObject.SetActive(true);
-        FadeInNOutUtility.FadeInOrOut(graphics, LevelManager.Instance.LobbyUIFadeTime, true);
+        Fade(true);
+    }
+
+    private void Fade(bool fadeIn)
+    {
+        if (fadeMotionHandle.IsActive())
+            fadeMotionHandle.Cancel();
+        fadeMotionHandle = FadeInNOutUtility.FadeInOrOut(graphics, LevelManager.Instance.LobbyUIFadeTime, fadeIn, fromCurrentValue: true);
     }
 
     private void OnTeamChanged()
