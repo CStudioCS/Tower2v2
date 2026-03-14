@@ -4,8 +4,8 @@ public class PlayerAimArrow: MonoBehaviour
 {
 	[SerializeField] private Player player;
 	[SerializeField] private GameObject graphics;
+	[SerializeField] private SpriteRenderer colorizedSpriteRenderer;
 	[SerializeField] private SpriteRenderer spriteRenderer;
-	[SerializeField] private SpriteRenderer outlineSpriteRenderer;
 	[SerializeField] private float minArrowLength = 1.8f;
 	[SerializeField] private float maxArrowLength = 3.5f;
 	private float ArrowLength => (maxArrowLength - minArrowLength) * player.throwSpeedRatio + minArrowLength;
@@ -40,8 +40,8 @@ public class PlayerAimArrow: MonoBehaviour
 
 	private void UpdateArrowLength()
 	{
+		UpdateArrowLength(colorizedSpriteRenderer);
 		UpdateArrowLength(spriteRenderer);
-		UpdateArrowLength(outlineSpriteRenderer);
 	}
 	private void UpdateArrowLength(SpriteRenderer s) => s.size = new Vector2(ArrowLength, s.size.y);
 
@@ -49,7 +49,7 @@ public class PlayerAimArrow: MonoBehaviour
 
 	private void UpdateColor()
 	{
-		spriteRenderer.color = PlayerTeam.TeamColors[player.PlayerTeam.CurrentTeam];
+		colorizedSpriteRenderer.color = PlayerTeam.TeamColors[player.PlayerTeam.CurrentTeam];
 	}
 
 	private void OnDisable()

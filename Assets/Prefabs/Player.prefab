@@ -366,7 +366,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 1.8, y: 1}
+  m_Size: {x: 2.4, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -482,9 +482,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47726edfc47ebb5429e2d28ca8217a33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  insideInteractableList: []
-  minThrowSpeed: 20
-  maxThrowSpeed: 40
+  minThrowSpeed: 14
+  maxThrowSpeed: 14
   aimChargeDuration: 0.5
   timeBeforeAimCharge: 0.15
   playerInput: {fileID: 859528782026247002}
@@ -834,10 +833,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 8343199554380001103}
   graphics: {fileID: 8094632433296119910}
-  spriteRenderer: {fileID: 2541953908260353135}
-  outlineSpriteRenderer: {fileID: 7217846542648772133}
-  minArrowLength: 1.8
-  maxArrowLength: 3.5
+  colorizedSpriteRenderer: {fileID: 2541953908260353135}
+  spriteRenderer: {fileID: 7217846542648772133}
+  minArrowLength: 2.4
+  maxArrowLength: 2.4
 --- !u!1 &6435398234095564042
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,7 +919,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0808034d8c303c42bbee38e897dd58a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTeam: {fileID: 4720667436485828352}
   player: {fileID: 8343199554380001103}
   minimumCatchingVelocity: 0.5
 --- !u!1 &6454082161551069598
@@ -1219,7 +1217,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 1.8, y: 1}
+  m_Size: {x: 2.4, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
