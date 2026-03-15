@@ -45,4 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerLimit: 120
-  LobbyUIFadeTime: 1
+  secondsBeforeGameEnd: 5
+  LobbyUIFadeTime: 0.5
