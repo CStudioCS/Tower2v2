@@ -462,14 +462,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelManager
       objectReference: {fileID: 0}
-    - target: {fileID: 7872059014178648389, guid: f7a829f4afd32c57ead5fede8647d239, type: 3}
-      propertyPath: activateOnlyInGame.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7872059014178648389, guid: f7a829f4afd32c57ead5fede8647d239, type: 3}
-      propertyPath: activateOnlyInLobby.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

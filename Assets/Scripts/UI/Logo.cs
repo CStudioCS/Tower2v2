@@ -1,12 +1,10 @@
 using System.Collections;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.UI;
 
 public class Logo : MonoBehaviour
 {
+    private static readonly int Active = Animator.StringToHash("active");
     [SerializeField] private Image LogoImg;
     [SerializeField] private Animator animator;
     private bool droppedDown;
@@ -21,7 +19,7 @@ public class Logo : MonoBehaviour
     {
         droppedDown = true;
 
-        animator.SetBool("active", false);
+        animator.SetBool(Active, false);
 
         yield return null;
         yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
