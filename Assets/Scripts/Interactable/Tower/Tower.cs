@@ -24,6 +24,7 @@ public class Tower : Interactable
 
     [SerializeField] private Transform towerPiecesParent;
     [SerializeField] private Collider2D colliderToActivateUponBuilding;
+    [SerializeField] private bool moving;
 
     private readonly List<TowerPiece> towerPieces = new();
 
@@ -169,6 +170,12 @@ public class Tower : Interactable
     }
 
     public override bool CheckIfCanBeHighlighted(Player player) => base.CheckIfCanBeHighlighted(player) && player.IsHolding && IsItemCorrect(player.HeldItem);
+
+    private void LateUpdate()
+    {
+        if (moving)
+            UpdateTowerTopUI();
+    }
 
     private void ResetTower()
     {
