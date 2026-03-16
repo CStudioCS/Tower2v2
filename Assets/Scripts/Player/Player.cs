@@ -130,8 +130,12 @@ public class Player : MonoBehaviour
         {
             if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
             {
-                if (TryInteract()) // TODO TODO
+                if (TryInteract())
+                {
+                    Debug.Log($"Interacted {Time.time}");
                     return;
+                }
+                Debug.Log($"Current aiming state set to start to aim {Time.time}");
                 CurrentAimingState = AimingState.StartingToAim;
                 throwSpeedRatio = 0f;
                 timerBeforeAimCharge = 0f;
@@ -205,7 +209,8 @@ public class Player : MonoBehaviour
     {
         if (closestInteractable == null)
             return false;
-        
+
+        bool canBeHighlighted = closestInteractable.CheckIfCanBeHighlighted(this);
         float time = closestInteractable.GetInteractionTime();
         if (time > 0)
         {
@@ -222,7 +227,7 @@ public class Player : MonoBehaviour
         else
             closestInteractable.Interact(this);
 
-        return closestInteractable.CheckIfCanBeHighlighted(this);
+        return canBeHighlighted;
     }
 
     private IEnumerator InteractTimer(Interactable insideInteractable, float time)

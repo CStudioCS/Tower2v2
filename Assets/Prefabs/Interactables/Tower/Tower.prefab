@@ -242,6 +242,7 @@ GameObject:
   - component: {fileID: 8641540001414929147}
   - component: {fileID: 1966643861661878256}
   - component: {fileID: 1051541586536054059}
+  - component: {fileID: 2534375036021993597}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Untagged
@@ -351,6 +352,33 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2, y: 2}
   m_EdgeRadius: 0.5
+--- !u!50 &2534375036021993597
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8286533885462722529}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &9036056661443125684
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class Trashcan : Interactable
 {
     public override void Interact(Player player)

@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance;
     [SerializeField] private float timerLimit = 120f;
+    public float TimerLimit => timerLimit;
     [SerializeField] private float secondsBeforeGameEnd = 5f; //I literally cannot name any of the shit in this PR feel free to rename
     
     public float LevelTimer { get; private set; }
