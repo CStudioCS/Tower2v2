@@ -82,5 +82,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cb6df933f264a75b567f967739219d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 6321233777359857249}
+  spriteRenderers:
+  - {fileID: 6321233777359857249}
   signText: Settings

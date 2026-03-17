@@ -3157,6 +3157,10 @@ PrefabInstance:
       value: 0.35610107
       objectReference: {fileID: 0}
     - target: {fileID: 2381285585572388083, guid: b29a579e45fe5824199bf598e56adeff, type: 3}
+      propertyPath: m_PolyMesh.name
+      value: PolybrushMesh-364600
+      objectReference: {fileID: 0}
+    - target: {fileID: 2381285585572388083, guid: b29a579e45fe5824199bf598e56adeff, type: 3}
       propertyPath: m_PolyMesh.m_Mesh
       value: 
       objectReference: {fileID: 1470764522}
@@ -11890,7 +11894,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PolybrushMesh-171632
+  m_Name: PolybrushMesh-364600
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2

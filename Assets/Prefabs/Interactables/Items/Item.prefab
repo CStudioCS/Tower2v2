@@ -119,12 +119,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69c86d2ac048b5240a6e38a3e5d8810b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 8634384408421064618}
+  spriteRenderers:
+  - {fileID: 8634384408421064618}
   itemType: 0
   silhouetteColor: {r: 0, g: 0, b: 0, a: 1}
   rb: {fileID: 3815938341415364146}
   itemCollider: {fileID: 5611164556063414744}
   trailRenderer: {fileID: -7033350463006825601}
+  graphics: {fileID: 6949819470700435689}
   rotationSpeed: 180
   rotationSpeedVariance: 0.2
   minimumEjectionSpeedRatio: 0.1

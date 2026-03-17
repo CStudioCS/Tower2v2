@@ -47,7 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69d185eb165a39742aef23e45dd7e675, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 0}
+  spriteRenderers:
+  - {fileID: 3680878637782089664}
   interactionTime: 1
   itemPrefab: {fileID: 0}
   soundName: 
@@ -147,7 +148,7 @@ GameObject:
   - component: {fileID: 8082030437566606097}
   - component: {fileID: 8063414501038522489}
   m_Layer: 0
-  m_Name: sprite
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
