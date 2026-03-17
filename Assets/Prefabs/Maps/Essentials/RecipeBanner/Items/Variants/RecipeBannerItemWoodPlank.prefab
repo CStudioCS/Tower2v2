@@ -94,10 +94,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4296214934539122374}
     m_Modifications:
+    - target: {fileID: 2384108353711644752, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b488dbe768b9d0f4fa4e5825b57a9f2c, type: 2}
+    - target: {fileID: 3421284329773670351, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b488dbe768b9d0f4fa4e5825b57a9f2c, type: 2}
     - target: {fileID: 4310893797235188124, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
       propertyPath: m_Name
       value: WoodPlankSprite
       objectReference: {fileID: 0}
+    - target: {fileID: 6621646575456918476, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: b488dbe768b9d0f4fa4e5825b57a9f2c, type: 2}
     - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

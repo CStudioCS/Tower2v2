@@ -131,11 +131,7 @@ public class Player : MonoBehaviour
             if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
             {
                 if (TryInteract())
-                {
-                    Debug.Log($"Interacted {Time.time}");
                     return;
-                }
-                Debug.Log($"Current aiming state set to start to aim {Time.time}");
                 CurrentAimingState = AimingState.StartingToAim;
                 throwSpeedRatio = 0f;
                 timerBeforeAimCharge = 0f;
