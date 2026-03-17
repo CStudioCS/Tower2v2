@@ -17,10 +17,24 @@ public class Furnace : Interactable
 
     public event Action StartedCooking;
     public event Action StoppedCooking;
+
+    [Header("Furnace Color")]
+    [SerializeField] private bool allowLeftTeam = true;
+    [SerializeField] private bool allowRightTeam = true;
+
+    public bool Allowed(Player player) => Allowed(player.PlayerTeam.CurrentTeam);
+    private bool Allowed(PlayerTeam.Team team) => team switch
+    {
+        PlayerTeam.Team.Left => allowLeftTeam,
+        PlayerTeam.Team.Right => allowRightTeam,
+        _ => true
+    };
     
     public override bool CanInteract(Player player)
     {
         if (!LevelManager.InGame)
+            return false;
+        if (!Allowed(player))
             return false;
         switch (state)
         {
