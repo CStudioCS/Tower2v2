@@ -6,10 +6,22 @@ public class FurnaceItemDetector : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider != null && collider.gameObject.TryGetComponent(out Item item) && item.ItemType == Item.Type.Clay && furnace.FurnaceState == Furnace.State.Empty)
-        {
-            furnace.PutClayIn(item.LastOwner.PlayerTeam.CurrentTeam);
-            Destroy(collider.gameObject);
-        }
+        if (collider == null)
+            return;
+
+        if (!collider.gameObject.TryGetComponent(out Item item))
+            return;
+
+        if (item.ItemType != Item.Type.Clay)
+            return;
+
+        if (furnace.FurnaceState != Furnace.State.Empty)
+            return;
+
+        if (!furnace.Allowed(item.LastOwner))
+            return;
+
+        furnace.PutClayIn(item.LastOwner.PlayerTeam.CurrentTeam);
+        Destroy(collider.gameObject);
     }
 }
