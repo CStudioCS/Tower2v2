@@ -55,7 +55,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 60b9b04bfdb52cc4a995de5415fcf968, type: 2}
+  - {fileID: 2100000, guid: 8932c0f3bb24a7d43a916d67b75c2619, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -103,7 +103,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4486257514894748930
 Transform:
   m_ObjectHideFlags: 0
@@ -243,7 +243,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0.2}
-  m_Size: {x: 1.6, y: 2}
+  m_Size: {x: 2, y: 2.75}
   m_Direction: 0
 --- !u!1 &7208252129415761920
 GameObject:
@@ -360,8 +360,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.12, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4119122536651703690}
   - {fileID: 1653405875775865060}

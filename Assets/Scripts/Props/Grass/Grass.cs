@@ -4,10 +4,19 @@ public class Grass : MonoBehaviour
 {
     [SerializeField] private Gradient colorGradient;
     [SerializeField] private SpriteRenderer spriteRenderer;
-
-    private Color RandomColor => colorGradient.Evaluate(Random.Range(0f, 1f));
+    public Color Color => spriteRenderer.color;
     
-    public void RandomizeColor() => spriteRenderer.color = RandomColor;
-    public void RandomizeOrientation() => spriteRenderer.flipX = Random.Range(0, 2) == 1;
-    public void SetDebugColor() => spriteRenderer.color = Color.blue;
+    private Color RandomColor => colorGradient.Evaluate(Random.Range(0f, 1f));
+    public static readonly Color DebugColor = Color.blue;
+
+    private void RandomizeColor() => spriteRenderer.color = RandomColor;
+    private void RandomizeOrientation() => spriteRenderer.flipX = Random.Range(0, 2) == 1;
+
+    public void Randomize()
+    {
+        RandomizeColor();
+        RandomizeOrientation();
+    }
+
+    public void SetDebugColor() => spriteRenderer.color = DebugColor;
 }
