@@ -68,6 +68,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: WoodPlankSprite
       objectReference: {fileID: 0}
+    - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      propertyPath: type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      propertyPath: spriteRenderers.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      propertyPath: 'spriteRenderers.Array.data[0]'
+      value: 
+      objectReference: {fileID: 3963130855141068244}
+    - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      propertyPath: 'spriteRenderers.Array.data[1]'
+      value: 
+      objectReference: {fileID: 5480039703268718152}
+    - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      propertyPath: 'spriteRenderers.Array.data[2]'
+      value: 
+      objectReference: {fileID: 4783342878814194135}
     - target: {fileID: 7710277581948669425, guid: f3b896003638e7547aef429ee375703e, type: 3}
       propertyPath: m_Name
       value: RecipeBannerItemWoodPlank
@@ -94,22 +114,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4296214934539122374}
     m_Modifications:
-    - target: {fileID: 2384108353711644752, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: b488dbe768b9d0f4fa4e5825b57a9f2c, type: 2}
-    - target: {fileID: 3421284329773670351, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: b488dbe768b9d0f4fa4e5825b57a9f2c, type: 2}
     - target: {fileID: 4310893797235188124, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
       propertyPath: m_Name
       value: WoodPlankSprite
       objectReference: {fileID: 0}
-    - target: {fileID: 6621646575456918476, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: b488dbe768b9d0f4fa4e5825b57a9f2c, type: 2}
+    - target: {fileID: 6965173642567699778, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -158,5 +170,20 @@ PrefabInstance:
 --- !u!4 &1314107420731051946 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+  m_PrefabInstance: {fileID: 7861894040694314520}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &3963130855141068244 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 6621646575456918476, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+  m_PrefabInstance: {fileID: 7861894040694314520}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &4783342878814194135 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3421284329773670351, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+  m_PrefabInstance: {fileID: 7861894040694314520}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &5480039703268718152 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2384108353711644752, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
   m_PrefabInstance: {fileID: 7861894040694314520}
   m_PrefabAsset: {fileID: 0}

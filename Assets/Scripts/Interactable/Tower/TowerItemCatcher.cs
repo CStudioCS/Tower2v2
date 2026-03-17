@@ -11,13 +11,13 @@ public class TowerItemCatcher : MonoBehaviour
         if (!tower.IsItemCorrect(item))
             return;
         
-        if (item.LastOwner.PlayerTeam.CurrentTeam != tower.TowerTeam)
+        if (item.LastOwner.PlayerTeam.CurrentTeam != tower.Team)
             return;
 
         if (item.State != Item.ItemState.Dropped)
             return;
         
-        if (item.originallyCollectedByTeam != tower.TowerTeam)
+        if (item.originallyCollectedByTeam != tower.Team)
             item.LastOwner.PlayerStats.stolenItems++;
         
         tower.ConstructPiece(item.ItemType);

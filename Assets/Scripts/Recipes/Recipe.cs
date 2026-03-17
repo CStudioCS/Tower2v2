@@ -8,6 +8,7 @@ public class Recipe : MonoBehaviour
 {
     [SerializeField] private Item.Type type;
     public Item.Type Type => type;
+    [SerializeField] private Transform itemGraphicsTransform;
     
     [SerializeField] private float transitionTime = .1f;
     [SerializeField] private float popAnimationSemiDuration = .2f;
@@ -15,25 +16,11 @@ public class Recipe : MonoBehaviour
     [SerializeField] private float popInvalidateAnimationScaleMultiplier = 1.5f;
     
     [SerializeField] private float delayBeforeMove = 0.3f;
-    
-    [SerializeField] private RectTransform rectTransform;
-    
+
     private RecipeSlot targetSlot;
-    private RecipeSlot TargetSlot
-    {
-        get => targetSlot;
-        set
-        {
-            if (targetSlot)
-                targetSlot.ResolutionChanged -= OnResolutionChanged;
-            if (value)
-                value.ResolutionChanged += OnResolutionChanged;
-            targetSlot = value;
-        }
-    }
-    private Vector2 TargetPosition => TargetSlot.RecipePosition;
+    private Vector2 TargetPosition => targetSlot.RecipePosition;
     private bool overrideTargetScaleTo0;
-    private float TargetScale => overrideTargetScaleTo0 ? 0 : TargetSlot.RecipeScale;
+    private float TargetScale => overrideTargetScaleTo0 ? 0 : targetSlot.RecipeScale;
 
     private Vector2 velocity;
     private float scaleVelocity;
@@ -42,14 +29,17 @@ public class Recipe : MonoBehaviour
     private bool isAnimatingScale;
     private bool isDestroying;
     
-    private int currentMoveCommandId = 0;
+    private int currentMoveCommandId;
+
+    [SerializeField] private SpriteRenderer[] spriteRenderers;
+    [SerializeField] private SpriteRenderer bannerSpriteRenderer;
 
     public void Appear(RecipeSlot slot, bool animate = false)
     {
         if (animate)
         {
             SetScale(0);
-            TargetSlot = slot;
+            targetSlot = slot;
             overrideTargetScaleTo0 = true;
             ReachTargetPosition();
             MoveToRecipeSlot(slot);
@@ -61,13 +51,13 @@ public class Recipe : MonoBehaviour
         }
     }
 
-    public void MoveToRecipeSlot(RecipeSlot slot)
+    public void MoveToRecipeSlot(RecipeSlot slot, bool deadRecipeSlot = false)
     {
         currentMoveCommandId++;
-        _ = MoveToRecipeSlotAsync(slot, currentMoveCommandId);
+        _ = MoveToRecipeSlotAsync(slot, currentMoveCommandId, deadRecipeSlot);
     }
 
-    private async Task MoveToRecipeSlotAsync(RecipeSlot slot, int commandId)
+    private async Task MoveToRecipeSlotAsync(RecipeSlot slot, int commandId, bool deadRecipeSlot = false)
     {
         if (delayBeforeMove > 0f)
         {
@@ -76,17 +66,23 @@ public class Recipe : MonoBehaviour
             if (currentMoveCommandId != commandId) return;
         }
 
+        if (deadRecipeSlot)
+        {
+            SetSpriteRenderersMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
+            Destroy(gameObject, transitionTime * 10);
+        }
+
         SetSlotAsTarget(slot);
     }
 
     private void SetSlotAsTarget(RecipeSlot slot)
     {
-        TargetSlot = slot;
+        targetSlot = slot;
         overrideTargetScaleTo0 = false;
     }
 
-    private void SetPosition(Vector2 position) => rectTransform.localPosition = position;
-    private void SetScale(float scale) => rectTransform.localScale = scale * Vector3.one;
+    private void SetPosition(Vector2 position) => transform.localPosition = position;
+    private void SetScale(float scale) => transform.localScale = scale * Vector3.one;
 
     private void ReachTargetPosition() => SetPosition(TargetPosition);
     private void ReachTargetScale() => SetScale(TargetScale);
@@ -96,32 +92,15 @@ public class Recipe : MonoBehaviour
         ReachTargetPosition(); ReachTargetScale();
     }
 
-    public void Disappear(bool animate = false)
-    {
-        if (isDestroying) return;
-        isDestroying = true;
-        
-        if (animate)
-        {
-            overrideTargetScaleTo0 = true;
-            CancelCurrentAnimation(); 
-            Destroy(gameObject, transitionTime * 2);
-        }
-        else 
-        {
-            Destroy(gameObject);
-        }
-    }
-
     private void Update()
     {
-        if (TargetSlot == null) return;
+        if (targetSlot == null) return;
         
-        SetPosition(Vector2.SmoothDamp(rectTransform.localPosition, TargetPosition, ref velocity, transitionTime));
+        SetPosition(Vector2.SmoothDamp(transform.localPosition, TargetPosition, ref velocity, transitionTime));
         
         if (!isAnimatingScale)
         {
-            SetScale(Mathf.SmoothDamp(rectTransform.localScale.x, TargetScale, ref scaleVelocity, transitionTime));
+            SetScale(Mathf.SmoothDamp(transform.localScale.x, TargetScale, ref scaleVelocity, transitionTime));
         }
     }
 
@@ -134,11 +113,11 @@ public class Recipe : MonoBehaviour
         isAnimatingScale = false;
     }
     
-    public void ValidateRecipe()
+    public void ValidateRecipe(RecipeSlot deadRecipeSlot)
     {
         if (isDestroying) return; 
         isDestroying = true;
-        
+        MoveToRecipeSlot(deadRecipeSlot, true);
         _ = ValidateRecipeAsync();
     }
 
@@ -147,24 +126,22 @@ public class Recipe : MonoBehaviour
         CancelCurrentAnimation();
         isAnimatingScale = true;
 
-        Vector3 startScale = rectTransform.localScale;
+        Vector3 startScale = itemGraphicsTransform.localScale;
         Vector3 peakScale = Vector3.one * (popValidateAnimationScaleMultiplier * TargetScale);
 
         try
         {
             scaleTweenHandle = LMotion.Create(startScale, peakScale, popAnimationSemiDuration)
                 .WithEase(Ease.OutQuad)
-                .BindToLocalScale(rectTransform);
+                .BindToLocalScale(itemGraphicsTransform);
 
             await scaleTweenHandle;
 
             scaleTweenHandle = LMotion.Create(peakScale, Vector3.zero, popAnimationSemiDuration)
                 .WithEase(Ease.InQuad)
-                .BindToLocalScale(rectTransform);
+                .BindToLocalScale(itemGraphicsTransform);
 
             await scaleTweenHandle;
-            
-            if (gameObject != null) Destroy(gameObject);
         }
         catch (OperationCanceledException) { }
     }
@@ -180,7 +157,7 @@ public class Recipe : MonoBehaviour
         CancelCurrentAnimation();
         isAnimatingScale = true;
 
-        Vector3 startScale = rectTransform.localScale;
+        Vector3 startScale = itemGraphicsTransform.localScale;
         Vector3 peakScale = Vector3.one * (popInvalidateAnimationScaleMultiplier * TargetScale);
 
         try
@@ -188,7 +165,7 @@ public class Recipe : MonoBehaviour
             scaleTweenHandle = LMotion.Create(startScale, peakScale, popAnimationSemiDuration)
                 .WithEase(Ease.OutQuad) 
                 .WithLoops(2, LoopType.Yoyo) 
-                .BindToLocalScale(rectTransform);
+                .BindToLocalScale(itemGraphicsTransform);
 
             await scaleTweenHandle;
 
@@ -197,15 +174,27 @@ public class Recipe : MonoBehaviour
         catch (OperationCanceledException) { }
     }
 
-    private void OnResolutionChanged()
+    public void SetSpriteRenderersMaskInteraction(SpriteMaskInteraction maskInteraction = SpriteMaskInteraction.None)
     {
-        velocity = Vector2.zero;
-        scaleVelocity = 0f;
-        ReachTarget();
+        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+        {
+            spriteRenderer.maskInteraction = maskInteraction;
+        }
     }
+
+    public void SetBannerSortOrder(int sortOrder)
+    {
+        bannerSpriteRenderer.sortingOrder = sortOrder;
+        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+        {   
+            spriteRenderer.sortingOrder = 10 + sortOrder;
+        }
+    }
+
+    public void IncrementBannerSortOrder() => SetBannerSortOrder(bannerSpriteRenderer.sortingOrder + 1);
 
     private void OnDisable()
     {
-        TargetSlot = null;
+        targetSlot = null;
     }
 }

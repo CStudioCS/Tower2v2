@@ -122,9 +122,9 @@ public class DebugManager: MonoBehaviour
 	[Hotkey(KeyCode.C, "Construct left tower piece")]
 	public void ConstructPieceOnLeftTower()
 	{
-		if (WorldLinker.Instance?.towerLeft != null)
+		if (TowerLinker.Instance?.TowerMap[PlayerTeam.Team.Left] != null)
 		{
-			WorldLinker.Instance.towerLeft.ConstructPiece(CanvasLinker.Instance.recipesListLeft.CurrentNeededItemType);
+			TowerLinker.Instance.TowerMap[PlayerTeam.Team.Left].ConstructPiece(RecipeBannerLinker.Instance.RecipeBannerMap[PlayerTeam.Team.Left].CurrentNeededItemType);
 			Debug.Log("Constructed piece on left tower");
 		}
 		else
@@ -136,9 +136,9 @@ public class DebugManager: MonoBehaviour
 	[Hotkey(KeyCode.V, "Construct right tower piece")]
 	public void ConstructPieceOnRightTower()
 	{
-		if (WorldLinker.Instance?.towerRight != null)
+		if (TowerLinker.Instance.TowerMap[PlayerTeam.Team.Right] != null)
 		{
-			WorldLinker.Instance.towerRight.ConstructPiece(CanvasLinker.Instance.recipesListRight.CurrentNeededItemType);
+			TowerLinker.Instance.TowerMap[PlayerTeam.Team.Right].ConstructPiece(RecipeBannerLinker.Instance.RecipeBannerMap[PlayerTeam.Team.Right].CurrentNeededItemType);
 			Debug.Log("Constructed piece on right tower");
 		}
 		else

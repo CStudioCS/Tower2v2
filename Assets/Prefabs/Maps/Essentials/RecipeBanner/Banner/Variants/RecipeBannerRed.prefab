@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 908102755395267039, guid: 12cac150b26683e4a9838c4f9fba50ac, type: 3}
       propertyPath: m_Name
-      value: RecipeBanner
+      value: RecipeBannerRed
       objectReference: {fileID: 0}
     - target: {fileID: 1596909282906256423, guid: 12cac150b26683e4a9838c4f9fba50ac, type: 3}
       propertyPath: m_LocalPosition.x
@@ -50,6 +50,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1596909282906256423, guid: 12cac150b26683e4a9838c4f9fba50ac, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8846814013904156187, guid: 12cac150b26683e4a9838c4f9fba50ac, type: 3}
+      propertyPath: team
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

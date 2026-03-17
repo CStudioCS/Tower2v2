@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      propertyPath: type
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 7710277581948669425, guid: f3b896003638e7547aef429ee375703e, type: 3}
       propertyPath: m_Name
       value: RecipeBannerItemBrick

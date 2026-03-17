@@ -294,6 +294,7 @@ MonoBehaviour:
   towerPiecesParent: {fileID: 6061288340007643942}
   colliderToActivateUponBuilding: {fileID: 4106191732626392380}
   moving: 0
+  team: 0
 --- !u!114 &1966643861661878256
 MonoBehaviour:
   m_ObjectHideFlags: 0
