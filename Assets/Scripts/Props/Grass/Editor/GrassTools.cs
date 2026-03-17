@@ -1,38 +1,141 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 
-public class GrassTools : EditorWindow
+public class GrassTools: EditorWindow
 {
-    [MenuItem("Tower2v2/Grass/Randomize Grass #g")] // Hotkey: Shift + G
-    public static void RandomizeGrass()
+	// ---------------- PREFAB-MODE / SELECTED PREFAB METHODS ----------------
+
+    [MenuItem("Tower2v2/Grass/Prefab/Randomize Grass #g")]
+    public static void RandomizeCurrentPrefabGrass()
     {
-        Grass[] allGrass = FindObjectsByType<Grass>(FindObjectsSortMode.None);
-
-        Undo.RecordObjects(allGrass, "Randomize Grass");
-
-        foreach (Grass grass in allGrass)
+        GameObject prefabRoot = GetCurrentPrefabRoot();
+        if (prefabRoot == null)
         {
-            grass.RandomizeColor();
-            grass.RandomizeOrientation();
+            Debug.LogWarning("No prefab currently being edited or selected.");
+            return;
+        }
+
+        Grass[] grasses = prefabRoot.GetComponentsInChildren<Grass>(true);
+        foreach (Grass grass in grasses)
+        {
+            if (grass.Color == Grass.DebugColor)
+			{
+				grass.Randomize();
+                EditorUtility.SetDirty(grass);
+            }
+        }
+
+        Debug.Log($"Randomized {grasses.Length} grass objects in the current prefab.");
+    }
+
+    [MenuItem("Tower2v2/Grass/Prefab/Re-randomize All Grass &#g")]
+    public static void RandomizeAllCurrentPrefabGrass()
+    {
+        GameObject prefabRoot = GetCurrentPrefabRoot();
+        if (prefabRoot == null)
+        {
+            Debug.LogWarning("No prefab currently being edited or selected.");
+            return;
+        }
+
+        Grass[] grasses = prefabRoot.GetComponentsInChildren<Grass>(true);
+        foreach (Grass grass in grasses)
+        {
+			grass.Randomize();
             EditorUtility.SetDirty(grass);
         }
 
-        Debug.Log($"Randomized {allGrass.Length} grass objects.");
+        Debug.Log($"Randomized ALL {grasses.Length} grass objects in the current prefab.");
     }
-    
-    [MenuItem("Tower2v2/Grass/Set Grass Debug Color #b")] // Hotkey: Shift + B
-    public static void SetGrassDebugColor()
+
+    [MenuItem("Tower2v2/Grass/Prefab/Set Grass Debug Color %#b")]
+    public static void SetDebugColorCurrentPrefabGrass()
     {
-        Grass[] allGrass = FindObjectsByType<Grass>(FindObjectsSortMode.None);
+        GameObject prefabRoot = GetCurrentPrefabRoot();
+        if (prefabRoot == null)
+        {
+            Debug.LogWarning("No prefab currently being edited or selected.");
+            return;
+        }
 
-        Undo.RecordObjects(allGrass, "Set Grass Debug Color");
-
-        foreach (Grass grass in allGrass)
+        Grass[] grasses = prefabRoot.GetComponentsInChildren<Grass>(true);
+        foreach (Grass grass in grasses)
         {
             grass.SetDebugColor();
             EditorUtility.SetDirty(grass);
         }
 
-        Debug.Log($"Set Debug Color for {allGrass.Length} grass objects.");
+        Debug.Log($"Set debug color for {grasses.Length} grass objects in the current prefab.");
     }
+	
+	// ---------------- SCENE METHODS ----------------
+
+	[MenuItem("Tower2v2/Grass/Scene/Randomize Grass %#g")]
+	public static void RandomizeSceneGrass()
+	{
+		Grass[] sceneGrass = Object.FindObjectsByType<Grass>(FindObjectsSortMode.None);
+		Undo.RecordObjects(sceneGrass, "Randomize Scene Grass");
+
+		foreach (Grass grass in sceneGrass)
+		{
+			if (grass.Color == Grass.DebugColor)
+			{
+				grass.Randomize();
+				EditorUtility.SetDirty(grass);
+			}
+		}
+
+		Debug.Log($"Randomized {sceneGrass.Length} scene grass objects.");
+	}
+
+	[MenuItem("Tower2v2/Grass/Scene/Re-randomize All Grass %&#g")]
+	public static void RandomizeAllSceneGrass()
+	{
+		Grass[] sceneGrass = Object.FindObjectsByType<Grass>(FindObjectsSortMode.None);
+		Undo.RecordObjects(sceneGrass, "Randomize All Scene Grass");
+
+		foreach (Grass grass in sceneGrass)
+		{
+			grass.Randomize();
+			EditorUtility.SetDirty(grass);
+		}
+
+		Debug.Log($"Randomized ALL {sceneGrass.Length} scene grass objects.");
+	}
+
+	[MenuItem("Tower2v2/Grass/Scene/Set Grass Debug Color #b")]
+	public static void SetSceneGrassDebugColor()
+	{
+		Grass[] sceneGrass = FindObjectsByType<Grass>(FindObjectsSortMode.None);
+		Undo.RecordObjects(sceneGrass, "Set Scene Grass Debug Color");
+
+		foreach (Grass grass in sceneGrass)
+		{
+			grass.SetDebugColor();
+			EditorUtility.SetDirty(grass);
+		}
+
+		Debug.Log($"Set Debug Color for {sceneGrass.Length} scene grass objects.");
+	}
+
+	// ---------------- HELPER ----------------
+
+	private static GameObject GetCurrentPrefabRoot()
+	{
+		GameObject stageGO = PrefabStageUtility.GetCurrentPrefabStage()?.prefabContentsRoot;
+		if (stageGO != null) return stageGO;
+
+		GameObject selected = Selection.activeObject as GameObject;
+		if (selected != null)
+		{
+			string path = AssetDatabase.GetAssetPath(selected);
+			if (PrefabUtility.IsPartOfPrefabAsset(selected))
+			{
+				return PrefabUtility.LoadPrefabContents(path);
+			}
+		}
+
+		return null;
+	}
 }
