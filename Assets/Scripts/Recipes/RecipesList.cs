@@ -90,7 +90,7 @@ public class RecipesList : MonoBehaviour
 
         Recipe recipeInstance = Instantiate(recipe, recipesParent);
         recipes[recipesIndex] = recipeInstance;
-        recipeInstance.Appear(recipeSlots[slotIndex % recipeSlots.Length], animate);
+        recipeInstance.Appear(recipeSlots[slotIndex % recipeSlots.Length], team, animate);
         return recipeInstance;
     }
 
@@ -105,8 +105,7 @@ public class RecipesList : MonoBehaviour
         for (int i = 1; i < recipeSlots.Length; i++)
         {
             int cyclicIndex = (firstRecipeIndex + i) % recipeSlots.Length;
-            recipes[cyclicIndex].MoveToRecipeSlot(recipeSlots[i - 1]);
-            recipes[cyclicIndex].IncrementBannerSortOrder();
+            recipes[cyclicIndex].MoveToRecipeSlotAndIncrementSort(recipeSlots[i - 1]);
         }
         
         AddRandomRecipe(firstRecipeIndex, recipeSlots.Length - 1, true);

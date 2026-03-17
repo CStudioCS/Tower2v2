@@ -33,9 +33,14 @@ public class Recipe : MonoBehaviour
 
     [SerializeField] private SpriteRenderer[] spriteRenderers;
     [SerializeField] private SpriteRenderer bannerSpriteRenderer;
+    [SerializeField] private Sprite bannerBlueSprite;
+    [SerializeField] private Sprite bannerRedSprite;
+    private Sprite GetBannerSprite(PlayerTeam.Team team) => team == PlayerTeam.Team.Left ? bannerBlueSprite : bannerRedSprite;
+    private void SetBannerSprite(PlayerTeam.Team team) => bannerSpriteRenderer.sprite = GetBannerSprite(team);
 
-    public void Appear(RecipeSlot slot, bool animate = false)
+    public void Appear(RecipeSlot slot, PlayerTeam.Team team, bool animate = false)
     {
+        SetBannerSprite(team);
         if (animate)
         {
             SetScale(0);
@@ -51,7 +56,13 @@ public class Recipe : MonoBehaviour
         }
     }
 
-    public void MoveToRecipeSlot(RecipeSlot slot, bool deadRecipeSlot = false)
+    public void MoveToRecipeSlotAndIncrementSort(RecipeSlot slot, bool deadRecipeSlot = false)
+    {
+        IncrementBannerSortOrder();
+        MoveToRecipeSlot(slot, deadRecipeSlot);
+    }
+
+    private void MoveToRecipeSlot(RecipeSlot slot, bool deadRecipeSlot = false)
     {
         currentMoveCommandId++;
         _ = MoveToRecipeSlotAsync(slot, currentMoveCommandId, deadRecipeSlot);
@@ -117,7 +128,7 @@ public class Recipe : MonoBehaviour
     {
         if (isDestroying) return; 
         isDestroying = true;
-        MoveToRecipeSlot(deadRecipeSlot, true);
+        MoveToRecipeSlotAndIncrementSort(deadRecipeSlot, true);
         _ = ValidateRecipeAsync();
     }
 
@@ -191,7 +202,7 @@ public class Recipe : MonoBehaviour
         }
     }
 
-    public void IncrementBannerSortOrder() => SetBannerSortOrder(bannerSpriteRenderer.sortingOrder + 1);
+    private void IncrementBannerSortOrder() => SetBannerSortOrder(bannerSpriteRenderer.sortingOrder + 1);
 
     private void OnDisable()
     {
