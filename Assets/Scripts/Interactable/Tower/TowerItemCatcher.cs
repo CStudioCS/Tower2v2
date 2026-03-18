@@ -3,6 +3,7 @@ using UnityEngine;
 public class TowerItemCatcher : MonoBehaviour
 {
     [SerializeField] private Tower tower;
+    private Item lastItem;
 
     private void OnTriggerEnter2D(Collider2D collider) => Trigger(collider);
 
@@ -22,7 +23,11 @@ public class TowerItemCatcher : MonoBehaviour
         
         if (item.originallyCollectedByTeam != tower.Team)
             item.LastOwner.PlayerStats.stolenItems++;
+
+        if (lastItem != null && lastItem == item)
+            return;
         
+        lastItem = item;
         tower.ConstructPiece(item.ItemType);
         Destroy(collider.gameObject);
     }
