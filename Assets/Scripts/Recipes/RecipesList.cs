@@ -121,16 +121,11 @@ public class RecipesList : MonoBehaviour
         Tower.PieceBuilt -= OnPieceBuilt;
         Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
         LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.Instance.GameStarted -= OnGameStarted;
+        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
     }
 
-    private void AnimateShow(bool visible = true) =>  animator.SetBool(Visible, visible);
-
-    private IEnumerator WaitForAnimation(string stateName, Action callback)
-    {
-        while (!animator.GetCurrentAnimatorStateInfo(0).IsName(stateName)) yield return null;
-        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f) yield return null;
-        callback?.Invoke();
-    }
+    private void AnimateShow(bool visible = true) =>  animator?.SetBool(Visible, visible);
 
     private void OnGameStarted() => AnimateShow();
 
