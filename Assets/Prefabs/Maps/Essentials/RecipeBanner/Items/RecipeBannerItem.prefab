@@ -199,14 +199,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5794244390611452280}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2926256434649556773}
   - {fileID: 2694781432966837036}
-  m_Father: {fileID: 5455402918439210343}
+  m_Father: {fileID: 4350682865369462110}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!210 &2339435122374242048
 SortingGroup:
@@ -336,7 +336,7 @@ Transform:
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1138836615247039338}
+  - {fileID: 4350682865369462110}
   m_Father: {fileID: 5967729729324139502}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7710277581948669425
@@ -398,3 +398,36 @@ MonoBehaviour:
   bannerRedSprite: {fileID: 21300000, guid: 815caa44de273d446aadd0437dd6924f, type: 3}
   graphics: {fileID: 1737355152248409818}
   graphicsOutsideMask: {fileID: 6272389016679856725}
+  shakerTransform: {fileID: 4350682865369462110}
+--- !u!1 &8345687324772327503
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4350682865369462110}
+  m_Layer: 0
+  m_Name: Shaker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4350682865369462110
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8345687324772327503}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1138836615247039338}
+  m_Father: {fileID: 5455402918439210343}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

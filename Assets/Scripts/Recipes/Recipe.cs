@@ -46,6 +46,7 @@ public class Recipe : MonoBehaviour
     private Tower tower;
 
     private static int waitingTransitionCounter;
+    [SerializeField] private Transform shakerTransform;
     
     public void Appear(RecipeSlot slot, PlayerTeam.Team team, bool animate = false)
     {
@@ -196,16 +197,31 @@ public class Recipe : MonoBehaviour
         Vector3 startScale = itemGraphicsTransform.localScale;
         Vector3 peakScale = Vector3.one * (popInvalidateAnimationScaleMultiplier * TargetScale);
 
+        // Shake parameters
+        float shakeAmount = 0.2f * TargetScale; // amplitude
+        float shakeDuration = popAnimationSemiDuration; // duration
+        int shakeLoops = 4; // number of shakes
+        Vector3 originalShakerPos = shakerTransform.localPosition;
+
+        // Start shake tween
+        MotionHandle shakeTween = LMotion.Create(originalShakerPos, originalShakerPos + Vector3.right * shakeAmount, shakeDuration / shakeLoops)
+                                         .WithEase(Ease.InOutQuad)
+                                         .WithLoops(shakeLoops, LoopType.Yoyo)
+                                         .Bind(x => shakerTransform.localPosition = x);
+
         try
         {
             scaleTweenHandle = LMotion.Create(startScale, peakScale, popAnimationSemiDuration)
-                .WithEase(Ease.OutQuad) 
-                .WithLoops(2, LoopType.Yoyo) 
+                .WithEase(Ease.OutQuad)
+                .WithLoops(2, LoopType.Yoyo)
                 .BindToLocalScale(itemGraphicsTransform);
 
             await scaleTweenHandle;
+            await shakeTween;
 
-            isAnimatingScale = false; 
+            shakerTransform.localPosition = originalShakerPos;
+
+            isAnimatingScale = false;
             SetOutsideMask();
         }
         catch (OperationCanceledException) { }
