@@ -5,6 +5,7 @@ public class TowerPiece : Interactable
     [SerializeField] private float basePieceHeight;
     public float BasePieceHeight => basePieceHeight;
     private Tower tower;
+    public Tower Tower => tower;
     public override bool CanInteract(Player player) => tower.CanInteract(player);
 
     public override void Interact(Player player)

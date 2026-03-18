@@ -295,6 +295,7 @@ MonoBehaviour:
   colliderToActivateUponBuilding: {fileID: 4106191732626392380}
   moving: 0
   team: 0
+  towerItemCatcher: {fileID: 5575952100427595757}
 --- !u!114 &1966643861661878256
 MonoBehaviour:
   m_ObjectHideFlags: 0

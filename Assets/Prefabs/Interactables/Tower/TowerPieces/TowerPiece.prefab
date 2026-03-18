@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: 5447477023065441515}
   - component: {fileID: 280273046450051927}
   - component: {fileID: -8628177274682593727}
+  - component: {fileID: 4312652276284063864}
   m_Layer: 0
   m_Name: TowerPiece
   m_TagString: Untagged
@@ -182,3 +183,16 @@ MonoBehaviour:
   spriteRenderers:
   - {fileID: 689136508965596124}
   basePieceHeight: 0
+--- !u!114 &4312652276284063864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7406187175304900994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0635e15a8dd47b19721fa094b0674ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  towerPiece: {fileID: -8628177274682593727}
