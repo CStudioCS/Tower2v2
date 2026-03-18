@@ -3,7 +3,10 @@ using UnityEngine;
 public class TowerItemCatcher : MonoBehaviour
 {
     [SerializeField] private Tower tower;
-    private void OnTriggerEnter2D(Collider2D collider)
+
+    private void OnTriggerEnter2D(Collider2D collider) => Trigger(collider);
+
+    public void Trigger(Collider2D collider)
     {
         if (collider == null || !collider.gameObject.TryGetComponent(out Item item))
             return;

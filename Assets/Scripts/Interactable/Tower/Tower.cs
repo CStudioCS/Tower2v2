@@ -49,6 +49,9 @@ public class Tower : Interactable
     public PlayerTeam.Team Team => team;
     private RecipesList RecipesList => RecipeBannerLinker.Instance.RecipeBannerMap[team];
     private OffTowerCounter OffTowerCounter => CanvasLinker.Instance.OffTowerHeightCounterMap[team];
+    
+    [SerializeField] private TowerItemCatcher towerItemCatcher;
+    public TowerItemCatcher TowerItemCatcher => towerItemCatcher;
 
     private float GetPieceHeight(Item.Type itemType)
     {
