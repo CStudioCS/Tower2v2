@@ -104,3 +104,6 @@ MonoBehaviour:
   - name: TowerKick
     clip: {fileID: 8300000, guid: 6172633f0f4b2a14da3325f2631122e5, type: 3}
     volume: 1
+  - name: Sails
+    clip: {fileID: 8300000, guid: af160dc3bf34d2c4391266759b2af587, type: 3}
+    volume: 1
