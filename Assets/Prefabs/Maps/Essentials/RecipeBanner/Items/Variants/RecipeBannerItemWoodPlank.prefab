@@ -64,28 +64,36 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6272389016679856725, guid: f3b896003638e7547aef429ee375703e, type: 3}
-      propertyPath: m_Name
-      value: WoodPlankSprite
-      objectReference: {fileID: 0}
     - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
       propertyPath: type
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
       propertyPath: spriteRenderers.Array.size
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
       propertyPath: 'spriteRenderers.Array.data[0]'
       value: 
-      objectReference: {fileID: 3963130855141068244}
+      objectReference: {fileID: 7389832586736076443}
     - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
       propertyPath: 'spriteRenderers.Array.data[1]'
       value: 
-      objectReference: {fileID: 5480039703268718152}
+      objectReference: {fileID: 2053403957401632007}
     - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
       propertyPath: 'spriteRenderers.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1302650897897947800}
+    - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      propertyPath: 'spriteRenderers.Array.data[3]'
+      value: 
+      objectReference: {fileID: 3963130855141068244}
+    - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      propertyPath: 'spriteRenderers.Array.data[4]'
+      value: 
+      objectReference: {fileID: 5480039703268718152}
+    - target: {fileID: 7397174738855675862, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      propertyPath: 'spriteRenderers.Array.data[5]'
       value: 
       objectReference: {fileID: 4783342878814194135}
     - target: {fileID: 7710277581948669425, guid: f3b896003638e7547aef429ee375703e, type: 3}
@@ -94,17 +102,107 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5873557971963077457, guid: f3b896003638e7547aef429ee375703e, type: 3}
+    - {fileID: 6197032079174832915, guid: f3b896003638e7547aef429ee375703e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2926256434649556773, guid: f3b896003638e7547aef429ee375703e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4777913118979343589}
     - targetCorrespondingSourceObject: {fileID: 2694781432966837036, guid: f3b896003638e7547aef429ee375703e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1314107420731051946}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f3b896003638e7547aef429ee375703e, type: 3}
+--- !u!4 &3920057396815995599 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2926256434649556773, guid: f3b896003638e7547aef429ee375703e, type: 3}
+  m_PrefabInstance: {fileID: 2232362475072833002}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4296214934539122374 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2694781432966837036, guid: f3b896003638e7547aef429ee375703e, type: 3}
   m_PrefabInstance: {fileID: 2232362475072833002}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4425109819917606231
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3920057396815995599}
+    m_Modifications:
+    - target: {fileID: 4310893797235188124, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_Name
+      value: WoodPlankSprite (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6965173642567699778, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+--- !u!212 &1302650897897947800 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3421284329773670351, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+  m_PrefabInstance: {fileID: 4425109819917606231}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &2053403957401632007 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2384108353711644752, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+  m_PrefabInstance: {fileID: 4425109819917606231}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4777913118979343589 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9162480281028483506, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+  m_PrefabInstance: {fileID: 4425109819917606231}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &7389832586736076443 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 6621646575456918476, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+  m_PrefabInstance: {fileID: 4425109819917606231}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7861894040694314520
 PrefabInstance:
@@ -114,9 +212,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4296214934539122374}
     m_Modifications:
+    - target: {fileID: 2384108353711644752, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_MaskInteraction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3421284329773670351, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_MaskInteraction
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4310893797235188124, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
       propertyPath: m_Name
       value: WoodPlankSprite
+      objectReference: {fileID: 0}
+    - target: {fileID: 6621646575456918476, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
+      propertyPath: m_MaskInteraction
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6965173642567699778, guid: bc48627a0bb88af44bd5628a2c44bfe2, type: 3}
       propertyPath: m_SortingOrder

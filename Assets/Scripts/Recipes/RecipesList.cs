@@ -67,7 +67,6 @@ public class RecipesList : MonoBehaviour
         for (int i = 0; i < recipeSlots.Length; i++)
         {
             Recipe recipeInstance = AddRandomRecipe(i, i);
-            recipeInstance.SetSpriteRenderersMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
             recipeInstance.SetBannerSortOrder(recipeSlots.Length - i - 1);
         }
     }
@@ -100,7 +99,7 @@ public class RecipesList : MonoBehaviour
 
     private void CompleteRecipe()
     {
-        recipes[firstRecipeIndex].ValidateRecipe(deadRecipeSlot);
+        recipes[firstRecipeIndex].ValidateRecipe(deadRecipeSlot, tower);
         
         for (int i = 1; i < recipeSlots.Length; i++)
         {
@@ -124,28 +123,7 @@ public class RecipesList : MonoBehaviour
         LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
     }
 
-    private void AnimateShow(bool visible = true)
-    {
-        animator.SetBool(Visible, visible);
-        if (visible)
-            WaitForAnimToSetSpriteRenderersMaskInteraction("Show", SpriteMaskInteraction.None);
-        else
-            SetSpriteRenderersMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
-    }
-
-    private void SetSpriteRenderersMaskInteraction(SpriteMaskInteraction maskInteraction)
-    {
-        foreach (Recipe recipe in recipes)
-            recipe.SetSpriteRenderersMaskInteraction(maskInteraction);
-    }
-
-    private void WaitForAnimToSetSpriteRenderersMaskInteraction(string stateName, SpriteMaskInteraction maskInteraction)
-    {
-        StartCoroutine(WaitForAnimation(stateName, () =>
-        {
-            SetSpriteRenderersMaskInteraction(maskInteraction);
-        }));
-    }
+    private void AnimateShow(bool visible = true) =>  animator.SetBool(Visible, visible);
 
     private IEnumerator WaitForAnimation(string stateName, Action callback)
     {

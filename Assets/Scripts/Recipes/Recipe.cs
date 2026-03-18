@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LitMotion;
 using LitMotion.Extensions;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Recipe : MonoBehaviour
 {
@@ -31,15 +32,24 @@ public class Recipe : MonoBehaviour
     
     private int currentMoveCommandId;
 
-    [SerializeField] private SpriteRenderer[] spriteRenderers;
+    [SerializeField] private SortingGroup itemSortingGroup;
     [SerializeField] private SpriteRenderer bannerSpriteRenderer;
     [SerializeField] private Sprite bannerBlueSprite;
     [SerializeField] private Sprite bannerRedSprite;
     private Sprite GetBannerSprite(PlayerTeam.Team team) => team == PlayerTeam.Team.Left ? bannerBlueSprite : bannerRedSprite;
     private void SetBannerSprite(PlayerTeam.Team team) => bannerSpriteRenderer.sprite = GetBannerSprite(team);
 
+    [SerializeField] private GameObject graphics;
+    [SerializeField] private GameObject graphicsOutsideMask;
+
+    private bool subscribedToPieceBuiltAfterValidation;
+    private Tower tower;
+
+    private static int waitingTransitionCounter;
+    
     public void Appear(RecipeSlot slot, PlayerTeam.Team team, bool animate = false)
     {
+        SetOutsideMask();
         SetBannerSprite(team);
         if (animate)
         {
@@ -73,15 +83,11 @@ public class Recipe : MonoBehaviour
         if (delayBeforeMove > 0f)
         {
             await Task.Delay(Mathf.RoundToInt(delayBeforeMove * 1000f));
-            if (this == null || gameObject == null) return;
-            if (currentMoveCommandId != commandId) return;
+            // if (this == null || gameObject == null) return;
+            // if (currentMoveCommandId != commandId) return;
         }
 
-        if (deadRecipeSlot)
-        {
-            SetSpriteRenderersMaskInteraction(SpriteMaskInteraction.VisibleOutsideMask);
-            Destroy(gameObject, transitionTime * 10);
-        }
+        if (deadRecipeSlot) Destroy(gameObject, transitionTime * 2);
 
         SetSlotAsTarget(slot);
     }
@@ -115,7 +121,7 @@ public class Recipe : MonoBehaviour
         }
     }
 
-    private void CancelCurrentAnimation()
+    private void CancelCurrentScaleAnimation()
     {
         if (scaleTweenHandle.IsActive())
         {
@@ -124,17 +130,30 @@ public class Recipe : MonoBehaviour
         isAnimatingScale = false;
     }
     
-    public void ValidateRecipe(RecipeSlot deadRecipeSlot)
+    public void ValidateRecipe(RecipeSlot deadRecipeSlot, Tower tower)
     {
+        waitingTransitionCounter++;
         if (isDestroying) return; 
         isDestroying = true;
+        subscribedToPieceBuiltAfterValidation = true;
+        this.tower = tower;
+        tower.PieceBuilt += OnPieceBuiltAfterValidation;
         MoveToRecipeSlotAndIncrementSort(deadRecipeSlot, true);
         _ = ValidateRecipeAsync();
     }
 
+    private void OnPieceBuiltAfterValidation() => IncrementBannerSortOrder();
+
     private async Task ValidateRecipeAsync()
     {
-        CancelCurrentAnimation();
+        Task delay = Task.Delay((int)(delayBeforeMove * 1000f));
+        delay.ContinueWith(_ => waitingTransitionCounter--, TaskScheduler.FromCurrentSynchronizationContext());
+
+        if (waitingTransitionCounter >= 2)
+            return;
+
+        SetOutsideMask(false);
+        CancelCurrentScaleAnimation();
         isAnimatingScale = true;
 
         Vector3 startScale = itemGraphicsTransform.localScale;
@@ -148,11 +167,16 @@ public class Recipe : MonoBehaviour
 
             await scaleTweenHandle;
 
+            Task midDelay = Task.Delay((int)(popAnimationSemiDuration * 500));
+            midDelay.ContinueWith(_ => SetOutsideMask(), TaskScheduler.FromCurrentSynchronizationContext());
+
             scaleTweenHandle = LMotion.Create(peakScale, Vector3.zero, popAnimationSemiDuration)
                 .WithEase(Ease.InQuad)
                 .BindToLocalScale(itemGraphicsTransform);
 
             await scaleTweenHandle;
+
+            isAnimatingScale = false;
         }
         catch (OperationCanceledException) { }
     }
@@ -165,7 +189,8 @@ public class Recipe : MonoBehaviour
     
     private async Task InvalidateRecipeAsync()
     {
-        CancelCurrentAnimation();
+        SetOutsideMask(false);
+        CancelCurrentScaleAnimation();
         isAnimatingScale = true;
 
         Vector3 startScale = itemGraphicsTransform.localScale;
@@ -181,25 +206,21 @@ public class Recipe : MonoBehaviour
             await scaleTweenHandle;
 
             isAnimatingScale = false; 
+            SetOutsideMask();
         }
         catch (OperationCanceledException) { }
     }
 
-    public void SetSpriteRenderersMaskInteraction(SpriteMaskInteraction maskInteraction = SpriteMaskInteraction.None)
+    public void SetOutsideMask(bool outsideMask = true)
     {
-        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
-        {
-            spriteRenderer.maskInteraction = maskInteraction;
-        }
+        graphicsOutsideMask.SetActive(outsideMask);
+        graphics.SetActive(!outsideMask);
     }
 
     public void SetBannerSortOrder(int sortOrder)
     {
         bannerSpriteRenderer.sortingOrder = sortOrder;
-        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
-        {   
-            spriteRenderer.sortingOrder = 10 + sortOrder;
-        }
+        itemSortingGroup.sortingOrder =  10 + sortOrder;
     }
 
     private void IncrementBannerSortOrder() => SetBannerSortOrder(bannerSpriteRenderer.sortingOrder + 1);
@@ -207,5 +228,8 @@ public class Recipe : MonoBehaviour
     private void OnDisable()
     {
         targetSlot = null;
+        CancelCurrentScaleAnimation();
+        if (subscribedToPieceBuiltAfterValidation)
+            tower.PieceBuilt -= OnPieceBuiltAfterValidation;
     }
 }

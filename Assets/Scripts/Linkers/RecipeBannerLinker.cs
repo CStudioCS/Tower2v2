@@ -6,9 +6,7 @@ public class RecipeBannerLinker : MonoBehaviour
 	public static RecipeBannerLinker Instance { get; private set; }
 
 	[SerializeField] private RecipesList recipeBannerLeft;
-	public RecipesList RecipeBannerLeft => recipeBannerLeft;
 	[SerializeField] private RecipesList recipeBannerRight;
-	public RecipesList RecipeBannerRight => recipeBannerRight;
 
 	private void Awake()
 	{
