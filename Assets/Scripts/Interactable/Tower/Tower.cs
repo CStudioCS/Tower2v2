@@ -45,11 +45,10 @@ public class Tower : Interactable
 
     public event Action TriedBuildingWithIncorrectItemType;
     public event Action PieceBuilt;
-    private bool IsLeftTower => this == WorldLinker.Instance.towerLeft;
-    public PlayerTeam.Team TowerTeam => IsLeftTower? PlayerTeam.Team.Left : PlayerTeam.Team.Right;
-    private RecipesList RecipesList => IsLeftTower ? CanvasLinker.Instance.recipesListLeft : CanvasLinker.Instance.recipesListRight;
-    private OffTowerCounter OffTowerCounter => IsLeftTower ? CanvasLinker.Instance.offTowerHeightCounterLeft : CanvasLinker.Instance.offTowerHeightCounterRight;
-    private TMP_Text OffTowerHeightText => IsLeftTower ? CanvasLinker.Instance.offTowerHeightTextLeft : CanvasLinker.Instance.offTowerHeightTextRight;
+    [SerializeField] private PlayerTeam.Team team;
+    public PlayerTeam.Team Team => team;
+    private RecipesList RecipesList => RecipeBannerLinker.Instance.RecipeBannerMap[team];
+    private OffTowerCounter OffTowerCounter => CanvasLinker.Instance.OffTowerHeightCounterMap[team];
 
     private float GetPieceHeight(Item.Type itemType)
     {
@@ -93,7 +92,7 @@ public class Tower : Interactable
         if (!LevelManager.InGame)
             return false;
         // Check if the player is holding the correct item for the recipe
-        bool playerIsCorrectTeam = player.PlayerTeam.CurrentTeam == TowerTeam;
+        bool playerIsCorrectTeam = player.PlayerTeam.CurrentTeam == Team;
         return player.IsHolding && playerIsCorrectTeam;
     }
 
@@ -110,7 +109,7 @@ public class Tower : Interactable
 
         ConstructPiece(player.HeldItem.ItemType);
 
-        if (player.HeldItem.originallyCollectedByTeam != TowerTeam)
+        if (player.HeldItem.originallyCollectedByTeam != Team)
             player.PlayerStats.stolenItems++;
 
         player.ConsumeCurrentItem();
@@ -154,8 +153,7 @@ public class Tower : Interactable
             //onTowerCanvas.gameObject.SetActive(false); //remove the gray bases of the tower if u want
 
             OffTowerCounter.SetUIActive(true);
-            
-            OffTowerHeightText.text = Height.ToString();
+            OffTowerCounter.SetText(Height.ToString());
             OffTowerCounter.transform.position = new Vector3(screenPoint.x, OffTowerCounter.transform.position.y, 0);
         }
         else

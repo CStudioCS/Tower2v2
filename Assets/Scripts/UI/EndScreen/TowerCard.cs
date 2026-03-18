@@ -51,10 +51,10 @@ public class TowerCard : MonoBehaviour
     {
         pressAnyButtonCanvasGroup.alpha = 0f;
 
-        int scoreLeft = WorldLinker.Instance.towerLeft.Height;
-        int scoreRight = WorldLinker.Instance.towerRight.Height;
+        int scoreLeft = TowerLinker.Instance.TowerMap[PlayerTeam.Team.Left].Height;
+        int scoreRight = TowerLinker.Instance.TowerMap[PlayerTeam.Team.Right].Height;
 
-        bool leftWon = scoreLeft == scoreRight ? WorldLinker.Instance.towerLeft.LastPlacedTime <= WorldLinker.Instance.towerRight.LastPlacedTime: scoreLeft >= scoreRight;
+        bool leftWon = scoreLeft == scoreRight ? TowerLinker.Instance.TowerMap[PlayerTeam.Team.Left].LastPlacedTime <=TowerLinker.Instance.TowerMap[PlayerTeam.Team.Right].LastPlacedTime: scoreLeft >= scoreRight;
         int minScore = Mathf.Min(scoreLeft, scoreRight);
         int maxScore = Mathf.Max(scoreLeft, scoreRight);
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -6,14 +7,9 @@ public class CanvasLinker : MonoBehaviour
     public static CanvasLinker Instance;
 
     public TMP_Text timerDisplay;
-    public TMP_Text winnerText;
     public TMP_Text waitingText;
-    public TMP_Text offTowerHeightTextLeft;
-    public TMP_Text offTowerHeightTextRight;
     public OffTowerCounter offTowerHeightCounterLeft;
     public OffTowerCounter offTowerHeightCounterRight;
-    public RecipesList recipesListLeft;
-    public RecipesList recipesListRight;
     public Animator countdown;
     public CanvasGroup LobbyUI;
     public CanvasGroup InGameUI;
@@ -25,5 +21,19 @@ public class CanvasLinker : MonoBehaviour
             Destroy(Instance);
 
         Instance = this;
+    }
+
+    private Dictionary<PlayerTeam.Team, OffTowerCounter> offTowerHeightCounterMap;
+    public Dictionary<PlayerTeam.Team, OffTowerCounter> OffTowerHeightCounterMap
+    {
+        get
+        {
+            offTowerHeightCounterMap ??= new Dictionary<PlayerTeam.Team, OffTowerCounter>
+            {
+                [PlayerTeam.Team.Left] = offTowerHeightCounterLeft,
+                [PlayerTeam.Team.Right] = offTowerHeightCounterRight
+            };
+            return offTowerHeightCounterMap;
+        }
     }
 }

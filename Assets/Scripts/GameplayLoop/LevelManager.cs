@@ -91,8 +91,8 @@ public class LevelManager : MonoBehaviour
 
     private void Update()
     {
-        Tower towerRight = WorldLinker.Instance.towerRight;
-        Tower towerLeft = WorldLinker.Instance.towerLeft;
+        Tower towerRight = TowerLinker.Instance.TowerMap[PlayerTeam.Team.Right];
+        Tower towerLeft = TowerLinker.Instance.TowerMap[PlayerTeam.Team.Left];
 
         if (towerRight == null || towerLeft == null)
             return;

@@ -221355,6 +221355,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6959916797422613540}
     m_Modifications:
+    - target: {fileID: 3069344166632325334, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 3069344166632325334, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4
+      objectReference: {fileID: 0}
     - target: {fileID: 4818921915631253705, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
       propertyPath: m_Name
       value: WorldEssentials
@@ -221366,6 +221374,14 @@ PrefabInstance:
     - target: {fileID: 5097959763553201252, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
       propertyPath: m_LocalPosition.y
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961262285925745660, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5961262285925745660, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 7075574793556543720, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
       propertyPath: m_LocalPosition.x

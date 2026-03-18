@@ -24,6 +24,9 @@ public class TowerPiece : Interactable
     public void Initialize(Tower tower, int sortingOrder)
     {
         this.tower = tower;
-        spriteRenderer.sortingOrder = sortingOrder; 
+        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+        {
+            spriteRenderer.sortingOrder = sortingOrder;    
+        }
     }
 }

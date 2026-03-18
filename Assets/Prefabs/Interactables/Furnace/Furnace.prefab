@@ -193,10 +193,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19895cfbc421404dafab99b9211d3b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 5018667716091664872}
+  spriteRenderers:
+  - {fileID: 5018667716091664872}
   cookTime: 4
   brickItemPrefab: {fileID: 3935943603334928311, guid: d8b092eee7d429941b1f898ae5ab311e, type: 3}
   progressBar: {fileID: 4831184238089262219}
+  allowLeftTeam: 1
+  allowRightTeam: 1
 --- !u!114 &9063697176892406761
 MonoBehaviour:
   m_ObjectHideFlags: 0

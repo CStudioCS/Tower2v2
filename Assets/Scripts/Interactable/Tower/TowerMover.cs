@@ -5,13 +5,13 @@ public class TowerMover : MonoBehaviour
 	private static readonly int SpeedString = Shader.PropertyToID("_Speed");
 	[SerializeField] private int loopsInAGame = 6;
 	[SerializeField] private float semiWorldSize = 12f;
-	private float WorldWidth => 2 * semiWorldSize;
+	private float WorldSize => 2 * semiWorldSize;
 	private float? speed;
 	private float Speed
 	{
 		get
 		{
-			speed ??= loopsInAGame * WorldWidth / LevelManager.Instance.TimerLimit;
+			speed ??= loopsInAGame * WorldSize / LevelManager.Instance.TimerLimit;
 			return speed.Value;
 		}
 	}
@@ -72,12 +72,12 @@ public class TowerMover : MonoBehaviour
 			transform.localPosition = (Vector2)initialPosition;
 	}
 
-	private void Update()
+	private void LateUpdate()
 	{
 		if (!LevelManager.InGame)
 			return;
 		if (transform.localPosition.x >= semiWorldSize)
-			transform.localPosition = new Vector2(transform.localPosition.x - WorldWidth, transform.localPosition.y);
+			transform.localPosition = new Vector2(transform.localPosition.x - WorldSize, transform.localPosition.y);
 	}
 
 	private void OnDisable()

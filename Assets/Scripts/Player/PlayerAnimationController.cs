@@ -75,7 +75,7 @@ public class PlayerAnimationController : MonoBehaviour
     {
         if (player.IsHolding)
         {
-            player.HeldItem.SpriteRenderer.flipX = spriteRenderer.flipX;
+            player.HeldItem.SetFlipX(spriteRenderer.flipX);
         }
     }
 

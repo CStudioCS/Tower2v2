@@ -17,6 +17,7 @@ public class Item : Interactable
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Collider2D itemCollider;
     [SerializeField] private TrailRenderer trailRenderer;
+    [SerializeField] private GameObject graphics;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private float rotationSpeedVariance;
     [SerializeField] private float minimumEjectionSpeedRatio;
@@ -44,9 +45,12 @@ public class Item : Interactable
     private void SetSilhouetteColor(Color color)
     {
         MaterialPropertyBlock propBlock = new();
-        spriteRenderer.GetPropertyBlock(propBlock);
+        spriteRenderers[0].GetPropertyBlock(propBlock);
         propBlock.SetColor(SilhouetteColorString, color);
-        spriteRenderer.SetPropertyBlock(propBlock);
+        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+        {
+            spriteRenderer.SetPropertyBlock(propBlock);   
+        }
     }
 
     public override bool CanInteract(Player player) => !player.IsHolding && State == ItemState.Dropped && LevelManager.InGame;
@@ -83,6 +87,8 @@ public class Item : Interactable
         Dropped?.Invoke();
         SoundManager.instance.PlaySound("ItemDrop");
     }
+    
+    public void SetFlipX(bool flipped) => graphics.transform.localScale = new Vector2(flipped ? -1f : 1f, 1f);
 
     private void Disappear()
     {

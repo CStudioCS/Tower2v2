@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2519919044989930256}
   - component: {fileID: 689136508965596124}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -179,5 +179,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd817b671b79e24ca2a15e0b71365d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 689136508965596124}
+  spriteRenderers:
+  - {fileID: 689136508965596124}
   basePieceHeight: 0

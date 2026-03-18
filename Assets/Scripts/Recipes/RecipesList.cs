@@ -1,15 +1,14 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using LitMotion;
-using LitMotion.Extensions;
 using UnityEngine;
 
 public class RecipesList : MonoBehaviour
 {
     [SerializeField] private Recipe[] recipePrefabs;
     [SerializeField] private RecipeSlot[] recipeSlots;
-    [SerializeField] private Animator animator;
-    
+    [SerializeField] private RecipeSlot deadRecipeSlot;
+
     private Dictionary<Item.Type, Recipe> recipesMap;
     private Dictionary<Item.Type, Recipe> RecipesMap
     {
@@ -25,72 +24,37 @@ public class RecipesList : MonoBehaviour
         }
     }
 
-    private bool IsLeftRecipeList => this == CanvasLinker.Instance.recipesListLeft; 
-    private Tower Tower => IsLeftRecipeList ? WorldLinker.Instance.towerLeft : WorldLinker.Instance.towerRight;
+    [SerializeField] private PlayerTeam.Team team;
+    private Tower tower;
+    private Tower Tower => tower ??= TowerLinker.Instance.TowerMap[team];
+    [SerializeField] private Transform recipesParent;
 
     // The recipes array is cyclic. The index of the first recipe is dynamic and stored in firstRecipeIndex.
     // This avoids the need to shift the array when a recipe is completed.
     private Recipe[] recipes;
     private int firstRecipeIndex;
     private int randomIndex;
-    
+
     private Recipe CurrentRecipe => recipes[firstRecipeIndex];
     public Item.Type CurrentNeededItemType => CurrentRecipe.Type;
-    
-    [SerializeField] private UnityEngine.UI.Graphic mainPanelToColorize;
-    [SerializeField] private Color validateColor = Color.green;
-    [SerializeField] private Color invalidateColor = Color.red;
-    [SerializeField] private float colorFlashDuration = 0.1f;
-    [SerializeField] private float colorStayDuration = 0.2f;
 
-    private Color LayoutDefaultColor;
-    private MotionHandle colorTweenHandle;
-    private bool subscribed;
-    private Tower subscribedTower;
-
-    private void Awake()
-    {
-        LayoutDefaultColor = mainPanelToColorize.color;
-    }
-
-    private void OnEnable()
-    {
-        // OnEnable runs before Awake on other objects, so singletons may not exist yet.
-        // In that case, Start() will handle the first subscription.
-        if (CanvasLinker.Instance == null || WorldLinker.Instance == null) return;
-        Subscribe();
-    }
+    private static readonly int Visible = Animator.StringToHash("Visible");
+    [SerializeField] private Animator animator;
 
     private void Start()
     {
-        Subscribe();
-    }
-
-    private void Subscribe()
-    {
-        if (subscribed || LevelManager.Instance == null)
-            return;
-
-        subscribed = true;
-        
-        subscribedTower = Tower;
-        subscribedTower.PieceBuilt += OnPieceBuilt;
-        subscribedTower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
+        Tower.PieceBuilt += OnPieceBuilt;
+        Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
         LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.Instance.SetActiveInGameUI += OnUISetActive;
-
-        animator.SetBool("left", CanvasLinker.Instance.recipesListLeft == this);
-
-        randomIndex = 0;
-        InitializeRecipes();
+        LevelManager.Instance.GameStarted += OnGameStarted;
+        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
     }
 
-    private void ClearRecipes()
+    private void OnGameAboutToStart()
     {
-        foreach (Recipe recipe in recipes)
-        {
-            Destroy(recipe.gameObject);
-        }
+        randomIndex = 0;       
+        firstRecipeIndex = 0;  
+        InitializeRecipes();
     }
 
     private void InitializeRecipes()
@@ -102,131 +66,68 @@ public class RecipesList : MonoBehaviour
         
         for (int i = 0; i < recipeSlots.Length; i++)
         {
-            AddRandomRecipe(i, i);
+            Recipe recipeInstance = AddRandomRecipe(i, i);
+            recipeInstance.SetBannerSortOrder(recipeSlots.Length - i - 1);
         }
     }
 
-    private void OnGameAboutToStart()
+    private void ClearRecipes()
     {
-        // Re-bind tower events if the tower instance changed (e.g. after a map change)
-        Tower currentTower = Tower;
-        if (subscribedTower != currentTower)
+        foreach (Recipe recipe in recipes)
         {
-            if (subscribedTower != null)
-            {
-                subscribedTower.PieceBuilt -= OnPieceBuilt;
-                subscribedTower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
-            }
-            subscribedTower = currentTower;
-            subscribedTower.PieceBuilt += OnPieceBuilt;
-            subscribedTower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
+            Destroy(recipe.gameObject);
         }
-
-        randomIndex = 0;       
-        firstRecipeIndex = 0;  
-        InitializeRecipes();
     }
 
-    private void AddRecipe(Item.Type type, int recipesIndex, int slotIndex, bool animate = false)
+    private Recipe AddRecipe(Item.Type type, int recipesIndex, int slotIndex, bool animate = false)
     {
         if (!RecipesMap.TryGetValue(type, out Recipe recipe))
         {
             Debug.LogError($"Recipe with resource type {type} was not found.");
-            return;
+            return null;
         }
 
-        Recipe recipeInstance = Instantiate(recipe, transform);
+        Recipe recipeInstance = Instantiate(recipe, recipesParent);
         recipes[recipesIndex] = recipeInstance;
-        recipeInstance.Appear(recipeSlots[slotIndex % recipeSlots.Length], animate);
+        recipeInstance.Appear(recipeSlots[slotIndex % recipeSlots.Length], team, animate);
+        return recipeInstance;
     }
-    
-    private void AddRandomRecipe(int recipesIndex, int slotIndex, bool animate = false) => AddRecipe(ItemRandomizer.Instance.GetAt(randomIndex++), recipesIndex, slotIndex, animate);
-    
+
+    private Recipe AddRandomRecipe(int recipesIndex, int slotIndex, bool animate = false) => AddRecipe(ItemRandomizer.Instance.GetAt(randomIndex++), recipesIndex, slotIndex, animate);
+
     private void OnPieceBuilt() => CompleteRecipe();
-    
+
     private void CompleteRecipe()
     {
-        recipes[firstRecipeIndex].ValidateRecipe();
+        recipes[firstRecipeIndex].ValidateRecipe(deadRecipeSlot, tower);
         
         for (int i = 1; i < recipeSlots.Length; i++)
         {
             int cyclicIndex = (firstRecipeIndex + i) % recipeSlots.Length;
-            recipes[cyclicIndex].MoveToRecipeSlot(recipeSlots[i - 1]);
+            recipes[cyclicIndex].MoveToRecipeSlotAndIncrementSort(recipeSlots[i - 1]);
         }
         
         AddRandomRecipe(firstRecipeIndex, recipeSlots.Length - 1, true);
         firstRecipeIndex = (firstRecipeIndex + 1) % recipeSlots.Length;
-        
-        FlashValidateColor();
     }
-    
+
     private void OnTriedBuildingWithIncorrectItemType()
     {
         CurrentRecipe.InvalidateRecipe();
-        FlashInvalidateColor();
     }
 
-    private void FlashValidateColor() => FlashColor(validateColor);
-    private void FlashInvalidateColor() => FlashColor(invalidateColor);
-    private async void FlashColor(Color flashColor)
-    {
-        if (colorTweenHandle.IsActive())
-            colorTweenHandle.Cancel();
-
-        try
-        {
-            colorTweenHandle = LMotion.Create(mainPanelToColorize.color, flashColor, colorFlashDuration)
-                .WithEase(Ease.OutQuad)
-                .BindToColor(mainPanelToColorize);
-            
-            await colorTweenHandle;
-
-            colorTweenHandle = LMotion.Create(flashColor, flashColor, colorStayDuration)
-                .BindToColor(mainPanelToColorize);
-            
-            await colorTweenHandle;
-
-            colorTweenHandle = LMotion.Create(flashColor, LayoutDefaultColor, colorFlashDuration)
-                .WithEase(Ease.InQuad)
-                .BindToColor(mainPanelToColorize);
-            
-            await colorTweenHandle;
-        }
-        catch (OperationCanceledException)
-        {
-        }
-    }
-    
     private void OnDisable()
     {
-        if (subscribed)
-        {
-            if (subscribedTower != null)
-            {
-                subscribedTower.PieceBuilt -= OnPieceBuilt;
-                subscribedTower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
-            }
-            if (LevelManager.Instance != null)
-            {
-                LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-                LevelManager.Instance.SetActiveInGameUI -= OnUISetActive;
-            }
-        }
-        subscribed = false;
-        subscribedTower = null;
+        Tower.PieceBuilt -= OnPieceBuilt;
+        Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
+        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.Instance.GameStarted -= OnGameStarted;
+        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+    }
 
-        if (colorTweenHandle.IsActive())
-        {
-            colorTweenHandle.Cancel();
-        }
-        if (mainPanelToColorize != null)
-        {
-            mainPanelToColorize.color = LayoutDefaultColor; 
-        }
-    }
-    
-    private void OnUISetActive(bool active)
-    {
-        animator.SetBool("active", active);
-    }
+    private void AnimateShow(bool visible = true) =>  animator?.SetBool(Visible, visible);
+
+    private void OnGameStarted() => AnimateShow();
+
+    private void OnGameEndedOrReturnedToLobby() => AnimateShow(false);
 }

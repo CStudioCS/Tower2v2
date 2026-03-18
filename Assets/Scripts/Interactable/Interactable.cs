@@ -8,10 +8,9 @@ public abstract class Interactable : MonoBehaviour
 {
     private static readonly int OutlineEnabled = Shader.PropertyToID("_OutlineEnabled");
     public bool IsAlreadyInteractedWith { get; set; }
-    private int highlightedPlayerCount = 0;
+    private int highlightedPlayerCount;
 
-    [SerializeField] protected SpriteRenderer spriteRenderer;
-    public SpriteRenderer SpriteRenderer => spriteRenderer;
+    [SerializeField] protected SpriteRenderer[] spriteRenderers;
 
     private MaterialPropertyBlock propBlock;
 
@@ -30,7 +29,7 @@ public abstract class Interactable : MonoBehaviour
         if (propBlock != null) 
             return;
 
-        if (spriteRenderer == null)
+        if (spriteRenderers?.Length == 0)
             return;
 
         propBlock = new MaterialPropertyBlock();
@@ -39,13 +38,13 @@ public abstract class Interactable : MonoBehaviour
     // When the player walks inside the interactable, we tell it that it is inside
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent<Player>(out Player player))
+        if (collision.gameObject.TryGetComponent(out Player player))
             player.insideInteractableList.Add(this);
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent<Player>(out Player player) && player.insideInteractableList.Contains(this))
+        if (collision.gameObject.TryGetComponent(out Player player) && player.insideInteractableList.Contains(this))
             player.insideInteractableList.Remove(this);
     }
     
@@ -76,16 +75,20 @@ public abstract class Interactable : MonoBehaviour
 
     private void Highlight(bool highlighted = true)
     {
-        spriteRenderer.GetPropertyBlock(propBlock);
+        spriteRenderers[0].GetPropertyBlock(propBlock);
         propBlock.SetFloat(OutlineEnabled, highlighted? 1f: 0f);
-        spriteRenderer.SetPropertyBlock(propBlock);
+        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
+        {
+            spriteRenderer.SetPropertyBlock(propBlock);   
+        }
     }
     
     protected virtual void OnGameAboutToStart()
     {
         IsAlreadyInteractedWith = false;
     }
-    public virtual bool CheckIfCanBeHighlighted(Player player) => spriteRenderer != null && propBlock != null;
+
+    public virtual bool CheckIfCanBeHighlighted(Player player) => propBlock != null && spriteRenderers?.Length > 0;
 
     protected virtual void OnGameEndedOrReturnedToLobby()
     {

@@ -281,7 +281,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52bd9b5443aae149a29dd8fa5809b67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 8607870785891123332}
+  spriteRenderers:
+  - {fileID: 8607870785891123332}
   targetHeight: 10
   onTowerHeightText: {fileID: 312890316318916640}
   onTowerFlag: {fileID: 7517728899840116841}
@@ -292,6 +293,8 @@ MonoBehaviour:
   brickTowerPiecePrefab: {fileID: 926655756722358906, guid: d29e198529ac9e842ad823191db288ea, type: 3}
   towerPiecesParent: {fileID: 6061288340007643942}
   colliderToActivateUponBuilding: {fileID: 4106191732626392380}
+  moving: 0
+  team: 0
 --- !u!114 &1966643861661878256
 MonoBehaviour:
   m_ObjectHideFlags: 0
