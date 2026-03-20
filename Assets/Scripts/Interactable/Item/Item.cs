@@ -15,6 +15,7 @@ public class Item : Interactable
     [SerializeField] private Color silhouetteColor = Color.black;
     public Player LastOwner { get; set; }
     [SerializeField] private Rigidbody2D rb;
+    public float velocitySqrMagnitudeForTowerItemCatcher;
     [SerializeField] private Collider2D itemCollider;
     [SerializeField] private TrailRenderer trailRenderer;
     [SerializeField] private GameObject graphics;
@@ -24,7 +25,6 @@ public class Item : Interactable
     [SerializeField] private float grabbingTime;
     public enum ItemState { Held, Dropped, Transitioning };
     public ItemState State { get; set; }
-
 
     [HideInInspector] public PlayerTeam.Team originallyCollectedByTeam;
     public float GrabbingTime => grabbingTime;
@@ -65,6 +65,7 @@ public class Item : Interactable
     public void Immobilize()
     {
         rb.linearVelocity = Vector2.zero;
+        velocitySqrMagnitudeForTowerItemCatcher = 0;
         rb.angularVelocity = 0;
         rb.simulated = false;
         itemCollider.enabled = false;
@@ -79,6 +80,7 @@ public class Item : Interactable
         itemCollider.enabled = true;
 
         rb.linearVelocity = throwSpeed;
+        velocitySqrMagnitudeForTowerItemCatcher = throwSpeed.sqrMagnitude;
         float rotationDeviation = Random.Range(1 - rotationSpeedVariance, 1 + rotationSpeedVariance);
         rb.angularVelocity = new List<int> { -1, 1 }[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
 
@@ -89,6 +91,11 @@ public class Item : Interactable
     }
     
     public void SetFlipX(bool flipped) => graphics.transform.localScale = new Vector2(flipped ? -1f : 1f, 1f);
+
+    private void FixedUpdate()
+    {
+        velocitySqrMagnitudeForTowerItemCatcher = Mathf.Min(rb.linearVelocity.sqrMagnitude, velocitySqrMagnitudeForTowerItemCatcher);
+    }
 
     private void Disappear()
     {

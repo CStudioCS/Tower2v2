@@ -4,6 +4,8 @@ public class TowerItemCatcher : MonoBehaviour
 {
     [SerializeField] private Tower tower;
     private Item lastItem;
+    
+    [SerializeField] private float minCatchVelocity = 2f;
 
     private void OnTriggerEnter2D(Collider2D collider) => Trigger(collider);
 
@@ -25,6 +27,9 @@ public class TowerItemCatcher : MonoBehaviour
             item.LastOwner.PlayerStats.stolenItems++;
 
         if (lastItem != null && lastItem == item)
+            return;
+        
+        if (item.velocitySqrMagnitudeForTowerItemCatcher < minCatchVelocity * minCatchVelocity)
             return;
         
         lastItem = item;
