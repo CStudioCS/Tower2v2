@@ -104,9 +104,9 @@ public class LobbyManager : MonoBehaviour
             }
         }
 
-        string manufacturer = Gamepad.current.device.description.manufacturer.ToLower();
-        string deviceName = Gamepad.current.displayName.ToLower();
-        string description = Gamepad.current.description.product.ToLower();
+        string manufacturer = gamepad.device.description.manufacturer.ToLower();
+        string deviceName = gamepad.displayName.ToLower();
+        string description = gamepad.description.product.ToLower();
 
         // Join using the Gamepad device. 
         // Leave controlScheme null or set to "Gamepad" if you have a specific scheme named that.
