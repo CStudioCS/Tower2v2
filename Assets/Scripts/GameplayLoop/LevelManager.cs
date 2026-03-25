@@ -142,6 +142,7 @@ public class LevelManager : MonoBehaviour
 
         ItemRandomizer.Instance.Reset();
         GameAboutToStart?.Invoke();
+        Cursor.visible = false;
 
         yield return new WaitForSeconds(delay);
 
@@ -149,6 +150,7 @@ public class LevelManager : MonoBehaviour
         LevelTimer = 0;
         ActivateInGameObjects(true);
         GameStarted?.Invoke();
+        Cursor.visible = false;
     }
 
     private void EndLevel(PlayerTeam.Team winner)
