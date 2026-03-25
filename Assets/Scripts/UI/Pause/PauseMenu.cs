@@ -52,6 +52,7 @@ public class PauseMenu: MonoBehaviour
 
 	public void Resume(bool fireEvent)
 	{
+		Cursor.visible = false;
 		pausePanel.SetActive(false);
 		Time.timeScale = 1f;
 		IsPaused = false;
