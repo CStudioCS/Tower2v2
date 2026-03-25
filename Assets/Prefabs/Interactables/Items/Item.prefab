@@ -124,6 +124,7 @@ MonoBehaviour:
   itemType: 0
   silhouetteColor: {r: 0, g: 0, b: 0, a: 1}
   rb: {fileID: 3815938341415364146}
+  velocitySqrMagnitudeForTowerItemCatcher: 0
   itemCollider: {fileID: 5611164556063414744}
   trailRenderer: {fileID: -7033350463006825601}
   graphics: {fileID: 6949819470700435689}
@@ -172,7 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 8569902203551738096}
-  droppedZOffset: 0.25
+  droppedZOffset: 1
 --- !u!58 &5611164556063414744
 CircleCollider2D:
   m_ObjectHideFlags: 0
