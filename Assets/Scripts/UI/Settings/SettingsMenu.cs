@@ -1,3 +1,4 @@
+using Fusion;
 using LitMotion;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,12 @@ public class SettingsMenu : MonoBehaviour
 
         if (settingsFader.FadedIn) settingsFader.Fade();
         networkMenu.Open(currentPlayer, this);
+    }
+
+    public void OnGoOnline(bool isOnline)
+    {
+        if (!isOnline)
+            _ = NetworkManager.Instance.StartNetworkGame(GameMode.Single);
     }
 
     public void Close()

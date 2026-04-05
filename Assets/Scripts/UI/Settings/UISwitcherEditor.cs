@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -92,13 +93,16 @@ public class UISwitcherEditor : UnityEditor.UI.SelectableEditor
         // Events
         EditorGUILayout.PropertyField(_onValueChangedEvent, true);
 
-        serializedObject.ApplyModifiedProperties();
-
         // Only force visual update in the scene if a value was actually modified
         if (EditorGUI.EndChangeCheck())
         {
+            serializedObject.ApplyModifiedProperties();
             _switcher.OnChanged();
             EditorUtility.SetDirty(_switcher);
+        }
+        else
+        {
+            serializedObject.ApplyModifiedProperties();
         }
 
         DrawUILine(Color.black);
@@ -117,3 +121,4 @@ public class UISwitcherEditor : UnityEditor.UI.SelectableEditor
         EditorGUI.DrawRect(rect, color);
     }
 }
+#endif

@@ -443,6 +443,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03343873426d43a41810e8f0685c2a03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiCanvasGroup: {fileID: 3444971649670206504}
   networkPanel: {fileID: 3476926646147497930}
   fader: {fileID: 5927359264979119418}
   eventSystem: {fileID: 0}
@@ -451,6 +452,7 @@ MonoBehaviour:
   - items:
     - {fileID: 1149618172732293734}
     - {fileID: 7456425832756026695}
+  hostButton: {fileID: 1149618172732293734}
   lobbyScrollViewContent: {fileID: 2542562837957062314}
   lobbyRowPrefab: {fileID: 7002245068734676836, guid: e6a42f935cbcf214c954143ad5471efb, type: 3}
   autoScroller: {fileID: 4278397301763580618}
@@ -2107,6 +2109,34 @@ PrefabInstance:
     - target: {fileID: 7241933669077110944, guid: 25ad4a9ec5c4f6742866fe7966801e61, type: 3}
       propertyPath: m_Name
       value: HostButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8286502301998299732, guid: 25ad4a9ec5c4f6742866fe7966801e61, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8286502301998299732, guid: 25ad4a9ec5c4f6742866fe7966801e61, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8286502301998299732, guid: 25ad4a9ec5c4f6742866fe7966801e61, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4022021735240056356}
+    - target: {fileID: 8286502301998299732, guid: 25ad4a9ec5c4f6742866fe7966801e61, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8286502301998299732, guid: 25ad4a9ec5c4f6742866fe7966801e61, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: HostGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 8286502301998299732, guid: 25ad4a9ec5c4f6742866fe7966801e61, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: NetworkMenu, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8286502301998299732, guid: 25ad4a9ec5c4f6742866fe7966801e61, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8922378582509597627, guid: 25ad4a9ec5c4f6742866fe7966801e61, type: 3}
       propertyPath: m_Pivot.x
