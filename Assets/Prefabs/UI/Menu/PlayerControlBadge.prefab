@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 2828558726226557837}
   - component: {fileID: 6903101786615910173}
   - component: {fileID: 3895623661270033655}
+  - component: {fileID: 402901691845293250}
   m_Layer: 5
   m_Name: PlayerControlBadge
   m_TagString: Untagged
@@ -336,7 +337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  playerTeam: {fileID: 0}
+  playerControlBadge: {fileID: 402901691845293250}
   graphics: {fileID: 8959490445713896152}
   readyParent: {fileID: 7397512523854644250}
   readyText: {fileID: 7555919595523630644}
@@ -356,6 +357,21 @@ MonoBehaviour:
   genericDownKeyText: {fileID: 6293068474661927225}
   genericLeftKeyText: {fileID: 9084840873976542053}
   genericRightKeyText: {fileID: 6789088484169991368}
+--- !u!114 &402901691845293250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777358524332453278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b1e61f4de4910a4abe81b15e0108893, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTeam: {fileID: 0}
+  _IsReady:
+    _value: 0
 --- !u!1 &1957006551524067562
 GameObject:
   m_ObjectHideFlags: 0

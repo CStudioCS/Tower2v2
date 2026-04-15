@@ -28,7 +28,6 @@ public class MenuInputHandler : MonoBehaviour
     private InputAction cancelAction;
 
     private EventSystem eventSystem;
-    private MonoBehaviour currentMenu;
 
     // --- 2D Grid System ---
     private List<UIRow> grid = new List<UIRow>();
@@ -140,7 +139,7 @@ public class MenuInputHandler : MonoBehaviour
         }
 
         navigateAction = null; submitAction = null; cancelAction = null;
-        eventSystem = null; currentMenu = null; grid = null;
+        eventSystem = null; grid = null;
         cachedPointerData = null;
         enabled = false;
     }

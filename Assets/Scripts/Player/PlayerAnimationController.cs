@@ -20,7 +20,7 @@ public class PlayerAnimationController : MonoBehaviour
     private void OnEnable()
     {
         playerTeam.TeamChanged += OnTeamChanged;
-        OnTeamChanged();
+        player.AvatarSpawned += OnTeamChanged;
     }
 
     private void OnTeamChanged()
@@ -82,5 +82,6 @@ public class PlayerAnimationController : MonoBehaviour
     private void OnDisable()
     {
         playerTeam.TeamChanged -= OnTeamChanged;
+        player.AvatarSpawned -= OnTeamChanged;
     }
 }

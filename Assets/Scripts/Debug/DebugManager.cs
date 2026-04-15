@@ -49,16 +49,16 @@ public class DebugManager: MonoBehaviour
 			return;
 		}
 
-		void JoinAndSetReady(PlayerControlBadge.ControlSchemes scheme)
+		void JoinAndSetReady(PlayerBadge.ControlSchemes scheme)
 		{
 			PlayerInput playerInput = (PlayerInput)method.Invoke(LobbyManager.Instance, new object[] { scheme });
 			SetPlayerReady(playerInput);
 		}
 
-		JoinAndSetReady(PlayerControlBadge.ControlSchemes.WASD);
-		JoinAndSetReady(PlayerControlBadge.ControlSchemes.IJKL);
-		JoinAndSetReady(PlayerControlBadge.ControlSchemes.TFGH);
-		JoinAndSetReady(PlayerControlBadge.ControlSchemes.ArrowKeys);
+		JoinAndSetReady(PlayerBadge.ControlSchemes.WASD);
+		JoinAndSetReady(PlayerBadge.ControlSchemes.IJKL);
+		JoinAndSetReady(PlayerBadge.ControlSchemes.TFGH);
+		JoinAndSetReady(PlayerBadge.ControlSchemes.ArrowKeys);
 
 		Debug.Log("Joined 4 keyboard players and set to ready.");
 	}
@@ -182,9 +182,9 @@ public class DebugManager: MonoBehaviour
 	[Hotkey(KeyCode.M, "Toggle no clip for all players")]
 	public void ToggleNoClip()
 	{
-		foreach (PlayerInput playerInput in GameStartManager.Instance.Players)
+		foreach (Player player in GameStartManager.Instance.Players)
 		{
-			Collider2D[] colliders = playerInput.GetComponentsInChildren<Collider2D>();
+			Collider2D[] colliders = player.GetComponentsInChildren<Collider2D>();
 			foreach (Collider2D collider in colliders)
 			{
 				if (!collider.isTrigger)

@@ -1,11 +1,15 @@
+using Fusion;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerTeam : MonoBehaviour
+public class PlayerTeam : NetworkBehaviour
 {
     public enum Team { Right, Left }
+
+    //It syncs across the network and calls OnTeamChanged when it changes.
+    [Networked, OnChangedRender(nameof(OnTeamChanged))]
     public Team CurrentTeam { get; private set; } = Team.Left;
 
     public event Action TeamChanged;
@@ -27,34 +31,32 @@ public class PlayerTeam : MonoBehaviour
 
     public void InitializeTeam()
     {
-        SetTeam(CurrentPositionTeam);
+        if (HasStateAuthority)
+            CurrentTeam = CurrentPositionTeam;
     }
 
-    private void Update()
+    public override void FixedUpdateNetwork()
     {
-        switch (LevelManager.Instance?.GameState)
-        {
-            case LevelManager.State.Lobby:
-                LobbyUpdate();
-                break;
-        }
+        if (HasStateAuthority && LevelManager.Instance?.GameState == LevelManager.State.Lobby)
+            LobbyUpdate();
     }
 
     public void LobbyUpdate()
     {
         Team newTeam = CurrentPositionTeam;
+
         if (newTeam != CurrentTeam)
-        {
-            if(transform.position.x > 0)
-            {
-                SoundManager.instance.PlaySound("ChangeTeam1");
-            }
-            else
-            {
-                SoundManager.instance.PlaySound("ChangeTeam2");
-            }
-            SetTeam(newTeam);
-        }
+            CurrentTeam = newTeam;
+    }
+
+    private void OnTeamChanged()
+    {
+        if (CurrentTeam == Team.Right)
+            SoundManager.instance.PlaySound("ChangeTeam1");
+        else
+            SoundManager.instance.PlaySound("ChangeTeam2");
+
+        TeamChanged?.Invoke(); // I Kept the old event for the local UI
     }
 
     public void SetTeam(Team team)
@@ -70,9 +72,8 @@ public class PlayerTeam : MonoBehaviour
 
     public Player GetTeamMate()
     {
-        foreach (PlayerInput playerInput in GameStartManager.Instance.Players)
+        foreach (Player player in GameStartManager.Instance.Players)
         {
-            Player player = playerInput.GetComponent<Player>();
             if (player.PlayerTeam.CurrentTeam == CurrentTeam && player.PlayerTeam.TeamPlayerIndex != TeamPlayerIndex)
                 return player;
         }

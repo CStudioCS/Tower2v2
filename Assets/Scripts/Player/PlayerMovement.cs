@@ -1,8 +1,9 @@
+using Fusion;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     [Header("Movement")]
     [SerializeField] private float maxSpeed = 8f;
@@ -23,16 +24,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerInput playerInput;
     [SerializeField] private Rigidbody2D rb;
     public Rigidbody2D Rb => rb;
-    private InputAction moveAction;
 
     private bool gameStartingLock;
 
     public bool Accelerating { get; private set; }
-
-    private void Awake()
-    {
-        moveAction = playerInput.actions.FindAction("Gameplay/Move");
-    }
 
     private void Start()
     {
@@ -46,12 +41,28 @@ public class PlayerMovement : MonoBehaviour
         rb.bodyType = player.LockedInSettingsMenu ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
     }
 
-    private void FixedUpdate()
+    public override void FixedUpdateNetwork()
     {
-        Vector2 inputMovement = moveAction.ReadValue<Vector2>();
-        if (inputMovement.sqrMagnitude >= lastNonZeroInputDeadzone * lastNonZeroInputDeadzone)
-            LastNonZeroInput = inputMovement.normalized;
-        
+        Vector2 inputMovement = Vector2.zero;
+
+        if (GetInput(out PlayerNetworkInput input))
+        {
+            // We get the player's slot number
+            int mySlot = player.GetComponent<PlayerInputPoller>().SlotIndex;
+
+            // Read incoming input data
+            PlayerData myData = default;
+            if (mySlot == 0) myData = input.Player0;
+            else if (mySlot == 1) myData = input.Player1;
+            else if (mySlot == 2) myData = input.Player2;
+            else if (mySlot == 3) myData = input.Player3;
+
+            inputMovement = myData.Movement;
+
+            if (inputMovement.sqrMagnitude >= lastNonZeroInputDeadzone * lastNonZeroInputDeadzone)
+                LastNonZeroInput = inputMovement.normalized;
+        }
+
         if (gameStartingLock || player.Interacting || player.CurrentAimingState == Player.AimingState.AimingLockedIn || player.LockedInSettingsMenu || LevelManager.Instance.GameState == LevelManager.State.EndScreen)
         {
             rb.linearVelocity = Vector2.zero;
@@ -59,12 +70,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         rb.linearVelocity = VelocityApproach(inputMovement);
-
         Accelerating = lastSpeed == Vector2.zero && rb.linearVelocity != Vector2.zero;
-
         lastSpeed = rb.linearVelocity;
 
-        player.PlayerStats.distanceTravelled += rb.linearVelocity.magnitude * Time.deltaTime;
+        player.PlayerStats.distanceTravelled += rb.linearVelocity.magnitude * Runner.DeltaTime;
     }
 
 
@@ -79,11 +88,11 @@ public class PlayerMovement : MonoBehaviour
         {
             //Account for the fact that move can be of norm different than one (for controllers when moving slowly)
             Vector2 approached = (inputMovement.sqrMagnitude > gamepadMaxSpeedThreshold * gamepadMaxSpeedThreshold ? inputMovement.normalized : inputMovement) * maxSpeed;
-            return Approach(rb.linearVelocity, approached, acceleration * Time.deltaTime);
+            return Approach(rb.linearVelocity, approached, acceleration * Runner.DeltaTime);
         }
 
         //We don't wanna move or we're at max speed -> friction (friction is just reverse acceleration, it's not a multiple of velocity)
-        return Approach(rb.linearVelocity, Vector2.zero, friction * Time.deltaTime);
+        return Approach(rb.linearVelocity, Vector2.zero, friction * Runner.DeltaTime);
     }
 
     /// <summary>

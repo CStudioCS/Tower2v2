@@ -12,11 +12,11 @@ public class Sign: Interactable
 	{
 		if (highlighted)
 		{
-			player.PlayerControlBadge.SetReadyText(signText);
-			player.PlayerControlBadge.SetUnready(true);
+			player.PlayerBadge.SetReadyText(signText);
+			player.PlayerControlBadge.SetUnready();
 		}
 		else
-			player.PlayerControlBadge.ResetReadyText();
+			player.PlayerBadge.ResetReadyText();
 		
 		base.TryHighlight(highlighted, player);
 	}

@@ -44,4 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e6ec4cc5e8ebb6428a91d1902453249, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lobbyManagerPrefab:
+    RawGuidValue: b7aa67acaa006fd41aac1d31be2c7997
   Runner: {fileID: 0}
+  UseSavedPositionsForNextSpawn: 0

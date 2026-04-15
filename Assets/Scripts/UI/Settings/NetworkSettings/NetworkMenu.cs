@@ -38,6 +38,9 @@ public class NetworkMenu : MonoBehaviour
 
     // Stores the dynamically created join buttons
     private List<Selectable> dynamicLobbyButtons = new List<Selectable>();
+    private Dictionary<string, LobbyRowController> existingLobbyRows = new Dictionary<string, LobbyRowController>();
+    // Stores the reference to the lobby row representing our current connection
+    private LobbyRowController myGameRowController;
 
     /// <summary>
     /// Opens the Network menu, starts the fade, and binds the input handler.
@@ -69,6 +72,8 @@ public class NetworkMenu : MonoBehaviour
             ClearLobbies();
             uiCanvasGroup.interactable = true;
             hostButton.interactable = true;
+
+            LobbyManager.Instance?.SaveCurrentPositions();
             _ = NetworkManager.Instance.JoinLobby();
 
             // It will update automatically when OnSessionListUpdatedEvent fires.
@@ -87,8 +92,15 @@ public class NetworkMenu : MonoBehaviour
             fader.Fade();
 
         if (originMenu != null && currentPlayer != null)
-        {
             originMenu.Open(currentPlayer);
+
+        if (NetworkManager.Instance.Runner != null &&
+            !NetworkManager.Instance.IsHosting &&
+            !NetworkManager.Instance.IsClient &&
+            !NetworkManager.Instance.IsSinglePlayer)
+        {
+            NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
+            _ = NetworkManager.Instance?.StartNetworkGame(GameMode.Single);
         }
     }
 
@@ -125,14 +137,17 @@ public class NetworkMenu : MonoBehaviour
         hostButton.interactable = false; // Can't host if already connected
 
         GameObject rowObj = Instantiate(lobbyRowPrefab, lobbyScrollViewContent);
-        LobbyRowController rowController = rowObj.GetComponent<LobbyRowController>();
+        myGameRowController = rowObj.GetComponent<LobbyRowController>();
 
         bool isHost = NetworkManager.Instance.IsHosting;
 
-        rowController.Initialize(
+        int displayCount = LobbyManager.Instance != null ? LobbyManager.Instance.TotalPlayers : 1;
+        displayCount = Mathf.Max(1, displayCount);
+
+        myGameRowController.Initialize(
             sessionId: NetworkManager.Instance.CurrentSessionName,
             lobbyName: isHost ? "Your Hosted Game" : "Joined Game",
-            currentPlayers: 1, // Will be replaced by live count later
+            currentPlayers: displayCount,
             maxPlayers: 4,
             ping: 0,
             status: isHost ? "Hosting..." : "Connected",
@@ -141,7 +156,7 @@ public class NetworkMenu : MonoBehaviour
             onButtonAction: LeaveGame
         );
 
-        dynamicLobbyButtons.Add(rowController.ActionButton);
+        dynamicLobbyButtons.Add(myGameRowController.ActionButton);
 
         if (!inputHandler.enabled) 
             inputHandler.Bind(currentPlayer, eventSystem, Close, BuildNavigationGrid());
@@ -156,39 +171,89 @@ public class NetworkMenu : MonoBehaviour
     {
         if (NetworkManager.Instance.IsHosting || NetworkManager.Instance.IsClient) return;
 
-        ClearLobbies();
+        bool gridNeedsUpdate = false;
+        HashSet<string> currentSessions = new HashSet<string>();
 
         foreach (SessionInfo session in sessionList)
         {
             // Ignore sessions that aren't visible or open for joining
             if (!session.IsVisible || !session.IsOpen) continue;
+            currentSessions.Add(session.Name);
 
-            GameObject rowObj = Instantiate(lobbyRowPrefab, lobbyScrollViewContent);
-            
-            if (rowObj.TryGetComponent(out LobbyRowController rowController))
+            int realPlayers = session.Properties.TryGetValue("TotalPlayers", out var prop) ? (int)prop : session.PlayerCount;
+
+            if (!existingLobbyRows.TryGetValue(session.Name, out LobbyRowController rowController))
             {
-                int realPlayers = session.Properties.TryGetValue("TotalPlayers", out var prop) ? (int)prop : session.PlayerCount;
+                GameObject rowObj = Instantiate(lobbyRowPrefab, lobbyScrollViewContent);
+                if (rowObj.TryGetComponent(out rowController))
+                {
+                    existingLobbyRows.Add(session.Name, rowController);
+                    dynamicLobbyButtons.Add(rowController.ActionButton);
+                    gridNeedsUpdate = true; // On a ajouté un bouton
+                }
+                else continue;
+            }
 
-                rowController.Initialize(
-                    sessionId: session.Name,
-                    lobbyName: "Game: " + session.Name,
-                    currentPlayers: realPlayers,
-                    maxPlayers: session.MaxPlayers,
-                    ping: 45,
-                    status: session.IsOpen ? "Waiting..." : "In Progress",
-                    customButtonText: "Join",
-                    isInteractable: realPlayers < session.MaxPlayers,
-                    onButtonAction: JoinGame
-                );
+            rowController.Initialize(
+                sessionId: session.Name,
+                lobbyName: "Game: " + session.Name,
+                currentPlayers: realPlayers,
+                maxPlayers: session.MaxPlayers,
+                ping: 45,
+                status: session.IsOpen ? "Waiting..." : "In Progress",
+                customButtonText: "Join",
+                isInteractable: realPlayers < session.MaxPlayers,
+                onButtonAction: JoinGame
+            );
+        }
 
-                dynamicLobbyButtons.Add(rowController.ActionButton);
+        // Remove the dead bodies
+        List<string> keysToRemove = new List<string>();
+        foreach (var kvp in existingLobbyRows)
+        {
+            if (!currentSessions.Contains(kvp.Key))
+            {
+                dynamicLobbyButtons.Remove(kvp.Value.ActionButton);
+                Destroy(kvp.Value.gameObject);
+                keysToRemove.Add(kvp.Key);
+                gridNeedsUpdate = true; // We removed a button, need to update the grid
             }
         }
 
+        foreach (string k in keysToRemove)
+            existingLobbyRows.Remove(k);
+
         // Tell the MenuInputHandler to rebuild the grid and update navigation since we added new buttons
-        if (inputHandler.enabled) 
+        if (gridNeedsUpdate && inputHandler.enabled)
             inputHandler.UpdateGrid(BuildNavigationGrid());
     }
+
+    /// <summary>
+    /// Updates the lobby row that represents the current connection (Host or Client)
+    /// </summary>
+    private void UpdateConnectedLobbyRow()
+    {
+        if (myGameRowController == null || NetworkManager.Instance.Runner == null) return;
+
+        bool isHost = NetworkManager.Instance.IsHosting;
+
+        int displayCount = LobbyManager.Instance != null ? LobbyManager.Instance.TotalPlayers : 1;
+        displayCount = Mathf.Max(1, displayCount);
+
+        // The row is already instantiated, we just call "Initialize" to overwrite the texts
+        myGameRowController.Initialize(
+            sessionId: NetworkManager.Instance.CurrentSessionName,
+            lobbyName: isHost ? "Your Hosted Game" : "Joined Game",
+            currentPlayers: displayCount,
+            maxPlayers: 4,
+            ping: 0,
+            status: isHost ? "Hosting..." : "Connected",
+            customButtonText: "Leave",
+            isInteractable: true,
+            onButtonAction: LeaveGame
+        );
+    }
+
 
     /// <summary>
     /// Clears all dynamically created lobbies from the UI.
@@ -199,6 +264,8 @@ public class NetworkMenu : MonoBehaviour
             Destroy(child.gameObject);
 
         dynamicLobbyButtons.Clear();
+
+        existingLobbyRows.Clear();
 
         if (inputHandler.enabled) 
             inputHandler.UpdateGrid(BuildNavigationGrid());
@@ -224,6 +291,11 @@ public class NetworkMenu : MonoBehaviour
         uiCanvasGroup.interactable = false; // Lock UI
 
         hostButton.interactable = false;
+
+        // Take a picture :)
+        LobbyManager.Instance?.SaveCurrentPositions();
+        NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
+
         await NetworkManager.Instance.Disconnect();
 
         // Start the server in Host mode with a random room name
@@ -239,6 +311,11 @@ public class NetworkMenu : MonoBehaviour
     private async void LeaveGame(string sessionName)
     {
         uiCanvasGroup.interactable = false; // Lock UI
+
+        // Take a picture :)
+        LobbyManager.Instance?.SaveCurrentPositions();
+        NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
+
         await NetworkManager.Instance.Disconnect();
 
         if (this == null || !isOpen) return;
@@ -254,6 +331,10 @@ public class NetworkMenu : MonoBehaviour
     public async void JoinGame(string roomName)
     {
         uiCanvasGroup.interactable = false; // Lock UI
+
+        // Take a picture :)
+        LobbyManager.Instance?.SaveCurrentPositions();
+        NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
 
         await NetworkManager.Instance.Disconnect();
         await NetworkManager.Instance.StartNetworkGame(GameMode.Client, roomName);
@@ -271,6 +352,8 @@ public class NetworkMenu : MonoBehaviour
 
         if (NetworkManager.Instance != null)
             NetworkManager.Instance.OnSessionListUpdatedEvent += RefreshLobbyUI;
+
+        NetworkManager.OnPlayersCountChanged += UpdateConnectedLobbyRow;
     }
 
     private void OnDisable()
@@ -280,5 +363,7 @@ public class NetworkMenu : MonoBehaviour
 
         if (NetworkManager.Instance != null)
             NetworkManager.Instance.OnSessionListUpdatedEvent -= RefreshLobbyUI;
+
+        NetworkManager.OnPlayersCountChanged -= UpdateConnectedLobbyRow;
     }
 }

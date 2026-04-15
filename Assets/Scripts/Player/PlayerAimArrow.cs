@@ -15,8 +15,8 @@ public class PlayerAimArrow: MonoBehaviour
 		player.StartedAimingLockedIn += OnStartedAimingLockedIn;
 		player.StoppedAiming += OnStoppedAiming;
 		player.PlayerTeam.TeamChanged += OnTeamChanged;
-		ShowGraphics(false);
-		UpdateColor();
+        player.AvatarSpawned += UpdateColor;
+        ShowGraphics(false);
 	}
 
 	private void OnStartedAimingLockedIn()
@@ -57,5 +57,6 @@ public class PlayerAimArrow: MonoBehaviour
 		player.StartedAimingLockedIn -= OnStartedAimingLockedIn;
 		player.StoppedAiming -= OnStoppedAiming;
 		player.PlayerTeam.TeamChanged -= OnTeamChanged;
-	}
+        player.AvatarSpawned -= UpdateColor;
+    }
 }

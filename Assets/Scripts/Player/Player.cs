@@ -1,11 +1,13 @@
-using System;
+using Fusion;
 using LitMotion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     public List<Interactable> insideInteractableList { get; } = new();
     public bool IsHolding => HeldItem != null;
@@ -21,11 +23,15 @@ public class Player : MonoBehaviour
 
     [Header("References")]
 
-    [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerTeam playerTeam;
     public PlayerTeam PlayerTeam => playerTeam;
+
     [SerializeField] private PlayerControlBadge playerControlBadge;
     public PlayerControlBadge PlayerControlBadge => playerControlBadge;
+
+    [SerializeField] private PlayerBadge playerBadge;
+    public PlayerBadge PlayerBadge => playerBadge;
+
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
     
@@ -41,9 +47,15 @@ public class Player : MonoBehaviour
 
     public Action GrabbedNewItem;
 
-    private InputAction interactAction;
-    private InputAction throwAction;
     private Interactable closestInteractable;
+    private Interactable currentTargetInteractable;
+    private float currentInteractionDuration;
+
+    [Networked] private NetworkButtons PreviousButtons { get; set; }
+    [Networked] public TickTimer InteractionTimer { get; set; }
+
+    private PlayerData currentTickData;
+
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
@@ -55,6 +67,7 @@ public class Player : MonoBehaviour
     public bool LockedInSettingsMenu { get; private set; }
     public event Action LockedInSettingsMenuChanged;
 
+    public event Action AvatarSpawned;
     public event Action StartedAimingLockedIn;
     public event Action StoppedAiming;
     public enum AimingState { NotAiming, StartingToAim, AimingLockedIn }
@@ -63,8 +76,6 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        interactAction = playerInput.actions.FindAction("Gameplay/Interact");
-        throwAction = playerInput.actions.FindAction("Gameplay/Throw");
         aimSpeedRatioVelocity = 1 / aimChargeDuration;
     }
 
@@ -73,13 +84,37 @@ public class Player : MonoBehaviour
         LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
     }
 
-    private void Update()
+    public override void Spawned()
+    {
+        GameStartManager.Instance.AddPlayer(this);
+        AvatarSpawned?.Invoke();
+    }
+
+    public override void Despawned(NetworkRunner runner, bool hasState) => GameStartManager.Instance.RemovePlayer(this);
+
+    public override void FixedUpdateNetwork()
     {
         if (!Interacting)
             UpdateClosestInteractable();
 
-        if (!LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
-            HandleInput();
+        if (GetInput(out PlayerNetworkInput input))
+        {
+            int mySlot = GetComponent<PlayerInputPoller>().SlotIndex;
+
+            PlayerData myData = default;
+            if (mySlot == 0) myData = input.Player0;
+            else if (mySlot == 1) myData = input.Player1;
+            else if (mySlot == 2) myData = input.Player2;
+            else if (mySlot == 3) myData = input.Player3;
+
+
+            currentTickData = myData;
+
+            if (!LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
+                HandleInput();
+
+            PreviousButtons = myData.Buttons;
+        }
 
         playerAnimationController.HasItem(HeldItem != null); // TODO fix bad animation coupling
     }
@@ -89,7 +124,10 @@ public class Player : MonoBehaviour
         switch (LevelManager.Instance.GameState)
         {
             case LevelManager.State.Game:
-                HandleInputGame();
+                if (Interacting)
+                    ProcessLongInteraction();
+                else
+                    HandleInputGame();
                 break;
             case LevelManager.State.Lobby:
                 HandleInputLobby();
@@ -99,12 +137,13 @@ public class Player : MonoBehaviour
 
     private void HandleInputLobby()
     {
-        if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
+        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
+
+        if (interactPressed || throwPressed)
         {
             if (!TryInteract())
-            {
-                playerControlBadge.Interact();
-            }
+                playerControlBadge.ToggleReady();
         }
     }
 
@@ -126,9 +165,12 @@ public class Player : MonoBehaviour
 
     private void HandleInputNotAiming()
     {
+        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
+
         if (IsHolding)
         {
-            if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
+            if (interactPressed || throwPressed)
             {
                 if (TryInteract())
                     return;
@@ -139,14 +181,17 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
+            if (interactPressed || throwPressed)
                 TryInteract();
         }
     }
 
     private void HandleInputStartingToAim()
     {
-        if (throwAction.WasReleasedThisFrame())
+        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
+
+        if (throwPressed)
         {
             ThrowAndExitAim(ThrowVelocity);
             return;
@@ -154,7 +199,7 @@ public class Player : MonoBehaviour
 
         // If the player releases the interact button BUT is still holding the throw button at the same time,
         // their intention is probably to throw the item, so we should not drop it and stay in the StartingToAim state.
-        if (interactAction.WasReleasedThisFrame() && !throwAction.IsPressed())
+        if (interactPressed && !throwPressed)
         {
             ThrowAndExitAim();
             return;
@@ -179,8 +224,11 @@ public class Player : MonoBehaviour
 
     private void HandleInputAimingLockedIn()
     {
+        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
+
         throwSpeedRatio = Mathf.Clamp01(throwSpeedRatio + aimSpeedRatioVelocity * Time.deltaTime);
-        if (interactAction.WasReleasedThisFrame() || throwAction.WasReleasedThisFrame())
+        if (interactPressed || throwPressed)
         {
             ThrowAndExitAim(ThrowVelocity);
         }
@@ -217,8 +265,18 @@ public class Player : MonoBehaviour
             else
                 Debug.LogError("This Interactable is not currently supported by the animator");
             //no interactable in the game takes time aside from Collector and Workbench as of rn
-                
-            StartCoroutine(InteractTimer(closestInteractable, time));
+
+            // ---- Start the interaction ----
+            // Before the network update it was a couroutine
+
+            Interacting = true;
+            currentTargetInteractable = closestInteractable;
+            currentInteractionDuration = time;
+            currentTargetInteractable.IsAlreadyInteractedWith = true;
+
+            progressBar.StartProgress();
+
+            InteractionTimer = TickTimer.CreateFromSeconds(Runner, time);
         }
         else
             closestInteractable.Interact(this);
@@ -226,30 +284,31 @@ public class Player : MonoBehaviour
         return canBeHighlighted;
     }
 
-    private IEnumerator InteractTimer(Interactable insideInteractable, float time)
+    private void ProcessLongInteraction()
     {
-        Interacting = true;
-        insideInteractable.IsAlreadyInteractedWith = true;
-        progressBar.StartProgress();
-        float t = 0;
-        
-        while(t < time)
-        {
-            // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
-            if (interactAction.WasReleasedThisFrame() || throwAction.WasReleasedThisFrame() || LevelManager.Instance.GameState != LevelManager.State.Game)
-            {
-                StopInteracting(insideInteractable);
-                yield break;
-            }
+        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
 
-            progressBar.UpdateProgress(t / time);
-            t += Time.deltaTime;
-            yield return null;
+        // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
+        if (interactPressed || throwPressed || LevelManager.Instance.GameState != LevelManager.State.Game)
+        {
+            StopInteracting(currentTargetInteractable);
+            return;
+        }
+
+        if (InteractionTimer.IsRunning)
+        {
+            float t = currentInteractionDuration - InteractionTimer.RemainingTime(Runner).Value;
+            progressBar.UpdateProgress(t / currentInteractionDuration);
         }
 
         // We interacted with the object -> Reset everything and call the interact function
-        StopInteracting(insideInteractable);
-        insideInteractable.Interact(this);
+        if (InteractionTimer.Expired(Runner))
+        {
+            Interactable target = currentTargetInteractable;
+            StopInteracting(target);
+            target.Interact(this);
+        }
     }
 
     private void StopInteracting(Interactable insideInteractable)
@@ -257,7 +316,10 @@ public class Player : MonoBehaviour
         playerAnimationController.EndInteraction(); // TODO fix bad animation coupling
         Interacting = false;
         insideInteractable.IsAlreadyInteractedWith = false;
+
         progressBar.ResetProgress();
+        currentTargetInteractable = null;
+        InteractionTimer = TickTimer.None;
     }
 
     /// <summary>

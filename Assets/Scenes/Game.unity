@@ -12061,6 +12061,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1111184483774740255, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: m_PlayerJoinedEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943932457315171188, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: SortKey
+      value: 3416791471
+      objectReference: {fileID: 0}
     - target: {fileID: 5951444765711152512, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: m_Name
       value: Managers
@@ -12179,7 +12187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1314170806399417720, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1314170806399417720, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -12189,6 +12197,10 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1848672524}
+    - target: {fileID: 1314170806399417720, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1314170806399417720, guid: a1669d7bce5ada649b1edcc0b577e5b7, type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2

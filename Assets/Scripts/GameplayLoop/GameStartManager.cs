@@ -34,8 +34,8 @@ public class GameStartManager : MonoBehaviour
         }
     }
 
-    private readonly List<PlayerInput> players = new();
-    public List<PlayerInput> Players => players;
+    private readonly List<Player> players = new();
+    public List<Player> Players => players;
 
     public int PlayerCount => players.Count;
     // Player Balance counts +1 for right team and -1 for left team. If sum is 0, teams are balanced.
@@ -75,8 +75,6 @@ public class GameStartManager : MonoBehaviour
 
     void Start()
     {
-        LobbyManager.Instance.PlayerJoined += OnPlayerJoined;
-        LobbyManager.Instance.PlayerLeft += OnPlayerLeft;
         LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
         ChangeWaitState(WaitState.Logo);
     }
@@ -85,9 +83,8 @@ public class GameStartManager : MonoBehaviour
 
     private void ResetPlayers()
     {
-        foreach (PlayerInput playerInput in players)
+        foreach (Player player in players)
         {
-            Player player = playerInput.GetComponent<Player>();
             player.ConsumeCurrentItem();
             player.PlayerTeam.LobbyUpdate();
             player.PlayerControlBadge.SetUnready();
@@ -95,15 +92,15 @@ public class GameStartManager : MonoBehaviour
         ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
     }
 
-    private void OnPlayerJoined(PlayerInput playerInput)
+    public void AddPlayer(Player player)
     {
+        players.Add(player);
         SoundManager.instance.PlaySound("PlayerConnect");
-        players.Add(playerInput);
-        Player player = playerInput.GetComponent<Player>();
+
         player.PlayerTeam.InitializeTeam();
         player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
         player.PlayerControlBadge.ReadyChanged += OnPlayerReadyChanged;
-        playerInput.GetComponent<PlayerInitPosition>().Initialize();
+        player.PlayerInitPosition.Initialize();
         
         if (PlayerCount != 4)
             return;
@@ -135,7 +132,7 @@ public class GameStartManager : MonoBehaviour
         }
     }
 
-    private void OnPlayerReadyChanged()
+    private void OnPlayerReadyChanged(bool isReady)
     {
         if (waitState == WaitState.PlayersNotReady)
         {
@@ -146,10 +143,9 @@ public class GameStartManager : MonoBehaviour
         }
     }
     
-    private void OnPlayerLeft(PlayerInput playerInput)
+    public void RemovePlayer(Player player)
     {
-        players.Remove(playerInput);
-        Player player = playerInput.GetComponent<Player>();
+        players.Remove(player);
         player.PlayerTeam.TeamChanged -= OnPlayerTeamChanged;
         player.PlayerControlBadge.ReadyChanged -= OnPlayerReadyChanged;
         TryChangeWaitState(WaitState.NotEnoughPlayers);
@@ -176,8 +172,6 @@ public class GameStartManager : MonoBehaviour
     
     private void OnDisable()
     {
-        LobbyManager.Instance.PlayerJoined -= OnPlayerJoined;
-        LobbyManager.Instance.PlayerLeft -= OnPlayerLeft;
         LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
     }
 
@@ -185,9 +179,8 @@ public class GameStartManager : MonoBehaviour
     {
         int leftTeamCounter = 0;
         int rightTeamCounter = 0;
-        foreach (PlayerInput playerInput in players)
+        foreach (Player player in players)
         {
-            Player player = playerInput.GetComponent<Player>();
             PlayerTeam playerTeam = player.PlayerTeam;
             PlayerTeam.Team currentTeam = playerTeam.CurrentTeam;
             switch (currentTeam)
