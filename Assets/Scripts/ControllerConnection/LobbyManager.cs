@@ -25,6 +25,10 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     [Networked, OnChangedRender(nameof(OnTotalPlayersChanged))]
     public int TotalPlayers { get; set; }
 
+    [Networked, OnChangedRender(nameof(OnMapIndexChanged))]
+    public int CurrentMapIndex { get; set; }
+
+    public static event Action<int, bool> OnMapChangedEvent;
     public static LobbyManager Instance;
 
     private void Awake()
@@ -66,8 +70,11 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
 
     public override void Spawned()
     {
-        machinePlayerCounts.Clear();
-        TotalPlayers = 0;
+        if (HasStateAuthority)
+        {
+            machinePlayerCounts.Clear();
+            TotalPlayers = 0;
+        }
 
         // Restore the avatars of the players who were in the lobby before the reload
         List<PlayerInput> connectedInputs = new List<PlayerInput>(PlayerInput.all);
@@ -77,7 +84,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         // Put them back in the queue so that they can be linked to the new avatars when they spawn
         foreach (PlayerInput input in connectedInputs)
         {
-            if (!UnlinkedLocalInputs.Contains(input))
+            if (!UnlinkedLocalInputs.Contains(input) && CanAddPlayer())
                 UnlinkedLocalInputs.Enqueue(input);
         }
 
@@ -90,11 +97,18 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
             if (NetworkManager.Instance.UseSavedPositionsForNextSpawn && NetworkManager.Instance.SavedPositions.TryGetValue(input, out Vector3 savedPos))
                 targetPosition = savedPos;
 
-            RequestSpawnAvatar(targetPosition);
+            SpawnAvatar(targetPosition);
         }
 
         NetworkManager.Instance.UseSavedPositionsForNextSpawn = false;
-        UpdateLocalPlayerCount();
+
+        if (connectedInputs.Count > 0 && UnlinkedLocalInputs.Count == 0 && activeAvatars.Count == 0)
+        {
+            NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
+            _ = NetworkManager.Instance.JoinLobby();
+        }
+
+        OnMapChangedEvent?.Invoke(CurrentMapIndex, false);
     }
 
     private void Update()
@@ -166,7 +180,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         if (ActiveDevices.Contains(gamepad))
             return;
 
-        if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
+        if (!CanAddPlayer())
             return;
 
         ActiveDevices.Add(gamepad);
@@ -215,6 +229,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
             );
         }
     }
+
     bool IsSwitchController(string name, string product, string manufacturer)
     {
         return name.Contains("switch") ||
@@ -242,7 +257,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
             return null;
 
         // 1. Check if we are already at the player limit
-        if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
+        if (!CanAddPlayer())
             return null;
 
         ActiveKeyboardSchemes.Add(scheme);
@@ -264,15 +279,38 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         );
     }
 
+    private bool CanAddPlayer()
+    {
+        // This is used if the runner is not yet running or if we are in single player mode
+        int maxPlayers = playerInputManager.maxPlayerCount;
+
+        if (Runner != null &&
+            Runner.IsRunning &&
+            Runner.GameMode != GameMode.Single &&
+            Runner.SessionInfo.IsValid)
+            maxPlayers = Runner.SessionInfo.MaxPlayers;
+
+        // This is a security check for fast clickers 
+        // UnlinkedLocalInputs.Count (The local players who just pressed but whose avatar is still loading)
+        return (TotalPlayers + UnlinkedLocalInputs.Count) < maxPlayers;
+    }
+
     public void OnPlayerJoined(PlayerInput playerInput)
     {
         if (playerInput == null) return;
+
+        if (!CanAddPlayer())
+        {
+            Debug.LogWarning("[Lobby] Limit reached. Local player rejected.");
+            Destroy(playerInput.gameObject); // Destroy the created Player Proxy
+            return;
+        }
 
         // Enqueue the PlayerInput so that the PlayerInputPoller can link it to the avatar when it spawns.
         UnlinkedLocalInputs.Enqueue(playerInput);
 
         if (Runner != null && Runner.IsRunning)
-            RequestSpawnAvatar();
+            SpawnAvatar();
     }
 
     //<summary>
@@ -287,7 +325,6 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
             string previousActionMap = pendingInput.currentActionMap?.name;
 
             activeAvatars.Add(pendingInput, newAvatar);
-            UpdateLocalPlayerCount();
 
             PlayerInputPoller poller = newAvatar.GetComponent<PlayerInputPoller>();
             if (poller == null)
@@ -306,7 +343,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         }
     }
 
-    private void RequestSpawnAvatar(Vector2 spawnPosition = default)
+    private void SpawnAvatar(Vector2 spawnPosition = default)
     {
         if (UnlinkedLocalInputs.Count == 0) return;
         
@@ -315,17 +352,75 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         
 
         if (Runner.IsServer)
-            Runner.Spawn(playerAvatarPrefab, spawnPosition, Quaternion.identity, Runner.LocalPlayer);
+            ExecuteSpawn(Runner.LocalPlayer, spawnPosition);
 
         else
             RPC_RequestSpawnAvatar(Runner.LocalPlayer, spawnPosition);
     }
 
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_RequestSpawnAvatar(PlayerRef playerRef, Vector2 spawnPosition)
+    // <summary>
+    // Only used by the server to spawn avatars
+    // </summary>
+    private void ExecuteSpawn(PlayerRef playerRef, Vector2 spawnPosition)
     {
-        // Only the Server executes this.
+        int maxPlayers = playerInputManager.maxPlayerCount;
+
+        if (Runner.GameMode != GameMode.Single && Runner.SessionInfo.IsValid)
+            maxPlayers = Runner.SessionInfo.MaxPlayers;
+
+        if (TotalPlayers >= maxPlayers)
+        {
+            // No space for another player
+            RPC_SpawnRejected(playerRef);
+            return;
+        }
+
         Runner.Spawn(playerAvatarPrefab, spawnPosition, Quaternion.identity, playerRef);
+
+        if (!machinePlayerCounts.ContainsKey(playerRef))
+            machinePlayerCounts[playerRef] = 0;
+
+        machinePlayerCounts[playerRef]++;
+        RecalculateTotal();
+    }
+
+    // <summary>
+    // Only used by the server to despawn avatars
+    // </summary>
+    private void ExecuteDespawn(PlayerRef playerRef, NetworkObject avatar)
+    {
+        if (avatar != null)
+            Runner.Despawn(avatar);
+
+        // Server updates the player count for the machine that requested the despawn
+        if (machinePlayerCounts.ContainsKey(playerRef) && machinePlayerCounts[playerRef] > 0)
+        {
+            machinePlayerCounts[playerRef]--;
+            RecalculateTotal();
+        }
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_RequestSpawnAvatar(PlayerRef playerRef, Vector2 spawnPosition) => ExecuteSpawn(playerRef, spawnPosition);
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_RequestDespawnAvatar(PlayerRef playerRef, NetworkObject avatar) => ExecuteDespawn(playerRef, avatar);
+
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SpawnRejected(PlayerRef targetClient)
+    {
+        // Only the targeted client executes this code
+        if (Runner.LocalPlayer != targetClient)
+            return;
+
+        if (UnlinkedLocalInputs.Count > 0)
+        {
+            PlayerInput rejectedInput = UnlinkedLocalInputs.Dequeue();
+            Debug.LogWarning($"[Lobby] Spawn rejected by server for player {rejectedInput.playerIndex}.");
+
+            // TODO: Add some UI feedback
+        }
     }
 
     private Vector2 CalculateSpawnPosition()
@@ -386,12 +481,15 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
 
         if (activeAvatars.TryGetValue(playerInput, out NetworkObject avatarToDestroy))
         {
-            if (Runner != null && Runner.IsRunning)
-                Runner.Despawn(avatarToDestroy);
-
             activeAvatars.Remove(playerInput);
 
-            UpdateLocalPlayerCount();
+            if (Runner != null && Runner.IsRunning)
+            {
+                if (Runner.IsServer)
+                    ExecuteDespawn(Runner.LocalPlayer, avatarToDestroy);
+                else
+                    RPC_RequestDespawnAvatar(Runner.LocalPlayer, avatarToDestroy);
+            }
         }
 
         Debug.Log($"Player {playerInput.playerIndex} left the lobby.");
@@ -417,38 +515,28 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
             if (!UnlinkedLocalInputs.Contains(input))
                 UnlinkedLocalInputs.Enqueue(input);
 
-            RequestSpawnAvatar(targetPosition);
+            SpawnAvatar(targetPosition);
         }
-
-        UpdateLocalPlayerCount();
-    }
-
-    // <summary>
-    // Sending the current count of active avatars on this machine to the server
-    // </summary>
-    private void UpdateLocalPlayerCount()
-    {
-        if (Runner == null || !Runner.IsRunning) return;
-
-        RPC_ReportAbsoluteCount(Runner.LocalPlayer, activeAvatars.Count);
-    }
-
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_ReportAbsoluteCount(PlayerRef machine, int absoluteCount)
-    {
-        // Server updates the counts
-        machinePlayerCounts[machine] = absoluteCount;
-        RecalculateTotal();
     }
 
     // <summary>
     // This is called when a machine disconnects, it is different from OnPlayerLeft
     // </summary>
-    public void PlayerLeft(PlayerRef player)
+    public void PlayerLeft(PlayerRef playerRef)
     {
-        if (HasStateAuthority && machinePlayerCounts.ContainsKey(player))
+        if (!HasStateAuthority) return;
+
+        // I would normally avoid the GetAllBehaviours call but apparently Fusion keeps a dictionnary of the NetworkObjects by type.
+        // And it's for destruction only...
+        foreach (Player avatar in Runner.GetAllBehaviours<Player>())
         {
-            machinePlayerCounts.Remove(player);
+            if (avatar.Object.InputAuthority == playerRef)
+                Runner.Despawn(avatar.Object);
+        }
+
+        if (machinePlayerCounts.ContainsKey(playerRef))
+        {
+            machinePlayerCounts.Remove(playerRef);
             RecalculateTotal();
         }
     }
@@ -456,7 +544,8 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     // <summary>
     // This is called on clients when the TotalPlayers property changes
     // </summary>
-    void OnTotalPlayersChanged() => NetworkManager.Instance.TriggerPlayersCountChanged();
+    private void OnTotalPlayersChanged() => NetworkManager.Instance.TriggerPlayersCountChanged();
+    private void OnMapIndexChanged() => OnMapChangedEvent?.Invoke(CurrentMapIndex, true);
 
     private void RecalculateTotal()
     {
@@ -473,6 +562,8 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
             var newProps = new Dictionary<string, SessionProperty>();
             newProps["TotalPlayers"] = TotalPlayers;
             Runner.SessionInfo.UpdateCustomProperties(newProps);
+
+            Runner.SessionInfo.IsOpen = TotalPlayers < Runner.SessionInfo.MaxPlayers;
         }
     }
 

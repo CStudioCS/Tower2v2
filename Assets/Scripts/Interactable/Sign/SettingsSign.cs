@@ -8,12 +8,6 @@ public class SettingsSign: Sign
 
     public override void Interact(Player player)
 	{
-        if (!player.Runner.IsForward)
-            return;
-
-        if (!player.HasInputAuthority)
-            return;
-
         if (interactingInput != null)
 			return;
 

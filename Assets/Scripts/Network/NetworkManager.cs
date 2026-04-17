@@ -16,6 +16,9 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     [Header("Managers")]
     [SerializeField] private NetworkPrefabRef lobbyManagerPrefab;
 
+    public static event Action OnUnexpectedDisconnect;
+    private GameMode currentGameMode;
+
     public static NetworkManager Instance { get; private set; }
 
     [HideInInspector] public NetworkRunner Runner;
@@ -64,6 +67,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public async Task StartNetworkGame(GameMode mode, string roomName = "")
     {
         IsBusy = true; // Lock the network state
+        currentGameMode = mode;
         try
         {
             // Clean up any existing runner (online or offline)
@@ -86,6 +90,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
                 GameMode = mode,
                 SessionName = (mode == GameMode.Single) ? "" : roomName,
                 SessionProperties = customProps,
+                PlayerCount = 4,
                 SceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>(),
                 Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex)
             };
@@ -185,8 +190,9 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
         Debug.Log($"[Fusion] Network player {player.PlayerId} left the session.");
-        if (runner.IsServer)
+        if (runner.IsServer && LobbyManager.Instance != null)
         {
+            LobbyManager.Instance.PlayerLeft(player);
             // TODO: I will add a cleaning logic
         }
     }
@@ -200,6 +206,44 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnShutdown(NetworkRunner runner, ShutdownReason info)
     {
         Debug.Log($"[Fusion] Shutdown: {info}");
+
+        if (info == ShutdownReason.Ok)
+            return;
+
+        if (currentGameMode == GameMode.Client || currentGameMode == GameMode.Host)
+            HandleUnexpectedShutdown();
+    }
+
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        Debug.Log($"[Fusion] Disconnected: {reason}");
+
+        if (reason == NetDisconnectReason.Requested)
+            return;
+
+        if (currentGameMode == GameMode.Client || currentGameMode == GameMode.Host)
+            HandleUnexpectedShutdown();
+    }
+
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+    {
+        Debug.Log($"[Fusion] Connection Failed: {reason}");
+
+        if (currentGameMode == GameMode.Client || currentGameMode == GameMode.Host)
+            HandleUnexpectedShutdown();
+    }
+
+    private async void HandleUnexpectedShutdown()
+    {
+        OnUnexpectedDisconnect?.Invoke();
+
+        // Time for cleaning
+        await Task.Delay(100);
+
+        // We can't save them anyway
+        UseSavedPositionsForNextSpawn = false;
+
+        _ = StartNetworkGame(GameMode.Single);
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
@@ -236,9 +280,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     // --- Required callbacks ---
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnConnectedToServer(NetworkRunner runner) { }
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
-    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }

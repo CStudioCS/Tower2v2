@@ -76,7 +76,7 @@ public class NetworkMenu : MonoBehaviour
             LobbyManager.Instance?.SaveCurrentPositions();
             _ = NetworkManager.Instance.JoinLobby();
 
-            // It will update automatically when OnSessionListUpdatedEvent fires.
+            // TODOOO (REFRESH)
             List<UIRow> initialGrid = BuildNavigationGrid();
             inputHandler.Bind(currentPlayer, eventSystem, Close, initialGrid);
         }
@@ -148,7 +148,7 @@ public class NetworkMenu : MonoBehaviour
             sessionId: NetworkManager.Instance.CurrentSessionName,
             lobbyName: isHost ? "Your Hosted Game" : "Joined Game",
             currentPlayers: displayCount,
-            maxPlayers: 4,
+            maxPlayers: NetworkManager.Instance.Runner.SessionInfo.MaxPlayers,
             ping: 0,
             status: isHost ? "Hosting..." : "Connected",
             customButtonText: "Leave",
@@ -176,8 +176,8 @@ public class NetworkMenu : MonoBehaviour
 
         foreach (SessionInfo session in sessionList)
         {
-            // Ignore sessions that aren't visible or open for joining
-            if (!session.IsVisible || !session.IsOpen) continue;
+            if (!session.IsVisible) continue; // Ignore sessions that aren't visible (idk in what case I could use this actually)
+            
             currentSessions.Add(session.Name);
 
             int realPlayers = session.Properties.TryGetValue("TotalPlayers", out var prop) ? (int)prop : session.PlayerCount;
@@ -189,7 +189,7 @@ public class NetworkMenu : MonoBehaviour
                 {
                     existingLobbyRows.Add(session.Name, rowController);
                     dynamicLobbyButtons.Add(rowController.ActionButton);
-                    gridNeedsUpdate = true; // On a ajouté un bouton
+                    gridNeedsUpdate = true; 
                 }
                 else continue;
             }
@@ -202,7 +202,7 @@ public class NetworkMenu : MonoBehaviour
                 ping: 45,
                 status: session.IsOpen ? "Waiting..." : "In Progress",
                 customButtonText: "Join",
-                isInteractable: realPlayers < session.MaxPlayers,
+                isInteractable: realPlayers + PlayerInput.all.Count <= session.MaxPlayers,
                 onButtonAction: JoinGame
             );
         }
@@ -245,7 +245,7 @@ public class NetworkMenu : MonoBehaviour
             sessionId: NetworkManager.Instance.CurrentSessionName,
             lobbyName: isHost ? "Your Hosted Game" : "Joined Game",
             currentPlayers: displayCount,
-            maxPlayers: 4,
+            maxPlayers: NetworkManager.Instance.Runner.SessionInfo.MaxPlayers,
             ping: 0,
             status: isHost ? "Hosting..." : "Connected",
             customButtonText: "Leave",
@@ -354,6 +354,7 @@ public class NetworkMenu : MonoBehaviour
             NetworkManager.Instance.OnSessionListUpdatedEvent += RefreshLobbyUI;
 
         NetworkManager.OnPlayersCountChanged += UpdateConnectedLobbyRow;
+        NetworkManager.OnUnexpectedDisconnect += Close;
     }
 
     private void OnDisable()
@@ -365,5 +366,6 @@ public class NetworkMenu : MonoBehaviour
             NetworkManager.Instance.OnSessionListUpdatedEvent -= RefreshLobbyUI;
 
         NetworkManager.OnPlayersCountChanged -= UpdateConnectedLobbyRow;
+        NetworkManager.OnUnexpectedDisconnect -= Close;
     }
 }

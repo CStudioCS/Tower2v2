@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
+using static UnityEngine.GraphicsBuffer;
 
 public class Player : NetworkBehaviour
 {
@@ -256,6 +257,7 @@ public class Player : NetworkBehaviour
 
         bool canBeHighlighted = closestInteractable.CheckIfCanBeHighlighted(this);
         float time = closestInteractable.GetInteractionTime();
+
         if (time > 0)
         {
             if (closestInteractable is Workbench)
@@ -279,7 +281,7 @@ public class Player : NetworkBehaviour
             InteractionTimer = TickTimer.CreateFromSeconds(Runner, time);
         }
         else
-            closestInteractable.Interact(this);
+            ExecuteInteraction(closestInteractable);
 
         return canBeHighlighted;
     }
@@ -307,8 +309,28 @@ public class Player : NetworkBehaviour
         {
             Interactable target = currentTargetInteractable;
             StopInteracting(target);
-            target.Interact(this);
+            
+            ExecuteInteraction(target);
         }
+    }
+
+    private void ExecuteInteraction(Interactable target)
+    {
+        if (!HasStateAuthority) return;
+
+        // If I'm the server I call the interact function directly
+        // If I'm the client I need to send an RPC to the server to call the interact function for me
+        if (target.executionTarget == Interactable.ExecutionTarget.ClientSide)
+            RPC_ClientInteract(target.NetworkId);
+        else
+            target.Interact(this);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void RPC_ClientInteract(int targetInteractableId)
+    {
+        if (InteractableRegistry.All.TryGetValue(targetInteractableId, out Interactable targetInteractable))
+            targetInteractable.Interact(this);
     }
 
     private void StopInteracting(Interactable insideInteractable)

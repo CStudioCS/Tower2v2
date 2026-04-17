@@ -12640,6 +12640,10 @@ PrefabInstance:
       propertyPath: 'worldPrefabs.Array.data[4]'
       value: 
       objectReference: {fileID: 5812686374342393090, guid: 3ffcb0cacacde51449eddfdea712c5f4, type: 3}
+    - target: {fileID: 6394697083623367595, guid: b72f2b282b96b3e4e8678214b446b339, type: 3}
+      propertyPath: SortKey
+      value: 2052891952
+      objectReference: {fileID: 0}
     - target: {fileID: 6490063429738444182, guid: b72f2b282b96b3e4e8678214b446b339, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -12679,6 +12683,10 @@ PrefabInstance:
     - target: {fileID: 6490063429738444182, guid: b72f2b282b96b3e4e8678214b446b339, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7619592699510334191, guid: b72f2b282b96b3e4e8678214b446b339, type: 3}
+      propertyPath: SortKey
+      value: 2258658980
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

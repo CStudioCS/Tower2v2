@@ -6,6 +6,15 @@ using UnityEngine;
 /// </summary>
 public abstract class Interactable : MonoBehaviour
 {
+    public enum ExecutionTarget { ServerSide, ClientSide }
+
+    [Header("Network Settings")]
+    [Tooltip("ClientSide for UI - ServerSide for Gameplay")]
+    public ExecutionTarget executionTarget = ExecutionTarget.ServerSide;
+
+    [SerializeField] private string _uniqueId;
+    public int NetworkId { get; private set; }
+
     private static readonly int OutlineEnabled = Shader.PropertyToID("_OutlineEnabled");
     public bool IsAlreadyInteractedWith { get; set; }
     private int highlightedPlayerCount;
@@ -21,8 +30,27 @@ public abstract class Interactable : MonoBehaviour
 
     protected virtual void Awake()
     {
+        if (!string.IsNullOrEmpty(_uniqueId))
+            RegisterNetworkId(Animator.StringToHash(_uniqueId));
+    }
+
+    public void RegisterNetworkId(int fusionNativeId)
+    {
+        NetworkId = fusionNativeId;
+        InteractableRegistry.Register(this);
         InitializeHighlight();
     }
+
+#if UNITY_EDITOR
+    protected void OnValidate()
+    {
+        if (string.IsNullOrEmpty(_uniqueId))
+        {
+            _uniqueId = System.Guid.NewGuid().ToString();
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+    }
+#endif
 
     protected void InitializeHighlight()
     {
@@ -100,4 +128,6 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
         LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
     }
+
+    private void OnDestroy() => InteractableRegistry.Unregister(this);
 }
