@@ -9,6 +9,8 @@ public class PlayerControlBadge : NetworkBehaviour
 
     // Event for the UI to update the ready status (the old PlayerControlBadge)
     public event Action<bool> ReadyChanged;
+    // Event for the server to check if all players are ready (the new PlayerControlBadge)
+    public event Action<bool> ServerReadyChanged;
 
     [Networked, OnChangedRender(nameof(OnReadyChanged))]
     public NetworkBool IsReady { get; private set; }
@@ -45,6 +47,9 @@ public class PlayerControlBadge : NetworkBehaviour
     {
         if (HasStateAuthority)
             IsReady = !IsReady;
+
+        if (Runner.IsForward)
+            ServerReadyChanged?.Invoke(IsReady);
     }
 
     public void SetUnready()
@@ -52,6 +57,9 @@ public class PlayerControlBadge : NetworkBehaviour
         if (HasStateAuthority && IsReady)
         {
             IsReady = false;
+
+            if (Runner.IsForward)
+                ServerReadyChanged?.Invoke(false);
         }
     }
 }

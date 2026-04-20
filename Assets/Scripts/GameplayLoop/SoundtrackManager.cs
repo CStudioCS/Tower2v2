@@ -34,9 +34,9 @@ public class SoundtrackManager : MonoBehaviour
     private float pausedGameTime;
     private void Start()
     {
-        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.Instance.GameEnded += OnGameEnded;
-        LevelManager.Instance.ReturnedToLobby += OnBackToLobby;
+        LevelManager.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.GameEnded += OnGameEnded;
+        LevelManager.ReturnedToLobby += OnBackToLobby;
         PauseMenu.instance.Paused += OnPaused;
         PauseMenu.instance.Resumed += OnResumed;
         SmoothMusicFadeIn(lobbyMusic, noneToLobbyFadeInDuration, noneToLobbyFadeInEase);
@@ -85,9 +85,9 @@ public class SoundtrackManager : MonoBehaviour
 
     private void OnDisable()
     {
-        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-        LevelManager.Instance.GameEnded -= OnGameEnded;
-        LevelManager.Instance.ReturnedToLobby -= OnBackToLobby;
+        LevelManager.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.GameEnded -= OnGameEnded;
+        LevelManager.ReturnedToLobby -= OnBackToLobby;
         PauseMenu.instance.Paused -= OnPaused;
         PauseMenu.instance.Resumed -= OnResumed;
     }

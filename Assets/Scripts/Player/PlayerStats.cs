@@ -31,7 +31,7 @@ public class PlayerStats : MonoBehaviour
             return;
 
         subscribed = true;
-        LevelManager.Instance.GameStarted += ResetStats;
+        LevelManager.GameStarted += ResetStats;
     }
 
     public void OnCollectedItem(Item.Type itemType)
@@ -72,7 +72,7 @@ public class PlayerStats : MonoBehaviour
         if (subscribed)
         {
             subscribed = false;
-            LevelManager.Instance.GameStarted -= ResetStats;
+            LevelManager.GameStarted -= ResetStats;
         }
     }
 }

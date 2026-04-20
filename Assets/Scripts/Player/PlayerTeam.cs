@@ -13,10 +13,11 @@ public class PlayerTeam : NetworkBehaviour
     public Team CurrentTeam { get; private set; } = Team.Left;
 
     public event Action TeamChanged;
+    public event Action ServerTeamChanged;
 
     [Header("References")]
     [SerializeField] private SpriteRenderer spriteRenderer;
-    public int TeamPlayerIndex { get; private set; }
+    [Networked] public int TeamPlayerIndex { get; set; }
 
     private Team CurrentPositionTeam => transform.position.x > 0 ? Team.Right : Team.Left;
 
@@ -46,7 +47,12 @@ public class PlayerTeam : NetworkBehaviour
         Team newTeam = CurrentPositionTeam;
 
         if (newTeam != CurrentTeam)
+        {
             CurrentTeam = newTeam;
+
+            if (Runner.IsForward)
+                ServerTeamChanged?.Invoke();
+        }
     }
 
     private void OnTeamChanged()

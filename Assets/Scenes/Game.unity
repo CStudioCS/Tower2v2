@@ -12065,6 +12065,10 @@ PrefabInstance:
       propertyPath: m_PlayerJoinedEvent.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2233086918350289950, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: timerLimit
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3943932457315171188, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: SortKey
       value: 3416791471
@@ -12112,6 +12116,14 @@ PrefabInstance:
     - target: {fileID: 6860585624820578928, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7043105713884659326, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: SortKey
+      value: 1090890954
+      objectReference: {fileID: 0}
+    - target: {fileID: 7720168566710504347, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: SortKey
+      value: 811397817
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

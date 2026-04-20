@@ -78,8 +78,8 @@ public abstract class Interactable : MonoBehaviour
     
     private void Start()
     {
-        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
+        LevelManager.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
     }
 
     public virtual void TryHighlight(bool highlighted, Player player)
@@ -125,8 +125,8 @@ public abstract class Interactable : MonoBehaviour
     
     private void OnDisable()
     {
-        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        LevelManager.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
     }
 
     private void OnDestroy() => InteractableRegistry.Unregister(this);

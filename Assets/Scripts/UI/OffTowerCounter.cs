@@ -25,7 +25,7 @@ public class OffTowerCounter : MonoBehaviour
             return;
 
         subscribed = true;
-        LevelManager.Instance.FewSecondsBeforeGameEnded += DeactiveUIFromLevelManager;
+        LevelManager.FewSecondsBeforeGameEnded += DeactiveUIFromLevelManager;
     }
 
     private void DeactiveUIFromLevelManager() => SetUIActive(false);
@@ -38,7 +38,7 @@ public class OffTowerCounter : MonoBehaviour
     {
         if (subscribed)
         {
-            LevelManager.Instance.FewSecondsBeforeGameEnded -= DeactiveUIFromLevelManager;
+            LevelManager.FewSecondsBeforeGameEnded -= DeactiveUIFromLevelManager;
             subscribed = false;
         }
     }

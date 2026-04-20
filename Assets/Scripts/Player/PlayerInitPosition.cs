@@ -7,10 +7,8 @@ public class PlayerInitPosition : MonoBehaviour
 {
     [SerializeField] private PlayerTeam playerTeam;
     
-    public void Initialize()
-    {
-        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-    }
+    private void OnEnable() => LevelManager.GameAboutToStart += OnGameAboutToStart;
+    private void OnDisable() => LevelManager.GameAboutToStart -= OnGameAboutToStart;
 
     private void OnGameAboutToStart()
     {
@@ -29,9 +27,4 @@ public class PlayerInitPosition : MonoBehaviour
     }
 
     private void GoToStartPoint(StartPoint startPoint) => transform.position = startPoint.transform.position;
-    
-    private void OnDisable()
-    {
-        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-    }
 }

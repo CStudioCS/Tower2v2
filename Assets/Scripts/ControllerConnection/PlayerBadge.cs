@@ -45,8 +45,8 @@ public class PlayerBadge : MonoBehaviour
 
     private void Start()
     {
-        LevelManager.Instance.GameStarted += OnGameStarted;
-        LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
+        LevelManager.GameStarted += OnGameStarted;
+        LevelManager.ReturnedToLobby += OnReturnedToLobby;
 
         playerControlBadge.ReadyChanged += UpdateReadyVisuals;
 
@@ -220,7 +220,7 @@ public class PlayerBadge : MonoBehaviour
     {
         playerControlBadge.ReadyChanged -= UpdateReadyVisuals;
 
-        LevelManager.Instance.GameStarted -= OnGameStarted;
-        LevelManager.Instance.ReturnedToLobby -= OnReturnedToLobby;
+        LevelManager.GameStarted -= OnGameStarted;
+        LevelManager.ReturnedToLobby -= OnReturnedToLobby;
     }
 }

@@ -33,9 +33,9 @@ public class TowerMover : MonoBehaviour
 
 	private void Start()
 	{
-		LevelManager.Instance.GameStarted += OnGameStarted;
-		LevelManager.Instance.GameEnded += OnGameEnded;
-		LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
+		LevelManager.GameStarted += OnGameStarted;
+		LevelManager.GameEnded += OnGameEnded;
+		LevelManager.ReturnedToLobby += OnReturnedToLobby;
 	}
 
 	private void SetVelocity(float multiplier = 1f)
@@ -82,8 +82,8 @@ public class TowerMover : MonoBehaviour
 
 	private void OnDisable()
 	{
-		LevelManager.Instance.GameStarted -= OnGameStarted;
-		LevelManager.Instance.GameEnded -= OnGameEnded;
-		LevelManager.Instance.ReturnedToLobby -= OnReturnedToLobby;
+		LevelManager.GameStarted -= OnGameStarted;
+		LevelManager.GameEnded -= OnGameEnded;
+		LevelManager.ReturnedToLobby -= OnReturnedToLobby;
 	}
 }

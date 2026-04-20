@@ -1,36 +1,63 @@
 using System;
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : NetworkBehaviour
 {
     public static LevelManager Instance;
     [SerializeField] private float timerLimit = 120f;
     public float TimerLimit => timerLimit;
     [SerializeField] private float secondsBeforeGameEnd = 5f; //I literally cannot name any of the shit in this PR feel free to rename
     
-    public float LevelTimer { get; private set; }
-    private float TimeRemaining => timerLimit - LevelTimer;
-    private PlayerTeam.Team winningTeam;
     public float LobbyUIFadeTime = 1f;
     
     public enum State { Lobby, Starting, Game, EndScreen }
-    public State GameState { get; private set; } = State.Lobby;
+
+    [Networked, OnChangedRender(nameof(OnGameStateChanged))]
+    private State gameState { get; set; }
+    public State GameState
+    {
+        get {
+            if (Object?.IsValid != true)
+                return State.Lobby;
+
+            return gameState;
+        }
+        set {
+            if (Object?.IsValid == true && HasStateAuthority)
+                gameState = value;
+        }
+    }
+
+
+    [Networked] public TickTimer LevelEndTimer { get; set; }
+    [Networked] public TickTimer StartDelayTimer { get; set; }
+    [Networked] public PlayerTeam.Team WinningTeam { get; set; }
+
+    public float LevelTimer
+    {
+        get
+        {
+            if (Runner == null || !LevelEndTimer.IsRunning) return 0f;
+            return TimerLimit - (LevelEndTimer.RemainingTime(Runner) ?? 0f);
+        }
+    }
 
     private static readonly int CountdownString = Animator.StringToHash("Countdown");
 
-    public event Action GameAboutToStart;
-    public event Action GameStarted;
-    public event Action GameEnded;
-    public event Action ReturnedToLobby;
-    public event Action GameEndedOrReturnedToLobby;
+    // Sorry I had to make them static :'(
+    // I had to believe me... I don't like it either
+    public static event Action GameAboutToStart;
+    public static event Action GameStarted;
+    public static event Action GameEnded;
+    public static event Action ReturnedToLobby;
+    public static event Action GameEndedOrReturnedToLobby;
+    public static event Action ServerResetRequested;
 
-    public event Action<bool> SetActiveLobbyUI; // TODO refactor, this shouldn't be an event
-    public event Action<bool> SetActiveInGameUI; // TODO refactor, this shouldn't be an event
-    public event Action FewSecondsBeforeGameEnded;
-
-    private bool isLessThanFewSecondsRemaining => TimeRemaining <= secondsBeforeGameEnd;
+    public static event Action FewSecondsBeforeGameEnded;
+    private bool hasInvokedFewSecondsWarning;
 
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
@@ -56,14 +83,23 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public static bool InGame => Instance.GameState == State.Game;
+    public static bool InGame => Instance?.Object?.IsValid == true && Instance.GameState == State.Game;
 
     public void Awake()
     {
-        if (Instance != null)
-            Destroy(Instance);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         Instance = this;
+    }
+
+    public override void Spawned()
+    {
+        if (HasStateAuthority)
+            GameState = State.Lobby;
     }
 
     private void Start()
@@ -75,7 +111,6 @@ public class LevelManager : MonoBehaviour
     private void ActivateLobbyObjects(bool active = true)
     {
         FadeInNOutUtility.FadeInOrOut(CanvasLinker.Instance.LobbyUI, LobbyUIFadeTime, active);
-        SetActiveLobbyUI?.Invoke(active);
     }
     
     private void ActivateInGameObjects(bool active = true, bool instantaneous = false)
@@ -85,24 +120,48 @@ public class LevelManager : MonoBehaviour
         //Also I don't think it breaks anything
 
         if (instantaneous || active) CanvasLinker.Instance.InGameUI.gameObject.SetActive(active);
-
-        SetActiveInGameUI?.Invoke(active);
     }
 
-    private void Update()
+    public override void FixedUpdateNetwork()
     {
-        Tower towerRight = TowerLinker.Instance.TowerMap[PlayerTeam.Team.Right];
-        Tower towerLeft = TowerLinker.Instance.TowerMap[PlayerTeam.Team.Left];
+        if (!HasStateAuthority) return;
 
-        if (towerRight == null || towerLeft == null)
-            return;
-
-        if (GameState == State.Game)
+        if (GameState == State.Starting)
         {
-            bool wasLessThanFewSecondsRemaining = isLessThanFewSecondsRemaining;
+            if (StartDelayTimer.Expired(Runner))
+            {
+                GameState = State.Game;
+                LevelEndTimer = TickTimer.CreateFromSeconds(Runner, TimerLimit);
+            }
+        }
+        else if (GameState == State.Game)
+        {
+            if (LevelEndTimer.Expired(Runner))
+            {
+                Tower towerRight = TowerLinker.Instance.TowerMap[PlayerTeam.Team.Right];
+                Tower towerLeft = TowerLinker.Instance.TowerMap[PlayerTeam.Team.Left];
 
-            LevelTimer += Time.deltaTime;
-            float timeRemaining = TimeRemaining;
+                if (towerRight == null || towerLeft == null)
+                    return;
+
+                if (towerRight.Height == towerLeft.Height)
+                    WinningTeam = towerRight.LastPlacedTime < towerLeft.LastPlacedTime ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
+                else
+                    WinningTeam = towerRight.Height > towerLeft.Height ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
+
+                GameState = State.EndScreen;
+
+                if (Runner.IsForward)
+                    ServerResetRequested?.Invoke();
+            }
+        }
+    }
+
+    public override void Render()
+    {
+        if (GameState == State.Game && LevelEndTimer.IsRunning)
+        {
+            float timeRemaining = LevelEndTimer.RemainingTime(Runner) ?? 0f;
             int minutes = Mathf.FloorToInt(timeRemaining / 60);
             // I'm not sure which logic is best... should it would down to 0 or to 1
             int seconds = Mathf.FloorToInt(timeRemaining % 60);
@@ -110,54 +169,54 @@ public class LevelManager : MonoBehaviour
             // if (seconds == 60) { minutes++; seconds = 0; }
             CanvasLinker.Instance.timerDisplay.text = string.Format("{0:0}:{1:00}", minutes, seconds);
 
-            if (!wasLessThanFewSecondsRemaining && isLessThanFewSecondsRemaining)
-                FewSecondsBeforeGameEnded?.Invoke();
-
-            if (LevelTimer >= timerLimit)
+            if (!hasInvokedFewSecondsWarning && timeRemaining <= secondsBeforeGameEnd)
             {
-                if (towerRight.Height == towerLeft.Height)
-                    winningTeam = towerRight.LastPlacedTime < towerLeft.LastPlacedTime ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
-                else
-                    winningTeam = towerRight.Height > towerLeft.Height ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
-
-                GameState = State.Lobby;
-                EndLevel(winningTeam);
-                CanvasLinker.Instance.timerDisplay.text = "0:00";
+                hasInvokedFewSecondsWarning = true;
+                FewSecondsBeforeGameEnded?.Invoke();
             }
         }
     }
-    
-    public void StartGameDelayed()
+
+    public void StartGameDelayed(float delay = 3f)
     {
-        StartCoroutine(StartGameDelayedRoutine());
+        if (!HasStateAuthority) return;
+        GameState = State.Starting;
+        StartDelayTimer = TickTimer.CreateFromSeconds(Runner, delay);
     }
 
-    private IEnumerator StartGameDelayedRoutine(float delay = 3f)
+    private void OnGameStateChanged()
     {
-        GameState = State.Starting;
-        ActivateLobbyObjects(false);
+        switch (GameState)
+        {
+            case State.Lobby:
+                SetGameStateToLobby();
+                break;
 
-        if(delay > 0f)
-            CanvasLinker.Instance.countdown.SetTrigger(CountdownString);
+            case State.Starting:
+                ActivateLobbyObjects(false);
+                CanvasLinker.Instance.countdown.SetTrigger(CountdownString);
+                ItemRandomizer.Instance.Reset();
+                GameAboutToStart?.Invoke();
+                Cursor.visible = false;
+                break;
 
-        ItemRandomizer.Instance.Reset();
-        GameAboutToStart?.Invoke();
-        Cursor.visible = false;
+            case State.Game:
+                ActivateInGameObjects(true);
+                GameStarted?.Invoke();
+                Cursor.visible = false;
+                break;
 
-        yield return new WaitForSeconds(delay);
-
-        GameState = State.Game;
-        LevelTimer = 0;
-        ActivateInGameObjects(true);
-        GameStarted?.Invoke();
-        Cursor.visible = false;
+            case State.EndScreen:
+                EndLevel(WinningTeam);
+                CanvasLinker.Instance.timerDisplay.text = "0:00";
+                break;
+        }
     }
 
     private void EndLevel(PlayerTeam.Team winner)
     {
         SoundManager.instance.PlaySound("EndLevel");
 
-        GameState = State.EndScreen;
         ActivateInGameObjects(false);
         Debug.Log($"Level has ended with winner {winner}");
 
@@ -169,15 +228,19 @@ public class LevelManager : MonoBehaviour
 
     public void ForceReturnToLobby()
     {
-        SetGameStateToLobby();
-        SetActiveInGameUI?.Invoke(false);
-        SetActiveLobbyUI?.Invoke(true);
+        if (!HasStateAuthority)
+             return;   
+        
+        GameState = State.Lobby;
+
+        if(Runner.IsForward)
+            ServerResetRequested?.Invoke();
     }
     
     public void SetGameStateToLobby()
     {
         ActivateLobbyObjects(true);
-        GameState = State.Lobby;
+        ActivateInGameObjects(false);
 
         ReturnedToLobby?.Invoke();
         GameEndedOrReturnedToLobby?.Invoke();

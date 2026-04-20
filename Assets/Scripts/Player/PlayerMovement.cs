@@ -31,8 +31,8 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Start()
     {
-        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.Instance.GameStarted += OnGameStarted;
+        LevelManager.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.GameStarted += OnGameStarted;
         player.LockedInSettingsMenuChanged += OnLockedInSettingsMenuChanged;
     }
 
@@ -119,8 +119,8 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnDisable()
     {
-        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-        LevelManager.Instance.GameStarted -= OnGameStarted;
+        LevelManager.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.GameStarted -= OnGameStarted;
         player.LockedInSettingsMenuChanged -= OnLockedInSettingsMenuChanged;
     }
 }

@@ -8,8 +8,8 @@ public class InLobbyActivator: MonoBehaviour
 	
 	public void Start()
 	{
-		LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-		LevelManager.Instance.ReturnedToLobby += OnReturnedToLobby;
+		LevelManager.GameAboutToStart += OnGameAboutToStart;
+		LevelManager.ReturnedToLobby += OnReturnedToLobby;
 		Activate(activeInLobby);
 	}
 
@@ -21,7 +21,7 @@ public class InLobbyActivator: MonoBehaviour
 
 	private void OnDisable()
 	{
-		LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-		LevelManager.Instance.ReturnedToLobby -= OnReturnedToLobby;
+		LevelManager.GameAboutToStart -= OnGameAboutToStart;
+		LevelManager.ReturnedToLobby -= OnReturnedToLobby;
 	}
 }

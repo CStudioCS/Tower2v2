@@ -71,6 +71,9 @@ public class Player : NetworkBehaviour
     public event Action AvatarSpawned;
     public event Action StartedAimingLockedIn;
     public event Action StoppedAiming;
+
+    public static event Action<Player> PlayerSpawned;
+    public static event Action<Player> PlayerDespawned;
     public enum AimingState { NotAiming, StartingToAim, AimingLockedIn }
 
     public AimingState CurrentAimingState { get; private set; } = AimingState.NotAiming;
@@ -82,16 +85,28 @@ public class Player : NetworkBehaviour
 
     private void Start()
     {
-        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
     }
 
     public override void Spawned()
     {
-        GameStartManager.Instance.AddPlayer(this);
+        PlayerSpawned?.Invoke(this);
         AvatarSpawned?.Invoke();
     }
 
-    public override void Despawned(NetworkRunner runner, bool hasState) => GameStartManager.Instance.RemovePlayer(this);
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        PlayerDespawned?.Invoke(this);
+
+        if (closestInteractable != null)
+        {
+            closestInteractable.TryHighlight(false, this);
+            closestInteractable = null;
+        }
+
+        insideInteractableList.Clear();
+        ConsumeCurrentItem();
+    }
 
     public override void FixedUpdateNetwork()
     {
@@ -426,7 +441,7 @@ public class Player : NetworkBehaviour
     
     private void OnDisable()
     {
-        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
     }
 
     private Interactable GetClosestInteractable()

@@ -15,6 +15,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     [Header("Managers")]
     [SerializeField] private NetworkPrefabRef lobbyManagerPrefab;
+    [SerializeField] private NetworkPrefabRef levelManagerPrefab;
+    [SerializeField] private NetworkPrefabRef gameStartManagerPrefab;
 
     public static event Action OnUnexpectedDisconnect;
     private GameMode currentGameMode;
@@ -273,8 +275,12 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadDone(NetworkRunner runner)
     {
-        if (runner.IsServer)
-            runner.Spawn(lobbyManagerPrefab);
+        if (!runner.IsServer)
+            return;
+
+        runner.Spawn(levelManagerPrefab);
+        runner.Spawn(gameStartManagerPrefab);
+        runner.Spawn(lobbyManagerPrefab);
     }
 
     // --- Required callbacks ---

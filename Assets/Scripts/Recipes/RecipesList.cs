@@ -45,9 +45,9 @@ public class RecipesList : MonoBehaviour
     {
         Tower.PieceBuilt += OnPieceBuilt;
         Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
-        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.Instance.GameStarted += OnGameStarted;
-        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
+        LevelManager.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.GameStarted += OnGameStarted;
+        LevelManager.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
     }
 
     private void OnGameAboutToStart()
@@ -120,9 +120,9 @@ public class RecipesList : MonoBehaviour
     {
         Tower.PieceBuilt -= OnPieceBuilt;
         Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
-        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-        LevelManager.Instance.GameStarted -= OnGameStarted;
-        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        LevelManager.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.GameStarted -= OnGameStarted;
+        LevelManager.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
     }
 
     private void AnimateShow(bool visible = true) =>  animator?.SetBool(Visible, visible);

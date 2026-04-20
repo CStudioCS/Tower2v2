@@ -13,7 +13,7 @@ public class EndScreen : MonoBehaviour
 
     private void Start()
     {
-        LevelManager.Instance.GameEnded += OnGameEnded;
+        LevelManager.GameEnded += OnGameEnded;
     }
 
     private void OnGameEnded() => StartCoroutine(OnGameEndedCoroutine());
@@ -43,6 +43,6 @@ public class EndScreen : MonoBehaviour
     private void OnDisable()
     {
         StopAllCoroutines();
-        LevelManager.Instance.GameEnded -= OnGameEnded;
+        LevelManager.GameEnded -= OnGameEnded;
     }
 }

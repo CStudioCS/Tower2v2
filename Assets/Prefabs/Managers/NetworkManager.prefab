@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7496165949784093653}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -46,5 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyManagerPrefab:
     RawGuidValue: b7aa67acaa006fd41aac1d31be2c7997
+  levelManagerPrefab:
+    RawGuidValue: f7a829f4afd32c57ead5fede8647d239
+  gameStartManagerPrefab:
+    RawGuidValue: 9a70336f12eaa8e4399ff54ad36ae66e
   Runner: {fileID: 0}
-  UseSavedPositionsForNextSpawn: 0
