@@ -12,7 +12,7 @@ public abstract class Interactable : MonoBehaviour
     [Tooltip("ClientSide for UI - ServerSide for Gameplay")]
     public ExecutionTarget executionTarget = ExecutionTarget.ServerSide;
 
-    [SerializeField] private string _uniqueId;
+    [SerializeField] private string uniqueId;
     public int NetworkId { get; private set; }
 
     private static readonly int OutlineEnabled = Shader.PropertyToID("_OutlineEnabled");
@@ -30,8 +30,8 @@ public abstract class Interactable : MonoBehaviour
 
     protected virtual void Awake()
     {
-        if (!string.IsNullOrEmpty(_uniqueId))
-            RegisterNetworkId(Animator.StringToHash(_uniqueId));
+        if (!string.IsNullOrEmpty(uniqueId))
+            RegisterNetworkId(Animator.StringToHash(uniqueId));
     }
 
     public void RegisterNetworkId(int fusionNativeId)
@@ -44,9 +44,9 @@ public abstract class Interactable : MonoBehaviour
 #if UNITY_EDITOR
     protected void OnValidate()
     {
-        if (string.IsNullOrEmpty(_uniqueId))
+        if (string.IsNullOrEmpty(uniqueId))
         {
-            _uniqueId = System.Guid.NewGuid().ToString();
+            uniqueId = System.Guid.NewGuid().ToString();
             UnityEditor.EditorUtility.SetDirty(this);
         }
     }
@@ -87,15 +87,27 @@ public abstract class Interactable : MonoBehaviour
         if (!CheckIfCanBeHighlighted(player) && highlighted)
             return;
 
-        if (highlighted) 
+        bool isLocalPlayer = player.HasInputAuthority || (player.HasStateAuthority && player.Object.InputAuthority.IsNone);
+
+        if (isLocalPlayer)
+            player.RPC_SyncHighlight(NetworkId, highlighted);
+    }
+
+    public void ApplyHighlight(bool highlighted)
+    {
+        if (highlighted)
             highlightedPlayerCount++;
-        else 
+        else
             highlightedPlayerCount--;
 
-        if (!highlighted && highlightedPlayerCount > 0) 
+        // If a player disconnects abruptly
+        if (highlightedPlayerCount < 0)
+            highlightedPlayerCount = 0;
+
+        if (!highlighted && highlightedPlayerCount > 0)
             return;
 
-        if (highlighted && highlightedPlayerCount >= 2) 
+        if (highlighted && highlightedPlayerCount >= 2)
             return;
 
         Highlight(highlighted);

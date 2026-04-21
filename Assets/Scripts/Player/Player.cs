@@ -1,12 +1,8 @@
 using Fusion;
 using LitMotion;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Windows;
-using static UnityEngine.GraphicsBuffer;
 
 public class Player : NetworkBehaviour
 {
@@ -289,7 +285,7 @@ public class Player : NetworkBehaviour
             Interacting = true;
             currentTargetInteractable = closestInteractable;
             currentInteractionDuration = time;
-            currentTargetInteractable.IsAlreadyInteractedWith = true;
+            RPC_SyncInteractionState(currentTargetInteractable.NetworkId, true);
 
             progressBar.StartProgress();
 
@@ -348,11 +344,25 @@ public class Player : NetworkBehaviour
             targetInteractable.Interact(this);
     }
 
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_SyncInteractionState(int interactableId, bool isInteracting)
+    {
+        if (InteractableRegistry.All.TryGetValue(interactableId, out Interactable target))
+            target.IsAlreadyInteractedWith = isInteracting;
+    }
+
+    [Rpc(RpcSources.InputAuthority | RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_SyncHighlight(int interactableId, bool highlighted)
+    {
+        if (InteractableRegistry.All.TryGetValue(interactableId, out Interactable target))
+            target.ApplyHighlight(highlighted);
+    }
+
     private void StopInteracting(Interactable insideInteractable)
     {
         playerAnimationController.EndInteraction(); // TODO fix bad animation coupling
         Interacting = false;
-        insideInteractable.IsAlreadyInteractedWith = false;
+        RPC_SyncInteractionState(insideInteractable.NetworkId, false);
 
         progressBar.ResetProgress();
         currentTargetInteractable = null;
@@ -364,8 +374,15 @@ public class Player : NetworkBehaviour
     /// </summary>
     public void ConsumeCurrentItem()
     {
-        if (HeldItem != null)
-            Destroy(HeldItem.gameObject);
+        if (HeldItem == null)
+            return;
+
+        if (HeldItem.TryGetComponent(out NetworkObject netObj))
+        {
+            if (netObj.HasStateAuthority)
+                netObj.Runner.Despawn(netObj);
+        }
+
         HeldItem = null;
     }
 
@@ -384,7 +401,10 @@ public class Player : NetworkBehaviour
 
         grabbingLerp.TryCancel();
         rotationLerp.TryCancel();
-        HeldItem.Drop(currentThrowSpeed);
+
+        if (HasStateAuthority)
+            HeldItem.Drop(currentThrowSpeed);
+
         HeldItem = null;
         return true;
     }
@@ -396,12 +416,14 @@ public class Player : NetworkBehaviour
     /// <param name="originallyCollectedByTeam">The team this item was originally collected by. If left null this will be set as this player's team</param>
     public void GrabNewItem(Item itemPrefab, PlayerTeam.Team? originallyCollectedByTeam = null)
     {
-        Item itemInstance = Instantiate(itemPrefab);
-        GrabItem(itemInstance, false);
-        if (originallyCollectedByTeam is PlayerTeam.Team team)
-            itemInstance.originallyCollectedByTeam = team;
-        else
-            itemInstance.originallyCollectedByTeam = playerTeam.CurrentTeam;
+        if (!HasStateAuthority) return;
+
+        NetworkObject netObj = Runner.Spawn(itemPrefab.gameObject, transform.position, Quaternion.identity);
+        Item itemInstance = netObj.GetComponent<Item>();
+        NetworkItem netItem = itemInstance.NetworkItem;
+
+        netItem.SyncOriginalTeam = originallyCollectedByTeam ?? playerTeam.CurrentTeam;
+        netItem.Grab(this, false);
 
         GrabbedNewItem?.Invoke();
     }

@@ -7,6 +7,9 @@ public class PlayerItemCatcher : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
+        if (!player.HasStateAuthority) 
+            return;
+
         if (player.Interacting)
             return;
 
@@ -31,6 +34,6 @@ public class PlayerItemCatcher : MonoBehaviour
         if (player.IsHolding)
             return;
 
-        player.GrabItem(item,false);
+        item.NetworkItem.Grab(player, false);
     }
 }

@@ -105,8 +105,7 @@ public class Tower : Interactable
     {
         if (!IsItemCorrect(player.HeldItem))
         {
-            SoundManager.instance.PlaySound("TowerWrong");
-            TriedBuildingWithIncorrectItemType?.Invoke();
+            InteractablesNetworkHub.Instance.RPC_SyncTowerError(NetworkId);
             return;
         }
 
@@ -118,9 +117,17 @@ public class Tower : Interactable
         player.ConsumeCurrentItem();
     }
 
+    public void WrongItemError()
+    {
+        SoundManager.instance.PlaySound("TowerWrong");
+        TriedBuildingWithIncorrectItemType?.Invoke();
+    }
+
+    public void ConstructPiece(Item.Type itemType) => InteractablesNetworkHub.Instance.RPC_SyncTowerBuild(NetworkId, itemType);
+
     // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
     // and with the way Unity handles rendering, the new object is rendered on top of the old one
-    public void ConstructPiece(Item.Type itemType)
+    public void ApplyConstructPiece(Item.Type itemType)
     {
         if (!TowerPieceMap.TryGetValue(itemType, out TowerPiece towerPiece))
         {
@@ -135,10 +142,13 @@ public class Tower : Interactable
         towerPieceInstance.transform.localPosition = NextPieceLocalPosition;
         towerPieceInstance.Initialize(this, NextPieceSortingOrder);
         towerPieces.Add(towerPieceInstance);
+
         LastPlacedTime = LevelManager.Instance.LevelTimer;
+
         UpdateTowerTopUI();
         previousPieceLocalYPosition = nextPieceLocalYPosition;
         PieceBuilt?.Invoke();
+
         nextPieceLocalYPosition += currentMultiplier * GetPieceHeight(itemType);
         currentMultiplier *= collapseMultiplier;
     }

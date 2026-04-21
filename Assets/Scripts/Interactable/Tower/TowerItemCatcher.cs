@@ -1,3 +1,4 @@
+using Fusion;
 using UnityEngine;
 
 public class TowerItemCatcher : MonoBehaviour
@@ -13,7 +14,11 @@ public class TowerItemCatcher : MonoBehaviour
     {
         if (collider == null || !collider.gameObject.TryGetComponent(out Item item))
             return;
-        
+
+        NetworkObject netObj = item.GetComponent<NetworkObject>();
+        if (netObj == null || !netObj.HasStateAuthority) 
+            return;
+
         if (!tower.IsItemCorrect(item))
             return;
         
@@ -34,6 +39,6 @@ public class TowerItemCatcher : MonoBehaviour
         
         lastItem = item;
         tower.ConstructPiece(item.ItemType);
-        Destroy(collider.gameObject);
+        netObj.Runner.Despawn(netObj);
     }
 }

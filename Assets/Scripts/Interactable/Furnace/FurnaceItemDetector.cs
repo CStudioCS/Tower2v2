@@ -1,3 +1,4 @@
+using Fusion;
 using UnityEngine;
 
 public class FurnaceItemDetector : MonoBehaviour
@@ -12,6 +13,10 @@ public class FurnaceItemDetector : MonoBehaviour
         if (!collider.gameObject.TryGetComponent(out Item item))
             return;
 
+        NetworkObject netObj = item.GetComponent<NetworkObject>();
+        if (netObj == null || !netObj.HasStateAuthority)
+            return;
+
         if (item.ItemType != Item.Type.Clay)
             return;
 
@@ -22,6 +27,6 @@ public class FurnaceItemDetector : MonoBehaviour
             return;
 
         furnace.PutClayIn(item.LastOwner.PlayerTeam.CurrentTeam);
-        Destroy(collider.gameObject);
+        netObj.Runner.Despawn(netObj);
     }
 }
