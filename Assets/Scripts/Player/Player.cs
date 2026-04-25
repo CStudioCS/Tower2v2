@@ -46,8 +46,6 @@ public class Player : NetworkBehaviour
 
     public Action GrabbedNewItem;
 
-    private Interactable closestInteractable;
-
     [Networked] private NetworkButtons PreviousButtons { get; set; }
     [Networked] public TickTimer InteractionTimer { get; set; }
 
@@ -98,6 +96,12 @@ public class Player : NetworkBehaviour
         PlayerRegistry.Register(this);
         PlayerSpawned?.Invoke(this);
         AvatarSpawned?.Invoke();
+
+        if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
+        {
+            target.RefreshHighlight();
+            target.OnTargetedBy(this, true);
+        }
     }
 
     public override void Despawned(NetworkRunner runner, bool hasState)
@@ -105,10 +109,10 @@ public class Player : NetworkBehaviour
         PlayerRegistry.Unregister(this);
         PlayerDespawned?.Invoke(this);
 
-        if (closestInteractable != null)
+        if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
         {
-            closestInteractable.RefreshHighlight();
-            closestInteractable = null;
+            target.RefreshHighlight();
+            target.OnTargetedBy(this, false);
         }
 
         insideInteractableList.Clear();
@@ -283,45 +287,34 @@ public class Player : NetworkBehaviour
             insideInteractableList.Remove(interactable);
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    public void RPC_ClientEnterInteractable(int id)
-    {
-        if (InteractableRegistry.All.TryGetValue(id, out var interactable) && !insideInteractableList.Contains(interactable))
-            insideInteractableList.Add(interactable);
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    public void RPC_ClientExitInteractable(int id)
-    {
-        if (InteractableRegistry.All.TryGetValue(id, out var interactable))
-            insideInteractableList.Remove(interactable);
-    }
-
     [Rpc(RpcSources.StateAuthority | RpcSources.InputAuthority, RpcTargets.All)]
     public void RPC_PlayDropAnimation() => playerAnimationController.Drop();
 
     private void UpdateClosestInteractable()
     {
+        if (!HasStateAuthority) 
+            return;
+
         // trust me some crazy shit happen when logic is shared across a network
         insideInteractableList.RemoveAll(i => i == null || !i.gameObject.activeInHierarchy);
-        Interactable newClosestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
-        closestInteractable = newClosestInteractable;
 
-        if (HasStateAuthority || HasInputAuthority)
-        {
-            int newTargetId = closestInteractable != null ? closestInteractable.NetworkId : -1;
+        Interactable localClosest = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
+        int newTargetId = localClosest != null ? localClosest.NetworkId : -1;
 
-            if (SyncTargetId != newTargetId)
-                SyncTargetId = newTargetId;
-        }
+        if (SyncTargetId != newTargetId)
+            SyncTargetId = newTargetId;
     }
     private bool TryInteract()
     {
-        if (closestInteractable == null)
+        Interactable target = null;
+        if (SyncTargetId != -1)
+            InteractableRegistry.All.TryGetValue(SyncTargetId, out target);
+
+        if (target == null)
             return false;
 
-        bool canBeHighlighted = closestInteractable.CheckIfCanBeHighlighted(this);
-        float time = closestInteractable.GetInteractionTime();
+        bool canBeHighlighted = target.CheckIfCanBeHighlighted(this);
+        float time = target.GetInteractionTime();
 
         if (time > 0)
         {
@@ -332,7 +325,7 @@ public class Player : NetworkBehaviour
                 SyncIsInteracting = true;
         }
         else
-            ExecuteInteraction(closestInteractable);
+            ExecuteInteraction(target);
 
         return canBeHighlighted;
     }
@@ -381,8 +374,8 @@ public class Player : NetworkBehaviour
     {
         if (!HasStateAuthority) return;
 
-        // If I'm the server I call the interact function directly
-        // If I'm the client I need to send an RPC to the server to call the interact function for me
+        // If I'm the host I call the interact function directly
+        // If I'm the client I need to send an RPC to the host to call the interact function for me
         if (target.executionTarget == Interactable.ExecutionTarget.ClientSide)
             RPC_ClientInteract(target.NetworkId);
         else

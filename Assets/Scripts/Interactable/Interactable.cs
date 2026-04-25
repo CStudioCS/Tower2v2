@@ -70,12 +70,7 @@ public abstract class Interactable : MonoBehaviour
                 return;
 
             if (player.HasStateAuthority)
-            {
                 player.LocalEnterInteractable(this);
-
-                if (!player.HasInputAuthority)
-                    player.RPC_ClientEnterInteractable(NetworkId);
-            }
         }
     }
 
@@ -87,12 +82,7 @@ public abstract class Interactable : MonoBehaviour
                 return;
 
             if (player.HasStateAuthority)
-            {
                 player.LocalExitInteractable(this);
-
-                if (!player.HasInputAuthority)
-                    player.RPC_ClientExitInteractable(NetworkId);
-            }
         }
     }
     
@@ -105,6 +95,9 @@ public abstract class Interactable : MonoBehaviour
 
     public virtual void RefreshHighlight()
     {
+        if (propBlock == null || (spriteRenderers?.Length ?? 0) == 0)
+            return;
+
         bool shouldHighlight = false;
 
         foreach (Player p in PlayerRegistry.All)

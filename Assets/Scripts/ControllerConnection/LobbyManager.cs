@@ -548,7 +548,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     {
         yield return new WaitForSeconds(1f);
 
-        if (Runner.SessionInfo.IsValid)
+        if (Runner?.SessionInfo.IsValid == true)
         {
             var newProps = new Dictionary<string, SessionProperty>();
             newProps["TotalPlayers"] = TotalPlayers;
