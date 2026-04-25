@@ -19,6 +19,8 @@ public class GameStartManager : NetworkBehaviour
     [Networked, OnChangedRender(nameof(OnWaitStateChanged))]
     public WaitState waitState { get; set; }
 
+    [Networked] public int GameSeed { get; set; }
+
     private Dictionary<WaitState, string> waitingMessages;
     private Dictionary<WaitState, string> WaitingMessages
     {
@@ -72,12 +74,15 @@ public class GameStartManager : NetworkBehaviour
 
     public override void Spawned()
     {
-        LevelManager.ServerResetRequested += ResetPlayers;
+        LevelManager.ReturnedToLobby += ResetPlayers;
         Player.PlayerSpawned += AddPlayer;
         Player.PlayerDespawned += RemovePlayer;
 
         if (HasStateAuthority)
+        {
             waitState = WaitState.Logo;
+            GameSeed = Random.Range(1, int.MaxValue);
+        }
     }
 
     private void ResetPlayers()
@@ -160,6 +165,13 @@ public class GameStartManager : NetworkBehaviour
 
         TryChangeWaitState(WaitState.GameStarting);
         InitializeTeamPlayerIndices();
+
+        foreach (Player player in players)
+        {
+            if (player.PlayerTeam.TeamPlayerIndex == 0)
+                player.PlayerInitPosition.TeleportToStartPoint();
+        }
+
         LevelManager.Instance.StartGameDelayed();
         SoundManager.instance.PlaySound("Countdown");
     }
@@ -177,7 +189,7 @@ public class GameStartManager : NetworkBehaviour
 
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
-        LevelManager.ServerResetRequested -= ResetPlayers;
+        LevelManager.ReturnedToLobby -= ResetPlayers;
         Player.PlayerSpawned -= AddPlayer;
         Player.PlayerDespawned -= RemovePlayer;
     }

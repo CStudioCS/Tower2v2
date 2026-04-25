@@ -66,7 +66,7 @@ public class Furnace : Interactable
             case State.Cooked:
                 InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Empty, itemCookedByTeam);
                 player.GrabNewItem(brickItemPrefab, itemCookedByTeam);
-                player.PlayerStats.bricksCooked++;
+                player.PlayerStats.BricksCooked++;
                 break;
         }
     }
@@ -137,9 +137,9 @@ public class Furnace : Interactable
 
     public override float GetInteractionTime() => 0;
     
-    protected override void OnGameEndedOrReturnedToLobby()
+    protected override void OnGameEnded()
     {
-        base.OnGameEndedOrReturnedToLobby();
+        base.OnGameEnded();
         state = State.Empty;
         StopCookingVisuals();
         progressBar.ResetProgress();

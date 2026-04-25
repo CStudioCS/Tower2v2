@@ -7,10 +7,9 @@ using UnityEngine;
 public class Player : NetworkBehaviour
 {
     public List<Interactable> insideInteractableList { get; } = new();
-    public bool IsHolding => HeldItem != null;
-    public Item HeldItem { get; private set; }
-    public bool Interacting { get; private set; }
-    
+    public bool IsHolding => SyncHeldItemType != -1 && HeldItem != null;
+    public Item HeldItem { get; set; }
+
     [SerializeField] private float minThrowSpeed = 40f;
     [SerializeField] private float maxThrowSpeed = 70f;
     [SerializeField] private float aimChargeDuration = .5f;
@@ -31,7 +30,10 @@ public class Player : NetworkBehaviour
 
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
-    
+
+    [SerializeField] private PlayerInputPoller inputPoller;
+    public PlayerInputPoller InputPoller => inputPoller;
+
     [SerializeField] private PlayerStats playerStats;
     public PlayerStats PlayerStats => playerStats;
     [SerializeField] private PlayerInitPosition playerInitPosition;
@@ -45,22 +47,29 @@ public class Player : NetworkBehaviour
     public Action GrabbedNewItem;
 
     private Interactable closestInteractable;
-    private Interactable currentTargetInteractable;
-    private float currentInteractionDuration;
 
     [Networked] private NetworkButtons PreviousButtons { get; set; }
     [Networked] public TickTimer InteractionTimer { get; set; }
 
-    private PlayerData currentTickData;
+    [Networked, OnChangedRender(nameof(OnTargetChanged))]
+    public int SyncTargetId { get; set; } = -1;
 
+    [Networked] public int SyncHeldItemType { get; set; } = -1;
+
+    [Networked, OnChangedRender(nameof(OnInteractionChanged))]
+    public NetworkBool SyncIsInteracting { get; set; }
+    [Networked] public int SyncAimingState { get; set; }
+    [Networked] public float SyncThrowSpeedRatio { get; set; }
+    [Networked] public Vector2 SyncThrowDirection { get; set; }
+
+    private PlayerData currentTickData;
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
-    public float throwSpeedRatio { get; private set; }
-    private float ThrowSpeed => throwSpeedRatio * (maxThrowSpeed - minThrowSpeed) + minThrowSpeed;
-    public Vector2 ThrowDirection => playerMovement.LastNonZeroInput;
-    public Vector2 ThrowVelocity => ThrowSpeed * ThrowDirection;
 
+    private float ThrowSpeed => SyncThrowSpeedRatio * (maxThrowSpeed - minThrowSpeed) + minThrowSpeed;
+    public Vector2 ThrowVelocity => ThrowSpeed * SyncThrowDirection;
+    
     public bool LockedInSettingsMenu { get; private set; }
     public event Action LockedInSettingsMenuChanged;
 
@@ -81,22 +90,24 @@ public class Player : NetworkBehaviour
 
     private void Start()
     {
-        LevelManager.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEnded += OnGameEnded;
     }
 
     public override void Spawned()
     {
+        PlayerRegistry.Register(this);
         PlayerSpawned?.Invoke(this);
         AvatarSpawned?.Invoke();
     }
 
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
+        PlayerRegistry.Unregister(this);
         PlayerDespawned?.Invoke(this);
 
         if (closestInteractable != null)
         {
-            closestInteractable.TryHighlight(false, this);
+            closestInteractable.RefreshHighlight();
             closestInteractable = null;
         }
 
@@ -106,7 +117,7 @@ public class Player : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!Interacting)
+        if (!SyncIsInteracting)
             UpdateClosestInteractable();
 
         if (GetInput(out PlayerNetworkInput input))
@@ -128,7 +139,7 @@ public class Player : NetworkBehaviour
             PreviousButtons = myData.Buttons;
         }
 
-        playerAnimationController.HasItem(HeldItem != null); // TODO fix bad animation coupling
+        playerAnimationController.HasItem(SyncHeldItemType != -1); // TODO fix bad animation coupling
     }
 
     private void HandleInput()
@@ -136,7 +147,7 @@ public class Player : NetworkBehaviour
         switch (LevelManager.Instance.GameState)
         {
             case LevelManager.State.Game:
-                if (Interacting)
+                if (SyncIsInteracting)
                     ProcessLongInteraction();
                 else
                     HandleInputGame();
@@ -187,7 +198,7 @@ public class Player : NetworkBehaviour
                 if (TryInteract())
                     return;
                 CurrentAimingState = AimingState.StartingToAim;
-                throwSpeedRatio = 0f;
+                SyncThrowSpeedRatio = 0f;
                 timerBeforeAimCharge = 0f;
             }
         }
@@ -217,10 +228,14 @@ public class Player : NetworkBehaviour
             return;
         }
         
-        timerBeforeAimCharge += Time.deltaTime;
+        timerBeforeAimCharge += Runner.DeltaTime;
         if (timerBeforeAimCharge >= timeBeforeAimCharge)
         {
             CurrentAimingState = AimingState.AimingLockedIn;
+
+            if (HasStateAuthority || HasInputAuthority) 
+                SyncAimingState = (int)AimingState.AimingLockedIn;
+
             StartedAimingLockedIn?.Invoke();
         }
     }
@@ -228,8 +243,15 @@ public class Player : NetworkBehaviour
     private void ThrowAndExitAim() => ThrowAndExitAim(Vector2.zero);
     private void ThrowAndExitAim(Vector2 throwVelocity)
     {
-        throwSpeedRatio = 0f;
+        SyncThrowSpeedRatio = 0f;
         CurrentAimingState = AimingState.NotAiming;
+
+        if (HasStateAuthority || HasInputAuthority)
+        {
+            SyncAimingState = (int)AimingState.NotAiming;
+            SyncThrowSpeedRatio = 0f;
+        }
+
         StoppedAiming?.Invoke();
         TryDropHeldItem(throwVelocity);
     }
@@ -239,27 +261,59 @@ public class Player : NetworkBehaviour
         bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
         bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
 
-        throwSpeedRatio = Mathf.Clamp01(throwSpeedRatio + aimSpeedRatioVelocity * Time.deltaTime);
-        if (interactPressed || throwPressed)
+        if (HasStateAuthority || HasInputAuthority)
         {
-            ThrowAndExitAim(ThrowVelocity);
+            SyncThrowSpeedRatio = Mathf.Clamp01(SyncThrowSpeedRatio + aimSpeedRatioVelocity * Runner.DeltaTime);
+            SyncThrowDirection = playerMovement.LastNonZeroInput;
         }
+
+        if (interactPressed || throwPressed)
+            ThrowAndExitAim(ThrowVelocity);
     }
+
+    public void LocalEnterInteractable(Interactable interactable)
+    {
+        if (interactable != null && !insideInteractableList.Contains(interactable))
+            insideInteractableList.Add(interactable);
+    }
+
+    public void LocalExitInteractable(Interactable interactable)
+    {
+        if (interactable != null)
+            insideInteractableList.Remove(interactable);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void RPC_ClientEnterInteractable(int id)
+    {
+        if (InteractableRegistry.All.TryGetValue(id, out var interactable) && !insideInteractableList.Contains(interactable))
+            insideInteractableList.Add(interactable);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void RPC_ClientExitInteractable(int id)
+    {
+        if (InteractableRegistry.All.TryGetValue(id, out var interactable))
+            insideInteractableList.Remove(interactable);
+    }
+
+    [Rpc(RpcSources.StateAuthority | RpcSources.InputAuthority, RpcTargets.All)]
+    public void RPC_PlayDropAnimation() => playerAnimationController.Drop();
 
     private void UpdateClosestInteractable()
     {
+        // trust me some crazy shit happen when logic is shared across a network
+        insideInteractableList.RemoveAll(i => i == null || !i.gameObject.activeInHierarchy);
         Interactable newClosestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
-
-        if (closestInteractable != newClosestInteractable)
-        {
-            if (closestInteractable != null)
-                closestInteractable.TryHighlight(false, this);
-            
-            if (newClosestInteractable != null)
-                newClosestInteractable.TryHighlight(true, this);
-        }
-
         closestInteractable = newClosestInteractable;
+
+        if (HasStateAuthority || HasInputAuthority)
+        {
+            int newTargetId = closestInteractable != null ? closestInteractable.NetworkId : -1;
+
+            if (SyncTargetId != newTargetId)
+                SyncTargetId = newTargetId;
+        }
     }
     private bool TryInteract()
     {
@@ -271,25 +325,11 @@ public class Player : NetworkBehaviour
 
         if (time > 0)
         {
-            if (closestInteractable is Workbench)
-                playerAnimationController.StartCutting(); // TODO fix bad animation coupling
-            else if (closestInteractable is Collector)
-                playerAnimationController.StartCollecting(); // TODO fix bad animation coupling
-            else
-                Debug.LogError("This Interactable is not currently supported by the animator");
-            //no interactable in the game takes time aside from Collector and Workbench as of rn
-
-            // ---- Start the interaction ----
             // Before the network update it was a couroutine
-
-            Interacting = true;
-            currentTargetInteractable = closestInteractable;
-            currentInteractionDuration = time;
-            RPC_SyncInteractionState(currentTargetInteractable.NetworkId, true);
-
-            progressBar.StartProgress();
-
             InteractionTimer = TickTimer.CreateFromSeconds(Runner, time);
+
+            if (HasStateAuthority || HasInputAuthority) 
+                SyncIsInteracting = true;
         }
         else
             ExecuteInteraction(closestInteractable);
@@ -302,26 +342,38 @@ public class Player : NetworkBehaviour
         bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
         bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
 
-        // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
-        if (interactPressed || throwPressed || LevelManager.Instance.GameState != LevelManager.State.Game)
-        {
-            StopInteracting(currentTargetInteractable);
-            return;
-        }
+        Interactable target = null;
+        if (SyncTargetId != -1)
+            InteractableRegistry.All.TryGetValue(SyncTargetId, out target);
 
-        if (InteractionTimer.IsRunning)
+        // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
+        if (interactPressed || throwPressed || LevelManager.Instance.GameState != LevelManager.State.Game || target == null)
         {
-            float t = currentInteractionDuration - InteractionTimer.RemainingTime(Runner).Value;
-            progressBar.UpdateProgress(t / currentInteractionDuration);
+            StopInteracting(target);
+            return;
         }
 
         // We interacted with the object -> Reset everything and call the interact function
         if (InteractionTimer.Expired(Runner))
         {
-            Interactable target = currentTargetInteractable;
-            StopInteracting(target);
-            
+            StopInteracting(target);   
             ExecuteInteraction(target);
+        }
+    }
+
+    public override void Render()
+    {
+        if (!SyncIsInteracting || !InteractionTimer.IsRunning)
+            return;
+
+        if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
+        {
+            float duration = target.GetInteractionTime();
+            if (duration > 0)
+            {
+                float t = duration - InteractionTimer.RemainingTime(Runner).GetValueOrDefault();
+                progressBar.UpdateProgress(t / duration);
+            }
         }
     }
 
@@ -344,29 +396,52 @@ public class Player : NetworkBehaviour
             targetInteractable.Interact(this);
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    public void RPC_SyncInteractionState(int interactableId, bool isInteracting)
-    {
-        if (InteractableRegistry.All.TryGetValue(interactableId, out Interactable target))
-            target.IsAlreadyInteractedWith = isInteracting;
-    }
-
-    [Rpc(RpcSources.InputAuthority | RpcSources.StateAuthority, RpcTargets.All)]
-    public void RPC_SyncHighlight(int interactableId, bool highlighted)
-    {
-        if (InteractableRegistry.All.TryGetValue(interactableId, out Interactable target))
-            target.ApplyHighlight(highlighted);
-    }
-
     private void StopInteracting(Interactable insideInteractable)
     {
-        playerAnimationController.EndInteraction(); // TODO fix bad animation coupling
-        Interacting = false;
-        RPC_SyncInteractionState(insideInteractable.NetworkId, false);
-
-        progressBar.ResetProgress();
-        currentTargetInteractable = null;
         InteractionTimer = TickTimer.None;
+
+        if (HasStateAuthority || HasInputAuthority)
+            SyncIsInteracting = false;
+    }
+
+    private void OnTargetChanged(NetworkBehaviourBuffer previous)
+    {
+        int previousTargetId = GetPropertyReader<int>(nameof(SyncTargetId)).Read(previous);
+
+        if (previousTargetId != -1 && InteractableRegistry.All.TryGetValue(previousTargetId, out var oldInteractable))
+        {
+            oldInteractable.RefreshHighlight();
+            oldInteractable.OnTargetedBy(this, false);
+        }
+            
+        if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var newInteractable))
+        {
+            newInteractable.RefreshHighlight();
+            newInteractable.OnTargetedBy(this, true);
+        }
+    }
+
+    private void OnInteractionChanged(NetworkBehaviourBuffer previous)
+    {
+        if (SyncIsInteracting)
+        {
+            if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
+            {
+                if (target is Workbench) 
+                    playerAnimationController.StartCutting();     // TODO fix bad animation coupling
+                else if (target is Collector) 
+                    playerAnimationController.StartCollecting();  // TODO fix bad animation coupling
+                else
+                    Debug.LogError("This Interactable is not currently supported by the animator");
+                //no interactable in the game takes time aside from Collector and Workbench as of rn
+            }
+            progressBar.StartProgress();
+        }
+        else
+        {
+            playerAnimationController.EndInteraction();  // TODO fix bad animation coupling
+            progressBar.ResetProgress();
+        }
     }
 
     /// <summary>
@@ -374,16 +449,16 @@ public class Player : NetworkBehaviour
     /// </summary>
     public void ConsumeCurrentItem()
     {
-        if (HeldItem == null)
-            return;
+        if (HasStateAuthority || HasInputAuthority)
+            SyncHeldItemType = -1;
 
-        if (HeldItem.TryGetComponent(out NetworkObject netObj))
+        if (HasStateAuthority && HeldItem != null)
         {
-            if (netObj.HasStateAuthority)
-                netObj.Runner.Despawn(netObj);
+            if (HeldItem.TryGetComponent(out NetworkObject netObj))
+                Runner.Despawn(netObj);
+            
+            HeldItem = null;
         }
-
-        HeldItem = null;
     }
 
     public bool TryDropHeldItem() => TryDropHeldItem(Vector2.zero);
@@ -396,16 +471,21 @@ public class Player : NetworkBehaviour
         if (!IsHolding || HeldItem.State != Item.ItemState.Held)
             return false;
 
-        HeldItem.State = Item.ItemState.Transitioning;
-        playerAnimationController.Drop(); // TODO fix bad animation coupling
+        if (HasStateAuthority || HasInputAuthority)
+            SyncHeldItemType = -1;
+
+        RPC_PlayDropAnimation(); // TODO fix bad animation coupling
 
         grabbingLerp.TryCancel();
         rotationLerp.TryCancel();
 
-        if (HasStateAuthority)
+        if (HasStateAuthority && HeldItem != null)
+        {
+            HeldItem.State = Item.ItemState.Transitioning;
             HeldItem.Drop(currentThrowSpeed);
+            HeldItem = null;
+        }
 
-        HeldItem = null;
         return true;
     }
 
@@ -448,22 +528,28 @@ public class Player : NetworkBehaviour
             item.transform.localPosition = Vector2.zero;
 
         item.State = Item.ItemState.Held;
+
+        if (HasStateAuthority || HasInputAuthority)
+            SyncHeldItemType = (int)item.ItemType;
     }
 
-    private void OnGameEndedOrReturnedToLobby()
+    private void OnGameEnded()
     {
-        Interacting = false;
+        if (HasStateAuthority || HasInputAuthority)
+        {
+            SyncIsInteracting = false;
+            SyncAimingState = (int)AimingState.NotAiming;
+            SyncThrowSpeedRatio = 0f;
+        }
+
         CurrentAimingState = AimingState.NotAiming;
         StoppedAiming?.Invoke();
         ConsumeCurrentItem();
-
-        if (closestInteractable != null)
-            closestInteractable.TryHighlight(false, this);
     }
     
     private void OnDisable()
     {
-        LevelManager.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEnded -= OnGameEnded;
     }
 
     private Interactable GetClosestInteractable()
@@ -473,8 +559,21 @@ public class Player : NetworkBehaviour
 
         foreach (Interactable interactable in insideInteractableList)
         {
+            if (HeldItem != null && interactable.gameObject == HeldItem.gameObject)
+                continue;
+
+            bool isAvailable = true;
+            foreach (Player p in PlayerRegistry.All) 
+            {
+                if (p != this && p.SyncIsInteracting && p.SyncTargetId == interactable.NetworkId)
+                {
+                    isAvailable = false;
+                    break;
+                }
+            }
+
             float sqrDistance = ((Vector2)interactable.transform.position - (Vector2)transform.position).sqrMagnitude;
-            if (sqrDistance < minSqrDistance && !interactable.IsAlreadyInteractedWith && interactable.CanInteract(this))
+            if (sqrDistance < minSqrDistance && isAvailable && interactable.CanInteract(this))
             {
                 minSqrDistance = sqrDistance;
                 closest = interactable;

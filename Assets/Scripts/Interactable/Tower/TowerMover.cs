@@ -36,49 +36,49 @@ public class TowerMover : MonoBehaviour
 		LevelManager.GameStarted += OnGameStarted;
 		LevelManager.GameEnded += OnGameEnded;
 		LevelManager.ReturnedToLobby += OnReturnedToLobby;
-	}
 
-	private void SetVelocity(float multiplier = 1f)
-	{
-		rb.linearVelocity = Velocity * multiplier;
-		if (propBlock == null) 
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.linearVelocity = Vector2.zero;
+        }
+    }
+
+    private void SetRiverVisualSpeed(float multiplier = 1f)
+    {
+        if (propBlock == null || riverRenderer == null) 
 			return;
-		if (riverRenderer == null)
-			return;
-		riverRenderer.GetPropertyBlock(propBlock);
-		propBlock.SetFloat(SpeedString, Speed * multiplier);
-		riverRenderer.SetPropertyBlock(propBlock);
-	}
 
-	private void OnGameStarted()
-	{
-		ResetPosition();
-		SetVelocity(1f);
-	}
+        riverRenderer.GetPropertyBlock(propBlock);
+        propBlock.SetFloat(SpeedString, Speed * multiplier);
+        riverRenderer.SetPropertyBlock(propBlock);
+    }
 
-	private void OnGameEnded() => SetVelocity(0f);
+	private void OnGameStarted() => SetRiverVisualSpeed(1f);
+	private void OnGameEnded() => SetRiverVisualSpeed(0f);
 
-	private void OnReturnedToLobby() => ResetPositionAndVelocity();
+    private void OnReturnedToLobby()
+    {
+        SetRiverVisualSpeed(0f);
+        if (initialPosition != null)
+            transform.localPosition = (Vector2)initialPosition;
+    }
 
-	private void ResetPositionAndVelocity()
-	{
-		ResetPosition();
-		SetVelocity(0f);
-	}
+    private void LateUpdate()
+    {
+        if (!LevelManager.InGame || initialPosition == null)
+            return;
 
-	private void ResetPosition()
-	{
-		if (initialPosition != null)
-			transform.localPosition = (Vector2)initialPosition;
-	}
+        float elapsedTime = LevelManager.Instance.LevelTimer;
+        float traveledDistance = elapsedTime * Speed;
 
-	private void LateUpdate()
-	{
-		if (!LevelManager.InGame)
-			return;
-		if (transform.localPosition.x >= semiWorldSize)
-			transform.localPosition = new Vector2(transform.localPosition.x - WorldSize, transform.localPosition.y);
-	}
+        float newX = initialPosition.Value.x + (traveledDistance % WorldSize);
+
+        if (newX >= semiWorldSize)
+            newX -= WorldSize;
+
+        transform.localPosition = new Vector2(newX, initialPosition.Value.y);
+    }
 
 	private void OnDisable()
 	{

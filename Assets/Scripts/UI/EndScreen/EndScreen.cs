@@ -37,7 +37,7 @@ public class EndScreen : MonoBehaviour
         //TowerCard.gameObject.SetActive(false); already done within StatsCard
         StatsCard.gameObject.SetActive(false);
 
-        LevelManager.Instance.SetGameStateToLobby();
+        LevelManager.Instance.ForceReturnToLobby();
     }
 
     private void OnDisable()

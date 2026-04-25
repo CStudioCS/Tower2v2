@@ -45,7 +45,7 @@ public class Item : Interactable
         base.Awake(); // Initialize highlight system
         itemCollider.enabled = false;
         State = ItemState.Dropped;
-        LevelManager.GameEndedOrReturnedToLobby += Disappear;
+        LevelManager.GameEnded += Disappear;
         trailRenderer.emitting = false;
         SetSilhouetteColor(silhouetteColor);
     }
@@ -104,9 +104,12 @@ public class Item : Interactable
 
     public void ApplyNetworkState(ItemState newState, Player newOwner, PlayerTeam.Team originalTeam)
     {
-        if (newState == ItemState.Held && newOwner != null && State == ItemState.Dropped)
+        if (newState == ItemState.Held && newOwner != null && (State != ItemState.Held || LastOwner != newOwner))
         {
             State = ItemState.Transitioning;
+
+            if (LastOwner != null && LastOwner != newOwner && LastOwner.HeldItem == this)
+                LastOwner.HeldItem = null;
 
             LastOwner = newOwner;
             originallyCollectedByTeam = originalTeam;
@@ -127,6 +130,9 @@ public class Item : Interactable
             trailRenderer.Clear();
             trailRenderer.emitting = true;
 
+            if (LastOwner != null && LastOwner.HeldItem == this)
+                LastOwner.HeldItem = null;
+
             Dropped?.Invoke();
             SoundManager.instance.PlaySound("ItemDrop");
         }
@@ -146,6 +152,6 @@ public class Item : Interactable
 
     private void OnDestroy()
     {
-        LevelManager.GameEndedOrReturnedToLobby -= Disappear;
+        LevelManager.GameEnded -= Disappear;
     }
 }

@@ -40,16 +40,16 @@ public class ProgressBar : MonoBehaviour
         maxProgressBarFill = progressBar.sizeDelta.x;
         ResetProgress();
         LevelManager.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEnded += OnGameEnded;
     }
     
     private void OnGameAboutToStart() => ResetProgress();
 
-    private void OnGameEndedOrReturnedToLobby() => ResetProgress();
+    private void OnGameEnded() => ResetProgress();
     
     private void OnDisable()
     {
         LevelManager.GameAboutToStart -= OnGameAboutToStart;
-        LevelManager.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEnded -= OnGameEnded;
     }
 }

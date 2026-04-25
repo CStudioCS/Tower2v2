@@ -1,17 +1,18 @@
 using UnityEngine;
+using Fusion;
 
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : NetworkBehaviour
 {
-    public int itemsPlaced;
-    public int woodCut;
-    public int stolenItems; //Item collected by other team, but used on our tower
+    [Networked] public int ItemsPlaced { get; set; }
+    [Networked] public int WoodCut { get; set; }
+    [Networked] public int StolenItems { get; set; } //Item collected by other team, but used on our tower
 
-    public int strawCollected;
-    public int woodLogsCollected;
-    public int clayCollected;
-    public int bricksCooked;
+    [Networked] public int StrawCollected { get; set; }
+    [Networked] public int WoodLogsCollected { get; set; }
+    [Networked] public int ClayCollected { get; set; }
+    [Networked] public int BricksCooked { get; set; }
 
-    public float distanceTravelled;
+    [Networked] public float DistanceTravelled { get; set; }
 
     private bool subscribed;
 
@@ -20,7 +21,7 @@ public class PlayerStats : MonoBehaviour
         TrySubscribe();
     }
 
-    private void OnEnable()
+    public override void Spawned()
     {
         TrySubscribe();
     }
@@ -39,13 +40,13 @@ public class PlayerStats : MonoBehaviour
         switch (itemType)
         {
             case Item.Type.Clay:
-                clayCollected++;
+                ClayCollected++;
                 break;
             case Item.Type.Straw:
-                strawCollected++;
+                StrawCollected++;
                 break;
             case Item.Type.WoodLog:
-                woodLogsCollected++;
+                WoodLogsCollected++;
                 break;
             default:
                 Debug.LogError($"This type of item {itemType} is not supported in player stats !");
@@ -55,19 +56,22 @@ public class PlayerStats : MonoBehaviour
 
     public void ResetStats()
     {
-        itemsPlaced = 0;
-        woodCut = 0;
-        stolenItems = 0;
+        if (!HasStateAuthority)
+            return;
 
-        strawCollected = 0;
-        woodLogsCollected = 0;
-        clayCollected = 0;
-        bricksCooked = 0;
+        ItemsPlaced = 0;
+        WoodCut = 0;
+        StolenItems = 0;
 
-        distanceTravelled = 0;
+        StrawCollected = 0;
+        WoodLogsCollected = 0;
+        ClayCollected = 0;
+        BricksCooked = 0;
+
+        DistanceTravelled = 0;
     }
 
-    private void OnDisable()
+    public override void Despawned(NetworkRunner runner, bool hasState)
     {
         if (subscribed)
         {

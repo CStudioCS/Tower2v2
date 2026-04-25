@@ -19,6 +19,9 @@ public class PlayerControlBadge : NetworkBehaviour
     {
         if (playerTeam != null)
             playerTeam.TeamChanged += OnTeamChanged;
+
+        // Make sure the ready status is correct when spawning in
+        ReadyChanged?.Invoke(IsReady);
     }
 
     public override void Despawned(NetworkRunner runner, bool hasState)

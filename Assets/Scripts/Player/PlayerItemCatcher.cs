@@ -1,3 +1,4 @@
+using Fusion.Addons.Physics;
 using UnityEngine;
 
 public class PlayerItemCatcher : MonoBehaviour
@@ -10,16 +11,16 @@ public class PlayerItemCatcher : MonoBehaviour
         if (!player.HasStateAuthority) 
             return;
 
-        if (player.Interacting)
+        if (player.SyncIsInteracting)
             return;
 
         if (collider == null || collider.transform.parent == null)
             return;
 
-        if (!collider.transform.parent.TryGetComponent(out Item item) || !collider.transform.parent.TryGetComponent(out Rigidbody2D rb))
+        if (!collider.transform.parent.TryGetComponent(out Item item) || !collider.transform.parent.TryGetComponent(out NetworkRigidbody2D nrb))
             return;
 
-        if (item.LastOwner == player)
+        if (item.LastOwner == null || item.LastOwner == player)
             return;
 
         if (item.LastOwner.PlayerTeam.CurrentTeam != player.PlayerTeam.CurrentTeam)
@@ -28,7 +29,7 @@ public class PlayerItemCatcher : MonoBehaviour
         if (item.State != Item.ItemState.Dropped)
             return;
 
-        if (Mathf.Abs(rb.linearVelocity.magnitude) < minimumCatchingVelocity)
+        if (Mathf.Abs(nrb.Rigidbody.linearVelocity.magnitude) < minimumCatchingVelocity)
             return;
 
         if (player.IsHolding)

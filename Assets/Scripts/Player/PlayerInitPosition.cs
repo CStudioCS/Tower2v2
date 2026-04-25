@@ -1,16 +1,14 @@
+using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInitPosition : MonoBehaviour
+public class PlayerInitPosition : NetworkBehaviour
 {
     [SerializeField] private PlayerTeam playerTeam;
-    
-    private void OnEnable() => LevelManager.GameAboutToStart += OnGameAboutToStart;
-    private void OnDisable() => LevelManager.GameAboutToStart -= OnGameAboutToStart;
 
-    private void OnGameAboutToStart()
+    public void TeleportToStartPoint()
     {
         if (playerTeam.TeamPlayerIndex == 1)
             return;
@@ -26,5 +24,5 @@ public class PlayerInitPosition : MonoBehaviour
         teamMate.PlayerInitPosition.GoToStartPoint(startPoints[teamMateStartPointIndex]);
     }
 
-    private void GoToStartPoint(StartPoint startPoint) => transform.position = startPoint.transform.position;
+    public void GoToStartPoint(StartPoint startPoint) => transform.position = startPoint.transform.position;
 }

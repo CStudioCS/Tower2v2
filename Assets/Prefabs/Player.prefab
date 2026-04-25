@@ -475,11 +475,17 @@ MonoBehaviour:
   playerControlBadge: {fileID: 8373028764313628043}
   playerBadge: {fileID: 5167199617259306430}
   playerMovement: {fileID: 4423661849542820139}
+  inputPoller: {fileID: 372626369722107065}
   playerStats: {fileID: -7975852267515287093}
   playerInitPosition: {fileID: 305416469070274735}
   progressBar: {fileID: 7722397540325121459}
   playerAnimationController: {fileID: -6306556956286896828}
   itemParent: {fileID: 441249502361782724}
+  _SyncTargetId: -1
+  _SyncIsInteracting:
+    _value: 0
+  _SyncAimingState: 0
+  _SyncThrowSpeedRatio: 0
 --- !u!114 &4423661849542820139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -515,6 +521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _CurrentTeam: 1
   spriteRenderer: {fileID: 3809310519727925464}
+  _TeamPlayerIndex: 0
 --- !u!114 &-6306556956286896828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,14 +558,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 255c003f064f7c24784e76f785fb1f2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemsPlaced: 0
-  woodCut: 0
-  stolenItems: 0
-  strawCollected: 0
-  woodLogsCollected: 0
-  clayCollected: 0
-  bricksCooked: 0
-  distanceTravelled: 0
+  _ItemsPlaced: 0
+  _WoodCut: 0
+  _StolenItems: 0
+  _StrawCollected: 0
+  _WoodLogsCollected: 0
+  _ClayCollected: 0
+  _BricksCooked: 0
+  _DistanceTravelled: 0
 --- !u!114 &5540521053786540451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -709,10 +716,12 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
+  - {fileID: 305416469070274735}
   - {fileID: 372626369722107065}
   - {fileID: 8343199554380001103}
   - {fileID: 4423661849542820139}
   - {fileID: 4720667436485828352}
+  - {fileID: -7975852267515287093}
   - {fileID: 5009503070072042364}
   - {fileID: 8373028764313628043}
   ForceRemoteRenderTimeframe: 0

@@ -63,9 +63,10 @@ public class PlayerMovement : NetworkBehaviour
                 LastNonZeroInput = inputMovement.normalized;
         }
 
-        if (gameStartingLock || player.Interacting || player.CurrentAimingState == Player.AimingState.AimingLockedIn || player.LockedInSettingsMenu || LevelManager.Instance.GameState == LevelManager.State.EndScreen)
+        if (gameStartingLock || player.SyncIsInteracting || player.CurrentAimingState == Player.AimingState.AimingLockedIn || player.LockedInSettingsMenu || LevelManager.Instance.GameState == LevelManager.State.EndScreen)
         {
             rb.linearVelocity = Vector2.zero;
+            lastSpeed = Vector2.zero;
             return;
         }
 
@@ -73,7 +74,7 @@ public class PlayerMovement : NetworkBehaviour
         Accelerating = lastSpeed == Vector2.zero && rb.linearVelocity != Vector2.zero;
         lastSpeed = rb.linearVelocity;
 
-        player.PlayerStats.distanceTravelled += rb.linearVelocity.magnitude * Runner.DeltaTime;
+        player.PlayerStats.DistanceTravelled += rb.linearVelocity.magnitude * Runner.DeltaTime;
     }
 
 

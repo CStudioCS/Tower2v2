@@ -56,7 +56,7 @@ public class Workbench : Interactable
                 break;
 
             case State.HasWoodLog:
-                player.PlayerStats.woodCut++;
+                player.PlayerStats.WoodCut++;
                 InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodPlank, player.PlayerTeam.CurrentTeam);
                 break;
 
@@ -106,9 +106,9 @@ public class Workbench : Interactable
 
     public override float GetInteractionTime() => currentInteractionTime;
     
-    protected override void OnGameEndedOrReturnedToLobby()
+    protected override void OnGameEnded()
     {
-        base.OnGameEndedOrReturnedToLobby();
+        base.OnGameEnded();
         state = State.Empty;
         ResetGraphicsOnTable();
     }
@@ -122,12 +122,12 @@ public class Workbench : Interactable
 
     private void Update()
     {
-        if(IsAlreadyInteractedWith && soundIndex == -1)
+        if(IsAlreadyInteractedWith() && soundIndex == -1)
         {
             soundIndex = SoundManager.instance.PlaySound("Hammer");
         }
 
-        if (!IsAlreadyInteractedWith && soundIndex != -1)
+        if (!IsAlreadyInteractedWith() && soundIndex != -1)
         {
             SoundManager.instance.StopSound(soundIndex);
             soundIndex = -1;

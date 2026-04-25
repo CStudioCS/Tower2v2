@@ -38,9 +38,9 @@ public class StatsCard : MonoBehaviour
         {
             TeamStats teamStats = players[i].PlayerTeam.CurrentTeam == PlayerTeam.Team.Left ? blueTeamStats : redTeamStats;
 
-            teamStats.itemsStolen.Add(players[i].PlayerStats.stolenItems);
-            teamStats.woodCut.Add(players[i].PlayerStats.woodCut);
-            teamStats.distanceTravelled.Add((int) players[i].PlayerStats.distanceTravelled);
+            teamStats.itemsStolen.Add(players[i].PlayerStats.StolenItems);
+            teamStats.woodCut.Add(players[i].PlayerStats.WoodCut);
+            teamStats.distanceTravelled.Add((int) players[i].PlayerStats.DistanceTravelled);
         }
 
         blueStatsDisplays.Initialize(blueTeamStats);

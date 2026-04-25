@@ -26,12 +26,12 @@ public class Collector : Interactable
 
     private void Update()
     {
-        if (IsAlreadyInteractedWith && soundIndex == -1)
+        if (IsAlreadyInteractedWith() && soundIndex == -1)
         {
             soundIndex = SoundManager.instance.PlaySound(soundName);
         }
 
-        if (!IsAlreadyInteractedWith && soundIndex != -1)
+        if (!IsAlreadyInteractedWith() && soundIndex != -1)
         {
             SoundManager.instance.StopSound(soundIndex);
             soundIndex = -1;

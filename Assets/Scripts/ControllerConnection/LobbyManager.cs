@@ -1,5 +1,6 @@
 using Fusion;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,9 +19,10 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     public static HashSet<InputDevice> ActiveDevices = new HashSet<InputDevice>();
 
     private Dictionary<PlayerInput, NetworkObject> activeAvatars = new Dictionary<PlayerInput, NetworkObject>();
-    private Dictionary<PlayerRef, int> machinePlayerCounts = new Dictionary<PlayerRef, int>();
 
     private PlayerInputManager playerInputManager;
+
+    private Coroutine sessionSyncCoroutine;
 
     [Networked, OnChangedRender(nameof(OnTotalPlayersChanged))]
     public int TotalPlayers { get; set; }
@@ -71,10 +73,10 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     public override void Spawned()
     {
         if (HasStateAuthority)
-        {
-            machinePlayerCounts.Clear();
             TotalPlayers = 0;
-        }
+
+        Player.PlayerSpawned += OnPlayerCountChanged;
+        Player.PlayerDespawned += OnPlayerCountChanged;
 
         // Restore the avatars of the players who were in the lobby before the reload
         List<PlayerInput> connectedInputs = new List<PlayerInput>(PlayerInput.all);
@@ -109,6 +111,24 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         }
 
         OnMapChangedEvent?.Invoke(CurrentMapIndex, false);
+    }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        Player.PlayerSpawned -= OnPlayerCountChanged;
+        Player.PlayerDespawned -= OnPlayerCountChanged;
+    }
+
+    private void OnPlayerCountChanged(Player player)
+    {
+        if (!HasStateAuthority) return;
+
+        TotalPlayers = PlayerRegistry.All.Count;
+
+        if (sessionSyncCoroutine != null)
+            StopCoroutine(sessionSyncCoroutine);
+
+        sessionSyncCoroutine = StartCoroutine(DelayedSessionInfoSynch());
     }
 
     private void Update()
@@ -376,12 +396,6 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         }
 
         Runner.Spawn(playerAvatarPrefab, spawnPosition, Quaternion.identity, playerRef);
-
-        if (!machinePlayerCounts.ContainsKey(playerRef))
-            machinePlayerCounts[playerRef] = 0;
-
-        machinePlayerCounts[playerRef]++;
-        RecalculateTotal();
     }
 
     // <summary>
@@ -391,13 +405,6 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     {
         if (avatar != null)
             Runner.Despawn(avatar);
-
-        // Server updates the player count for the machine that requested the despawn
-        if (machinePlayerCounts.ContainsKey(playerRef) && machinePlayerCounts[playerRef] > 0)
-        {
-            machinePlayerCounts[playerRef]--;
-            RecalculateTotal();
-        }
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -429,9 +436,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         int startPointCount = startPoints.Length;
         bool[] startPointOccupied = new bool[startPointCount];
 
-        List<Player> players = GameStartManager.Instance.Players;
-
-        foreach (Player player in players)
+        foreach (Player player in PlayerRegistry.All)
         {
             float minDistance = Mathf.Infinity;
             int closestStartPointIndex = 0;
@@ -526,18 +531,10 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     {
         if (!HasStateAuthority) return;
 
-        // I would normally avoid the GetAllBehaviours call but apparently Fusion keeps a dictionnary of the NetworkObjects by type.
-        // And it's for destruction only...
-        foreach (Player avatar in Runner.GetAllBehaviours<Player>())
+        foreach (Player avatar in PlayerRegistry.All.ToArray())
         {
-            if (avatar.Object.InputAuthority == playerRef)
+            if (avatar.Object?.InputAuthority == playerRef)
                 Runner.Despawn(avatar.Object);
-        }
-
-        if (machinePlayerCounts.ContainsKey(playerRef))
-        {
-            machinePlayerCounts.Remove(playerRef);
-            RecalculateTotal();
         }
     }
 
@@ -547,15 +544,9 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     private void OnTotalPlayersChanged() => NetworkManager.Instance.TriggerPlayersCountChanged();
     private void OnMapIndexChanged() => OnMapChangedEvent?.Invoke(CurrentMapIndex, true);
 
-    private void RecalculateTotal()
+    private IEnumerator DelayedSessionInfoSynch()
     {
-        if (!HasStateAuthority) return;
-
-        int newTotal = 0;
-        foreach (int count in machinePlayerCounts.Values)
-            newTotal += count;
-
-        TotalPlayers = newTotal;
+        yield return new WaitForSeconds(1f);
 
         if (Runner.SessionInfo.IsValid)
         {

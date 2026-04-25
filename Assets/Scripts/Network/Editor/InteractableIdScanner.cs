@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
@@ -50,7 +52,7 @@ public class InteractableIdScanner : EditorWindow
             if (PrefabUtility.IsPartOfPrefabAsset(interactable)) continue;
 
             SerializedObject so = new SerializedObject(interactable);
-            SerializedProperty idProp = so.FindProperty("_uniqueId");
+            SerializedProperty idProp = so.FindProperty("uniqueId");
 
             if (string.IsNullOrEmpty(idProp.stringValue) || usedIds.Contains(idProp.stringValue))
             {
@@ -67,3 +69,5 @@ public class InteractableIdScanner : EditorWindow
         Debug.Log($"Scan finished! {fixedCount} missing or duplicate IDs have been fixed and saved.");
     }
 }
+
+#endif

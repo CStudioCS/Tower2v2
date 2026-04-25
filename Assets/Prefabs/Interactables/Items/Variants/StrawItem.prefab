@@ -165,6 +165,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8569902203551738096, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: uniqueId
+      value: 4855d5b0-4bed-4ec4-89b4-20528008b5fe
+      objectReference: {fileID: 0}
+    - target: {fileID: 8569902203551738096, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: networkItem
       value: 
       objectReference: {fileID: 8983274734509546799}
@@ -236,6 +240,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _SyncOriginalTeam: 0
+  _SyncAnimateGrab:
+    _value: 0
   _SyncState: 0
   _SyncOwner: {fileID: 0}
 --- !u!114 &2716225594242948873

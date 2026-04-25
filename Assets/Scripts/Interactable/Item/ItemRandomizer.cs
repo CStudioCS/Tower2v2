@@ -30,11 +30,11 @@ public class ItemRandomizer : MonoBehaviour
         Instance = this;
     }
 
-    private void Initialize()
+    private void Initialize(int seed)
     {
         if (initialized) return;
 
-        random = new System.Random();
+        random = new System.Random(seed);
         values = new[]
         {
             Item.Type.Straw,
@@ -64,7 +64,7 @@ public class ItemRandomizer : MonoBehaviour
 
     public Item.Type GetAt(int index)
     {
-        Initialize();
+        Initialize(GameStartManager.Instance.GameSeed);
 
         while (sequence.Count <= index)
         {

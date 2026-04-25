@@ -17,6 +17,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 953315ac1b7f74248a2c6ae2b647b487, type: 3}
     - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
+      propertyPath: uniqueId
+      value: d7e01224-ee97-4ec3-9ff9-3f814c916e8b
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: allowLeftTeam
       value: 0
       objectReference: {fileID: 0}

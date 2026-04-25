@@ -47,12 +47,12 @@ public class RecipesList : MonoBehaviour
         Tower.TriedBuildingWithIncorrectItemType += OnTriedBuildingWithIncorrectItemType;
         LevelManager.GameAboutToStart += OnGameAboutToStart;
         LevelManager.GameStarted += OnGameStarted;
-        LevelManager.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEnded += OnGameEnded;
     }
 
     private void OnGameAboutToStart()
     {
-        randomIndex = 0;       
+        randomIndex = Tower.Height;       
         firstRecipeIndex = 0;  
         InitializeRecipes();
     }
@@ -122,12 +122,12 @@ public class RecipesList : MonoBehaviour
         Tower.TriedBuildingWithIncorrectItemType -= OnTriedBuildingWithIncorrectItemType;
         LevelManager.GameAboutToStart -= OnGameAboutToStart;
         LevelManager.GameStarted -= OnGameStarted;
-        LevelManager.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEnded -= OnGameEnded;
     }
 
     private void AnimateShow(bool visible = true) =>  animator?.SetBool(Visible, visible);
 
     private void OnGameStarted() => AnimateShow();
 
-    private void OnGameEndedOrReturnedToLobby() => AnimateShow(false);
+    private void OnGameEnded() => AnimateShow(false);
 }

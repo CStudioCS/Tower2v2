@@ -16,8 +16,6 @@ public abstract class Interactable : MonoBehaviour
     public int NetworkId { get; private set; }
 
     private static readonly int OutlineEnabled = Shader.PropertyToID("_OutlineEnabled");
-    public bool IsAlreadyInteractedWith { get; set; }
-    private int highlightedPlayerCount;
 
     [SerializeField] protected SpriteRenderer[] spriteRenderers;
 
@@ -67,50 +65,68 @@ public abstract class Interactable : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent(out Player player))
-            player.insideInteractableList.Add(this);
+        {
+            if (player.Object?.IsValid != true) 
+                return;
+
+            if (player.HasStateAuthority)
+            {
+                player.LocalEnterInteractable(this);
+
+                if (!player.HasInputAuthority)
+                    player.RPC_ClientEnterInteractable(NetworkId);
+            }
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent(out Player player) && player.insideInteractableList.Contains(this))
-            player.insideInteractableList.Remove(this);
+        if (collision.gameObject.TryGetComponent(out Player player))
+        {
+            if (player.Object?.IsValid != true)
+                return;
+
+            if (player.HasStateAuthority)
+            {
+                player.LocalExitInteractable(this);
+
+                if (!player.HasInputAuthority)
+                    player.RPC_ClientExitInteractable(NetworkId);
+            }
+        }
     }
     
     private void Start()
     {
         LevelManager.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
+        LevelManager.ReturnedToLobby += OnReturnedToLobby;
+        LevelManager.GameEnded += OnGameEnded;
     }
 
-    public virtual void TryHighlight(bool highlighted, Player player)
+    public virtual void RefreshHighlight()
     {
-        if (!CheckIfCanBeHighlighted(player) && highlighted)
-            return;
+        bool shouldHighlight = false;
 
-        bool isLocalPlayer = player.HasInputAuthority || (player.HasStateAuthority && player.Object.InputAuthority.IsNone);
+        foreach (Player p in PlayerRegistry.All)
+        {
+            if (p.SyncTargetId == NetworkId && CheckIfCanBeHighlighted(p))
+            {
+                shouldHighlight = true;
+                break;
+            }
+        }
 
-        if (isLocalPlayer)
-            player.RPC_SyncHighlight(NetworkId, highlighted);
+        Highlight(shouldHighlight);
     }
 
-    public void ApplyHighlight(bool highlighted)
+    public bool IsAlreadyInteractedWith()
     {
-        if (highlighted)
-            highlightedPlayerCount++;
-        else
-            highlightedPlayerCount--;
-
-        // If a player disconnects abruptly
-        if (highlightedPlayerCount < 0)
-            highlightedPlayerCount = 0;
-
-        if (!highlighted && highlightedPlayerCount > 0)
-            return;
-
-        if (highlighted && highlightedPlayerCount >= 2)
-            return;
-
-        Highlight(highlighted);
+        foreach (Player p in PlayerRegistry.All)
+        {
+            if (p.SyncIsInteracting && p.SyncTargetId == NetworkId)
+                return true;
+        }
+        return false;
     }
 
     private void Highlight(bool highlighted = true)
@@ -123,22 +139,21 @@ public abstract class Interactable : MonoBehaviour
         }
     }
     
-    protected virtual void OnGameAboutToStart()
-    {
-        IsAlreadyInteractedWith = false;
-    }
+    protected virtual void OnGameAboutToStart() { }
+
+    public virtual void OnTargetedBy(Player player, bool targeted) { }
 
     public virtual bool CheckIfCanBeHighlighted(Player player) => propBlock != null && spriteRenderers?.Length > 0;
 
-    protected virtual void OnGameEndedOrReturnedToLobby()
-    {
-        IsAlreadyInteractedWith = false;
-    }
-    
+    protected virtual void OnReturnedToLobby() { }
+
+    protected virtual void OnGameEnded() { }
+
     private void OnDisable()
     {
         LevelManager.GameAboutToStart -= OnGameAboutToStart;
-        LevelManager.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        LevelManager.ReturnedToLobby -= OnReturnedToLobby;
+        LevelManager.GameEnded -= OnGameEnded;
     }
 
     private void OnDestroy() => InteractableRegistry.Unregister(this);

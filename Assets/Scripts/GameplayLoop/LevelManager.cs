@@ -48,13 +48,11 @@ public class LevelManager : NetworkBehaviour
     private static readonly int CountdownString = Animator.StringToHash("Countdown");
 
     // Sorry I had to make them static :'(
-    // I had to believe me... I don't like it either
+    // I don't like it either...
     public static event Action GameAboutToStart;
     public static event Action GameStarted;
     public static event Action GameEnded;
     public static event Action ReturnedToLobby;
-    public static event Action GameEndedOrReturnedToLobby;
-    public static event Action ServerResetRequested;
 
     public static event Action FewSecondsBeforeGameEnded;
     private bool hasInvokedFewSecondsWarning;
@@ -150,9 +148,6 @@ public class LevelManager : NetworkBehaviour
                     WinningTeam = towerRight.Height > towerLeft.Height ? PlayerTeam.Team.Right : PlayerTeam.Team.Left;
 
                 GameState = State.EndScreen;
-
-                if (Runner.IsForward)
-                    ServerResetRequested?.Invoke();
             }
         }
     }
@@ -223,7 +218,6 @@ public class LevelManager : NetworkBehaviour
         //CanvasLinker.Instance.winnerText.gameObject.SetActive(true);
         //CanvasLinker.Instance.winnerText.text = (winner == PlayerTeam.Team.Left ? "Left" : "Right") + " team wins!";
         GameEnded?.Invoke();
-        GameEndedOrReturnedToLobby?.Invoke();
     }
 
     public void ForceReturnToLobby()
@@ -232,9 +226,6 @@ public class LevelManager : NetworkBehaviour
              return;   
         
         GameState = State.Lobby;
-
-        if(Runner.IsForward)
-            ServerResetRequested?.Invoke();
     }
     
     public void SetGameStateToLobby()
@@ -243,6 +234,5 @@ public class LevelManager : NetworkBehaviour
         ActivateInGameObjects(false);
 
         ReturnedToLobby?.Invoke();
-        GameEndedOrReturnedToLobby?.Invoke();
     }
 }

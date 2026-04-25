@@ -9,13 +9,13 @@ public class ClockUI : MonoBehaviour
     private void OnEnable()
     {
         LevelManager.GameStarted += OnGameStarted;
-        LevelManager.GameEndedOrReturnedToLobby += OnGameEnded;
+        LevelManager.GameEnded += OnGameEnded;
     }
 
     private void OnDisable()
     {
         LevelManager.GameStarted -= OnGameStarted;
-        LevelManager.GameEndedOrReturnedToLobby -= OnGameEnded;
+        LevelManager.GameEnded -= OnGameEnded;
     }
 
     private void OnGameStarted() => animator.SetBool("active", true);

@@ -8,14 +8,15 @@ public class PlayerAimArrow: MonoBehaviour
 	[SerializeField] private SpriteRenderer spriteRenderer;
 	[SerializeField] private float minArrowLength = 1.8f;
 	[SerializeField] private float maxArrowLength = 3.5f;
-	private float ArrowLength => (maxArrowLength - minArrowLength) * player.throwSpeedRatio + minArrowLength;
+	private float ArrowLength => (maxArrowLength - minArrowLength) * player.SyncThrowSpeedRatio + minArrowLength;
 	
 	private void OnEnable()
 	{
-		player.StartedAimingLockedIn += OnStartedAimingLockedIn;
-		player.StoppedAiming += OnStoppedAiming;
 		player.PlayerTeam.TeamChanged += OnTeamChanged;
         player.AvatarSpawned += UpdateColor;
+        player.StartedAimingLockedIn += OnStartedAimingLockedIn;
+        player.StoppedAiming += OnStoppedAiming;
+
         ShowGraphics(false);
 	}
 
@@ -31,19 +32,26 @@ public class PlayerAimArrow: MonoBehaviour
 
 	private void Update()
 	{
-		if (player.CurrentAimingState != Player.AimingState.AimingLockedIn)
-			return;
+		if (player?.Object?.IsValid != true)
+            return;
 
-		transform.right = player.ThrowDirection;
-		UpdateArrowLength();
+        bool isAiming = player.SyncAimingState == (int)Player.AimingState.AimingLockedIn;
+
+        if (graphics.activeSelf != isAiming)
+            ShowGraphics(isAiming);
+
+        if (!isAiming)
+            return;
+
+        transform.right = player.SyncThrowDirection;
+        UpdateArrowLength();
 	}
 
 	private void UpdateArrowLength()
 	{
-		UpdateArrowLength(colorizedSpriteRenderer);
-		UpdateArrowLength(spriteRenderer);
-	}
-	private void UpdateArrowLength(SpriteRenderer s) => s.size = new Vector2(ArrowLength, s.size.y);
+        colorizedSpriteRenderer.size = new Vector2(ArrowLength, colorizedSpriteRenderer.size.y);
+        spriteRenderer.size = new Vector2(ArrowLength, spriteRenderer.size.y);
+    }
 
 	private void OnTeamChanged() => UpdateColor();
 
@@ -54,9 +62,9 @@ public class PlayerAimArrow: MonoBehaviour
 
 	private void OnDisable()
 	{
-		player.StartedAimingLockedIn -= OnStartedAimingLockedIn;
-		player.StoppedAiming -= OnStoppedAiming;
 		player.PlayerTeam.TeamChanged -= OnTeamChanged;
         player.AvatarSpawned -= UpdateColor;
+		player.StartedAimingLockedIn -= OnStartedAimingLockedIn;
+		player.StoppedAiming -= OnStoppedAiming;
     }
 }

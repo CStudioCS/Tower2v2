@@ -47,8 +47,9 @@ public class PlayerBadge : MonoBehaviour
     {
         LevelManager.GameStarted += OnGameStarted;
         LevelManager.ReturnedToLobby += OnReturnedToLobby;
-
         playerControlBadge.ReadyChanged += UpdateReadyVisuals;
+
+        UpdateReadyVisuals(playerControlBadge.IsReady);
 
         // No need to show the instructions for distant players
         if (!player.HasInputAuthority)
