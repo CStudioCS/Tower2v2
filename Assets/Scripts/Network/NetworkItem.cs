@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class NetworkItem : NetworkBehaviour
 {
-    private Item item;
+    [SerializeField] private Item item;
 
     [Networked] public PlayerTeam.Team SyncOriginalTeam { get; set; }
     [Networked] public NetworkBool SyncAnimateGrab { get; set; }
@@ -16,13 +16,16 @@ public class NetworkItem : NetworkBehaviour
 
     public override void Spawned()
     {
-        item = GetComponent<Item>();
+        item.RegisterNetworkId((int)Object.Id.Raw);
 
         if (HasStateAuthority && SyncOwner == null)
             SyncState = (int)Item.ItemState.Dropped;
 
         OnStateOrOwnerChanged();
     }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+        => InteractableRegistry.Unregister(item);
 
     // Called by all clients (and host) when SyncState or SyncOwnerId changes
     private void OnStateOrOwnerChanged() => item.ApplyNetworkState((Item.ItemState)SyncState, SyncOwner, SyncOriginalTeam);

@@ -42,7 +42,8 @@ public class Item : Interactable
 
     protected override void Awake()
     {
-        base.Awake(); // Initialize highlight system
+        InitializeHighlight();
+
         itemCollider.enabled = false;
         State = ItemState.Dropped;
         LevelManager.GameEnded += Disappear;
@@ -145,13 +146,7 @@ public class Item : Interactable
         velocitySqrMagnitudeForTowerItemCatcher = Mathf.Min(rb.linearVelocity.sqrMagnitude, velocitySqrMagnitudeForTowerItemCatcher);
     }
 
-    private void Disappear()
-    {
-        Destroy(gameObject);
-    }
+    private void Disappear() => Destroy(gameObject);
 
-    private void OnDestroy()
-    {
-        LevelManager.GameEnded -= Disappear;
-    }
+    protected override void OnDestroy() => LevelManager.GameEnded -= Disappear;
 }

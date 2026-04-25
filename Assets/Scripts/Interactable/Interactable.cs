@@ -28,6 +28,8 @@ public abstract class Interactable : MonoBehaviour
 
     protected virtual void Awake()
     {
+        InitializeHighlight();
+
         if (!string.IsNullOrEmpty(uniqueId))
             RegisterNetworkId(Animator.StringToHash(uniqueId));
     }
@@ -36,7 +38,6 @@ public abstract class Interactable : MonoBehaviour
     {
         NetworkId = fusionNativeId;
         InteractableRegistry.Register(this);
-        InitializeHighlight();
     }
 
 #if UNITY_EDITOR
@@ -149,5 +150,5 @@ public abstract class Interactable : MonoBehaviour
         LevelManager.GameEnded -= OnGameEnded;
     }
 
-    private void OnDestroy() => InteractableRegistry.Unregister(this);
+    protected virtual void OnDestroy() => InteractableRegistry.Unregister(this);
 }
