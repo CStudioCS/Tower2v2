@@ -215,10 +215,14 @@ public class Player : NetworkBehaviour
 
     private void HandleInputStartingToAim()
     {
-        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
-        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
+        if (HasStateAuthority || HasInputAuthority)
+            SyncThrowDirection = playerMovement.LastNonZeroInput;
 
-        if (throwPressed)
+        bool interactReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Throw);
+        bool throwIsPressed = currentTickData.Buttons.IsSet(PlayerInputButtons.Throw);
+
+        if (throwReleased)
         {
             ThrowAndExitAim(ThrowVelocity);
             return;
@@ -226,7 +230,7 @@ public class Player : NetworkBehaviour
 
         // If the player releases the interact button BUT is still holding the throw button at the same time,
         // their intention is probably to throw the item, so we should not drop it and stay in the StartingToAim state.
-        if (interactPressed && !throwPressed)
+        if (interactReleased && !throwIsPressed)
         {
             ThrowAndExitAim();
             return;
@@ -262,16 +266,16 @@ public class Player : NetworkBehaviour
 
     private void HandleInputAimingLockedIn()
     {
-        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
-        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
-
         if (HasStateAuthority || HasInputAuthority)
         {
             SyncThrowSpeedRatio = Mathf.Clamp01(SyncThrowSpeedRatio + aimSpeedRatioVelocity * Runner.DeltaTime);
             SyncThrowDirection = playerMovement.LastNonZeroInput;
         }
 
-        if (interactPressed || throwPressed)
+        bool interactReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Throw);
+
+        if (interactReleased || throwReleased)
             ThrowAndExitAim(ThrowVelocity);
     }
 
@@ -332,15 +336,15 @@ public class Player : NetworkBehaviour
 
     private void ProcessLongInteraction()
     {
-        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
-        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
+        bool interactReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Throw);
 
         Interactable target = null;
         if (SyncTargetId != -1)
             InteractableRegistry.All.TryGetValue(SyncTargetId, out target);
 
         // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
-        if (interactPressed || throwPressed || LevelManager.Instance.GameState != LevelManager.State.Game || target == null)
+        if (interactReleased || throwReleased || LevelManager.Instance.GameState != LevelManager.State.Game || target == null)
         {
             StopInteracting(target);
             return;
