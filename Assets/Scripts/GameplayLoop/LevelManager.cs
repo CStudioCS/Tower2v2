@@ -56,6 +56,7 @@ public class LevelManager : NetworkBehaviour
 
     public static event Action FewSecondsBeforeGameEnded;
     private bool hasInvokedFewSecondsWarning;
+    private float? savedTime;
 
     private Dictionary<PlayerTeam.Team, List<StartPoint>> startPointsMap;
     public Dictionary<PlayerTeam.Team, List<StartPoint>> StartPointsMap
@@ -205,6 +206,24 @@ public class LevelManager : NetworkBehaviour
                 EndLevel(WinningTeam);
                 CanvasLinker.Instance.timerDisplay.text = "0:00";
                 break;
+        }
+    }
+
+    public void PauseTimer(bool isPaused)
+    {
+        // Only pause in single mode
+        if (NetworkManager.Instance?.IsSinglePlayer != true)
+            return;
+
+        if (isPaused)
+        {
+            savedTime = LevelEndTimer.RemainingTime(Runner);
+            LevelEndTimer = TickTimer.None;
+        }
+        else if (savedTime.HasValue)
+        {
+            LevelEndTimer = TickTimer.CreateFromSeconds(Runner, savedTime.Value);
+            savedTime = null;
         }
     }
 

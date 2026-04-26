@@ -68,17 +68,27 @@ public class SoundtrackManager : MonoBehaviour
     
     private void OnPaused()
     {
-        pausedGameTime = inGameMusic.time;
+        bool isSinglePlayer = (NetworkManager.Instance?.IsSinglePlayer == true);
+
+        if (isSinglePlayer)
+            pausedGameTime = inGameMusic.time;
+
         SmoothMusicFadeIn(lobbyMusic, pauseTransitionDuration, pauseTransitionEase);
-        StartCoroutine(SmoothMusicFadeOut(inGameMusic, pauseTransitionDuration, pauseTransitionEase));
+        StartCoroutine(SmoothMusicFadeOut(inGameMusic, pauseTransitionDuration, pauseTransitionEase, isSinglePlayer));
     }
 
     private void OnResumed()
     {
-        float rollbackTime = resumeTransitionDuration * 0.5f;
-        float targetTime = pausedGameTime - rollbackTime;
-        if (targetTime < 0) targetTime = 0;
-        inGameMusic.time = targetTime;
+        bool isSinglePlayer = (NetworkManager.Instance?.IsSinglePlayer == true);
+
+        if (isSinglePlayer)
+        {
+            float rollbackTime = resumeTransitionDuration * 0.5f;
+            float targetTime = pausedGameTime - rollbackTime;
+            if (targetTime < 0) targetTime = 0;
+            inGameMusic.time = targetTime;
+        }
+
         SmoothMusicFadeIn(inGameMusic, resumeTransitionDuration, resumeTransitionEase);
         StartCoroutine(SmoothMusicFadeOut(lobbyMusic, resumeTransitionDuration, resumeTransitionEase));
     }
@@ -95,13 +105,18 @@ public class SoundtrackManager : MonoBehaviour
     private void SmoothMusicFadeIn(AudioSource targetAudioSource,float transitionTime, Ease ease)
     {
         targetAudioSource.volume = 0;
-        targetAudioSource.Play();
+
+        if (!targetAudioSource.isPlaying)
+            targetAudioSource.Play();
+
         LMotion.Create(0f, 1f, transitionTime).WithEase(ease).WithScheduler(MotionScheduler.UpdateIgnoreTimeScale).Bind(volume => targetAudioSource.volume = volume);
     }
-    private IEnumerator SmoothMusicFadeOut(AudioSource actualAudioSource, float transitionTime, Ease ease)
+    private IEnumerator SmoothMusicFadeOut(AudioSource actualAudioSource, float transitionTime, Ease ease, bool stopAudio = true)
     {
         LMotion.Create(1f, 0f, transitionTime).WithEase(ease).WithScheduler(MotionScheduler.UpdateIgnoreTimeScale).Bind(volume => actualAudioSource.volume = volume);
         yield return new WaitForSecondsRealtime(transitionTime);
-        actualAudioSource.Stop();
+
+        if (stopAudio)
+            actualAudioSource.Stop();
     }
 }
