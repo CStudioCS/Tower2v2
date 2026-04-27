@@ -10,7 +10,7 @@ public class LobbyReturner : MonoBehaviour
         pauseMenu.Resume(fireEvent: false);
 
         if (NetworkManager.Instance?.IsClient == true)
-            LevelManager.Instance.ClientLeave();
+            LevelManager.Instance.ClientLeave(true);
         else
             LevelManager.Instance.ForceReturnToLobby();
     } 

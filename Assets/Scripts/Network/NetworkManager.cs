@@ -108,9 +108,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         finally { IsBusy = false; }
     }
 
-    // This method is an old artefact from the early development
-    // I could've abondoned it beacause I implemented a way of switching the runner witout reloading the scene
-    // But I kept it and use it only once when switching to offline mode because I think it's more impactful from UX pov
+    // This old artefact from the early development has found a new purpose
     public async void Reboot(GameMode targetMode)
     {
         if (Runner != null) await InternalDisconnect();
@@ -240,13 +238,11 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         OnUnexpectedDisconnect?.Invoke();
 
-        // Time for cleaning
-        await Task.Delay(100);
-
-        // We can't save them anyway
-        UseSavedPositionsForNextSpawn = false;
-
-        _ = StartNetworkGame(GameMode.Single);
+        if (LevelManager.Instance != null)
+            // "false" because we can't save them, the lobby manager is dying soon :'(
+            LevelManager.Instance.ClientLeave(false);
+        else
+            Reboot(GameMode.Single);
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)

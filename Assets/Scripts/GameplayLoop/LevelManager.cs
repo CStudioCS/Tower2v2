@@ -245,13 +245,15 @@ public class LevelManager : NetworkBehaviour
         GameEndedWithResults?.Invoke();
     }
 
-    public void ClientLeave()
+    public void ClientLeave(bool savePositions)
     {
         GameEnded?.Invoke();
         ReturnedToLobby?.Invoke();
 
-        LobbyManager.Instance?.SaveCurrentPositions();
-        NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
+        if (savePositions)
+            LobbyManager.Instance?.SaveCurrentPositions();
+
+        NetworkManager.Instance.UseSavedPositionsForNextSpawn = savePositions;
         _ = NetworkManager.Instance?.StartNetworkGame(GameMode.Single);
     }
 

@@ -32,6 +32,8 @@ public class SoundtrackManager : MonoBehaviour
     [SerializeField] private Ease resumeTransitionEase = Ease.Linear;
 
     private float pausedGameTime;
+    private Coroutine endMusicCoroutine;
+
     private void Start()
     {
         LevelManager.GameAboutToStart += OnGameAboutToStart;
@@ -50,20 +52,33 @@ public class SoundtrackManager : MonoBehaviour
 
     private void OnGameEnded()
     {
-        StartCoroutine(StartEndMusicWithDelay());
+        if (endMusicCoroutine != null) 
+            StopCoroutine(endMusicCoroutine);
+
+        endMusicCoroutine = StartCoroutine(StartEndMusicWithDelay());
     }
 
     private IEnumerator StartEndMusicWithDelay()
     {
         yield return new WaitForSeconds(3f);
+
         SmoothMusicFadeIn(endScreenMusic, gameToEndFadeInDuration, gameToEndFadeInEase);
         StartCoroutine(SmoothMusicFadeOut(inGameMusic, gameToEndFadeOutDuration, gameToEndFadeOutEase));
+        endMusicCoroutine = null;
     }
 
     private void OnBackToLobby()
     {
+        if (endMusicCoroutine != null)
+        {
+            StopCoroutine(endMusicCoroutine);
+            endMusicCoroutine = null;
+        }
+
         SmoothMusicFadeIn(lobbyMusic, endToLobbyFadeInDuration, endToLobbyFadeInEase);
+
         StartCoroutine(SmoothMusicFadeOut(endScreenMusic, endToLobbyFadeOutDuration, endToLobbyFadeOutEase));
+        StartCoroutine(SmoothMusicFadeOut(inGameMusic, endToLobbyFadeOutDuration, endToLobbyFadeOutEase));
     }
     
     private void OnPaused()
