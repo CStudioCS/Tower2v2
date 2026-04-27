@@ -6,40 +6,44 @@ using UnityEngine.UI;
 
 public class NetworkUISetup : MonoBehaviour
 {
-    [SerializeField] private UISwitcher switcher;
     [SerializeField] private Button configButton;
     [SerializeField] private TextMeshProUGUI configButtonText;
 
-    private void Start()
+    [Header("Transition States")]
+    [Tooltip("The colors of the button when the player is online")]
+    [SerializeField] private ColorBlock onlineColors = ColorBlock.defaultColorBlock;
+
+    private ColorBlock defaultOfflineColors;
+
+    private void Awake()
+        => defaultOfflineColors = configButton.colors;
+
+    private void Start() => NetworkManager.OnNetworkModeInitialized += OnStateChanged;
+    private void OnDestroy() => NetworkManager.OnNetworkModeInitialized -= OnStateChanged;
+
+    public void OnStateChanged(GameMode mode)
     {
-        if (NetworkManager.Instance != null && NetworkManager.Instance.Runner != null)
+        switch (mode)
         {
-            bool isOnline = !NetworkManager.Instance.IsSinglePlayer;
+            case GameMode.Single:
+                configButtonText.text = "Offline";
+                configButton.colors = defaultOfflineColors;
+                break;
 
-            switcher.isOn = isOnline;
-            OnStateChanged(isOnline);
+            case GameMode.Host:
+                configButtonText.text = "Hosting";
+                configButton.colors = onlineColors;
+                break;
+
+            case GameMode.Client:
+                configButtonText.text = "Connected";
+                configButton.colors = onlineColors;
+                break;
+
+            default:
+                configButtonText.text = "Offline";
+                configButton.colors = defaultOfflineColors;
+                break;
         }
-
-        switcher.onValueChanged.AddListener(OnStateChanged);
-    }
-
-    private void OnDestroy() => switcher.onValueChanged.RemoveListener(OnStateChanged);
-
-    public void OnStateChanged(bool isOnline)
-    {
-        if (isOnline)
-        {
-            configButtonText.text = "Online";
-            configButton.interactable = true;
-        }
-        else
-        {
-            configButtonText.text = "Offline";
-            configButton.interactable = false;
-
-            if (NetworkManager.Instance.IsHosting || NetworkManager.Instance.IsClient)
-                NetworkManager.Instance.Reboot(GameMode.Single);
-        }
-
     }
 }

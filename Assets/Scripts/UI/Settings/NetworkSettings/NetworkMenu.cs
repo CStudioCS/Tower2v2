@@ -1,5 +1,7 @@
 using Fusion;
+using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -41,6 +43,8 @@ public class NetworkMenu : MonoBehaviour
     private Dictionary<string, LobbyRowController> existingLobbyRows = new Dictionary<string, LobbyRowController>();
     // Stores the reference to the lobby row representing our current connection
     private LobbyRowController myGameRowController;
+
+    private Coroutine pingCoroutine;
 
     /// <summary>
     /// Opens the Network menu, starts the fade, and binds the input handler.
@@ -139,29 +143,55 @@ public class NetworkMenu : MonoBehaviour
         GameObject rowObj = Instantiate(lobbyRowPrefab, lobbyScrollViewContent);
         myGameRowController = rowObj.GetComponent<LobbyRowController>();
 
-        bool isHost = NetworkManager.Instance.IsHosting;
-
-        int displayCount = LobbyManager.Instance != null ? LobbyManager.Instance.TotalPlayers : 1;
-        displayCount = Mathf.Max(1, displayCount);
-
-        myGameRowController.Initialize(
-            sessionId: NetworkManager.Instance.CurrentSessionName,
-            lobbyName: isHost ? "Your Hosted Game" : "Joined Game",
-            currentPlayers: displayCount,
-            maxPlayers: NetworkManager.Instance.Runner.SessionInfo.MaxPlayers,
-            ping: 0,
-            status: isHost ? "Hosting..." : "Connected",
-            customButtonText: "Leave",
-            isInteractable: true,
-            onButtonAction: LeaveGame
-        );
-
+        UpdateConnectedLobbyRow();
         dynamicLobbyButtons.Add(myGameRowController.ActionButton);
 
         if (!inputHandler.enabled) 
             inputHandler.Bind(currentPlayer, eventSystem, Close, BuildNavigationGrid());
         else 
             inputHandler.UpdateGrid(BuildNavigationGrid());
+
+        if (pingCoroutine != null) 
+            StopCoroutine(pingCoroutine);
+
+        pingCoroutine = StartCoroutine(PingUpdateLoop());
+    }
+
+    private IEnumerator PingUpdateLoop()
+    {
+        while (isOpen && NetworkManager.Instance?.Runner?.IsRunning == true)
+        {
+            UpdateConnectedLobbyRow();
+            yield return new WaitForSeconds(2f);
+        }
+    }
+
+    /// <summary>
+    /// Updates the lobby row that represents the current connection (Host or Client)
+    /// </summary>
+    private void UpdateConnectedLobbyRow()
+    {
+        if (myGameRowController == null || NetworkManager.Instance.Runner == null) return;
+
+        bool isHost = NetworkManager.Instance.IsHosting;
+        string sessionName = NetworkManager.Instance.CurrentSessionName;
+        int displayCount = LobbyManager.Instance != null ? LobbyManager.Instance.TotalPlayers : 1;
+        displayCount = Mathf.Max(1, displayCount);
+
+        int pingMs = !isHost ? Mathf.RoundToInt((float)NetworkManager.Instance.Runner.GetPlayerRtt(NetworkManager.Instance.Runner.LocalPlayer) * 1000f) : 0;
+
+        // The row is already instantiated, we just call "Initialize" to overwrite the texts
+        myGameRowController.Initialize(
+            sessionId: NetworkManager.Instance.CurrentSessionName,
+            lobbyName: isHost ? $"Room: {sessionName}" : $"Joined: {sessionName}",
+            currentPlayers: displayCount,
+            maxPlayers: NetworkManager.Instance.Runner.SessionInfo.MaxPlayers,
+            property: $"{pingMs} ms",
+            status: isHost ? "Hosting..." : "Connected",
+            customButtonText: "Leave",
+            isInteractable: true,
+            onButtonAction: LeaveGame
+        );
     }
 
     /// <summary>
@@ -177,10 +207,11 @@ public class NetworkMenu : MonoBehaviour
         foreach (SessionInfo session in sessionList)
         {
             if (!session.IsVisible) continue; // Ignore sessions that aren't visible (idk in what case I could use this actually)
-            
+
             currentSessions.Add(session.Name);
 
             int realPlayers = session.Properties.TryGetValue("TotalPlayers", out var prop) ? (int)prop : session.PlayerCount;
+            string mapName = session.Properties.TryGetValue("MapName", out var mapProp) ? (string)mapProp : "--";
 
             if (!existingLobbyRows.TryGetValue(session.Name, out LobbyRowController rowController))
             {
@@ -189,7 +220,7 @@ public class NetworkMenu : MonoBehaviour
                 {
                     existingLobbyRows.Add(session.Name, rowController);
                     dynamicLobbyButtons.Add(rowController.ActionButton);
-                    gridNeedsUpdate = true; 
+                    gridNeedsUpdate = true;
                 }
                 else continue;
             }
@@ -199,10 +230,10 @@ public class NetworkMenu : MonoBehaviour
                 lobbyName: "Game: " + session.Name,
                 currentPlayers: realPlayers,
                 maxPlayers: session.MaxPlayers,
-                ping: 45,
+                property: mapName,
                 status: session.IsOpen ? "Waiting..." : "In Progress",
                 customButtonText: "Join",
-                isInteractable: realPlayers + PlayerInput.all.Count <= session.MaxPlayers,
+                isInteractable: session.IsOpen && (realPlayers + PlayerInput.all.Count <= session.MaxPlayers),
                 onButtonAction: JoinGame
             );
         }
@@ -228,38 +259,18 @@ public class NetworkMenu : MonoBehaviour
             inputHandler.UpdateGrid(BuildNavigationGrid());
     }
 
-    /// <summary>
-    /// Updates the lobby row that represents the current connection (Host or Client)
-    /// </summary>
-    private void UpdateConnectedLobbyRow()
-    {
-        if (myGameRowController == null || NetworkManager.Instance.Runner == null) return;
-
-        bool isHost = NetworkManager.Instance.IsHosting;
-
-        int displayCount = LobbyManager.Instance != null ? LobbyManager.Instance.TotalPlayers : 1;
-        displayCount = Mathf.Max(1, displayCount);
-
-        // The row is already instantiated, we just call "Initialize" to overwrite the texts
-        myGameRowController.Initialize(
-            sessionId: NetworkManager.Instance.CurrentSessionName,
-            lobbyName: isHost ? "Your Hosted Game" : "Joined Game",
-            currentPlayers: displayCount,
-            maxPlayers: NetworkManager.Instance.Runner.SessionInfo.MaxPlayers,
-            ping: 0,
-            status: isHost ? "Hosting..." : "Connected",
-            customButtonText: "Leave",
-            isInteractable: true,
-            onButtonAction: LeaveGame
-        );
-    }
-
 
     /// <summary>
     /// Clears all dynamically created lobbies from the UI.
     /// </summary>
     public void ClearLobbies()
     {
+        if (pingCoroutine != null)
+        {
+            StopCoroutine(pingCoroutine);
+            pingCoroutine = null;
+        }
+
         foreach (Transform child in lobbyScrollViewContent)
             Destroy(child.gameObject);
 
@@ -299,7 +310,7 @@ public class NetworkMenu : MonoBehaviour
         await NetworkManager.Instance.Disconnect();
 
         // Start the server in Host mode with a random room name
-        string roomName = "Lobby_" + UnityEngine.Random.Range(1000, 9999);
+        string roomName = SessionNameGenerator.Generate();
         await NetworkManager.Instance.StartNetworkGame(GameMode.Host, roomName);
 
         if (this == null || !isOpen) return; // Safety if user closed the menu during await

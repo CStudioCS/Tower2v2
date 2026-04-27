@@ -11,7 +11,7 @@ public class LobbyRowController : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI lobbyNameText;
     [SerializeField] private TextMeshProUGUI playerCountText;
-    [SerializeField] private TextMeshProUGUI pingText;
+    [SerializeField] private TextMeshProUGUI propertyText;
     [SerializeField] private TextMeshProUGUI statusText;
     [SerializeField] private Button joinButton;
     [SerializeField] private TextMeshProUGUI buttonText;
@@ -20,21 +20,21 @@ public class LobbyRowController : MonoBehaviour
 
     public string LobbyName { get => lobbyNameText.text; set => lobbyNameText.text = value; }
     public string PlayerCount { get => playerCountText.text; set => playerCountText.text = value; }
-    public string Ping { get => pingText.text; set => pingText.text = value; }
+    public string Property { get => propertyText.text; set => propertyText.text = value; }
     public string Status { get => statusText.text; set => statusText.text = value; }
     public Button ActionButton => joinButton;
 
     /// <summary>
     /// Configures the entire row in one go and binds the join button.
     /// </summary>
-    public void Initialize(string sessionId, string lobbyName, int currentPlayers, int maxPlayers, int ping, 
+    public void Initialize(string sessionId, string lobbyName, int currentPlayers, int maxPlayers, string property, 
         string status, string customButtonText, bool isInteractable, Action<string> onButtonAction)
     {
         this.sessionName = sessionId;
 
         LobbyName = lobbyName;
         PlayerCount = $"{currentPlayers}/{maxPlayers}";
-        Ping = $"{ping} ms";
+        Property = property;
         Status = status;
 
         if (buttonText != null)

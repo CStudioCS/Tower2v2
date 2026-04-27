@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 4631771928395116080}
   - component: {fileID: 7053696202243875723}
   m_Layer: 5
-  m_Name: Ping
+  m_Name: Property
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -775,7 +775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyNameText: {fileID: 4227336719774164439}
   playerCountText: {fileID: 4993936902110204842}
-  pingText: {fileID: 4631771928395116080}
+  propertyText: {fileID: 4631771928395116080}
   statusText: {fileID: 4167143773394047379}
   joinButton: {fileID: 347848936797102273}
   buttonText: {fileID: 2119913280061876358}

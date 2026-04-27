@@ -84,7 +84,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
             Runner.ProvideInput = true; // Tells Fusion this client will provide inputs
             var customProps = new Dictionary<string, SessionProperty>();
-            customProps["TotalPlayers"] = 1; // Host will update this later.
+            customProps["TotalPlayers"] = 1;
+            customProps["MapName"] = "Tower Map";
 
             // Configure the connection
             var startGameArgs = new StartGameArgs()

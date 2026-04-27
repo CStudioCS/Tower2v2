@@ -7,6 +7,15 @@ using UnityEngine.InputSystem;
 
 public class LobbyManager : NetworkBehaviour, IPlayerLeft
 {
+    public static readonly string[] MapNames = new string[]
+    {
+        "Pigs Apart",
+        "Happy Pig Town",
+        "Pig Drama",
+        "Flooded Farm",
+        "Valhalla Pigs"
+    };
+
     [Header("Setup")]
     [SerializeField] private GameObject localInputProxyPrefab;
 
@@ -78,6 +87,9 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         Player.PlayerSpawned += OnPlayerCountChanged;
         Player.PlayerDespawned += OnPlayerCountChanged;
 
+        LevelManager.GameAboutToStart += SessionInfoSync;
+        LevelManager.ReturnedToLobby += SessionInfoSync;
+
         // Restore the avatars of the players who were in the lobby before the reload
         List<PlayerInput> connectedInputs = new List<PlayerInput>(PlayerInput.all);
         activeAvatars.Clear();
@@ -117,6 +129,9 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     {
         Player.PlayerSpawned -= OnPlayerCountChanged;
         Player.PlayerDespawned -= OnPlayerCountChanged;
+
+        LevelManager.GameAboutToStart -= SessionInfoSync;
+        LevelManager.ReturnedToLobby -= SessionInfoSync;
     }
 
     private void OnPlayerCountChanged(Player player)
@@ -124,11 +139,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         if (!HasStateAuthority) return;
 
         TotalPlayers = PlayerRegistry.All.Count;
-
-        if (sessionSyncCoroutine != null)
-            StopCoroutine(sessionSyncCoroutine);
-
-        sessionSyncCoroutine = StartCoroutine(DelayedSessionInfoSynch());
+        SessionInfoSync();
     }
 
     private void Update()
@@ -541,7 +552,22 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     // This is called on clients when the TotalPlayers property changes
     // </summary>
     private void OnTotalPlayersChanged() => NetworkManager.Instance.TriggerPlayersCountChanged();
-    private void OnMapIndexChanged() => OnMapChangedEvent?.Invoke(CurrentMapIndex, true);
+
+    private void OnMapIndexChanged()
+    {
+        OnMapChangedEvent?.Invoke(CurrentMapIndex, true);
+        SessionInfoSync();
+    }
+
+    private void SessionInfoSync()
+    {
+        if (!HasStateAuthority) return;
+
+        if (sessionSyncCoroutine != null)
+            StopCoroutine(sessionSyncCoroutine);
+
+        sessionSyncCoroutine = StartCoroutine(DelayedSessionInfoSynch());
+    }
 
     private IEnumerator DelayedSessionInfoSynch()
     {
@@ -551,9 +577,10 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         {
             var newProps = new Dictionary<string, SessionProperty>();
             newProps["TotalPlayers"] = TotalPlayers;
+            newProps["MapName"] = MapNames[CurrentMapIndex];
             Runner.SessionInfo.UpdateCustomProperties(newProps);
-
-            Runner.SessionInfo.IsOpen = TotalPlayers < Runner.SessionInfo.MaxPlayers;
+            Runner.SessionInfo.IsOpen = (TotalPlayers < Runner.SessionInfo.MaxPlayers) 
+                && (LevelManager.Instance.GameState == LevelManager.State.Lobby);
         }
     }
 
