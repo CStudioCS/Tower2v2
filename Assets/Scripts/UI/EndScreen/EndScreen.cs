@@ -13,7 +13,7 @@ public class EndScreen : MonoBehaviour
 
     private void Start()
     {
-        LevelManager.GameEnded += OnGameEnded;
+        LevelManager.GameEndedWithResults += OnGameEnded;
     }
 
     private void OnGameEnded() => StartCoroutine(OnGameEndedCoroutine());

@@ -33,12 +33,6 @@ public class PlayerMovement : NetworkBehaviour
     {
         LevelManager.GameAboutToStart += OnGameAboutToStart;
         LevelManager.GameStarted += OnGameStarted;
-        player.LockedInSettingsMenuChanged += OnLockedInSettingsMenuChanged;
-    }
-
-    private void OnLockedInSettingsMenuChanged()
-    {
-        rb.bodyType = player.LockedInSettingsMenu ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
     }
 
     public override void FixedUpdateNetwork()
@@ -122,6 +116,5 @@ public class PlayerMovement : NetworkBehaviour
     {
         LevelManager.GameAboutToStart -= OnGameAboutToStart;
         LevelManager.GameStarted -= OnGameStarted;
-        player.LockedInSettingsMenuChanged -= OnLockedInSettingsMenuChanged;
     }
 }

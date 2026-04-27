@@ -15,7 +15,6 @@ public class Player : NetworkBehaviour
     [SerializeField] private float aimChargeDuration = .5f;
     private float aimSpeedRatioVelocity;
     [SerializeField] private float timeBeforeAimCharge = .15f;
-    private float timerBeforeAimCharge;
 
     [Header("References")]
 
@@ -56,20 +55,22 @@ public class Player : NetworkBehaviour
 
     [Networked, OnChangedRender(nameof(OnInteractionChanged))]
     public NetworkBool SyncIsInteracting { get; set; }
-    [Networked] public int SyncAimingState { get; set; }
     [Networked] public float SyncThrowSpeedRatio { get; set; }
     [Networked] public Vector2 SyncThrowDirection { get; set; }
+
+    public enum AimingState { NotAiming, StartingToAim, AimingLockedIn }
+    [Networked] public AimingState CurrentAimingState { get; set; }
+    [Networked] private float TimerBeforeAimCharge { get; set; }
+
+    private float ThrowSpeed => SyncThrowSpeedRatio * (maxThrowSpeed - minThrowSpeed) + minThrowSpeed;
+    public Vector2 ThrowVelocity => ThrowSpeed * SyncThrowDirection;
 
     private PlayerData currentTickData;
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
 
-    private float ThrowSpeed => SyncThrowSpeedRatio * (maxThrowSpeed - minThrowSpeed) + minThrowSpeed;
-    public Vector2 ThrowVelocity => ThrowSpeed * SyncThrowDirection;
-    
     public bool LockedInSettingsMenu { get; private set; }
-    public event Action LockedInSettingsMenuChanged;
 
     public event Action AvatarSpawned;
     public event Action StartedAimingLockedIn;
@@ -77,9 +78,6 @@ public class Player : NetworkBehaviour
 
     public static event Action<Player> PlayerSpawned;
     public static event Action<Player> PlayerDespawned;
-    public enum AimingState { NotAiming, StartingToAim, AimingLockedIn }
-
-    public AimingState CurrentAimingState { get; private set; } = AimingState.NotAiming;
 
     private void Awake()
     {
@@ -102,6 +100,8 @@ public class Player : NetworkBehaviour
             target.RefreshHighlight();
             target.OnTargetedBy(this, true);
         }
+
+        CurrentAimingState = AimingState.NotAiming;
     }
 
     public override void Despawned(NetworkRunner runner, bool hasState)
@@ -137,8 +137,7 @@ public class Player : NetworkBehaviour
 
             currentTickData = myData;
 
-            if (!LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
-                HandleInput();
+            HandleInput();
 
             PreviousButtons = myData.Buttons;
         }
@@ -203,7 +202,7 @@ public class Player : NetworkBehaviour
                     return;
                 CurrentAimingState = AimingState.StartingToAim;
                 SyncThrowSpeedRatio = 0f;
-                timerBeforeAimCharge = 0f;
+                TimerBeforeAimCharge = 0f;
             }
         }
         else
@@ -236,14 +235,10 @@ public class Player : NetworkBehaviour
             return;
         }
         
-        timerBeforeAimCharge += Runner.DeltaTime;
-        if (timerBeforeAimCharge >= timeBeforeAimCharge)
+        TimerBeforeAimCharge += Runner.DeltaTime;
+        if (TimerBeforeAimCharge >= timeBeforeAimCharge)
         {
             CurrentAimingState = AimingState.AimingLockedIn;
-
-            if (HasStateAuthority || HasInputAuthority) 
-                SyncAimingState = (int)AimingState.AimingLockedIn;
-
             StartedAimingLockedIn?.Invoke();
         }
     }
@@ -253,12 +248,6 @@ public class Player : NetworkBehaviour
     {
         SyncThrowSpeedRatio = 0f;
         CurrentAimingState = AimingState.NotAiming;
-
-        if (HasStateAuthority || HasInputAuthority)
-        {
-            SyncAimingState = (int)AimingState.NotAiming;
-            SyncThrowSpeedRatio = 0f;
-        }
 
         StoppedAiming?.Invoke();
         TryDropHeldItem(throwVelocity);
@@ -532,14 +521,10 @@ public class Player : NetworkBehaviour
 
     private void OnGameEnded()
     {
-        if (HasStateAuthority || HasInputAuthority)
-        {
-            SyncIsInteracting = false;
-            SyncAimingState = (int)AimingState.NotAiming;
-            SyncThrowSpeedRatio = 0f;
-        }
-
+        SyncIsInteracting = false;
+        SyncThrowSpeedRatio = 0f;
         CurrentAimingState = AimingState.NotAiming;
+
         StoppedAiming?.Invoke();
         ConsumeCurrentItem();
     }
@@ -578,11 +563,5 @@ public class Player : NetworkBehaviour
         }
 
         return closest;
-    }
-
-    public void LockInSettingsMenu(bool locked = true)
-    {
-        LockedInSettingsMenu = locked;
-        LockedInSettingsMenuChanged?.Invoke();
     }
 }

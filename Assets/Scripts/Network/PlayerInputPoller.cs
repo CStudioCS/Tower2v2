@@ -58,6 +58,9 @@ public class PlayerInputPoller : NetworkBehaviour
     {
         PlayerData data = new PlayerData();
 
+        if (PauseMenu.instance != null && PauseMenu.instance.IsPaused)
+            return data;
+
         if (moveAction != null) data.Movement = moveAction.ReadValue<Vector2>();
         if (interactAction != null) data.Buttons.Set(PlayerInputButtons.Interact, interactAction.IsPressed());
         if (throwAction != null) data.Buttons.Set(PlayerInputButtons.Throw, throwAction.IsPressed());

@@ -35,7 +35,7 @@ public class PlayerAimArrow: MonoBehaviour
 		if (player?.Object?.IsValid != true)
             return;
 
-        bool isAiming = player.SyncAimingState == (int)Player.AimingState.AimingLockedIn;
+        bool isAiming = player.CurrentAimingState == Player.AimingState.AimingLockedIn;
 
         if (graphics.activeSelf != isAiming)
             ShowGraphics(isAiming);

@@ -358,7 +358,6 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
 
                 Player player = newAvatar.GetComponent<Player>();
                 player.PlayerBadge.ShowReadyLabel(false);
-                player.LockInSettingsMenu();
             }
         }
     }

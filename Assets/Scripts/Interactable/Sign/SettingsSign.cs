@@ -17,7 +17,6 @@ public class SettingsSign: Sign
 
         interactingInput = poller.LocalPlayerInput;
         player.PlayerBadge.ShowReadyLabel(false);
-        player.LockInSettingsMenu();
 
         StartCoroutine(OpenMenuNextFrame(poller.LocalPlayerInput));
     }
@@ -45,13 +44,8 @@ public class SettingsSign: Sign
         interactingInput.SwitchCurrentActionMap("Gameplay");
         Player interactingPlayer = LobbyManager.Instance.GetAvatarForInput(interactingInput);
 
-        if (interactingPlayer != null)
-        {
-            interactingPlayer.LockInSettingsMenu(false);
-
-            if (interactingPlayer.PlayerBadge != null)
-                interactingPlayer.PlayerBadge.ShowReadyLabel(true);
-        }
+        if (interactingPlayer != null && interactingPlayer.PlayerBadge != null)
+            interactingPlayer.PlayerBadge.ShowReadyLabel(true);
 
         interactingInput = null;
     }

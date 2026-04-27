@@ -219,6 +219,9 @@ public class PlayerBadge : MonoBehaviour
 
     private void OnDisable()
     {
+        if (fadeMotionHandle.IsActive())
+            fadeMotionHandle.Cancel();
+
         playerControlBadge.ReadyChanged -= UpdateReadyVisuals;
 
         LevelManager.GameStarted -= OnGameStarted;

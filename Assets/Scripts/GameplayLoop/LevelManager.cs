@@ -52,6 +52,7 @@ public class LevelManager : NetworkBehaviour
     public static event Action GameAboutToStart;
     public static event Action GameStarted;
     public static event Action GameEnded;
+    public static event Action GameEndedWithResults;
     public static event Action ReturnedToLobby;
 
     public static event Action FewSecondsBeforeGameEnded;
@@ -180,8 +181,13 @@ public class LevelManager : NetworkBehaviour
         StartDelayTimer = TickTimer.CreateFromSeconds(Runner, delay);
     }
 
-    private void OnGameStateChanged()
+    private void OnGameStateChanged(NetworkBehaviourBuffer previous)
     {
+        State prevState = GetPropertyReader<State>(nameof(gameState)).Read(previous);
+
+        if (prevState == State.Game && GameState != State.Game)
+            GameEnded?.Invoke();
+
         switch (GameState)
         {
             case State.Lobby:
@@ -236,7 +242,17 @@ public class LevelManager : NetworkBehaviour
 
         //CanvasLinker.Instance.winnerText.gameObject.SetActive(true);
         //CanvasLinker.Instance.winnerText.text = (winner == PlayerTeam.Team.Left ? "Left" : "Right") + " team wins!";
+        GameEndedWithResults?.Invoke();
+    }
+
+    public void ClientLeave()
+    {
         GameEnded?.Invoke();
+        ReturnedToLobby?.Invoke();
+
+        LobbyManager.Instance?.SaveCurrentPositions();
+        NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
+        _ = NetworkManager.Instance?.StartNetworkGame(GameMode.Single);
     }
 
     public void ForceReturnToLobby()
