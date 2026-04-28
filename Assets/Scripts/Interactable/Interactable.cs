@@ -13,7 +13,7 @@ public abstract class Interactable : MonoBehaviour
     public ExecutionTarget executionTarget = ExecutionTarget.ServerSide;
 
     [SerializeField] private string uniqueId;
-    public int NetworkId { get; private set; }
+    public virtual int NetworkId { get; private set; }
 
     private static readonly int OutlineEnabled = Shader.PropertyToID("_OutlineEnabled");
 

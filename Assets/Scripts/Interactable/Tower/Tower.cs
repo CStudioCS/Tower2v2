@@ -47,6 +47,7 @@ public class Tower : Interactable
     public event Action PieceBuilt;
     [SerializeField] private PlayerTeam.Team team;
     public PlayerTeam.Team Team => team;
+    private RecipesList RecipesList => RecipeBannerLinker.Instance.RecipeBannerMap[team];
     private OffTowerCounter OffTowerCounter => CanvasLinker.Instance.OffTowerHeightCounterMap[team];
     
     [SerializeField] private TowerItemCatcher towerItemCatcher;
@@ -95,7 +96,7 @@ public class Tower : Interactable
         return player.IsHolding && playerIsCorrectTeam;
     }
 
-    public bool IsItemCorrect(Item.Type itemType) => ItemRandomizer.Instance.GetAt(Height) == itemType;
+    public bool IsItemCorrect(Item.Type itemType) => RecipesList.CurrentNeededItemType == itemType;
 
     public override void Interact(Player player)
     {
