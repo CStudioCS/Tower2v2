@@ -51,7 +51,8 @@ public class Player : NetworkBehaviour
     [Networked, OnChangedRender(nameof(OnTargetChanged))]
     public int SyncTargetId { get; set; } = -1;
 
-    [Networked] public int SyncHeldItemType { get; set; } = -1;
+    [Networked, OnChangedRender(nameof(OnHeldItemChanged))]
+    public int SyncHeldItemType { get; set; } = -1;
 
     [Networked, OnChangedRender(nameof(OnInteractionChanged))]
     public NetworkBool SyncIsInteracting { get; set; }
@@ -280,9 +281,6 @@ public class Player : NetworkBehaviour
             insideInteractableList.Remove(interactable);
     }
 
-    [Rpc(RpcSources.StateAuthority | RpcSources.InputAuthority, RpcTargets.All)]
-    public void RPC_PlayDropAnimation() => playerAnimationController.Drop();
-
     private void UpdateClosestInteractable()
     {
         if (!HasStateAuthority) 
@@ -390,6 +388,17 @@ public class Player : NetworkBehaviour
             SyncIsInteracting = false;
     }
 
+    private void OnHeldItemChanged(NetworkBehaviourBuffer previous)
+    {
+        int previousItemType = GetPropertyReader<int>(nameof(SyncHeldItemType)).Read(previous);
+
+        if (SyncHeldItemType == -1 && previousItemType != -1)
+            playerAnimationController.Drop();
+
+        else if (SyncHeldItemType != -1 && previousItemType == -1)
+            playerAnimationController.Grab();
+    }
+
     private void OnTargetChanged(NetworkBehaviourBuffer previous)
     {
         int previousTargetId = GetPropertyReader<int>(nameof(SyncTargetId)).Read(previous);
@@ -460,8 +469,6 @@ public class Player : NetworkBehaviour
         if (HasStateAuthority || HasInputAuthority)
             SyncHeldItemType = -1;
 
-        RPC_PlayDropAnimation(); // TODO fix bad animation coupling
-
         grabbingLerp.TryCancel();
         rotationLerp.TryCancel();
 
@@ -496,8 +503,6 @@ public class Player : NetworkBehaviour
 
     public void GrabItem(Item item, bool interpolatePosition)
     {
-        playerAnimationController.Grab(); // TODO fix bad animation coupling
-
         HeldItem = item;
 
         item.Immobilize();

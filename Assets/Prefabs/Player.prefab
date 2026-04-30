@@ -482,10 +482,12 @@ MonoBehaviour:
   playerAnimationController: {fileID: -6306556956286896828}
   itemParent: {fileID: 441249502361782724}
   _SyncTargetId: -1
+  _SyncHeldItemType: -1
   _SyncIsInteracting:
     _value: 0
-  _SyncAimingState: 0
   _SyncThrowSpeedRatio: 0
+  _SyncThrowDirection: {x: 0, y: 0}
+  _CurrentAimingState: 0
 --- !u!114 &4423661849542820139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -535,7 +537,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5868846420980485048}
-  rb: {fileID: 176917095401970236}
+  nrb: {fileID: 5009503070072042364}
   isCuttingId: isCutting
   isCollectingId: isCollecting
   hasItemId: hasItem
@@ -599,7 +601,7 @@ MonoBehaviour:
   _stateAuthorityChangeErrorCorrectionDelta: 0
   SyncScale: 0
   SyncParent: 1
-  _interpolationTarget: {fileID: 0}
+  _interpolationTarget: {fileID: 7324555036413155978}
   UsePreciseRotation: 0
   UseRenderSleepThresholds: 1
   RenderThresholds:

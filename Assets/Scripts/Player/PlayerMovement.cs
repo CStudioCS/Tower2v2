@@ -17,7 +17,17 @@ public class PlayerMovement : NetworkBehaviour
     public Vector2 LastNonZeroInput { get; private set; } = new Vector2(1f,0f);//default value to avoid errors if interactable on spawn
     private Vector2 lastSpeed;
 
-    public Vector2 Velocity => rb.linearVelocity;
+    [Networked] public Vector2 SyncVelocity { get; set; }
+    public Vector2 Velocity
+    {
+        get => SyncVelocity;
+        set
+        {
+            if (rb != null)
+                rb.linearVelocity = value;
+            SyncVelocity = value;
+        }
+    }
 
     [Header("References")]
     [SerializeField] private Player player;
@@ -42,7 +52,7 @@ public class PlayerMovement : NetworkBehaviour
         if (GetInput(out PlayerNetworkInput input))
         {
             // We get the player's slot number
-            int mySlot = player.GetComponent<PlayerInputPoller>().SlotIndex;
+            int mySlot = player.InputPoller.SlotIndex;
 
             // Read incoming input data
             PlayerData myData = default;
@@ -59,16 +69,16 @@ public class PlayerMovement : NetworkBehaviour
 
         if (gameStartingLock || player.SyncIsInteracting || player.CurrentAimingState == Player.AimingState.AimingLockedIn || player.LockedInSettingsMenu || LevelManager.Instance.GameState == LevelManager.State.EndScreen)
         {
-            rb.linearVelocity = Vector2.zero;
+            Velocity = Vector2.zero;
             lastSpeed = Vector2.zero;
             return;
         }
 
-        rb.linearVelocity = VelocityApproach(inputMovement);
-        Accelerating = lastSpeed == Vector2.zero && rb.linearVelocity != Vector2.zero;
-        lastSpeed = rb.linearVelocity;
+        Velocity = VelocityApproach(inputMovement);
+        Accelerating = lastSpeed == Vector2.zero && Velocity != Vector2.zero;
+        lastSpeed = Velocity;
 
-        player.PlayerStats.DistanceTravelled += rb.linearVelocity.magnitude * Runner.DeltaTime;
+        player.PlayerStats.DistanceTravelled += Velocity.magnitude * Runner.DeltaTime;
     }
 
 
@@ -79,15 +89,15 @@ public class PlayerMovement : NetworkBehaviour
     private Vector2 VelocityApproach(Vector2 inputMovement)
     {
         //We wanna move and we're not at top speed -> accelerate
-        if (inputMovement.sqrMagnitude > gamepadDeadzone * gamepadDeadzone && rb.linearVelocity.sqrMagnitude < maxSpeed * maxSpeed)
+        if (inputMovement.sqrMagnitude > gamepadDeadzone * gamepadDeadzone && Velocity.sqrMagnitude < maxSpeed * maxSpeed)
         {
             //Account for the fact that move can be of norm different than one (for controllers when moving slowly)
             Vector2 approached = (inputMovement.sqrMagnitude > gamepadMaxSpeedThreshold * gamepadMaxSpeedThreshold ? inputMovement.normalized : inputMovement) * maxSpeed;
-            return Approach(rb.linearVelocity, approached, acceleration * Runner.DeltaTime);
+            return Approach(Velocity, approached, acceleration * Runner.DeltaTime);
         }
 
         //We don't wanna move or we're at max speed -> friction (friction is just reverse acceleration, it's not a multiple of velocity)
-        return Approach(rb.linearVelocity, Vector2.zero, friction * Runner.DeltaTime);
+        return Approach(Velocity, Vector2.zero, friction * Runner.DeltaTime);
     }
 
     /// <summary>
