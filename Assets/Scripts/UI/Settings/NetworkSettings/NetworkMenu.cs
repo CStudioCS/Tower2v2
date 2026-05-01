@@ -91,6 +91,9 @@ public class NetworkMenu : MonoBehaviour
     /// </summary>
     public void Close()
     {
+        if (NetworkManager.Instance.IsBusy)
+            return;
+
         isOpen = false;
         if (fader.FadedIn)
             fader.Fade();
@@ -300,14 +303,11 @@ public class NetworkMenu : MonoBehaviour
     public async void HostGame()
     {
         uiCanvasGroup.interactable = false; // Lock UI
-
         hostButton.interactable = false;
 
         // Take a picture :)
         LobbyManager.Instance?.SaveCurrentPositions();
         NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
-
-        await NetworkManager.Instance.Disconnect();
 
         // Start the server in Host mode with a random room name
         string roomName = SessionNameGenerator.Generate();
@@ -327,16 +327,14 @@ public class NetworkMenu : MonoBehaviour
         LobbyManager.Instance?.SaveCurrentPositions();
         NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
 
-        await NetworkManager.Instance.Disconnect();
-
-        if (this == null || !isOpen) return;
-
-        uiCanvasGroup.interactable = true; // Unlock UI
         ClearLobbies();
         hostButton.interactable = true;
 
         // Looking for other lobbies to join after quitting hosting
-        _ = NetworkManager.Instance.JoinLobby();
+        await NetworkManager.Instance.JoinLobby();
+        if (this == null || !isOpen) return; // Safety if user closed the menu during await
+
+        uiCanvasGroup.interactable = true; // Unlock UI
     }
 
     public async void JoinGame(string roomName)
@@ -347,9 +345,7 @@ public class NetworkMenu : MonoBehaviour
         LobbyManager.Instance?.SaveCurrentPositions();
         NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
 
-        await NetworkManager.Instance.Disconnect();
         await NetworkManager.Instance.StartNetworkGame(GameMode.Client, roomName);
-
         if (this == null || !isOpen) return; // Safety if user closed the menu during await
 
         uiCanvasGroup.interactable = true; // Unlock UI

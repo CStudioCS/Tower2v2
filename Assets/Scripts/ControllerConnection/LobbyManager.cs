@@ -584,14 +584,6 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         }
     }
 
-    public Player GetAvatarForInput(PlayerInput input)
-    {
-        if (activeAvatars.TryGetValue(input, out NetworkObject avatarObj))
-            return avatarObj.GetComponent<Player>();
-
-        return null;
-    }
-
     public void SaveCurrentPositions()
     {
         NetworkManager.Instance.SavedPositions.Clear();
