@@ -260,8 +260,8 @@ public class LevelManager : NetworkBehaviour
     public void ForceReturnToLobby()
     {
         if (!HasStateAuthority)
-             return;   
-        
+            return;
+
         GameState = State.Lobby;
     }
     

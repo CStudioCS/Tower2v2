@@ -14,6 +14,8 @@ public class StatsCard : MonoBehaviour
     [SerializeField] private TeamStatsDisplay blueStatsDisplays;
     [SerializeField] private TeamStatsDisplay redStatsDisplays;
 
+    [SerializeField] private TextMeshProUGUI cardText;
+
     public IEnumerator Dropdown(TowerCard towerCard)
     {
         DisplayStats();
@@ -23,6 +25,12 @@ public class StatsCard : MonoBehaviour
         towerCard.gameObject.SetActive(false);
 
         yield return new WaitUntil(() => Input.anyKey);
+
+        if (NetworkManager.Instance?.IsClient == true)
+        {
+            cardText.text = "Waiting for host to return to lobby...";
+            yield return new WaitUntil(() => LevelManager.Instance.GameState == LevelManager.State.Lobby);
+        }
 
         yield return LMotion.Create((Vector2)transform.localPosition, dropdownOffset, dropdownTime).WithEase(Ease.InCubic).Bind((v) => transform.localPosition = v).ToYieldInstruction();
     }
