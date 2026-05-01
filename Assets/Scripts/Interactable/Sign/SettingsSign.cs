@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class SettingsSign: Sign
 {
-    // Avatar dies on respawn
-    private Player interactingAvatar = null;
     // Player input persists
     private PlayerInput interactingInput = null;
 
@@ -15,7 +13,6 @@ public class SettingsSign: Sign
 			return;
 
         interactingInput = player.InputPoller.LocalPlayerInput;
-        interactingAvatar = player;
         player.PlayerBadge.ShowReadyLabel(false);
 
         StartCoroutine(OpenMenuNextFrame(player.InputPoller.LocalPlayerInput));
@@ -42,11 +39,8 @@ public class SettingsSign: Sign
 			return;
 
         interactingInput.SwitchCurrentActionMap("Gameplay");
-
-        if (interactingAvatar?.Object?.IsValid == true)
-            interactingAvatar.PlayerBadge.ShowReadyLabel(true);
+        LobbyManager.Instance?.SetBadgeVisibility(interactingInput, true);
 
         interactingInput = null;
-        interactingAvatar = null;
     }
 }
