@@ -24,7 +24,7 @@ public class Workbench : Interactable
     private void Awake()
     {
         base.Awake();
-        ResetGraphicsOnTable();
+        ApplyVisualState(State.Empty, State.Empty);
     }
 
     public override bool CanInteract(Player player)
@@ -44,51 +44,71 @@ public class Workbench : Interactable
         }
     }
 
-    public void PutWoodLog()
-    {
-        SoundManager.instance.PlaySound("WoodSound");
-
-        state = State.HasWoodLog;
-        currentInteractionTime = cutWoodInteractionTime;
-        woodOnTable.SetActive(true);
-        axe.SetActive(false);
-    }
+    public void PutWoodLog() => InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodLog, cutLastByTeam);
 
     public override void Interact(Player player)
     {
         switch (state)
         {
             case State.Empty:
-                PutWoodLog();
+                InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodLog, cutLastByTeam);
                 player.ConsumeCurrentItem();
                 break;
-            
-            case State.HasWoodLog:
-                state = State.HasWoodPlank;
-                currentInteractionTime = putOrPickUpItemInteractionTime;
-                player.PlayerStats.woodCut++;
-                cutLastByTeam = player.PlayerTeam.CurrentTeam;
-                woodOnTable.SetActive(false);
-                axe.SetActive(false);
-                woodPlanckOnTable.SetActive(true);
-                break;
-            
-            case State.HasWoodPlank:
-                SoundManager.instance.PlaySound("WoodSound");
 
-                state = State.Empty;
-                player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam); //ownership for wood is determined by who cut it, not who collected it 
-                woodPlanckOnTable.SetActive(false);
+            case State.HasWoodLog:
+                player.PlayerStats.WoodCut++;
+                InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodPlank, player.PlayerTeam.CurrentTeam);
+                break;
+
+            case State.HasWoodPlank:
+                InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.Empty, cutLastByTeam);
+                player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam);  //ownership for wood is determined by who cut it, not who collected it 
+                break;
+        }
+    }
+
+    public void ApplyState(State newState, PlayerTeam.Team team)
+    {
+        State oldState = state;
+        state = newState;
+        cutLastByTeam = team;
+
+        currentInteractionTime = (state == State.HasWoodLog) ? cutWoodInteractionTime : putOrPickUpItemInteractionTime;
+
+        ApplyVisualState(oldState, newState);
+    }
+
+    private void ApplyVisualState(State oldState, State newState)
+    {
+        woodOnTable.SetActive(false);
+        woodPlanckOnTable.SetActive(false);
+        axe.SetActive(false);
+
+        switch (newState)
+        {
+            case State.Empty:
                 axe.SetActive(true);
+                if (oldState == State.HasWoodPlank)
+                    SoundManager.instance.PlaySound("WoodSound"); 
+                break;
+
+            case State.HasWoodLog:
+                woodOnTable.SetActive(true);
+                if (oldState == State.Empty)
+                    SoundManager.instance.PlaySound("WoodSound");
+                break;
+
+            case State.HasWoodPlank:
+                woodPlanckOnTable.SetActive(true);
                 break;
         }
     }
 
     public override float GetInteractionTime() => currentInteractionTime;
     
-    protected override void OnGameEndedOrReturnedToLobby()
+    protected override void OnGameEnded()
     {
-        base.OnGameEndedOrReturnedToLobby();
+        base.OnGameEnded();
         state = State.Empty;
         ResetGraphicsOnTable();
     }
@@ -102,12 +122,12 @@ public class Workbench : Interactable
 
     private void Update()
     {
-        if(IsAlreadyInteractedWith && soundIndex == -1)
+        if(IsAlreadyInteractedWith() && soundIndex == -1)
         {
             soundIndex = SoundManager.instance.PlaySound("Hammer");
         }
 
-        if (!IsAlreadyInteractedWith && soundIndex != -1)
+        if (!IsAlreadyInteractedWith() && soundIndex != -1)
         {
             SoundManager.instance.StopSound(soundIndex);
             soundIndex = -1;

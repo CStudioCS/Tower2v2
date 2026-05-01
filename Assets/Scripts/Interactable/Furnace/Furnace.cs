@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using static PlayerTeam;
 
 public class Furnace : Interactable
 {
@@ -21,6 +22,9 @@ public class Furnace : Interactable
     [Header("Furnace Color")]
     [SerializeField] private bool allowLeftTeam = true;
     [SerializeField] private bool allowRightTeam = true;
+
+    private int fireSoundIndex = -1;
+    private Coroutine cookingCoroutine;
 
     public bool Allowed(Player player) => Allowed(player.PlayerTeam.CurrentTeam);
     private bool Allowed(PlayerTeam.Team team) => team switch
@@ -48,76 +52,96 @@ public class Furnace : Interactable
                 throw new UnityException("Furnace state not handled in CanInteract");
         }
     }
-
-    public void PutClayIn(PlayerTeam.Team team)
-    {
-        itemCookedByTeam = team;
-        StartCoroutine(Cook());
-    }
+    public void PutClayIn(PlayerTeam.Team team) => InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Cooking, team);
 
     public override void Interact(Player player)
     {
         switch (state)
         {
             case State.Empty:
-                PutClayIn(player.PlayerTeam.CurrentTeam);
+                InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Cooking, player.PlayerTeam.CurrentTeam);
                 player.ConsumeCurrentItem();
                 break;
 
             case State.Cooked:
-                SoundManager.instance.PlaySound("FurnaceBricks");
+                InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Empty, itemCookedByTeam);
                 player.GrabNewItem(brickItemPrefab, itemCookedByTeam);
-                player.PlayerStats.bricksCooked++;
-                state = State.Empty;
-                progressBar.ResetProgress();
+                player.PlayerStats.BricksCooked++;
                 break;
         }
     }
 
-    public override float GetInteractionTime() => 0;
+    public void ApplyState(State newState, PlayerTeam.Team team)
+    {
+        State oldState = state;
+        state = newState;
+        itemCookedByTeam = team;
 
-    public IEnumerator Cook()
+        if (oldState == State.Cooking && newState != State.Cooking)
+            StopCookingVisuals();
+
+        switch (newState)
+        {
+            case State.Cooking:
+                if (oldState != State.Cooking)
+                    cookingCoroutine = StartCoroutine(VisualCookRoutine());
+                break;
+
+            case State.Cooked:
+                progressBar.SetProgressMax();
+                break;
+
+            case State.Empty:
+                progressBar.ResetProgress();
+                if (oldState == State.Cooked)
+                    SoundManager.instance.PlaySound("FurnaceBricks");
+                break;
+        }
+    }
+
+    private IEnumerator VisualCookRoutine()
     {
         StartedCooking?.Invoke();
-        int soundIndex = SoundManager.instance.PlaySound("FurnaceFire");
-
-        state = State.Cooking;
-
+        fireSoundIndex = SoundManager.instance.PlaySound("FurnaceFire");
         progressBar.StartProgress();
+
         float t = 0;
-
-        while (t < cookTime)
+        while (t < cookTime && state == State.Cooking)
         {
-            if (state != State.Cooking)
-                break;
-            
             progressBar.UpdateProgress(t / cookTime);
-
             t += Time.deltaTime;
             yield return null;
         }
 
-        SoundManager.instance.StopSound(soundIndex);
+        // The host decides when the time is up and validates the brick for everyone
+        if (state == State.Cooking && InteractablesNetworkHub.Instance.HasStateAuthority)
+            InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Cooked, itemCookedByTeam);
+    }
 
-        if (state == State.Cooking)
+    private void StopCookingVisuals()
+    {
+        if (cookingCoroutine != null)
         {
-            progressBar.SetProgressMax();
-            state = State.Cooked;
+            StopCoroutine(cookingCoroutine);
+            cookingCoroutine = null;
         }
-        else
-            progressBar.ResetProgress();
 
-        StopCooking();
-    }
-    
-    protected override void OnGameEndedOrReturnedToLobby()
-    {
-        base.OnGameEndedOrReturnedToLobby();
-        state = State.Empty;
-    }
+        if (fireSoundIndex != -1)
+        {
+            SoundManager.instance.StopSound(fireSoundIndex);
+            fireSoundIndex = -1;
+        }
 
-    private void StopCooking()
-    {
         StoppedCooking?.Invoke();
+    }
+
+    public override float GetInteractionTime() => 0;
+    
+    protected override void OnGameEnded()
+    {
+        base.OnGameEnded();
+        state = State.Empty;
+        StopCookingVisuals();
+        progressBar.ResetProgress();
     }
 }

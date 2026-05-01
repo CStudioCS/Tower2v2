@@ -6,38 +6,19 @@ public class ClockUI : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject view;
 
-    private bool subscribed;
-
     private void OnEnable()
     {
-        TrySubscribe();
-    }
-
-    private void Start()
-    {
-        TrySubscribe();
-    }
-
-    private void SetUIActive(bool active)
-    {
-        animator.SetBool("active", active);
+        LevelManager.GameStarted += OnGameStarted;
+        LevelManager.GameEnded += OnGameEnded;
     }
 
     private void OnDisable()
     {
-        if (subscribed)
-        {
-            LevelManager.Instance.SetActiveInGameUI -= SetUIActive;
-            subscribed = false;
-        }
+        LevelManager.GameStarted -= OnGameStarted;
+        LevelManager.GameEnded -= OnGameEnded;
     }
 
-    private void TrySubscribe()
-    {
-        if(LevelManager.Instance != null)
-        {
-            LevelManager.Instance.SetActiveInGameUI += SetUIActive;
-            subscribed = true;
-        }
-    }
+    private void OnGameStarted() => animator.SetBool("active", true);
+
+    private void OnGameEnded() => animator.SetBool("active", false);
 }

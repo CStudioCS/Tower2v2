@@ -47,7 +47,6 @@ public class Tower : Interactable
     public event Action PieceBuilt;
     [SerializeField] private PlayerTeam.Team team;
     public PlayerTeam.Team Team => team;
-    private RecipesList RecipesList => RecipeBannerLinker.Instance.RecipeBannerMap[team];
     private OffTowerCounter OffTowerCounter => CanvasLinker.Instance.OffTowerHeightCounterMap[team];
     
     [SerializeField] private TowerItemCatcher towerItemCatcher;
@@ -84,9 +83,6 @@ public class Tower : Interactable
     protected override void OnGameAboutToStart()
     {
         base.OnGameAboutToStart();
-        previousPieceLocalYPosition = 0;
-        nextPieceLocalYPosition = 0;
-        currentMultiplier = 1f;
         ResetTower();
     }
 
@@ -99,28 +95,35 @@ public class Tower : Interactable
         return player.IsHolding && playerIsCorrectTeam;
     }
 
-    public bool IsItemCorrect(Item item) => RecipesList.CurrentNeededItemType == item.ItemType;
+    public bool IsItemCorrect(Item.Type itemType) => ItemRandomizer.Instance.GetAt(Height) == itemType;
 
     public override void Interact(Player player)
     {
-        if (!IsItemCorrect(player.HeldItem))
+        if (!IsItemCorrect(player.HeldItem.ItemType))
         {
-            SoundManager.instance.PlaySound("TowerWrong");
-            TriedBuildingWithIncorrectItemType?.Invoke();
+            InteractablesNetworkHub.Instance.RPC_SyncTowerError(NetworkId);
             return;
         }
 
         ConstructPiece(player.HeldItem.ItemType);
 
         if (player.HeldItem.originallyCollectedByTeam != Team)
-            player.PlayerStats.stolenItems++;
+            player.PlayerStats.StolenItems++;
 
         player.ConsumeCurrentItem();
     }
 
+    public void WrongItemError()
+    {
+        SoundManager.instance.PlaySound("TowerWrong");
+        TriedBuildingWithIncorrectItemType?.Invoke();
+    }
+
+    public void ConstructPiece(Item.Type itemType) => InteractablesNetworkHub.Instance.RPC_SyncTowerBuild(NetworkId, itemType);
+
     // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
     // and with the way Unity handles rendering, the new object is rendered on top of the old one
-    public void ConstructPiece(Item.Type itemType)
+    public void ApplyConstructPiece(Item.Type itemType)
     {
         if (!TowerPieceMap.TryGetValue(itemType, out TowerPiece towerPiece))
         {
@@ -135,12 +138,17 @@ public class Tower : Interactable
         towerPieceInstance.transform.localPosition = NextPieceLocalPosition;
         towerPieceInstance.Initialize(this, NextPieceSortingOrder);
         towerPieces.Add(towerPieceInstance);
+
         LastPlacedTime = LevelManager.Instance.LevelTimer;
+
         UpdateTowerTopUI();
         previousPieceLocalYPosition = nextPieceLocalYPosition;
         PieceBuilt?.Invoke();
+
         nextPieceLocalYPosition += currentMultiplier * GetPieceHeight(itemType);
         currentMultiplier *= collapseMultiplier;
+
+        RefreshHighlight();
     }
 
     public override float GetInteractionTime() => 0;
@@ -170,12 +178,19 @@ public class Tower : Interactable
         onTowerHeightText.text = Height.ToString();
     }
 
-    public override bool CheckIfCanBeHighlighted(Player player) => base.CheckIfCanBeHighlighted(player) && player.IsHolding && IsItemCorrect(player.HeldItem);
+    public override bool CheckIfCanBeHighlighted(Player player) 
+        => base.CheckIfCanBeHighlighted(player) && player.SyncHeldItemType != -1 && IsItemCorrect((Item.Type)player.SyncHeldItemType);
 
     private void LateUpdate()
     {
         if (moving)
             UpdateTowerTopUI();
+    }
+
+    protected override void OnReturnedToLobby()
+    {
+        base.OnReturnedToLobby();
+        ResetTower();
     }
 
     private void ResetTower()
@@ -185,6 +200,11 @@ public class Tower : Interactable
             Destroy(towerPiece.gameObject);
         towerPieces.Clear();
         LastPlacedTime = float.MaxValue;
+
+        previousPieceLocalYPosition = 0;
+        nextPieceLocalYPosition = 0;
+        currentMultiplier = 1f;
+
         UpdateTowerTopUI();
     }
 }

@@ -7,17 +7,18 @@ public class Sign: Interactable
 	public override float GetInteractionTime() => 0;
 
 	public override bool CanInteract(Player player) => true;
-	
-	public override void TryHighlight(bool highlighted, Player player)
+
+	public override void OnTargetedBy(Player player, bool targeted)
 	{
-		if (highlighted)
+		if (!player.HasInputAuthority)
+			return;
+
+		if (targeted)
 		{
-			player.PlayerControlBadge.SetReadyText(signText);
-			player.PlayerControlBadge.SetUnready(true);
+			player.PlayerBadge.SetReadyText(signText);
+			player.PlayerControlBadge.SetUnready();
 		}
 		else
-			player.PlayerControlBadge.ResetReadyText();
-		
-		base.TryHighlight(highlighted, player);
+			player.PlayerBadge.ResetReadyText();
 	}
 }
