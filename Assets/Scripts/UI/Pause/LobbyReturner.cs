@@ -8,10 +8,6 @@ public class LobbyReturner : MonoBehaviour
     public void ReturnToLobby()
     {
         pauseMenu.Resume(fireEvent: false);
-
-        if (NetworkManager.Instance?.IsClient == true)
-            LevelManager.Instance.ClientLeave(true);
-        else
-            LevelManager.Instance.ForceReturnToLobby();
+        LevelManager.Instance.RPC_ForceReturnToLobby();
     } 
 }
