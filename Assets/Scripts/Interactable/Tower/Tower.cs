@@ -120,7 +120,11 @@ public class Tower : Interactable
         TriedBuildingWithIncorrectItemType?.Invoke();
     }
 
-    public void ConstructPiece(Item.Type itemType) => InteractablesNetworkHub.Instance.RPC_SyncTowerBuild(NetworkId, itemType);
+    public void ConstructPiece(Item.Type itemType)
+    {
+        ApplyConstructPiece(itemType);
+        InteractablesNetworkHub.Instance.RPC_SyncTowerBuild(NetworkId, itemType);
+    }
 
     // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
     // and with the way Unity handles rendering, the new object is rendered on top of the old one
@@ -186,12 +190,6 @@ public class Tower : Interactable
     {
         if (moving)
             UpdateTowerTopUI();
-    }
-
-    protected override void OnReturnedToLobby()
-    {
-        base.OnReturnedToLobby();
-        ResetTower();
     }
 
     private void ResetTower()

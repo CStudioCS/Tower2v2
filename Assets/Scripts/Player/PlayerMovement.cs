@@ -123,7 +123,7 @@ public class PlayerMovement : NetworkBehaviour
         gameStartingLock = false;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         LevelManager.GameAboutToStart -= OnGameAboutToStart;
         LevelManager.GameStarted -= OnGameStarted;

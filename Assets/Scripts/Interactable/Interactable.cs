@@ -87,7 +87,7 @@ public abstract class Interactable : MonoBehaviour
         }
     }
     
-    private void Start()
+    protected virtual void Start()
     {
         LevelManager.GameAboutToStart += OnGameAboutToStart;
         LevelManager.ReturnedToLobby += OnReturnedToLobby;
@@ -143,12 +143,12 @@ public abstract class Interactable : MonoBehaviour
 
     protected virtual void OnGameEnded() { }
 
-    private void OnDisable()
+    protected virtual void OnDestroy()
     {
+        InteractableRegistry.Unregister(this);
+
         LevelManager.GameAboutToStart -= OnGameAboutToStart;
         LevelManager.ReturnedToLobby -= OnReturnedToLobby;
         LevelManager.GameEnded -= OnGameEnded;
     }
-
-    protected virtual void OnDestroy() => InteractableRegistry.Unregister(this);
 }

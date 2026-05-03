@@ -21,7 +21,7 @@ public class Workbench : Interactable
 
     private int soundIndex = -1;
 
-    private void Awake()
+    protected override void Awake()
     {
         base.Awake();
         ApplyVisualState(State.Empty, State.Empty);
@@ -44,23 +44,29 @@ public class Workbench : Interactable
         }
     }
 
-    public void PutWoodLog() => InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodLog, cutLastByTeam);
+    public void PutWoodLog()
+    {
+        ApplyState(State.HasWoodLog, cutLastByTeam);
+        InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodLog, cutLastByTeam);
+    }
 
     public override void Interact(Player player)
     {
         switch (state)
         {
             case State.Empty:
-                InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodLog, cutLastByTeam);
+                PutWoodLog();
                 player.ConsumeCurrentItem();
                 break;
 
             case State.HasWoodLog:
                 player.PlayerStats.WoodCut++;
+                ApplyState(State.HasWoodPlank, player.PlayerTeam.CurrentTeam);
                 InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodPlank, player.PlayerTeam.CurrentTeam);
                 break;
 
             case State.HasWoodPlank:
+                ApplyState(State.Empty, cutLastByTeam);
                 InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.Empty, cutLastByTeam);
                 player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam);  //ownership for wood is determined by who cut it, not who collected it 
                 break;
@@ -109,15 +115,7 @@ public class Workbench : Interactable
     protected override void OnGameEnded()
     {
         base.OnGameEnded();
-        state = State.Empty;
-        ResetGraphicsOnTable();
-    }
-
-    private void ResetGraphicsOnTable()
-    {
-        woodOnTable.SetActive(false);
-        woodPlanckOnTable.SetActive(false);
-        axe.SetActive(true);
+        ApplyState(State.Empty, cutLastByTeam);
     }
 
     private void Update()
