@@ -1,6 +1,7 @@
+using Fusion;
 using Fusion.Addons.Physics;
 using System;
-using Fusion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -93,13 +94,14 @@ public class Item : Interactable
     {
         if (!networkItem.HasStateAuthority) return;
 
-        networkItem.Drop();
+        // Open to any different idea, Fusion and Unity are just so annoying that I had to do this
+        StartCoroutine(HideGraphicsDuringLoading());
 
+        networkItem.Drop();
         transform.SetParent(null);
         rb.simulated = true;
         itemCollider.enabled = true;
         netRb.enabled = true;
-        netRb.Teleport(transform.position, transform.rotation);
 
         rb.linearVelocity = throwSpeed;
         velocitySqrMagnitudeForTowerItemCatcher = throwSpeed.sqrMagnitude;
@@ -166,5 +168,16 @@ public class Item : Interactable
     {
         base.OnDestroy();
         LevelManager.GameEnded -= Disappear;
+    }
+
+    private IEnumerator HideGraphicsDuringLoading()
+    {
+        trailRenderer.emitting = false;
+        graphics.SetActive(false);
+
+        yield return null;
+        graphics.SetActive(true);
+        trailRenderer.Clear();
+        trailRenderer.emitting = true;
     }
 }
