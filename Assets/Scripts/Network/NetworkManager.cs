@@ -22,7 +22,6 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     [Header("Network Runner")]
     [SerializeField] private NetworkRunner runnerPrefab;
 
-
     public static event Action OnUnexpectedDisconnect;
     private GameMode currentGameMode;
 
@@ -130,6 +129,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public async Task JoinLobby()
     {
         IsBusy = true;
+        currentGameMode = GameMode.Client;
         try
         {
             // Clean up any existing runner (online or offline)
@@ -236,10 +236,17 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         OnUnexpectedDisconnect?.Invoke();
 
         if (LevelManager.Instance != null)
-            // "false" because we can't save them, the lobby manager is dying soon :'(
-            LevelManager.Instance.ClientLeave(false);
+        {
+            if (NotificationManager.Instance != null)
+                NotificationManager.Instance.ShowNotification("Connection Lost.");
+
+            LevelManager.Instance.ClientLeave(true);
+        }
         else
-            Reboot(GameMode.Single);
+        {
+            UseSavedPositionsForNextSpawn = true;
+            _ = StartNetworkGame(GameMode.Single);
+        }
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)

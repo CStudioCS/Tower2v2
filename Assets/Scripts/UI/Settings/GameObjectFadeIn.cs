@@ -5,6 +5,7 @@ public class GameObjectFadeIn : MonoBehaviour
 {
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private float duration = 0.2f;
+    public float Duration => duration;
 
     public bool FadedIn { get; private set; }
     private MotionHandle handle;

@@ -66,6 +66,7 @@ public class SettingsMenu : MonoBehaviour
     public void GoToNetworkMenu()
     {
         lastSelectedButton = eventSystem.currentSelectedGameObject;
+        inputHandler.Unbind();
 
         if (settingsFader.FadedIn) settingsFader.Fade();
         networkMenu.Open(currentPlayer, this);
