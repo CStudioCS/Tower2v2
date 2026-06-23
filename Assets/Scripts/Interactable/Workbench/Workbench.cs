@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Workbench : Interactable
 {
-    public enum State { Empty, HasWoodLog, HasWoodPlank }
+    public enum State { Empty, HasWoodLog }
     private State state;
     public State WorkbenchState => state;
 
@@ -16,7 +16,6 @@ public class Workbench : Interactable
     private PlayerTeam.Team cutLastByTeam;
 
     [SerializeField] private GameObject woodOnTable;
-    [SerializeField] private GameObject woodPlanckOnTable;
     [SerializeField] private GameObject axe;
 
     private int soundIndex = -1;
@@ -36,8 +35,6 @@ public class Workbench : Interactable
             case State.Empty:
                 return player.IsHolding && player.HeldItem.ItemType == Item.Type.WoodLog;
             case State.HasWoodLog:
-                return !player.IsHolding;
-            case State.HasWoodPlank:
                 return !player.IsHolding;
             default:
                 throw new UnityException("Workbench state not handled in CanInteract");
@@ -61,14 +58,9 @@ public class Workbench : Interactable
 
             case State.HasWoodLog:
                 player.PlayerStats.WoodCut++;
-                ApplyState(State.HasWoodPlank, player.PlayerTeam.CurrentTeam);
-                InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodPlank, player.PlayerTeam.CurrentTeam);
-                break;
-
-            case State.HasWoodPlank:
-                ApplyState(State.Empty, cutLastByTeam);
-                InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.Empty, cutLastByTeam);
-                player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam);  //ownership for wood is determined by who cut it, not who collected it 
+                ApplyState(State.Empty, player.PlayerTeam.CurrentTeam);
+                InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.Empty, player.PlayerTeam.CurrentTeam);
+                player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam);
                 break;
         }
     }
@@ -87,14 +79,13 @@ public class Workbench : Interactable
     private void ApplyVisualState(State oldState, State newState)
     {
         woodOnTable.SetActive(false);
-        woodPlanckOnTable.SetActive(false);
         axe.SetActive(false);
 
         switch (newState)
         {
             case State.Empty:
                 axe.SetActive(true);
-                if (oldState == State.HasWoodPlank)
+                if (oldState == State.HasWoodLog)
                     SoundManager.instance.PlaySound("WoodSound"); 
                 break;
 
@@ -102,10 +93,6 @@ public class Workbench : Interactable
                 woodOnTable.SetActive(true);
                 if (oldState == State.Empty)
                     SoundManager.instance.PlaySound("WoodSound");
-                break;
-
-            case State.HasWoodPlank:
-                woodPlanckOnTable.SetActive(true);
                 break;
         }
     }
