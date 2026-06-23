@@ -12137,6 +12137,10 @@ PrefabInstance:
       propertyPath: SortKey
       value: 3416791471
       objectReference: {fileID: 0}
+    - target: {fileID: 5146911596083224033, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5951444765711152512, guid: 9e3cb4eb0fac13243864752b91426794, type: 3}
       propertyPath: m_Name
       value: Managers

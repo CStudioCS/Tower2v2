@@ -35,6 +35,12 @@ public class PlayerMovement : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
+        foreach (PlayerInput player in PlayerInput.all)
+        {
+            if (player.currentActionMap?.name == "UI")
+                return;
+        }
+
         Vector2 inputMovement = Vector2.zero;
 
         if (GetInput(out PlayerNetworkInput input))

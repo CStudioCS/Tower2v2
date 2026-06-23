@@ -43,6 +43,8 @@ public class MenuInputHandler : MonoBehaviour
     private bool wasNavigatingLastFrame;
 
     private InputSystemUIInputModule uiModule;
+    public InputSystemUIInputModule UIModule => uiModule;
+
     private bool hadMoveAction, hadSubmitAction, hadCancelAction;
     private EventSystem disabledExtraEventSystem;
 

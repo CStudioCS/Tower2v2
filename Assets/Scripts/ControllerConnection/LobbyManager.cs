@@ -22,6 +22,9 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     [Header("Network")]
     [SerializeField] private NetworkPrefabRef playerAvatarPrefab;
 
+    [Header("Local & Session Data")]
+    public string LocalPlayerName { get; private set; }
+
     // Queue to link the PlayerInput to the avatar.
     public static Queue<PlayerInput> UnlinkedLocalInputs = new Queue<PlayerInput>();
     public static HashSet<string> ActiveKeyboardSchemes = new HashSet<string>();
@@ -38,6 +41,9 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
 
     [Networked, OnChangedRender(nameof(OnMapIndexChanged))]
     public int CurrentMapIndex { get; set; }
+
+    [Networked, Capacity(64), OnChangedRender(nameof(OnSessionNameNetworked))]
+    public string CustomSessionName { get; set; }
 
     public static event Action<int, bool> OnMapChangedEvent;
     public static LobbyManager Instance;
@@ -71,6 +77,8 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
 
         if (playerInputManager != null && localInputProxyPrefab != null)
             playerInputManager.playerPrefab = localInputProxyPrefab;
+
+        LocalPlayerName = PlayerPrefs.GetString("LocalPlayerName", "Piggy");
     }
 
     private void OnDestroy()
@@ -82,7 +90,10 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     public override void Spawned()
     {
         if (HasStateAuthority)
+        {
             TotalPlayers = 0;
+            CustomSessionName = "";
+        }
 
         Player.PlayerSpawned += OnPlayerCountChanged;
         Player.PlayerDespawned += OnPlayerCountChanged;
@@ -134,6 +145,21 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         LevelManager.ReturnedToLobby -= SessionInfoSync;
     }
 
+    public void SetLocalPlayerName(string newName)
+    {
+        if (string.IsNullOrWhiteSpace(newName)) return;
+        LocalPlayerName = newName;
+        PlayerPrefs.SetString("LocalPlayerName", newName);
+    }
+
+    private void OnSessionNameNetworked() => SessionInfoSync();
+
+    public void SetCustomSessionName(string newName)
+    {
+        if (!HasStateAuthority || string.IsNullOrWhiteSpace(newName)) return;
+        CustomSessionName = newName;
+    }
+
     private void OnPlayerCountChanged(Player player)
     {
         if (!HasStateAuthority) return;
@@ -155,6 +181,12 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     {
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null) return;
+
+        foreach (PlayerInput player in PlayerInput.all)
+        {
+            if (player.currentActionMap?.name == "UI")
+                 return;
+        }
 
         if (keyboard.eKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
             keyboard.sKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame)
@@ -436,7 +468,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
             PlayerInput rejectedInput = UnlinkedLocalInputs.Dequeue();
             Debug.LogWarning($"[Lobby] Spawn rejected by server for player {rejectedInput.playerIndex}.");
 
-            // TODO: Add some UI feedback
+            NotificationManager.Instance?.ShowNotification("Join request rejected. The lobby is full.");
         }
     }
 
@@ -578,6 +610,8 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
             var newProps = new Dictionary<string, SessionProperty>();
             newProps["TotalPlayers"] = TotalPlayers;
             newProps["MapName"] = MapNames[CurrentMapIndex];
+            newProps["DisplayName"] = string.IsNullOrWhiteSpace(CustomSessionName) ? Runner.SessionInfo.Name : CustomSessionName;
+
             Runner.SessionInfo.UpdateCustomProperties(newProps);
             Runner.SessionInfo.IsOpen = (TotalPlayers < Runner.SessionInfo.MaxPlayers) 
                 && (LevelManager.Instance.GameState == LevelManager.State.Lobby);
