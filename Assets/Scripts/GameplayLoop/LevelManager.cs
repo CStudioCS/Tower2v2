@@ -1,8 +1,7 @@
-using System;
-using Fusion;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fusion;
+using System;
 
 public class LevelManager : NetworkBehaviour
 {
@@ -12,7 +11,9 @@ public class LevelManager : NetworkBehaviour
     [SerializeField] private float secondsBeforeGameEnd = 5f; //I literally cannot name any of the shit in this PR feel free to rename
     
     public float LobbyUIFadeTime = 1f;
-    
+
+    [Networked] public int GameSeed { get; set; }
+
     public enum State { Lobby, Starting, Game, EndScreen }
 
     [Networked, OnChangedRender(nameof(OnGameStateChanged))]
@@ -177,6 +178,9 @@ public class LevelManager : NetworkBehaviour
     public void StartGameDelayed(float delay = 3f)
     {
         if (!HasStateAuthority) return;
+
+        GameSeed = UnityEngine.Random.Range(1, int.MaxValue);
+
         GameState = State.Starting;
         StartDelayTimer = TickTimer.CreateFromSeconds(Runner, delay);
     }
@@ -270,6 +274,7 @@ public class LevelManager : NetworkBehaviour
 
     public void SetGameStateToLobby()
     {
+        hasInvokedFewSecondsWarning = false;
         ActivateLobbyObjects(true);
         ActivateInGameObjects(false);
 

@@ -52,7 +52,7 @@ public class RecipesList : MonoBehaviour
 
     private void OnGameAboutToStart()
     {
-        randomIndex = Tower.Height;       
+        randomIndex = 0;       
         firstRecipeIndex = 0;  
         InitializeRecipes();
     }

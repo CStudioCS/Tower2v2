@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Fusion;
-using UnityEngine.InputSystem;
 
 public class GameStartManager : NetworkBehaviour
 {
@@ -18,8 +16,6 @@ public class GameStartManager : NetworkBehaviour
 
     [Networked, OnChangedRender(nameof(OnWaitStateChanged))]
     public WaitState waitState { get; set; }
-
-    [Networked] public int GameSeed { get; set; }
 
     private Dictionary<WaitState, string> waitingMessages;
     private Dictionary<WaitState, string> WaitingMessages
@@ -79,10 +75,7 @@ public class GameStartManager : NetworkBehaviour
         Player.PlayerDespawned += RemovePlayer;
 
         if (HasStateAuthority)
-        {
             waitState = WaitState.Logo;
-            GameSeed = Random.Range(1, int.MaxValue);
-        }
     }
 
     private void ResetPlayers()
