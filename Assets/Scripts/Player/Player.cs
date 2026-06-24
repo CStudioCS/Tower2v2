@@ -100,6 +100,8 @@ public class Player : NetworkBehaviour
         PlayerSpawned?.Invoke(this);
         AvatarSpawned?.Invoke();
 
+        playerBadge.SetPlayerName(SyncPlayerName);
+
         if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
         {
             target.RefreshHighlight();

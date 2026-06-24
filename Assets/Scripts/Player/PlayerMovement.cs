@@ -25,6 +25,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private bool gameStartingLock;
 
+    [Networked] public Vector2 SyncVelocity { get; set; }
     public bool Accelerating { get; private set; }
 
     private void Start()
@@ -70,7 +71,10 @@ public class PlayerMovement : NetworkBehaviour
         Accelerating = targetVelocity != Vector2.zero;
 
         if (HasStateAuthority)
+        {
             player.PlayerStats.DistanceTravelled += rb.linearVelocity.magnitude * Runner.DeltaTime;
+            SyncVelocity = rb.linearVelocity;
+        }
     }
 
 

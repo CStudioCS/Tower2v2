@@ -542,6 +542,7 @@ MonoBehaviour:
   player: {fileID: 8343199554380001103}
   playerInput: {fileID: 0}
   rb: {fileID: 176917095401970236}
+  _SyncVelocity: {x: 0, y: 0}
 --- !u!114 &4720667436485828352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2235,6 +2236,10 @@ PrefabInstance:
     - target: {fileID: 1306481334988066537, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1421162156888271126, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1433744196269100742, guid: 0e1cc938fb0660c4882df5e0bc4657e2, type: 3}
       propertyPath: m_Layer

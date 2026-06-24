@@ -19,9 +19,6 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private PlayerTeam playerTeam;
     [SerializeField] private Player player;
 
-    private Vector2 lastPosition;
-    private float visualSpeed;
-
     private void OnEnable()
     {
         playerTeam.TeamChanged += OnTeamChanged;
@@ -63,7 +60,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     void Update()
     {
-        Vector2 velocity = player.PlayerMovement.Rb.linearVelocity;
+        Vector2 velocity = player.PlayerMovement.SyncVelocity;
 
         animator.SetFloat(speedId, velocity.magnitude > 0.1f ? velocity.magnitude : 0);
 
