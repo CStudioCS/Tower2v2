@@ -3,6 +3,7 @@ using LitMotion;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerBadge : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class PlayerBadge : MonoBehaviour
 
     [Header("Graphics")]
     [SerializeField] private CanvasGroup graphics;
+    [SerializeField] private VerticalLayoutGroup badgeLayout;
 
     public enum ControlSchemes { WASD, TFGH, IJKL, ArrowKeys, Switch, PlayStation, Xbox }
     private ControlSchemes controlScheme;
@@ -55,11 +57,8 @@ public class PlayerBadge : MonoBehaviour
         // No need to show the instructions for distant players
         if (!player.HasInputAuthority)
         {
-            gamepadXbox.SetActive(false);
-            gamepadSwitch.SetActive(false);
-            gamepadPlaystation.SetActive(false);
-            arrowKeys.SetActive(false);
-            genericKeys.SetActive(false);
+            gamepadXbox.transform.parent.gameObject.SetActive(false);
+            LayoutMotionUtility.AnimateLayout(badgeLayout, targetTop: 25, targetSpacing: -25);
             readyText.text = "Ready?";
             readyKey.SetActive(false);
         }
@@ -79,15 +78,21 @@ public class PlayerBadge : MonoBehaviour
     
     private void OnGameStarted()
     {
-        Fade(false);
         playerNameText.gameObject.SetActive(true);
+        LayoutMotionUtility.AnimateLayout(badgeLayout, targetTop: 0, targetSpacing: 0);
+        Fade(false);
     }
 
     private void OnReturnedToLobby()
     {
+        playerNameText.gameObject.SetActive(true);
         graphics.gameObject.SetActive(true);
+        LayoutMotionUtility.AnimateLayout(
+            badgeLayout, 
+            targetTop: player.HasInputAuthority ? 0 : 25, 
+            targetSpacing: player.HasInputAuthority ? 25 : -25
+        );
         Fade(true);
-        playerNameText.gameObject.SetActive(!player.HasInputAuthority);
     }
 
     private void Fade(bool fadeIn)
@@ -218,7 +223,15 @@ public class PlayerBadge : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void ShowReadyLabel(bool on) => readyParent.SetActive(on);
+    public void ShowReadyLabel(bool on)
+    {
+        readyParent.SetActive(on);
+        LayoutMotionUtility.AnimateLayout(
+            badgeLayout,
+            targetTop: on ? 0 : 25,
+            targetSpacing: on ? 25 : -5
+        );
+    }
 
     public void SetReadyText(string text = "Ready?") => readyText.text = text;
 
