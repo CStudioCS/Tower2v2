@@ -78,7 +78,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         if (playerInputManager != null && localInputProxyPrefab != null)
             playerInputManager.playerPrefab = localInputProxyPrefab;
 
-        LocalPlayerName = PlayerPrefs.GetString("LocalPlayerName", "Piggy");
+        LocalPlayerName = NetworkManager.Instance.IsSinglePlayer ? "Piggy" : PlayerPrefs.GetString("LocalPlayerName", "Piggy");
     }
 
     private void OnDestroy()
@@ -100,6 +100,8 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
 
         LevelManager.GameAboutToStart += SessionInfoSync;
         LevelManager.ReturnedToLobby += SessionInfoSync;
+
+        LevelManager.ReturnedToLobby += UpdateLocalPlayerNames;
 
         // Restore the avatars of the players who were in the lobby before the reload
         List<PlayerInput> connectedInputs = new List<PlayerInput>(PlayerInput.all);
@@ -143,6 +145,8 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
 
         LevelManager.GameAboutToStart -= SessionInfoSync;
         LevelManager.ReturnedToLobby -= SessionInfoSync;
+
+        LevelManager.ReturnedToLobby -= UpdateLocalPlayerNames;
     }
 
     public void SetLocalPlayerName(string newName)
@@ -150,6 +154,24 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         if (string.IsNullOrWhiteSpace(newName)) return;
         LocalPlayerName = newName;
         PlayerPrefs.SetString("LocalPlayerName", newName);
+
+        UpdateLocalPlayerNames();
+    }
+
+    public void UpdateLocalPlayerNames()
+    {
+        if (Runner?.IsRunning != true) return;
+
+        int index = 1;
+        foreach (Player player in PlayerRegistry.All)
+        {
+            if (player.HasInputAuthority)
+            {
+                string assignedName = $"{LocalPlayerName} {index}";
+                player.RPC_SetPlayerName(assignedName);
+                index++;
+            }
+        }
     }
 
     private void OnSessionNameNetworked() => SessionInfoSync();
@@ -162,10 +184,14 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
 
     private void OnPlayerCountChanged(Player player)
     {
-        if (!HasStateAuthority) return;
+        if (HasStateAuthority)
+        {
+            TotalPlayers = PlayerRegistry.All.Count;
+            SessionInfoSync();
+        }
 
-        TotalPlayers = PlayerRegistry.All.Count;
-        SessionInfoSync();
+        // ALL local clients update their names every time the network confirms a spawn/despawn.
+        UpdateLocalPlayerNames();
     }
 
     private void Update()
@@ -381,27 +407,27 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
     //</summary>
     public void LinkPendingProxyToAvatar(NetworkObject newAvatar)
     {
-        if (UnlinkedLocalInputs.Count > 0)
+        if (UnlinkedLocalInputs.Count == 0)
+            return;
+
+        PlayerInput pendingInput = UnlinkedLocalInputs.Dequeue();
+
+        string previousActionMap = pendingInput.currentActionMap?.name;
+
+        activeAvatars.Add(pendingInput, newAvatar);
+
+        PlayerInputPoller poller = newAvatar.GetComponent<PlayerInputPoller>();
+        if (poller == null)
+            return;
+
+        poller.AssignLocalInput(pendingInput);
+
+        if (previousActionMap == "UI")
         {
-            PlayerInput pendingInput = UnlinkedLocalInputs.Dequeue();
+            pendingInput.SwitchCurrentActionMap("UI");
 
-            string previousActionMap = pendingInput.currentActionMap?.name;
-
-            activeAvatars.Add(pendingInput, newAvatar);
-
-            PlayerInputPoller poller = newAvatar.GetComponent<PlayerInputPoller>();
-            if (poller == null)
-                return;
-
-            poller.AssignLocalInput(pendingInput);
-
-            if (previousActionMap == "UI")
-            {
-                pendingInput.SwitchCurrentActionMap("UI");
-
-                Player player = newAvatar.GetComponent<Player>();
-                player.PlayerBadge.ShowReadyLabel(false);
-            }
+            Player player = newAvatar.GetComponent<Player>();
+            player.PlayerBadge.ShowReadyLabel(false);
         }
     }
 

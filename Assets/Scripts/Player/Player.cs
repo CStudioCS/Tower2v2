@@ -63,6 +63,10 @@ public class Player : NetworkBehaviour
     [Networked] public AimingState CurrentAimingState { get; set; }
     [Networked] private float TimerBeforeAimCharge { get; set; }
 
+    [Networked, Capacity(32), OnChangedRender(nameof(OnPlayerNameChanged))]
+    public string SyncPlayerName { get; set; }
+    private void OnPlayerNameChanged() => playerBadge.SetPlayerName(SyncPlayerName);
+
     private float ThrowSpeed => SyncThrowSpeedRatio * (maxThrowSpeed - minThrowSpeed) + minThrowSpeed;
     public Vector2 ThrowVelocity => ThrowSpeed * SyncThrowDirection;
 
@@ -519,6 +523,15 @@ public class Player : NetworkBehaviour
 
         if (HasStateAuthority || HasInputAuthority)
             SyncHeldItemType = (int)item.ItemType;
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_SetPlayerName(string newName)
+    {
+        if (LevelManager.Instance.GameState == LevelManager.State.Game)
+            return;
+
+        SyncPlayerName = newName;
     }
 
     private void OnGameEnded()

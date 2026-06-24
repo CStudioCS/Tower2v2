@@ -9,6 +9,7 @@ public class PlayerBadge : MonoBehaviour
     [Header("Player")]
     [SerializeField] private Player player;
     [SerializeField] private PlayerControlBadge playerControlBadge;
+    [SerializeField] private TextMeshProUGUI playerNameText;
 
     [Header("Graphics")]
     [SerializeField] private CanvasGroup graphics;
@@ -59,9 +60,11 @@ public class PlayerBadge : MonoBehaviour
             gamepadPlaystation.SetActive(false);
             arrowKeys.SetActive(false);
             genericKeys.SetActive(false);
-            readyText.text = "Ready?"; // Maybe change this to player name in the future
+            readyText.text = "Ready?";
             readyKey.SetActive(false);
         }
+
+        playerNameText.gameObject.SetActive(true);
     }
 
     public void Initialize(int playerIndex, ControlSchemes controlScheme)
@@ -77,12 +80,14 @@ public class PlayerBadge : MonoBehaviour
     private void OnGameStarted()
     {
         Fade(false);
+        playerNameText.gameObject.SetActive(true);
     }
 
     private void OnReturnedToLobby()
     {
         graphics.gameObject.SetActive(true);
         Fade(true);
+        playerNameText.gameObject.SetActive(!player.HasInputAuthority);
     }
 
     private void Fade(bool fadeIn)
@@ -91,6 +96,8 @@ public class PlayerBadge : MonoBehaviour
             fadeMotionHandle.Cancel();
         fadeMotionHandle = FadeInNOutUtility.FadeInOrOut(graphics, LevelManager.Instance.LobbyUIFadeTime, fadeIn, fromCurrentValue: true);
     }
+
+    public void SetPlayerName(string name) => playerNameText.text = name;
 
     private void SetupControlScheme()
     {
