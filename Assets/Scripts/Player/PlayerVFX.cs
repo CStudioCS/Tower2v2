@@ -1,8 +1,7 @@
-using Fusion;
 using UnityEngine;
 using UnityEngine.VFX;
 
-public class PlayerVFX : NetworkBehaviour
+public class PlayerVFX : MonoBehaviour
 {
     [SerializeField] private Player player;
     [SerializeField] private VisualEffect grabItemSmokePoof;
@@ -29,7 +28,7 @@ public class PlayerVFX : NetworkBehaviour
         playerCollionSmokePoof.Play();
     }
 
-    public override void Render()
+    private void FixedUpdate()
     {
         accumulatedDistance += player.PlayerMovement.Rb.linearVelocity.magnitude * Time.deltaTime;
 
@@ -47,8 +46,6 @@ public class PlayerVFX : NetworkBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.relativeVelocity.magnitude < 4f || Runner.IsResimulation) return;
-
         if (collision.collider.transform.parent != null && collision.collider.transform.parent.TryGetComponent<Player>(out Player _))
             PlayCollideWithPlayerSmokePoof(collision.GetContact(0).point);
     }

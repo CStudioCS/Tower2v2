@@ -363,18 +363,21 @@ public class Player : NetworkBehaviour
 
     private void ExecuteInteraction(Interactable target)
     {
-        if (!target.CanInteract(this)) return;
+        if (!HasStateAuthority) return;
 
-        bool isClientSide = target.executionTarget == Interactable.ExecutionTarget.ClientSide;
-        bool canInteract = isClientSide ? (HasInputAuthority && Runner.IsForward) : HasStateAuthority;
-
-        if (canInteract)
+        // If I'm the host I call the interact function directly
+        // If I'm the client I need to send an RPC to the host to call the interact function for me
+        if (target.executionTarget == Interactable.ExecutionTarget.ClientSide)
+            RPC_ClientInteract(target.NetworkId);
+        else
             target.Interact(this);
-        else if (!isClientSide && HasInputAuthority)
-        {
-            SyncHeldItemType = -1;
-            if (HeldItem != null) HeldItem.gameObject.SetActive(false);
-        }
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void RPC_ClientInteract(int targetInteractableId)
+    {
+        if (InteractableRegistry.All.TryGetValue(targetInteractableId, out Interactable targetInteractable))
+            targetInteractable.Interact(this);
     }
 
     private void StopInteracting(Interactable insideInteractable)
