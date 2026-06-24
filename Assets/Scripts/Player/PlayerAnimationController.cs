@@ -63,7 +63,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     void Update()
     {
-        Vector2 velocity = player.PlayerMovement.Velocity;
+        Vector2 velocity = player.PlayerMovement.Rb.linearVelocity;
 
         animator.SetFloat(speedId, velocity.magnitude > 0.1f ? velocity.magnitude : 0);
 
