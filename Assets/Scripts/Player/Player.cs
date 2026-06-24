@@ -92,6 +92,7 @@ public class Player : NetworkBehaviour
     private void Start()
     {
         LevelManager.GameEnded += OnGameEnded;
+        NetworkManager.OnUnexpectedDisconnect += UnsubscribeFromNetworkEvents;
     }
 
     public override void Spawned()
@@ -547,6 +548,12 @@ public class Player : NetworkBehaviour
     }
     
     private void OnDisable()
+    {
+        LevelManager.GameEnded -= OnGameEnded;
+        NetworkManager.OnUnexpectedDisconnect -= UnsubscribeFromNetworkEvents;
+    }
+
+    private void UnsubscribeFromNetworkEvents()
     {
         LevelManager.GameEnded -= OnGameEnded;
     }

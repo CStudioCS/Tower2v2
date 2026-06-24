@@ -641,7 +641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2959492509834446286, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 20.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2959492509834446286, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_SizeDelta.y
@@ -649,11 +649,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2959492509834446286, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 10.005
+      value: 24.620007
       objectReference: {fileID: 0}
     - target: {fileID: 2959492509834446286, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -16.37
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3358909514471206771, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_Name
@@ -669,7 +669,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4432039070095322435, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 162.61
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4432039070095322435, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_SizeDelta.y
@@ -677,11 +677,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4432039070095322435, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 101.315
+      value: 115.93001
       objectReference: {fileID: 0}
     - target: {fileID: 4432039070095322435, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -16.37
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5151290941289314976, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_Pivot.x
@@ -802,7 +802,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2959492509834446286, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 20.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2959492509834446286, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_SizeDelta.y
@@ -810,11 +810,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2959492509834446286, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 10.005
+      value: 24.620007
       objectReference: {fileID: 0}
     - target: {fileID: 2959492509834446286, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -16.37
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3358909514471206771, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_Name
@@ -830,7 +830,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4432039070095322435, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 162.61
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4432039070095322435, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_SizeDelta.y
@@ -838,11 +838,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4432039070095322435, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 101.315
+      value: 115.93001
       objectReference: {fileID: 0}
     - target: {fileID: 4432039070095322435, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -16.37
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5151290941289314976, guid: be486820a7a2da44b9dcced6b9ab3e23, type: 3}
       propertyPath: m_Pivot.x
