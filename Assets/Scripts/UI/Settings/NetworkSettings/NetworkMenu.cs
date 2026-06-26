@@ -177,23 +177,31 @@ public class NetworkMenu : MonoBehaviour
         if (myGameRowController == null || NetworkManager.Instance.Runner == null) return;
 
         bool isHost = NetworkManager.Instance.IsHosting;
-        string sessionName = NetworkManager.Instance.CurrentSessionName;
         int displayCount = LobbyManager.Instance != null ? LobbyManager.Instance.TotalPlayers : 1;
         displayCount = Mathf.Max(1, displayCount);
+
+        string displaySessionName = string.IsNullOrWhiteSpace(LobbyManager.Instance?.CustomSessionName)
+            ? NetworkManager.Instance.CurrentSessionName
+            : LobbyManager.Instance.CustomSessionName;
 
         int pingMs = !isHost ? Mathf.RoundToInt((float)NetworkManager.Instance.Runner.GetPlayerRtt(NetworkManager.Instance.Runner.LocalPlayer) * 1000f) : 0;
 
         // The row is already instantiated, we just call "Initialize" to overwrite the texts
         myGameRowController.Initialize(
             sessionId: NetworkManager.Instance.CurrentSessionName,
-            lobbyName: isHost ? $"Room: {sessionName}" : $"Joined: {sessionName}",
+            lobbyName: displaySessionName,
             currentPlayers: displayCount,
             maxPlayers: NetworkManager.Instance.Runner.SessionInfo.MaxPlayers,
             property: $"{pingMs} ms",
             status: isHost ? "Hosting..." : "Connected",
             customButtonText: "Leave",
             isInteractable: true,
-            onButtonAction: LeaveGame
+            onButtonAction: LeaveGame,
+            menuHandler: inputHandler,
+            initialSessionName: displaySessionName,
+            initialPlayerName: LobbyManager.Instance?.LocalPlayerName,
+            isSessionNameEditable: isHost,
+            showPlayerName: true
         );
     }
 
@@ -215,6 +223,7 @@ public class NetworkMenu : MonoBehaviour
 
             int realPlayers = session.Properties.TryGetValue("TotalPlayers", out var prop) ? (int)prop : session.PlayerCount;
             string mapName = session.Properties.TryGetValue("MapName", out var mapProp) ? (string)mapProp : "--";
+            string sessionName = session.Properties.TryGetValue("DisplayName", out var displayNameProp) ? (string)displayNameProp : session.Name;
 
             if (!existingLobbyRows.TryGetValue(session.Name, out LobbyRowController rowController))
             {
@@ -230,14 +239,18 @@ public class NetworkMenu : MonoBehaviour
 
             rowController.Initialize(
                 sessionId: session.Name,
-                lobbyName: "Game: " + session.Name,
+                lobbyName: "Game: " + sessionName,
                 currentPlayers: realPlayers,
                 maxPlayers: session.MaxPlayers,
                 property: mapName,
                 status: session.IsOpen ? "Waiting..." : "In Progress",
                 customButtonText: "Join",
                 isInteractable: session.IsOpen && (realPlayers + PlayerInput.all.Count <= session.MaxPlayers),
-                onButtonAction: JoinGame
+                onButtonAction: JoinGame,
+                initialSessionName: sessionName,
+                initialPlayerName: "",
+                isSessionNameEditable: false,
+                showPlayerName: false
             );
         }
 
@@ -311,6 +324,7 @@ public class NetworkMenu : MonoBehaviour
 
         // Start the server in Host mode with a random room name
         string roomName = SessionNameGenerator.Generate();
+
         await NetworkManager.Instance.StartNetworkGame(GameMode.Host, roomName);
 
         if (this == null || !isOpen) return; // Safety if user closed the menu during await

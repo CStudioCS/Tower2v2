@@ -88,6 +88,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
             var customProps = new Dictionary<string, SessionProperty>();
             customProps["TotalPlayers"] = 1;
             customProps["MapName"] = "Tower Map";
+            customProps["DisplayName"] = roomName;
 
             // Configure the connection
             var startGameArgs = new StartGameArgs()
@@ -237,9 +238,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (LevelManager.Instance != null)
         {
-            if (NotificationManager.Instance != null)
-                NotificationManager.Instance.ShowNotification("Connection Lost.");
-
+            NotificationManager.Instance?.ShowNotification("Connection Lost.");
             LevelManager.Instance.ClientLeave(true);
         }
         else
