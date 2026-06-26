@@ -260,11 +260,14 @@ public class LevelManager : NetworkBehaviour
     public void ForceReturnToLobby()
     {
         if (!HasStateAuthority)
-            return;
-
+             return;   
+        
         GameState = State.Lobby;
     }
-    
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_ForceReturnToLobby() => ForceReturnToLobby();
+
     public void SetGameStateToLobby()
     {
         ActivateLobbyObjects(true);
