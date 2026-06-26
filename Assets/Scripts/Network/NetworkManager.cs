@@ -1,4 +1,5 @@
 using Fusion;
+using Fusion.Addons.Physics;
 using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkPrefabRef lobbyManagerPrefab;
     [SerializeField] private NetworkPrefabRef levelManagerPrefab;
     [SerializeField] private NetworkPrefabRef gameStartManagerPrefab;
+
+    [Header("Network Runner")]
+    [SerializeField] private NetworkRunner runnerPrefab;
+
 
     public static event Action OnUnexpectedDisconnect;
     private GameMode currentGameMode;
@@ -75,9 +80,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
             // Clean up any existing runner (online or offline)
             if (Runner != null) await InternalDisconnect();
 
-            GameObject runnerObj = new GameObject("NetworkRunner");
-            Runner = runnerObj.AddComponent<NetworkRunner>();
-            runnerObj.AddComponent<Fusion.Addons.Physics.RunnerSimulatePhysics2D>();
+            Runner = Instantiate(runnerPrefab);
 
             // Tell the Runner attached to the child gameeobject that this script will handle its callbacks
             Runner.AddCallbacks(this);
@@ -94,7 +97,6 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
                 SessionName = (mode == GameMode.Single) ? "" : roomName,
                 SessionProperties = customProps,
                 PlayerCount = 4,
-                SceneManager = runnerObj.AddComponent<NetworkSceneManagerDefault>(),
                 Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex)
             };
 
@@ -132,15 +134,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             // Clean up any existing runner (online or offline)
             if (Runner != null) await InternalDisconnect();
-
-            GameObject runnerObj = new GameObject("NetworkRunner");
-            Runner = runnerObj.AddComponent<NetworkRunner>();
-            runnerObj.AddComponent<Fusion.Addons.Physics.RunnerSimulatePhysics2D>();
-
+            Runner = Instantiate(runnerPrefab);
 
             // Tell the Runner attached to the child gameeobject that this script will handle its callbacks
             Runner.AddCallbacks(this);
-
             Runner.ProvideInput = true;
 
             // Tells Fusion to join the lobby and start listening for session updates
@@ -249,11 +246,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         PlayerNetworkInput collectiveInput = new PlayerNetworkInput();
 
-        // Horrible but will change promise!
-        PlayerInputPoller[] pollers = FindObjectsByType<PlayerInputPoller>(FindObjectsSortMode.None);
-
-        foreach (var poller in pollers)
+        foreach (Player player in PlayerRegistry.All)
         {
+            PlayerInputPoller poller = player.InputPoller;
+
             if (poller.HasInputAuthority && poller.LocalPlayerInput != null)
             {
                 int index = poller.LocalPlayerInput.playerIndex;
