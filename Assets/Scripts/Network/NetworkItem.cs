@@ -21,14 +21,19 @@ public class NetworkItem : NetworkBehaviour
         if (HasStateAuthority && SyncOwner == null)
             SyncState = (int)Item.ItemState.Dropped;
 
-        OnStateOrOwnerChanged();
+        item.ApplyNetworkState((Item.ItemState)SyncState, SyncOwner, SyncOriginalTeam);
     }
 
     public override void Despawned(NetworkRunner runner, bool hasState)
         => InteractableRegistry.Unregister(item);
 
     // Called by all clients (and host) when SyncState or SyncOwnerId changes
-    private void OnStateOrOwnerChanged() => item.ApplyNetworkState((Item.ItemState)SyncState, SyncOwner, SyncOriginalTeam);
+    private void OnStateOrOwnerChanged()
+    {
+        if (HasStateAuthority) return;
+
+        item.ApplyNetworkState((Item.ItemState)SyncState, SyncOwner, SyncOriginalTeam);
+    }
 
     public void Grab(Player player, bool interpolatePosition)
     {
@@ -37,12 +42,17 @@ public class NetworkItem : NetworkBehaviour
         SyncAnimateGrab = interpolatePosition;
         SyncOwner = player;
         SyncState = (int)Item.ItemState.Held;
+
+        item.ApplyNetworkState((Item.ItemState)SyncState, SyncOwner, SyncOriginalTeam);
     }
 
     public void Drop()
     {
         if (!HasStateAuthority) return;
+
         SyncOwner = null;
         SyncState = (int)Item.ItemState.Dropped;
+
+        item.ApplyNetworkState((Item.ItemState)SyncState, SyncOwner, SyncOriginalTeam);
     }
 }

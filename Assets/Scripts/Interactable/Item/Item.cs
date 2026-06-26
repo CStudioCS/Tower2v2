@@ -1,9 +1,9 @@
+using Fusion;
 using Fusion.Addons.Physics;
 using System;
-using Fusion;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Unity.Collections.Unicode;
 using Random = UnityEngine.Random;
 
 public class Item : Interactable
@@ -46,9 +46,14 @@ public class Item : Interactable
 
         itemCollider.enabled = false;
         State = ItemState.Dropped;
-        LevelManager.GameEnded += Disappear;
         trailRenderer.emitting = false;
         SetSilhouetteColor(silhouetteColor);
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        LevelManager.GameEnded += Disappear;
     }
 
     private void SetSilhouetteColor(Color color)
@@ -89,13 +94,14 @@ public class Item : Interactable
     {
         if (!networkItem.HasStateAuthority) return;
 
-        networkItem.Drop();
+        // Open to any different idea, Fusion and Unity are just so annoying that I had to do this
+        StartCoroutine(HideGraphicsDuringLoading());
 
+        networkItem.Drop();
         transform.SetParent(null);
         rb.simulated = true;
         itemCollider.enabled = true;
         netRb.enabled = true;
-        netRb.Teleport(transform.position, transform.rotation);
 
         rb.linearVelocity = throwSpeed;
         velocitySqrMagnitudeForTowerItemCatcher = throwSpeed.sqrMagnitude;
@@ -146,7 +152,32 @@ public class Item : Interactable
         velocitySqrMagnitudeForTowerItemCatcher = Mathf.Min(rb.linearVelocity.sqrMagnitude, velocitySqrMagnitudeForTowerItemCatcher);
     }
 
-    private void Disappear() => Destroy(gameObject);
+    private void Disappear()
+    {
+        NetworkObject networkObject = GetComponent<NetworkObject>();
+        if (networkObject == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        if (networkObject.HasStateAuthority && networkObject.Runner != null)
+            networkObject.Runner.Despawn(networkObject);
+    }
 
-    protected override void OnDestroy() => LevelManager.GameEnded -= Disappear;
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        LevelManager.GameEnded -= Disappear;
+    }
+
+    private IEnumerator HideGraphicsDuringLoading()
+    {
+        trailRenderer.emitting = false;
+        graphics.SetActive(false);
+
+        yield return null;
+        graphics.SetActive(true);
+        trailRenderer.Clear();
+        trailRenderer.emitting = true;
+    }
 }

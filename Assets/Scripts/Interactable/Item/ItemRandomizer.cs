@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 
 public class ItemRandomizer : MonoBehaviour
@@ -64,7 +63,7 @@ public class ItemRandomizer : MonoBehaviour
 
     public Item.Type GetAt(int index)
     {
-        Initialize(GameStartManager.Instance.GameSeed);
+        Initialize(LevelManager.Instance.GameSeed);
 
         while (sequence.Count <= index)
         {

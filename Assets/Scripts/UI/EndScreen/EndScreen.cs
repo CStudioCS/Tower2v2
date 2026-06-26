@@ -40,9 +40,9 @@ public class EndScreen : MonoBehaviour
         LevelManager.Instance.ForceReturnToLobby();
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         StopAllCoroutines();
-        LevelManager.GameEnded -= OnGameEnded;
+        LevelManager.GameEndedWithResults -= OnGameEnded;
     }
 }

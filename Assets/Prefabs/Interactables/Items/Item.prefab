@@ -105,8 +105,8 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7140422262864443551}
   - {fileID: 6490535111245912574}
+  - {fileID: 7140422262864443551}
   - {fileID: 41565674148638315}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -163,7 +163,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
@@ -394,10 +394,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stateAuthorityChangeErrorCorrectionDelta: 0
   SyncScale: 0
-  SyncParent: 1
+  SyncParent: 0
   _interpolationTarget: {fileID: 0}
   UsePreciseRotation: 0
-  UseRenderSleepThresholds: 1
+  UseRenderSleepThresholds: 0
   RenderThresholds:
     UseEnergy: 1
     Position: 0.01

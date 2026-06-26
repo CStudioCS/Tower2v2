@@ -52,18 +52,23 @@ public class Furnace : Interactable
                 throw new UnityException("Furnace state not handled in CanInteract");
         }
     }
-    public void PutClayIn(PlayerTeam.Team team) => InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Cooking, team);
+    public void PutClayIn(PlayerTeam.Team team)
+    {
+        ApplyState(State.Cooking, team);
+        InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Cooking, team);
+    }
 
     public override void Interact(Player player)
     {
         switch (state)
         {
             case State.Empty:
-                InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Cooking, player.PlayerTeam.CurrentTeam);
+                PutClayIn(player.PlayerTeam.CurrentTeam);
                 player.ConsumeCurrentItem();
                 break;
 
             case State.Cooked:
+                ApplyState(State.Empty, itemCookedByTeam);
                 InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Empty, itemCookedByTeam);
                 player.GrabNewItem(brickItemPrefab, itemCookedByTeam);
                 player.PlayerStats.BricksCooked++;
@@ -115,7 +120,10 @@ public class Furnace : Interactable
 
         // The host decides when the time is up and validates the brick for everyone
         if (state == State.Cooking && InteractablesNetworkHub.Instance.HasStateAuthority)
+        {
+            ApplyState(State.Cooked, itemCookedByTeam);
             InteractablesNetworkHub.Instance.RPC_SyncFurnaceState(NetworkId, State.Cooked, itemCookedByTeam);
+        }
     }
 
     private void StopCookingVisuals()
