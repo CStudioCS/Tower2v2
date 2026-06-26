@@ -175,7 +175,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         {
             if (player.HasInputAuthority)
             {
-                string assignedName = $"{LocalPlayerName} {index}";
+                string assignedName = activeAvatars.Count > 1 ? $"{LocalPlayerName} {index}" : LocalPlayerName;
                 player.RPC_SetPlayerName(assignedName);
                 index++;
             }
