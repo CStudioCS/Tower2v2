@@ -2,6 +2,7 @@ using Fusion;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading.Tasks;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -94,6 +95,8 @@ public class NetworkMenu : MonoBehaviour
         isOpen = false;
         if (fader.FadedIn)
             fader.Fade();
+
+        inputHandler.Unbind();
 
         if (originMenu != null && currentPlayer != null)
             originMenu.Open(currentPlayer);
@@ -349,6 +352,27 @@ public class NetworkMenu : MonoBehaviour
         ShowConnectedLobbyRow(); // Show the room we joined
     }
 
+    private async void HandleDisconnectRecovery()
+    {
+        if (!isOpen) return;
+        
+        while (NetworkManager.Instance != null && NetworkManager.Instance.IsBusy)
+        {
+            await Task.Yield();
+        }
+
+        if (!isOpen || this == null) return;
+
+        uiCanvasGroup.interactable = true;
+        hostButton.interactable = true;
+        ClearLobbies();
+
+        if (eventSystem != null && hostButton != null)
+        {
+            eventSystem.SetSelectedGameObject(hostButton.gameObject);
+        }
+    }
+
     private void OnEnable()
     {
         if (inputHandler != null)
@@ -358,7 +382,7 @@ public class NetworkMenu : MonoBehaviour
             NetworkManager.Instance.OnSessionListUpdatedEvent += RefreshLobbyUI;
 
         NetworkManager.OnPlayersCountChanged += UpdateConnectedLobbyRow;
-        NetworkManager.OnUnexpectedDisconnect += Close;
+        NetworkManager.OnUnexpectedDisconnect += HandleDisconnectRecovery;
     }
 
     private void OnDisable()
@@ -370,6 +394,6 @@ public class NetworkMenu : MonoBehaviour
             NetworkManager.Instance.OnSessionListUpdatedEvent -= RefreshLobbyUI;
 
         NetworkManager.OnPlayersCountChanged -= UpdateConnectedLobbyRow;
-        NetworkManager.OnUnexpectedDisconnect -= Close;
+        NetworkManager.OnUnexpectedDisconnect -= HandleDisconnectRecovery;
     }
 }
