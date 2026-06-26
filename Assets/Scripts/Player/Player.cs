@@ -92,6 +92,7 @@ public class Player : NetworkBehaviour
     private void Start()
     {
         LevelManager.GameEnded += OnGameEnded;
+        NetworkManager.OnUnexpectedDisconnect += UnsubscribeFromNetworkEvents;
     }
 
     public override void Spawned()
@@ -99,6 +100,8 @@ public class Player : NetworkBehaviour
         PlayerRegistry.Register(this);
         PlayerSpawned?.Invoke(this);
         AvatarSpawned?.Invoke();
+
+        playerBadge.SetPlayerName(SyncPlayerName);
 
         if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
         {
@@ -545,6 +548,12 @@ public class Player : NetworkBehaviour
     }
     
     private void OnDisable()
+    {
+        LevelManager.GameEnded -= OnGameEnded;
+        NetworkManager.OnUnexpectedDisconnect -= UnsubscribeFromNetworkEvents;
+    }
+
+    private void UnsubscribeFromNetworkEvents()
     {
         LevelManager.GameEnded -= OnGameEnded;
     }

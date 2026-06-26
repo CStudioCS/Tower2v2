@@ -153,7 +153,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 15
+  m_Spacing: 25
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -871,6 +871,7 @@ MonoBehaviour:
   playerControlBadge: {fileID: 402901691845293250}
   playerNameText: {fileID: 2914859544291599046}
   graphics: {fileID: 1111925968006859119}
+  badgeLayout: {fileID: 6373007385975419294}
   readyParent: {fileID: 6326596544840852292}
   readyText: {fileID: 6185989681205375942}
   readyKey: {fileID: 1801275267832871342}
@@ -2413,6 +2414,7 @@ GameObject:
   - component: {fileID: 3007204226043477745}
   - component: {fileID: 634784305207197535}
   - component: {fileID: 2914859544291599046}
+  - component: {fileID: 1566672595413420039}
   m_Layer: 5
   m_Name: PlayerName
   m_TagString: Untagged
@@ -2539,6 +2541,26 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1566672595413420039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8263779051214911487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 1
+  m_FlexibleHeight: 1
+  m_LayoutPriority: 1
 --- !u!1 &8501054590633906082
 GameObject:
   m_ObjectHideFlags: 0
@@ -2726,10 +2748,10 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: -15
+    m_Top: -30
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 20
+  m_Spacing: 30
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1

@@ -102,6 +102,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         LevelManager.ReturnedToLobby += SessionInfoSync;
 
         LevelManager.ReturnedToLobby += UpdateLocalPlayerNames;
+        NetworkManager.OnUnexpectedDisconnect += UnsubscribeFromNetworkEvents;
 
         // Restore the avatars of the players who were in the lobby before the reload
         List<PlayerInput> connectedInputs = new List<PlayerInput>(PlayerInput.all);
@@ -146,6 +147,13 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         LevelManager.GameAboutToStart -= SessionInfoSync;
         LevelManager.ReturnedToLobby -= SessionInfoSync;
 
+        LevelManager.ReturnedToLobby -= UpdateLocalPlayerNames;
+        NetworkManager.OnUnexpectedDisconnect -= UnsubscribeFromNetworkEvents;
+    }
+
+    private void UnsubscribeFromNetworkEvents()
+    {
+        LevelManager.ReturnedToLobby -= SessionInfoSync;
         LevelManager.ReturnedToLobby -= UpdateLocalPlayerNames;
     }
 
@@ -619,7 +627,7 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
 
     private void SessionInfoSync()
     {
-        if (!HasStateAuthority) return;
+        if (Runner?.IsRunning != true || !HasStateAuthority) return;
 
         if (sessionSyncCoroutine != null)
             StopCoroutine(sessionSyncCoroutine);

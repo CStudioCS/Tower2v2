@@ -84,9 +84,9 @@ public class GameStartManager : NetworkBehaviour
 
         foreach (Player player in players)
         {
-            player.ConsumeCurrentItem();
-            player.PlayerTeam.LobbyUpdate();
-            player.PlayerControlBadge.SetUnready();
+            player?.ConsumeCurrentItem();
+            player?.PlayerTeam.LobbyUpdate();
+            player?.PlayerControlBadge.SetUnready();
         }
         TryChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
     }

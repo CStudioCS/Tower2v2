@@ -31,7 +31,7 @@ public class PlayerVFX : NetworkBehaviour
 
     public override void Render()
     {
-        accumulatedDistance += player.PlayerMovement.Rb.linearVelocity.magnitude * Time.deltaTime;
+        accumulatedDistance += player.PlayerMovement.SyncVelocity.magnitude * Time.deltaTime;
 
         if (accumulatedDistance >= distanceBetweenPoofs)
         {

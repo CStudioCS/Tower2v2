@@ -235,17 +235,15 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     private async void HandleUnexpectedShutdown()
     {
         OnUnexpectedDisconnect?.Invoke();
+        NotificationManager.Instance?.ShowNotification("Connection Lost. Returning to offline mode.");
 
         if (LevelManager.Instance != null)
         {
-            NotificationManager.Instance?.ShowNotification("Connection Lost.");
+            UseSavedPositionsForNextSpawn = true;
             LevelManager.Instance.ClientLeave(true);
         }
         else
-        {
-            UseSavedPositionsForNextSpawn = true;
-            _ = StartNetworkGame(GameMode.Single);
-        }
+            Reboot(GameMode.Single);
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
