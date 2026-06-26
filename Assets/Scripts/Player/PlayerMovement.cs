@@ -78,7 +78,8 @@ public class PlayerMovement : NetworkBehaviour
         Accelerating = lastSpeed == Vector2.zero && Velocity != Vector2.zero;
         lastSpeed = Velocity;
 
-        player.PlayerStats.DistanceTravelled += Velocity.magnitude * Runner.DeltaTime;
+        if (HasStateAuthority)
+            player.PlayerStats.DistanceTravelled += Velocity.magnitude * Runner.DeltaTime;
     }
 
 

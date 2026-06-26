@@ -584,12 +584,13 @@ public class LobbyManager : NetworkBehaviour, IPlayerLeft
         }
     }
 
-    public Player GetAvatarForInput(PlayerInput input)
+    public void SetBadgeVisibility(PlayerInput playerInput, bool isVisible)
     {
-        if (activeAvatars.TryGetValue(input, out NetworkObject avatarObj))
-            return avatarObj.GetComponent<Player>();
-
-        return null;
+        if (activeAvatars.TryGetValue(playerInput, out NetworkObject avatar))
+        {
+            Player player = avatar.GetComponent<Player>();
+            player?.PlayerBadge?.ShowReadyLabel(isVisible);
+        }
     }
 
     public void SaveCurrentPositions()

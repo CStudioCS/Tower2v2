@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SettingsSign: Sign
 {
+    // Player input persists
     private PlayerInput interactingInput = null;
 
     public override void Interact(Player player)
@@ -11,14 +12,10 @@ public class SettingsSign: Sign
         if (interactingInput != null)
 			return;
 
-		PlayerInputPoller poller = player.GetComponent<PlayerInputPoller>();
-		if (poller == null || poller.LocalPlayerInput == null)
-			return;
-
-        interactingInput = poller.LocalPlayerInput;
+        interactingInput = player.InputPoller.LocalPlayerInput;
         player.PlayerBadge.ShowReadyLabel(false);
 
-        StartCoroutine(OpenMenuNextFrame(poller.LocalPlayerInput));
+        StartCoroutine(OpenMenuNextFrame(player.InputPoller.LocalPlayerInput));
     }
 
     private IEnumerator OpenMenuNextFrame(PlayerInput localInput)
@@ -42,10 +39,7 @@ public class SettingsSign: Sign
 			return;
 
         interactingInput.SwitchCurrentActionMap("Gameplay");
-        Player interactingPlayer = LobbyManager.Instance.GetAvatarForInput(interactingInput);
-
-        if (interactingPlayer != null && interactingPlayer.PlayerBadge != null)
-            interactingPlayer.PlayerBadge.ShowReadyLabel(true);
+        LobbyManager.Instance?.SetBadgeVisibility(interactingInput, true);
 
         interactingInput = null;
     }
