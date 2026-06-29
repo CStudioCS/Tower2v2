@@ -38,7 +38,7 @@ public class TowerItemCatcher : MonoBehaviour
             return;
         
         lastItem = item;
-        tower.ConstructPiece(item.ItemType);
-        netObj.Runner.Despawn(netObj);
+        if (tower.ConstructPiece(item.ItemType))
+            netObj.Runner.Despawn(netObj);
     }
 }

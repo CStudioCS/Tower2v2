@@ -71,7 +71,14 @@ public class RecipesList : MonoBehaviour
         }
     }
 
-    private void ClearRecipes()
+    public void SyncToHeight(int currentTowerHeight)
+    {
+        randomIndex = currentTowerHeight;
+        firstRecipeIndex = 0;
+        InitializeRecipes();
+    }
+
+    public void ClearRecipes()
     {
         foreach (Recipe recipe in recipes)
         {

@@ -4,25 +4,36 @@ public class Workbench : Interactable
 {
     public enum State { Empty, HasWoodLog }
     private State state;
-    public State WorkbenchState => state;
+    public State NetworkState
+    {
+        get
+        {
+            if (InteractablesNetworkHub.Instance != null && 
+                InteractablesNetworkHub.Instance.SyncStates.TryGet(NetworkId, out var data))
+                    return (State)data.StateValue;
+
+            return State.Empty;
+        }
+    }
 
     [SerializeField] private float putOrPickUpItemInteractionTime = 0f;
     [SerializeField] private float cutWoodInteractionTime = 1f;
     private float currentInteractionTime;
+    private PlayerTeam.Team cutLastByTeam;
 
     [Header("References")]
     [SerializeField] private Item woodPlankItemPrefab;
-
-    private PlayerTeam.Team cutLastByTeam;
-
     [SerializeField] private GameObject woodOnTable;
     [SerializeField] private GameObject axe;
 
     private int soundIndex = -1;
+    private int lastProcessedActionCounter = 0;
+    private bool isPredicting = false;
 
     protected override void Awake()
     {
         base.Awake();
+        state = State.Empty;
         ApplyVisualState(State.Empty, State.Empty);
     }
 
@@ -30,6 +41,7 @@ public class Workbench : Interactable
     {
         if (!LevelManager.InGame)
             return false;
+
         switch (state)
         {
             case State.Empty:
@@ -41,26 +53,60 @@ public class Workbench : Interactable
         }
     }
 
-    public void PutWoodLog()
-    {
-        ApplyState(State.HasWoodLog, cutLastByTeam);
-        InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.HasWoodLog, cutLastByTeam);
-    }
+    public void PutWoodLog(PlayerTeam.Team team) 
+        => InteractablesNetworkHub.Instance?.SetInteractableState(NetworkId, (int)State.HasWoodLog, (int)team);
 
     public override void Interact(Player player)
     {
+        bool isHost = InteractablesNetworkHub.Instance?.HasStateAuthority == true;
+
+        bool isTryingToPutLog = player.IsHolding && player.HeldItem.ItemType == Item.Type.WoodLog;
+        bool isTryingToCut = !player.IsHolding;
+
         switch (state)
         {
             case State.Empty:
-                PutWoodLog();
+                if (!isTryingToPutLog)
+                    break;
+
+                if (isHost && NetworkState != State.Empty)
+                {
+                    InteractablesNetworkHub.Instance.RejectInteractableAction(NetworkId);
+                    break;
+                }
+
+                if (player.HasInputAuthority)
+                    isPredicting = true;
+
+                ApplyState(State.HasWoodLog, player.PlayerTeam.CurrentTeam);
                 player.ConsumeCurrentItem();
+
+                if (isHost)
+                    PutWoodLog(player.PlayerTeam.CurrentTeam);
+                    
                 break;
 
             case State.HasWoodLog:
-                player.PlayerStats.WoodCut++;
-                ApplyState(State.Empty, player.PlayerTeam.CurrentTeam);
-                InteractablesNetworkHub.Instance.RPC_SyncWorkbenchState(NetworkId, State.Empty, player.PlayerTeam.CurrentTeam);
+                if (!isTryingToCut)
+                    break;
+
+                if (isHost && NetworkState != State.HasWoodLog)
+                {
+                    InteractablesNetworkHub.Instance.RejectInteractableAction(NetworkId);
+                    break;
+                }
+
+                if (player.HasInputAuthority)
+                    isPredicting = true;
+
+                ApplyState(State.Empty, cutLastByTeam);
                 player.GrabNewItem(woodPlankItemPrefab, cutLastByTeam);
+
+                if (isHost)
+                {
+                    player.PlayerStats.WoodCut++;
+                    InteractablesNetworkHub.Instance.SetInteractableState(NetworkId, (int)State.Empty, (int)player.PlayerTeam.CurrentTeam);
+                }
                 break;
         }
     }
@@ -102,20 +148,44 @@ public class Workbench : Interactable
     protected override void OnGameEnded()
     {
         base.OnGameEnded();
-        ApplyState(State.Empty, cutLastByTeam);
+        if (InteractablesNetworkHub.Instance?.HasStateAuthority == true)
+            InteractablesNetworkHub.Instance.SetInteractableState(NetworkId, (int)State.Empty, (int)cutLastByTeam);
     }
 
     private void Update()
     {
-        if(IsAlreadyInteractedWith() && soundIndex == -1)
-        {
+        if (IsAlreadyInteractedWith() && soundIndex == -1)
             soundIndex = SoundManager.instance.PlaySound("Hammer");
-        }
 
         if (!IsAlreadyInteractedWith() && soundIndex != -1)
         {
             SoundManager.instance.StopSound(soundIndex);
             soundIndex = -1;
+        }
+    }
+
+    public override void SyncWithNetworkState(InteractableState data)
+    {
+        if (data.ActionCounter > lastProcessedActionCounter)
+        {
+            lastProcessedActionCounter = data.ActionCounter;
+            isPredicting = false;
+
+            State networkState = (State)data.StateValue;
+            PlayerTeam.Team networkTeam = (PlayerTeam.Team)data.TeamId;
+
+            // Validation
+            if (state == networkState)
+                cutLastByTeam = networkTeam;
+            // Rollback
+            else
+                ApplyState(networkState, networkTeam);
+        }
+        else if (!isPredicting)
+        {
+            State networkState = (State)data.StateValue;
+            if (state != networkState)
+                ApplyState(networkState, (PlayerTeam.Team)data.TeamId);
         }
     }
 }

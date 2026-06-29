@@ -20,10 +20,10 @@ public class WorkbenchItemCatcher : MonoBehaviour
         if (item.State != Item.ItemState.Dropped)
             return;
 
-        if (workbench.WorkbenchState != Workbench.State.Empty)
+        if (workbench.NetworkState != Workbench.State.Empty)
             return;
 
-        workbench.PutWoodLog();
+        workbench.PutWoodLog(item.originallyCollectedByTeam);
         netObj.Runner.Despawn(netObj);
     }
 }

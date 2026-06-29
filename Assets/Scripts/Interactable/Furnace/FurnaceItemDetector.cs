@@ -20,7 +20,7 @@ public class FurnaceItemDetector : MonoBehaviour
         if (item.ItemType != Item.Type.Clay)
             return;
 
-        if (furnace.FurnaceState != Furnace.State.Empty)
+        if (furnace.NetworkState != Furnace.State.Empty)
             return;
 
         if (!furnace.Allowed(item.LastOwner))

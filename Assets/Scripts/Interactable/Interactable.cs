@@ -70,7 +70,7 @@ public abstract class Interactable : MonoBehaviour
             if (player.Object?.IsValid != true) 
                 return;
 
-            if (player.HasStateAuthority)
+            if (player.HasStateAuthority || player.HasInputAuthority)
                 player.LocalEnterInteractable(this);
         }
     }
@@ -82,7 +82,7 @@ public abstract class Interactable : MonoBehaviour
             if (player.Object?.IsValid != true)
                 return;
 
-            if (player.HasStateAuthority)
+            if (player.HasStateAuthority || player.HasInputAuthority)
                 player.LocalExitInteractable(this);
         }
     }
@@ -142,6 +142,8 @@ public abstract class Interactable : MonoBehaviour
     protected virtual void OnReturnedToLobby() { }
 
     protected virtual void OnGameEnded() { }
+
+    public virtual void SyncWithNetworkState(InteractableState stateData) { }
 
     protected virtual void OnDestroy()
     {

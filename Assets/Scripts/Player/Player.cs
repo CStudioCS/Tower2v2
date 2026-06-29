@@ -75,6 +75,10 @@ public class Player : NetworkBehaviour
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
 
+    [Networked, OnChangedRender(nameof(OnActionCounterChanged))]
+    public int SyncActionCounter { get; set; }
+    private Item localDummyItem;
+
     public bool LockedInSettingsMenu { get; private set; }
 
     public event Action AvatarSpawned;
@@ -142,8 +146,14 @@ public class Player : NetworkBehaviour
             else if (mySlot == 2) myData = input.Player2;
             else if (mySlot == 3) myData = input.Player3;
 
-
             currentTickData = myData;
+
+            bool actionAttempted = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact) ||
+                                   currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw) ||
+                                   currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Throw);
+
+            if (actionAttempted && HasStateAuthority)
+                SyncActionCounter++;
 
             HandleInput();
 
@@ -290,7 +300,7 @@ public class Player : NetworkBehaviour
 
     private void UpdateClosestInteractable()
     {
-        if (!HasStateAuthority) 
+        if (!HasStateAuthority && !(HasInputAuthority && Runner.IsForward))
             return;
 
         // trust me some crazy shit happen when logic is shared across a network
@@ -352,6 +362,24 @@ public class Player : NetworkBehaviour
         }
     }
 
+    private void OnActionCounterChanged()
+    {
+        if (HasStateAuthority || !HasInputAuthority) return;
+
+        // Spawn Rollback
+        if (SyncHeldItemType == -1 && localDummyItem != null)
+        {
+            Destroy(localDummyItem.gameObject);
+            localDummyItem = null;
+        }
+
+        // Consume or drop rollback
+        if (SyncHeldItemType != -1 && HeldItem != null && !HeldItem.gameObject.activeSelf)
+        {
+            HeldItem.gameObject.SetActive(true);
+        }
+    }
+
     public override void Render()
     {
         if (!SyncIsInteracting || !InteractionTimer.IsRunning)
@@ -360,28 +388,29 @@ public class Player : NetworkBehaviour
         if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
         {
             float duration = target.GetInteractionTime();
-            if (duration > 0)
+            if (duration <= 0)
             {
-                float t = duration - InteractionTimer.RemainingTime(Runner).GetValueOrDefault();
-                progressBar.UpdateProgress(t / duration);
+                progressBar.ResetProgress();
+                return;
             }
+
+            float t = duration - InteractionTimer.RemainingTime(Runner).GetValueOrDefault();
+            progressBar.UpdateProgress(t / duration);
         }
     }
 
     private void ExecuteInteraction(Interactable target)
     {
-        if (!target.CanInteract(this)) return;
+        if (!target.CanInteract(this)) 
+            return;
 
         bool isClientSide = target.executionTarget == Interactable.ExecutionTarget.ClientSide;
-        bool canInteract = isClientSide ? (HasInputAuthority && Runner.IsForward) : HasStateAuthority;
+        bool canInteract = isClientSide
+            ? (HasInputAuthority && Runner.IsForward)
+            : (HasStateAuthority || (HasInputAuthority && Runner.IsForward));
 
         if (canInteract)
             target.Interact(this);
-        else if (!isClientSide && HasInputAuthority)
-        {
-            SyncHeldItemType = -1;
-            if (HeldItem != null) HeldItem.gameObject.SetActive(false);
-        }
     }
 
     private void StopInteracting(Interactable insideInteractable)
@@ -448,15 +477,27 @@ public class Player : NetworkBehaviour
     /// </summary>
     public void ConsumeCurrentItem()
     {
-        if (HasStateAuthority || HasInputAuthority)
-            SyncHeldItemType = -1;
-
-        if (HasStateAuthority && HeldItem != null)
+        if (HasInputAuthority && !HasStateAuthority)
         {
-            if (HeldItem.TryGetComponent(out NetworkObject netObj))
-                Runner.Despawn(netObj);
-            
-            HeldItem = null;
+            HeldItem?.gameObject.SetActive(false);
+
+            if (localDummyItem != null)
+            {
+                Destroy(localDummyItem.gameObject);
+                localDummyItem = null;
+            }
+        }
+
+        if (HasStateAuthority)
+        {
+            SyncHeldItemType = -1;
+            if (HeldItem != null)
+            {
+                if (HeldItem.TryGetComponent(out NetworkObject netObj))
+                    Runner.Despawn(netObj);
+
+                HeldItem = null;
+            }
         }
     }
 
@@ -470,19 +511,19 @@ public class Player : NetworkBehaviour
         if (!IsHolding || HeldItem.State != Item.ItemState.Held)
             return false;
 
-        if (HasStateAuthority || HasInputAuthority)
-            SyncHeldItemType = -1;
-
-        grabbingLerp.TryCancel();
-        rotationLerp.TryCancel();
-
-        if (HasStateAuthority && HeldItem != null)
+        if (HasStateAuthority)
         {
-            HeldItem.State = Item.ItemState.Transitioning;
-            HeldItem.Drop(currentThrowSpeed);
-            HeldItem = null;
-        }
+            SyncHeldItemType = -1;
+            grabbingLerp.TryCancel();
+            rotationLerp.TryCancel();
 
+            if (HeldItem != null)
+            {
+                HeldItem.State = Item.ItemState.Transitioning;
+                HeldItem.Drop(currentThrowSpeed);
+                HeldItem = null;
+            }
+        }
         return true;
     }
 
@@ -493,21 +534,48 @@ public class Player : NetworkBehaviour
     /// <param name="originallyCollectedByTeam">The team this item was originally collected by. If left null this will be set as this player's team</param>
     public void GrabNewItem(Item itemPrefab, PlayerTeam.Team? originallyCollectedByTeam = null)
     {
-        if (!HasStateAuthority) return;
+        if (HasInputAuthority && !HasStateAuthority)
+        {
+            localDummyItem = Instantiate(itemPrefab, itemParent);
+            localDummyItem.transform.localPosition = Vector2.zero;
+            localDummyItem.transform.localRotation = Quaternion.identity;
 
-        NetworkObject netObj = Runner.Spawn(itemPrefab.gameObject, transform.position, Quaternion.identity);
-        Item itemInstance = netObj.GetComponent<Item>();
-        NetworkItem netItem = itemInstance.NetworkItem;
+            if (localDummyItem.TryGetComponent(out NetworkObject dummyNetObj)) Destroy(dummyNetObj);
+            if (localDummyItem.TryGetComponent(out Collider2D col)) Destroy(col);
 
-        netItem.SyncOriginalTeam = originallyCollectedByTeam ?? playerTeam.CurrentTeam;
-        netItem.Grab(this, false);
+            GrabbedNewItem?.Invoke();
+        }
 
-        GrabbedNewItem?.Invoke();
+        if (HasStateAuthority)
+        {
+            NetworkObject netObj = Runner.Spawn(
+                itemPrefab.gameObject,
+                transform.position,
+                Quaternion.identity,
+                inputAuthority: Object.InputAuthority
+            );
+
+            if (netObj.TryGetComponent(out Item itemInstance))
+            {
+                NetworkItem netItem = itemInstance.NetworkItem;
+                netItem.SyncOriginalTeam = originallyCollectedByTeam ?? playerTeam.CurrentTeam;
+
+                netItem.Grab(this, false);
+            }
+
+            GrabbedNewItem?.Invoke();
+        }
     }
 
     public void GrabItem(Item item, bool interpolatePosition)
     {
         HeldItem = item;
+
+        if (localDummyItem != null)
+        {
+            Destroy(localDummyItem.gameObject);
+            localDummyItem = null;
+        }
 
         item.Immobilize();
         item.LastOwner = this;
@@ -524,7 +592,7 @@ public class Player : NetworkBehaviour
 
         item.State = Item.ItemState.Held;
 
-        if (HasStateAuthority || HasInputAuthority)
+        if (HasStateAuthority)
             SyncHeldItemType = (int)item.ItemType;
     }
 

@@ -26,6 +26,9 @@ public class Tower : Interactable
     [SerializeField] private Collider2D colliderToActivateUponBuilding;
     [SerializeField] private bool moving;
 
+    private int lastProcessedActionCounter = 0;
+    private bool isPredicting = false;
+
     private readonly List<TowerPiece> towerPieces = new();
 
     private Dictionary<Item.Type, TowerPiece> towerPieceMap;
@@ -100,16 +103,17 @@ public class Tower : Interactable
 
     public override void Interact(Player player)
     {
-        if (!IsItemCorrect(player.HeldItem.ItemType))
-        {
-            InteractablesNetworkHub.Instance.RPC_SyncTowerError(NetworkId);
+        if (!player.IsHolding) return;
+
+        Item.Type itemType = player.HeldItem.ItemType;
+        bool isHost = InteractablesNetworkHub.Instance?.HasStateAuthority == true;
+        bool isLocalPlayer = player.HasInputAuthority;
+
+        if (!ConstructPiece(itemType, isLocalPlayer))
             return;
-        }
 
-        ConstructPiece(player.HeldItem.ItemType);
-
-        if (player.HeldItem.originallyCollectedByTeam != Team)
-            player.PlayerStats.StolenItems++;
+        if (isHost && player.HeldItem.originallyCollectedByTeam != Team)
+             player.PlayerStats.StolenItems++;
 
         player.ConsumeCurrentItem();
     }
@@ -120,10 +124,32 @@ public class Tower : Interactable
         TriedBuildingWithIncorrectItemType?.Invoke();
     }
 
-    public void ConstructPiece(Item.Type itemType)
+    public bool ConstructPiece(Item.Type itemType, bool isLocalPrediction = false)
     {
+        bool isHost = InteractablesNetworkHub.Instance?.HasStateAuthority == true;
+
+        if (!IsItemCorrect(itemType))
+        {
+            WrongItemError();
+
+            if (isHost)
+            {
+                InteractablesNetworkHub.Instance.RejectInteractableAction(NetworkId);
+                InteractablesNetworkHub.Instance.RPC_SyncTowerError(NetworkId);
+            }
+            return false;
+        }
+
+        if (isLocalPrediction)
+            isPredicting = true;
+
         ApplyConstructPiece(itemType);
-        InteractablesNetworkHub.Instance.RPC_SyncTowerBuild(NetworkId, itemType);
+        RecipesList.SyncToHeight(Height);
+
+        if (isHost)
+            InteractablesNetworkHub.Instance.SetInteractableState(NetworkId, Height, (int)Team, (int)itemType);
+
+        return true;
     }
 
     // The way we display tower pieces stacking up is just by adding pieces with a certain offset everytime,
@@ -186,6 +212,70 @@ public class Tower : Interactable
     public override bool CheckIfCanBeHighlighted(Player player) 
         => base.CheckIfCanBeHighlighted(player) && player.SyncHeldItemType != -1 && IsItemCorrect((Item.Type)player.SyncHeldItemType);
 
+    public override void SyncWithNetworkState(InteractableState data)
+    {
+        if (data.ActionCounter > lastProcessedActionCounter)
+        {
+            lastProcessedActionCounter = data.ActionCounter;
+            isPredicting = false;
+
+            int networkHeight = data.StateValue;
+
+            // Rollback
+            if (Height != networkHeight)
+                SyncToNetworkHeight(networkHeight);
+        }
+        else if (!isPredicting)
+        {
+            int networkHeight = data.StateValue;
+            if (Height != networkHeight)
+                SyncToNetworkHeight(networkHeight);
+        }
+    }
+
+    private void SyncToNetworkHeight(int targetHeight)
+    {
+        if (Height > targetHeight)
+            RevertToHeight(targetHeight);
+
+        while (Height < targetHeight)
+        {
+            Item.Type missingItem = ItemRandomizer.Instance.GetAt(Height);
+            ApplyConstructPiece(missingItem);
+        }
+
+        RecipesList.SyncToHeight(Height);
+    }
+
+    private void RevertToHeight(int targetHeight)
+    {
+        // We destroy the extra pieces that were instantiated by mistake
+        while (towerPieces.Count > targetHeight)
+        {
+            TowerPiece piece = towerPieces[^1];
+            towerPieces.RemoveAt(towerPieces.Count - 1);
+            Destroy(piece.gameObject);
+        }
+
+        // We recalculate the local heights from zero to be perfectly clean
+        previousPieceLocalYPosition = 0;
+        nextPieceLocalYPosition = 0;
+        currentMultiplier = 1f;
+
+        foreach (TowerPiece piece in towerPieces)
+        {
+            previousPieceLocalYPosition = nextPieceLocalYPosition;
+            nextPieceLocalYPosition += currentMultiplier * piece.BasePieceHeight;
+            currentMultiplier *= collapseMultiplier;
+        }
+
+        UpdateTowerTopUI();
+        RecipesList.SyncToHeight(targetHeight);
+
+        if (Height == 0)
+            colliderToActivateUponBuilding.enabled = false;
+    }
+
     private void LateUpdate()
     {
         if (moving)
@@ -204,6 +294,7 @@ public class Tower : Interactable
         nextPieceLocalYPosition = 0;
         currentMultiplier = 1f;
 
+        InteractablesNetworkHub.Instance?.SetInteractableState(NetworkId, 0, (int)Team, -1);
         UpdateTowerTopUI();
     }
 }
