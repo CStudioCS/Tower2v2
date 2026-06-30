@@ -6,9 +6,16 @@ using UnityEngine;
 /// </summary>
 public abstract class Interactable : MonoBehaviour
 {
+    public enum ExecutionTarget { ServerSide, ClientSide }
+
+    [Header("Network Settings")]
+    [Tooltip("ClientSide for UI - ServerSide for Gameplay")]
+    public ExecutionTarget executionTarget = ExecutionTarget.ServerSide;
+
+    [SerializeField] private string uniqueId;
+    public virtual int NetworkId { get; private set; }
+
     private static readonly int OutlineEnabled = Shader.PropertyToID("_OutlineEnabled");
-    public bool IsAlreadyInteractedWith { get; set; }
-    private int highlightedPlayerCount;
 
     [SerializeField] protected SpriteRenderer[] spriteRenderers;
 
@@ -22,7 +29,27 @@ public abstract class Interactable : MonoBehaviour
     protected virtual void Awake()
     {
         InitializeHighlight();
+
+        if (!string.IsNullOrEmpty(uniqueId))
+            RegisterNetworkId(Animator.StringToHash(uniqueId));
     }
+
+    public void RegisterNetworkId(int fusionNativeId)
+    {
+        NetworkId = fusionNativeId;
+        InteractableRegistry.Register(this);
+    }
+
+#if UNITY_EDITOR
+    protected void OnValidate()
+    {
+        if (string.IsNullOrEmpty(uniqueId))
+        {
+            uniqueId = System.Guid.NewGuid().ToString();
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+    }
+#endif
 
     protected void InitializeHighlight()
     {
@@ -39,38 +66,61 @@ public abstract class Interactable : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.TryGetComponent(out Player player))
-            player.insideInteractableList.Add(this);
+        {
+            if (player.Object?.IsValid != true) 
+                return;
+
+            if (player.HasStateAuthority)
+                player.LocalEnterInteractable(this);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.TryGetComponent(out Player player) && player.insideInteractableList.Contains(this))
-            player.insideInteractableList.Remove(this);
+        if (collision.gameObject.TryGetComponent(out Player player))
+        {
+            if (player.Object?.IsValid != true)
+                return;
+
+            if (player.HasStateAuthority)
+                player.LocalExitInteractable(this);
+        }
     }
     
-    private void Start()
+    protected virtual void Start()
     {
-        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
-        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
+        LevelManager.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.ReturnedToLobby += OnReturnedToLobby;
+        LevelManager.GameEnded += OnGameEnded;
     }
 
-    public virtual void TryHighlight(bool highlighted, Player player)
+    public virtual void RefreshHighlight()
     {
-        if (!CheckIfCanBeHighlighted(player) && highlighted)
+        if (propBlock == null || (spriteRenderers?.Length ?? 0) == 0)
             return;
 
-        if (highlighted) 
-            highlightedPlayerCount++;
-        else 
-            highlightedPlayerCount--;
+        bool shouldHighlight = false;
 
-        if (!highlighted && highlightedPlayerCount > 0) 
-            return;
+        foreach (Player p in PlayerRegistry.All)
+        {
+            if (p.SyncTargetId == NetworkId && CheckIfCanBeHighlighted(p))
+            {
+                shouldHighlight = true;
+                break;
+            }
+        }
 
-        if (highlighted && highlightedPlayerCount >= 2) 
-            return;
+        Highlight(shouldHighlight);
+    }
 
-        Highlight(highlighted);
+    public bool IsAlreadyInteractedWith()
+    {
+        foreach (Player p in PlayerRegistry.All)
+        {
+            if (p.SyncIsInteracting && p.SyncTargetId == NetworkId)
+                return true;
+        }
+        return false;
     }
 
     private void Highlight(bool highlighted = true)
@@ -83,21 +133,22 @@ public abstract class Interactable : MonoBehaviour
         }
     }
     
-    protected virtual void OnGameAboutToStart()
-    {
-        IsAlreadyInteractedWith = false;
-    }
+    protected virtual void OnGameAboutToStart() { }
+
+    public virtual void OnTargetedBy(Player player, bool targeted) { }
 
     public virtual bool CheckIfCanBeHighlighted(Player player) => propBlock != null && spriteRenderers?.Length > 0;
 
-    protected virtual void OnGameEndedOrReturnedToLobby()
+    protected virtual void OnReturnedToLobby() { }
+
+    protected virtual void OnGameEnded() { }
+
+    protected virtual void OnDestroy()
     {
-        IsAlreadyInteractedWith = false;
-    }
-    
-    private void OnDisable()
-    {
-        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
-        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        InteractableRegistry.Unregister(this);
+
+        LevelManager.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.ReturnedToLobby -= OnReturnedToLobby;
+        LevelManager.GameEnded -= OnGameEnded;
     }
 }

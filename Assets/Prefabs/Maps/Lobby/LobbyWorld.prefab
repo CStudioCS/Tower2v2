@@ -93,6 +93,10 @@ PrefabInstance:
       value: MapSign
       objectReference: {fileID: 0}
     - target: {fileID: 7023280080224001834, guid: 15c09315ebc55b241938c1d69ba5a8dd, type: 3}
+      propertyPath: uniqueId
+      value: 3d8e702c-7f30-4802-be38-078abbc525e1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7023280080224001834, guid: 15c09315ebc55b241938c1d69ba5a8dd, type: 3}
       propertyPath: worldWidth
       value: 22
       objectReference: {fileID: 0}
@@ -209,6 +213,10 @@ PrefabInstance:
     - target: {fileID: 7326122425180403159, guid: 750fe89aa2f95e0459cac53f3ca9ed87, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8551867272362079731, guid: 750fe89aa2f95e0459cac53f3ca9ed87, type: 3}
+      propertyPath: uniqueId
+      value: 403bd3ee-15d7-4239-b3aa-002c940dccf4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

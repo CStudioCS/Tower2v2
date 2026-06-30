@@ -334,6 +334,7 @@ MonoBehaviour:
   dropdownOffset: {x: 0, y: 970}
   blueStatsDisplays: {fileID: 86570646246349889}
   redStatsDisplays: {fileID: 2592603849645963807}
+  cardText: {fileID: 3448343819900356737}
 --- !u!222 &4950853505052825645
 CanvasRenderer:
   m_ObjectHideFlags: 0

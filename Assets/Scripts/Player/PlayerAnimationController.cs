@@ -1,10 +1,12 @@
 using UnityEngine;
+using Fusion;
+using Fusion.Addons.Physics;
 
 public class PlayerAnimationController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     public Animator Animator => animator;
-    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private NetworkRigidbody2D nrb;
 
     [SerializeField] private string isCuttingId;
     [SerializeField] private string isCollectingId;
@@ -20,7 +22,7 @@ public class PlayerAnimationController : MonoBehaviour
     private void OnEnable()
     {
         playerTeam.TeamChanged += OnTeamChanged;
-        OnTeamChanged();
+        player.AvatarSpawned += OnTeamChanged;
     }
 
     private void OnTeamChanged()
@@ -58,15 +60,15 @@ public class PlayerAnimationController : MonoBehaviour
 
     void Update()
     {
-        animator.SetFloat(speedId, rb.linearVelocity.magnitude);
-        if (rb.linearVelocity.x > 0.1f)
-        {
+        Vector2 velocity = player.PlayerMovement.SyncVelocity;
+
+        animator.SetFloat(speedId, velocity.magnitude > 0.1f ? velocity.magnitude : 0);
+
+        if (velocity.x > 0.1f)
             spriteRenderer.flipX = true;
-        }
-        else if (rb.linearVelocity.x < -0.1f)
-        {
+
+        else if (velocity.x < -0.1f)
             spriteRenderer.flipX = false;
-        }
 
         FlipHeldItem();
     }
@@ -82,5 +84,6 @@ public class PlayerAnimationController : MonoBehaviour
     private void OnDisable()
     {
         playerTeam.TeamChanged -= OnTeamChanged;
+        player.AvatarSpawned -= OnTeamChanged;
     }
 }

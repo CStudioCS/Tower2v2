@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 
 public class ItemRandomizer : MonoBehaviour
@@ -30,11 +29,11 @@ public class ItemRandomizer : MonoBehaviour
         Instance = this;
     }
 
-    private void Initialize()
+    private void Initialize(int seed)
     {
         if (initialized) return;
 
-        random = new System.Random();
+        random = new System.Random(seed);
         values = new[]
         {
             Item.Type.Straw,
@@ -64,7 +63,7 @@ public class ItemRandomizer : MonoBehaviour
 
     public Item.Type GetAt(int index)
     {
-        Initialize();
+        Initialize(LevelManager.Instance.GameSeed);
 
         while (sequence.Count <= index)
         {

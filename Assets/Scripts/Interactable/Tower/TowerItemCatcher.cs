@@ -1,3 +1,4 @@
+using Fusion;
 using UnityEngine;
 
 public class TowerItemCatcher : MonoBehaviour
@@ -13,8 +14,12 @@ public class TowerItemCatcher : MonoBehaviour
     {
         if (collider == null || !collider.gameObject.TryGetComponent(out Item item))
             return;
-        
-        if (!tower.IsItemCorrect(item))
+
+        NetworkObject netObj = item.GetComponent<NetworkObject>();
+        if (netObj == null || !netObj.HasStateAuthority) 
+            return;
+
+        if (!tower.IsItemCorrect(item.ItemType))
             return;
         
         if (item.LastOwner.PlayerTeam.CurrentTeam != tower.Team)
@@ -24,7 +29,7 @@ public class TowerItemCatcher : MonoBehaviour
             return;
         
         if (item.originallyCollectedByTeam != tower.Team)
-            item.LastOwner.PlayerStats.stolenItems++;
+            item.LastOwner.PlayerStats.StolenItems++;
 
         if (lastItem != null && lastItem == item)
             return;
@@ -34,6 +39,6 @@ public class TowerItemCatcher : MonoBehaviour
         
         lastItem = item;
         tower.ConstructPiece(item.ItemType);
-        Destroy(collider.gameObject);
+        netObj.Runner.Despawn(netObj);
     }
 }

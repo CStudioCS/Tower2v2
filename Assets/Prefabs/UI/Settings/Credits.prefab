@@ -495,8 +495,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "<b>Game Director</b>\r\nFar\xE8s Gati\r\n\r\n<b>Lead Developers</b>\r\nFar\xE8s
-    Gati\r\nThomas Bringer\r\n\r\n<b>Developers</b>\r\nJules Marceau\r\nC\xE9dric
-    Vilandrau\r\nPierre Fessart\r\nAmazigh Halil\nMathis Ramalho\nNathana\xEBl Tousch"
+    Gati\r\nThomas Bringer\n\n<b>Network Developer</b>\nAmazigh Halil\n\r\n<b>Developers</b>\r\nJules
+    Marceau\r\nC\xE9dric Vilandrau\r\nPierre Fessart\r\nAmazigh Halil\nMathis Ramalho\nNathana\xEBl
+    Tousch"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
   m_sharedMaterial: {fileID: -1372678212655353642, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
@@ -523,8 +524,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -538,7 +539,7 @@ MonoBehaviour:
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
+  m_paragraphSpacing: -12
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
@@ -700,7 +701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 9194888705995687885}
-  fadeInDuration: 0.3
+  duration: 0.2
 --- !u!1 &7729062705504794576
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,9 +767,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<b>Art</b>\r\nAur\xE9lie Wagner\n\n<b>Game Design</b>\r\nAll Team Members\r\n\r\n<b>Level
-    Design</b>\r\nThomas Bringer\r\n\r\n<b>Sound Design</b>\r\nMathis Ramalho\r\nNathana\xEBl
-    Tousch\r\n\r\n<b>Music</b>\r\nHarry Hamilton"
+  m_text: "<b>Art</b>\r\nAur\xE9lie Wagner\n\n<b>UI/UX Design</b>\nThomas Bringer\nAmazigh
+    Halil\n\n<b>Game Design</b>\r\nAll Team Members\r\n\r\n<b>Level Design</b>\r\nThomas
+    Bringer\r\n\r\n<b>Sound Design</b>\r\nMathis Ramalho\r\nNathana\xEBl Tousch\r\n\r\n<b>Music</b>\r\nHarry
+    Hamilton"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
   m_sharedMaterial: {fileID: -1372678212655353642, guid: 42b9d053494203b44b7a0d1418e654b6, type: 2}
@@ -795,8 +797,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
-  m_fontSizeBase: 32
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -810,7 +812,7 @@ MonoBehaviour:
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
+  m_paragraphSpacing: -25
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4

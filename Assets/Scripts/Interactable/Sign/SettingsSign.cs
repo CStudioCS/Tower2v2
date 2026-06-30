@@ -1,38 +1,46 @@
 using UnityEngine.InputSystem;
+using System.Collections;
+using UnityEngine;
 
 public class SettingsSign: Sign
 {
-	private Player interactingPlayer = null;
+    // Player input persists
+    private PlayerInput interactingInput = null;
 
-	public override void Interact(Player player)
+    public override void Interact(Player player)
 	{
-		if (interactingPlayer != null)
+        if (interactingInput != null)
 			return;
-		
-		interactingPlayer = player;
-		player.PlayerControlBadge.ShowReadyLabel(false);
-		player.LockInSettingsMenu();
 
-		PlayerInput playerInput = player.GetComponent<PlayerInput>();
-		playerInput.SwitchCurrentActionMap("UI");
+        interactingInput = player.InputPoller.LocalPlayerInput;
+        player.PlayerBadge.ShowReadyLabel(false);
 
-		SettingsMenu menu = CanvasLinker.Instance.settingsMenu;
-		menu.Closed += OnSettingsClosed;
-		menu.Open(playerInput);
-	}
+        StartCoroutine(OpenMenuNextFrame(player.InputPoller.LocalPlayerInput));
+    }
 
-	private void OnSettingsClosed()
+    private IEnumerator OpenMenuNextFrame(PlayerInput localInput)
+    {
+        // Wait till the next frame to open the menu,
+        // otherwise the input action map switch will cause the current interaction to be cancelled immediately
+        yield return null;
+
+        localInput.SwitchCurrentActionMap("UI");
+
+        SettingsMenu menu = CanvasLinker.Instance.settingsMenu;
+        menu.Closed += OnSettingsClosed;
+        menu.Open(localInput);
+    }
+
+    private void OnSettingsClosed()
 	{
 		CanvasLinker.Instance.settingsMenu.Closed -= OnSettingsClosed;
 
-		if (interactingPlayer == null)
+        if (interactingInput == null)
 			return;
 
-		PlayerInput playerInput = interactingPlayer.GetComponent<PlayerInput>();
-		playerInput.SwitchCurrentActionMap("Gameplay");
+        interactingInput.SwitchCurrentActionMap("Gameplay");
+        LobbyManager.Instance?.SetBadgeVisibility(interactingInput, true);
 
-		interactingPlayer.LockInSettingsMenu(false);
-		interactingPlayer.PlayerControlBadge.ShowReadyLabel(true);
-		interactingPlayer = null;
-	}
+        interactingInput = null;
+    }
 }

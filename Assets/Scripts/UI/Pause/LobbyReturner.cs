@@ -1,3 +1,4 @@
+using Fusion;
 using UnityEngine;
 
 public class LobbyReturner : MonoBehaviour
@@ -7,6 +8,6 @@ public class LobbyReturner : MonoBehaviour
     public void ReturnToLobby()
     {
         pauseMenu.Resume(fireEvent: false);
-        LevelManager.Instance.ForceReturnToLobby();
+        LevelManager.Instance.RPC_ForceReturnToLobby();
     } 
 }

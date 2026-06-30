@@ -1,34 +1,38 @@
-using System;
+using Fusion;
 using LitMotion;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     public List<Interactable> insideInteractableList { get; } = new();
-    public bool IsHolding => HeldItem != null;
-    public Item HeldItem { get; private set; }
-    public bool Interacting { get; private set; }
-    
+    public bool IsHolding => SyncHeldItemType != -1 && HeldItem != null;
+    public Item HeldItem { get; set; }
+
     [SerializeField] private float minThrowSpeed = 40f;
     [SerializeField] private float maxThrowSpeed = 70f;
     [SerializeField] private float aimChargeDuration = .5f;
     private float aimSpeedRatioVelocity;
     [SerializeField] private float timeBeforeAimCharge = .15f;
-    private float timerBeforeAimCharge;
 
     [Header("References")]
 
-    [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerTeam playerTeam;
     public PlayerTeam PlayerTeam => playerTeam;
+
     [SerializeField] private PlayerControlBadge playerControlBadge;
     public PlayerControlBadge PlayerControlBadge => playerControlBadge;
+
+    [SerializeField] private PlayerBadge playerBadge;
+    public PlayerBadge PlayerBadge => playerBadge;
+
     [SerializeField] private PlayerMovement playerMovement;
     public PlayerMovement PlayerMovement => playerMovement;
-    
+
+    [SerializeField] private PlayerInputPoller inputPoller;
+    public PlayerInputPoller InputPoller => inputPoller;
+
     [SerializeField] private PlayerStats playerStats;
     public PlayerStats PlayerStats => playerStats;
     [SerializeField] private PlayerInitPosition playerInitPosition;
@@ -41,47 +45,112 @@ public class Player : MonoBehaviour
 
     public Action GrabbedNewItem;
 
-    private InputAction interactAction;
-    private InputAction throwAction;
-    private Interactable closestInteractable;
+    [Networked] private NetworkButtons PreviousButtons { get; set; }
+    [Networked] public TickTimer InteractionTimer { get; set; }
+
+    [Networked, OnChangedRender(nameof(OnTargetChanged))]
+    public int SyncTargetId { get; set; } = -1;
+
+    [Networked, OnChangedRender(nameof(OnHeldItemChanged))]
+    public int SyncHeldItemType { get; set; } = -1;
+
+    [Networked, OnChangedRender(nameof(OnInteractionChanged))]
+    public NetworkBool SyncIsInteracting { get; set; }
+    [Networked] public float SyncThrowSpeedRatio { get; set; }
+    [Networked] public Vector2 SyncThrowDirection { get; set; }
+
+    public enum AimingState { NotAiming, StartingToAim, AimingLockedIn }
+    [Networked] public AimingState CurrentAimingState { get; set; }
+    [Networked] private float TimerBeforeAimCharge { get; set; }
+
+    [Networked, Capacity(32), OnChangedRender(nameof(OnPlayerNameChanged))]
+    public string SyncPlayerName { get; set; }
+    private void OnPlayerNameChanged() => playerBadge.SetPlayerName(SyncPlayerName);
+
+    private float ThrowSpeed => SyncThrowSpeedRatio * (maxThrowSpeed - minThrowSpeed) + minThrowSpeed;
+    public Vector2 ThrowVelocity => ThrowSpeed * SyncThrowDirection;
+
+    private PlayerData currentTickData;
 
     private MotionHandle grabbingLerp;
     private MotionHandle rotationLerp;
-    public float throwSpeedRatio { get; private set; }
-    private float ThrowSpeed => throwSpeedRatio * (maxThrowSpeed - minThrowSpeed) + minThrowSpeed;
-    public Vector2 ThrowDirection => playerMovement.LastNonZeroInput;
-    public Vector2 ThrowVelocity => ThrowSpeed * ThrowDirection;
 
     public bool LockedInSettingsMenu { get; private set; }
-    public event Action LockedInSettingsMenuChanged;
 
+    public event Action AvatarSpawned;
     public event Action StartedAimingLockedIn;
     public event Action StoppedAiming;
-    public enum AimingState { NotAiming, StartingToAim, AimingLockedIn }
 
-    public AimingState CurrentAimingState { get; private set; } = AimingState.NotAiming;
+    public static event Action<Player> PlayerSpawned;
+    public static event Action<Player> PlayerDespawned;
 
     private void Awake()
     {
-        interactAction = playerInput.actions.FindAction("Gameplay/Interact");
-        throwAction = playerInput.actions.FindAction("Gameplay/Throw");
         aimSpeedRatioVelocity = 1 / aimChargeDuration;
     }
 
     private void Start()
     {
-        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEnded += OnGameEnded;
+        NetworkManager.OnUnexpectedDisconnect += UnsubscribeFromNetworkEvents;
     }
 
-    private void Update()
+    public override void Spawned()
     {
-        if (!Interacting)
+        PlayerRegistry.Register(this);
+        PlayerSpawned?.Invoke(this);
+        AvatarSpawned?.Invoke();
+
+        playerBadge.SetPlayerName(SyncPlayerName);
+
+        if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
+        {
+            target.RefreshHighlight();
+            target.OnTargetedBy(this, true);
+        }
+
+        CurrentAimingState = AimingState.NotAiming;
+    }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        PlayerRegistry.Unregister(this);
+        PlayerDespawned?.Invoke(this);
+
+        if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
+        {
+            target.RefreshHighlight();
+            target.OnTargetedBy(this, false);
+        }
+
+        insideInteractableList.Clear();
+        ConsumeCurrentItem();
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        if (!SyncIsInteracting)
             UpdateClosestInteractable();
 
-        if (!LockedInSettingsMenu && !PauseMenu.instance.IsPaused)
+        if (GetInput(out PlayerNetworkInput input))
+        {
+            int mySlot = GetComponent<PlayerInputPoller>().SlotIndex;
+
+            PlayerData myData = default;
+            if (mySlot == 0) myData = input.Player0;
+            else if (mySlot == 1) myData = input.Player1;
+            else if (mySlot == 2) myData = input.Player2;
+            else if (mySlot == 3) myData = input.Player3;
+
+
+            currentTickData = myData;
+
             HandleInput();
 
-        playerAnimationController.HasItem(HeldItem != null); // TODO fix bad animation coupling
+            PreviousButtons = myData.Buttons;
+        }
+
+        playerAnimationController.HasItem(SyncHeldItemType != -1); // TODO fix bad animation coupling
     }
 
     private void HandleInput()
@@ -89,7 +158,10 @@ public class Player : MonoBehaviour
         switch (LevelManager.Instance.GameState)
         {
             case LevelManager.State.Game:
-                HandleInputGame();
+                if (SyncIsInteracting)
+                    ProcessLongInteraction();
+                else
+                    HandleInputGame();
                 break;
             case LevelManager.State.Lobby:
                 HandleInputLobby();
@@ -99,12 +171,13 @@ public class Player : MonoBehaviour
 
     private void HandleInputLobby()
     {
-        if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
+        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
+
+        if (interactPressed || throwPressed)
         {
             if (!TryInteract())
-            {
-                playerControlBadge.Interact();
-            }
+                playerControlBadge.ToggleReady();
         }
     }
 
@@ -126,27 +199,37 @@ public class Player : MonoBehaviour
 
     private void HandleInputNotAiming()
     {
+        bool interactPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwPressed = currentTickData.Buttons.WasPressed(PreviousButtons, PlayerInputButtons.Throw);
+
         if (IsHolding)
         {
-            if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
+            if (interactPressed || throwPressed)
             {
                 if (TryInteract())
                     return;
                 CurrentAimingState = AimingState.StartingToAim;
-                throwSpeedRatio = 0f;
-                timerBeforeAimCharge = 0f;
+                SyncThrowSpeedRatio = 0f;
+                TimerBeforeAimCharge = 0f;
             }
         }
         else
         {
-            if (interactAction.WasPressedThisFrame() || throwAction.WasPressedThisFrame())
+            if (interactPressed || throwPressed)
                 TryInteract();
         }
     }
 
     private void HandleInputStartingToAim()
     {
-        if (throwAction.WasReleasedThisFrame())
+        if (HasStateAuthority || HasInputAuthority)
+            SyncThrowDirection = playerMovement.LastNonZeroInput;
+
+        bool interactReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Throw);
+        bool throwIsPressed = currentTickData.Buttons.IsSet(PlayerInputButtons.Throw);
+
+        if (throwReleased)
         {
             ThrowAndExitAim(ThrowVelocity);
             return;
@@ -154,14 +237,14 @@ public class Player : MonoBehaviour
 
         // If the player releases the interact button BUT is still holding the throw button at the same time,
         // their intention is probably to throw the item, so we should not drop it and stay in the StartingToAim state.
-        if (interactAction.WasReleasedThisFrame() && !throwAction.IsPressed())
+        if (interactReleased && !throwIsPressed)
         {
             ThrowAndExitAim();
             return;
         }
         
-        timerBeforeAimCharge += Time.deltaTime;
-        if (timerBeforeAimCharge >= timeBeforeAimCharge)
+        TimerBeforeAimCharge += Runner.DeltaTime;
+        if (TimerBeforeAimCharge >= timeBeforeAimCharge)
         {
             CurrentAimingState = AimingState.AimingLockedIn;
             StartedAimingLockedIn?.Invoke();
@@ -171,93 +254,193 @@ public class Player : MonoBehaviour
     private void ThrowAndExitAim() => ThrowAndExitAim(Vector2.zero);
     private void ThrowAndExitAim(Vector2 throwVelocity)
     {
-        throwSpeedRatio = 0f;
+        SyncThrowSpeedRatio = 0f;
         CurrentAimingState = AimingState.NotAiming;
+
         StoppedAiming?.Invoke();
         TryDropHeldItem(throwVelocity);
     }
 
     private void HandleInputAimingLockedIn()
     {
-        throwSpeedRatio = Mathf.Clamp01(throwSpeedRatio + aimSpeedRatioVelocity * Time.deltaTime);
-        if (interactAction.WasReleasedThisFrame() || throwAction.WasReleasedThisFrame())
+        if (HasStateAuthority || HasInputAuthority)
         {
-            ThrowAndExitAim(ThrowVelocity);
+            SyncThrowSpeedRatio = Mathf.Clamp01(SyncThrowSpeedRatio + aimSpeedRatioVelocity * Runner.DeltaTime);
+            SyncThrowDirection = playerMovement.LastNonZeroInput;
         }
+
+        bool interactReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Throw);
+
+        if (interactReleased || throwReleased)
+            ThrowAndExitAim(ThrowVelocity);
+    }
+
+    public void LocalEnterInteractable(Interactable interactable)
+    {
+        if (interactable != null && !insideInteractableList.Contains(interactable))
+            insideInteractableList.Add(interactable);
+    }
+
+    public void LocalExitInteractable(Interactable interactable)
+    {
+        if (interactable != null)
+            insideInteractableList.Remove(interactable);
     }
 
     private void UpdateClosestInteractable()
     {
-        Interactable newClosestInteractable = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
+        if (!HasStateAuthority) 
+            return;
 
-        if (closestInteractable != newClosestInteractable)
-        {
-            if (closestInteractable != null)
-                closestInteractable.TryHighlight(false, this);
-            
-            if (newClosestInteractable != null)
-                newClosestInteractable.TryHighlight(true, this);
-        }
+        // trust me some crazy shit happen when logic is shared across a network
+        insideInteractableList.RemoveAll(i => i == null || !i.gameObject.activeInHierarchy);
 
-        closestInteractable = newClosestInteractable;
+        Interactable localClosest = insideInteractableList.Count > 0 ? GetClosestInteractable() : null;
+        int newTargetId = localClosest != null ? localClosest.NetworkId : -1;
+
+        if (SyncTargetId != newTargetId)
+            SyncTargetId = newTargetId;
     }
     private bool TryInteract()
     {
-        if (closestInteractable == null)
+        Interactable target = null;
+        if (SyncTargetId != -1)
+            InteractableRegistry.All.TryGetValue(SyncTargetId, out target);
+
+        if (target == null)
             return false;
 
-        bool canBeHighlighted = closestInteractable.CheckIfCanBeHighlighted(this);
-        float time = closestInteractable.GetInteractionTime();
+        bool canBeHighlighted = target.CheckIfCanBeHighlighted(this);
+        float time = target.GetInteractionTime();
+
         if (time > 0)
         {
-            if (closestInteractable is Workbench)
-                playerAnimationController.StartCutting(); // TODO fix bad animation coupling
-            else if (closestInteractable is Collector)
-                playerAnimationController.StartCollecting(); // TODO fix bad animation coupling
-            else
-                Debug.LogError("This Interactable is not currently supported by the animator");
-            //no interactable in the game takes time aside from Collector and Workbench as of rn
-                
-            StartCoroutine(InteractTimer(closestInteractable, time));
+            // Before the network update it was a couroutine
+            InteractionTimer = TickTimer.CreateFromSeconds(Runner, time);
+
+            if (HasStateAuthority || HasInputAuthority) 
+                SyncIsInteracting = true;
         }
         else
-            closestInteractable.Interact(this);
+            ExecuteInteraction(target);
 
         return canBeHighlighted;
     }
 
-    private IEnumerator InteractTimer(Interactable insideInteractable, float time)
+    private void ProcessLongInteraction()
     {
-        Interacting = true;
-        insideInteractable.IsAlreadyInteractedWith = true;
-        progressBar.StartProgress();
-        float t = 0;
-        
-        while(t < time)
-        {
-            // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
-            if (interactAction.WasReleasedThisFrame() || throwAction.WasReleasedThisFrame() || LevelManager.Instance.GameState != LevelManager.State.Game)
-            {
-                StopInteracting(insideInteractable);
-                yield break;
-            }
+        bool interactReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Interact);
+        bool throwReleased = currentTickData.Buttons.WasReleased(PreviousButtons, PlayerInputButtons.Throw);
 
-            progressBar.UpdateProgress(t / time);
-            t += Time.deltaTime;
-            yield return null;
+        Interactable target = null;
+        if (SyncTargetId != -1)
+            InteractableRegistry.All.TryGetValue(SyncTargetId, out target);
+
+        // If at any point the player stops holding the interact button, or we're not in the game state anymore -> stop interacting
+        if (interactReleased || throwReleased || LevelManager.Instance.GameState != LevelManager.State.Game || target == null)
+        {
+            StopInteracting(target);
+            return;
         }
 
         // We interacted with the object -> Reset everything and call the interact function
-        StopInteracting(insideInteractable);
-        insideInteractable.Interact(this);
+        if (InteractionTimer.Expired(Runner))
+        {
+            StopInteracting(target);   
+            ExecuteInteraction(target);
+        }
+    }
+
+    public override void Render()
+    {
+        if (!SyncIsInteracting || !InteractionTimer.IsRunning)
+            return;
+
+        if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
+        {
+            float duration = target.GetInteractionTime();
+            if (duration > 0)
+            {
+                float t = duration - InteractionTimer.RemainingTime(Runner).GetValueOrDefault();
+                progressBar.UpdateProgress(t / duration);
+            }
+        }
+    }
+
+    private void ExecuteInteraction(Interactable target)
+    {
+        if (!target.CanInteract(this)) return;
+
+        bool isClientSide = target.executionTarget == Interactable.ExecutionTarget.ClientSide;
+        bool canInteract = isClientSide ? (HasInputAuthority && Runner.IsForward) : HasStateAuthority;
+
+        if (canInteract)
+            target.Interact(this);
+        else if (!isClientSide && HasInputAuthority)
+        {
+            SyncHeldItemType = -1;
+            if (HeldItem != null) HeldItem.gameObject.SetActive(false);
+        }
     }
 
     private void StopInteracting(Interactable insideInteractable)
     {
-        playerAnimationController.EndInteraction(); // TODO fix bad animation coupling
-        Interacting = false;
-        insideInteractable.IsAlreadyInteractedWith = false;
-        progressBar.ResetProgress();
+        InteractionTimer = TickTimer.None;
+
+        if (HasStateAuthority || HasInputAuthority)
+            SyncIsInteracting = false;
+    }
+
+    private void OnHeldItemChanged(NetworkBehaviourBuffer previous)
+    {
+        int previousItemType = GetPropertyReader<int>(nameof(SyncHeldItemType)).Read(previous);
+
+        if (SyncHeldItemType == -1 && previousItemType != -1)
+            playerAnimationController.Drop();
+
+        else if (SyncHeldItemType != -1 && previousItemType == -1)
+            playerAnimationController.Grab();
+    }
+
+    private void OnTargetChanged(NetworkBehaviourBuffer previous)
+    {
+        int previousTargetId = GetPropertyReader<int>(nameof(SyncTargetId)).Read(previous);
+
+        if (previousTargetId != -1 && InteractableRegistry.All.TryGetValue(previousTargetId, out var oldInteractable))
+        {
+            oldInteractable.RefreshHighlight();
+            oldInteractable.OnTargetedBy(this, false);
+        }
+            
+        if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var newInteractable))
+        {
+            newInteractable.RefreshHighlight();
+            newInteractable.OnTargetedBy(this, true);
+        }
+    }
+
+    private void OnInteractionChanged(NetworkBehaviourBuffer previous)
+    {
+        if (SyncIsInteracting)
+        {
+            if (SyncTargetId != -1 && InteractableRegistry.All.TryGetValue(SyncTargetId, out var target))
+            {
+                if (target is Workbench) 
+                    playerAnimationController.StartCutting();     // TODO fix bad animation coupling
+                else if (target is Collector) 
+                    playerAnimationController.StartCollecting();  // TODO fix bad animation coupling
+                else
+                    Debug.LogError("This Interactable is not currently supported by the animator");
+                //no interactable in the game takes time aside from Collector and Workbench as of rn
+            }
+            progressBar.StartProgress();
+        }
+        else
+        {
+            playerAnimationController.EndInteraction();  // TODO fix bad animation coupling
+            progressBar.ResetProgress();
+        }
     }
 
     /// <summary>
@@ -265,9 +448,16 @@ public class Player : MonoBehaviour
     /// </summary>
     public void ConsumeCurrentItem()
     {
-        if (HeldItem != null)
-            Destroy(HeldItem.gameObject);
-        HeldItem = null;
+        if (HasStateAuthority || HasInputAuthority)
+            SyncHeldItemType = -1;
+
+        if (HasStateAuthority && HeldItem != null)
+        {
+            if (HeldItem.TryGetComponent(out NetworkObject netObj))
+                Runner.Despawn(netObj);
+            
+            HeldItem = null;
+        }
     }
 
     public bool TryDropHeldItem() => TryDropHeldItem(Vector2.zero);
@@ -280,13 +470,19 @@ public class Player : MonoBehaviour
         if (!IsHolding || HeldItem.State != Item.ItemState.Held)
             return false;
 
-        HeldItem.State = Item.ItemState.Transitioning;
-        playerAnimationController.Drop(); // TODO fix bad animation coupling
+        if (HasStateAuthority || HasInputAuthority)
+            SyncHeldItemType = -1;
 
         grabbingLerp.TryCancel();
         rotationLerp.TryCancel();
-        HeldItem.Drop(currentThrowSpeed);
-        HeldItem = null;
+
+        if (HasStateAuthority && HeldItem != null)
+        {
+            HeldItem.State = Item.ItemState.Transitioning;
+            HeldItem.Drop(currentThrowSpeed);
+            HeldItem = null;
+        }
+
         return true;
     }
 
@@ -297,20 +493,20 @@ public class Player : MonoBehaviour
     /// <param name="originallyCollectedByTeam">The team this item was originally collected by. If left null this will be set as this player's team</param>
     public void GrabNewItem(Item itemPrefab, PlayerTeam.Team? originallyCollectedByTeam = null)
     {
-        Item itemInstance = Instantiate(itemPrefab);
-        GrabItem(itemInstance, false);
-        if (originallyCollectedByTeam is PlayerTeam.Team team)
-            itemInstance.originallyCollectedByTeam = team;
-        else
-            itemInstance.originallyCollectedByTeam = playerTeam.CurrentTeam;
+        if (!HasStateAuthority) return;
+
+        NetworkObject netObj = Runner.Spawn(itemPrefab.gameObject, transform.position, Quaternion.identity);
+        Item itemInstance = netObj.GetComponent<Item>();
+        NetworkItem netItem = itemInstance.NetworkItem;
+
+        netItem.SyncOriginalTeam = originallyCollectedByTeam ?? playerTeam.CurrentTeam;
+        netItem.Grab(this, false);
 
         GrabbedNewItem?.Invoke();
     }
 
     public void GrabItem(Item item, bool interpolatePosition)
     {
-        playerAnimationController.Grab(); // TODO fix bad animation coupling
-
         HeldItem = item;
 
         item.Immobilize();
@@ -327,22 +523,39 @@ public class Player : MonoBehaviour
             item.transform.localPosition = Vector2.zero;
 
         item.State = Item.ItemState.Held;
+
+        if (HasStateAuthority || HasInputAuthority)
+            SyncHeldItemType = (int)item.ItemType;
     }
 
-    private void OnGameEndedOrReturnedToLobby()
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_SetPlayerName(string newName)
     {
-        Interacting = false;
+        if (LevelManager.Instance.GameState == LevelManager.State.Game)
+            return;
+
+        SyncPlayerName = newName;
+    }
+
+    private void OnGameEnded()
+    {
+        SyncIsInteracting = false;
+        SyncThrowSpeedRatio = 0f;
         CurrentAimingState = AimingState.NotAiming;
+
         StoppedAiming?.Invoke();
         ConsumeCurrentItem();
-
-        if (closestInteractable != null)
-            closestInteractable.TryHighlight(false, this);
     }
     
     private void OnDisable()
     {
-        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        LevelManager.GameEnded -= OnGameEnded;
+        NetworkManager.OnUnexpectedDisconnect -= UnsubscribeFromNetworkEvents;
+    }
+
+    private void UnsubscribeFromNetworkEvents()
+    {
+        LevelManager.GameEnded -= OnGameEnded;
     }
 
     private Interactable GetClosestInteractable()
@@ -352,8 +565,21 @@ public class Player : MonoBehaviour
 
         foreach (Interactable interactable in insideInteractableList)
         {
+            if (HeldItem != null && interactable.gameObject == HeldItem.gameObject)
+                continue;
+
+            bool isAvailable = true;
+            foreach (Player p in PlayerRegistry.All) 
+            {
+                if (p != this && p.SyncIsInteracting && p.SyncTargetId == interactable.NetworkId)
+                {
+                    isAvailable = false;
+                    break;
+                }
+            }
+
             float sqrDistance = ((Vector2)interactable.transform.position - (Vector2)transform.position).sqrMagnitude;
-            if (sqrDistance < minSqrDistance && !interactable.IsAlreadyInteractedWith && interactable.CanInteract(this))
+            if (sqrDistance < minSqrDistance && isAvailable && interactable.CanInteract(this))
             {
                 minSqrDistance = sqrDistance;
                 closest = interactable;
@@ -361,11 +587,5 @@ public class Player : MonoBehaviour
         }
 
         return closest;
-    }
-
-    public void LockInSettingsMenu(bool locked = true)
-    {
-        LockedInSettingsMenu = locked;
-        LockedInSettingsMenuChanged?.Invoke();
     }
 }

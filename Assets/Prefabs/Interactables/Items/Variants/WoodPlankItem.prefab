@@ -197,6 +197,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5949389688807667029, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: SortKey
+      value: 3404812379
+      objectReference: {fileID: 0}
     - target: {fileID: 6644710968671229558, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: m_Size.x
       value: 1
@@ -216,6 +220,10 @@ PrefabInstance:
     - target: {fileID: 8569902203551738096, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: itemType
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8569902203551738096, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
+      propertyPath: uniqueId
+      value: 245e1ed9-1209-404c-a372-80059a9b48b1
       objectReference: {fileID: 0}
     - target: {fileID: 8569902203551738096, guid: 6de5b57a381e8ce499aa058c56f5f5cf, type: 3}
       propertyPath: outlineThickness

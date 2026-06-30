@@ -1,81 +1,86 @@
+using Fusion;
 using LitMotion;
 using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class SettingsMenu: MonoBehaviour
+public class SettingsMenu : MonoBehaviour
 {
-	[SerializeField] private GameObject settings;
-	[SerializeField] private EventSystem eventSystem;
-	public EventSystem EventSystem => eventSystem;
-	[SerializeField] private SettingsMenuInputHandler inputHandler;
-	public SettingsMenuInputHandler InputHandler => inputHandler;
+    [SerializeField] private GameObject settings;
+    [SerializeField] private EventSystem eventSystem;
+    public EventSystem EventSystem => eventSystem;
 
-	[Header("Navigation")]
-	[Tooltip("Ordered list of selectables for gamepad navigation (top to bottom).")]
-	[SerializeField] private Selectable[] selectables;
-	public Selectable[] Selectables => selectables;
+    // --- 2D Input Handler ---
+    [SerializeField] private MenuInputHandler inputHandler;
+    public MenuInputHandler InputHandler => inputHandler;
 
-	[Tooltip("Index in the selectables array to select by default when the menu opens.")]
-	[SerializeField] private int defaultSelectedIndex = 1;
-	public int DefaultSelectedIndex => defaultSelectedIndex;
+    [Header("Navigation 2D")]
+    [Tooltip("2D Grid of selectables for gamepad navigation.")]
+    [SerializeField] private List<UIRow> menuRows = new List<UIRow>();
 
-	[Tooltip("The close (X) button in the top right")]
-	[SerializeField] private Button closeButton;
+    // --- Slider Controller Tool ---
+    [Tooltip("Component that handles left/right input dynamically if the target is a slider.")]
+    [SerializeField] private SliderController sliderController;
 
-	[Tooltip("The credits panel that may be open when the menu closes.")]
-	[SerializeField] private GameObjectFadeIn credits;
+    [Header("UI Elements")]
+    [SerializeField] private GameObjectFadeIn creditsFader;
+    [SerializeField] private GameObjectFadeIn networkFader;
+    [SerializeField] private GameObjectFadeIn settingsFader;
 
-	/// <summary>
-	/// Fired when the settings menu is closed (by the close button or cancel).
-	/// </summary>
-	public event Action Closed;
+    [Header("Network")]
+    [SerializeField] private NetworkMenu networkMenu;
+    private PlayerInput currentPlayer;
+    private GameObject lastSelectedButton;
 
-	public void ShowSettings(bool on = true) => settings.SetActive(on);
+    public event Action Closed;
 
-	private void Start()
-	{
-		if (closeButton != null)
-			closeButton.onClick.AddListener(Close);
-	}
+    public void ShowSettings(bool on = true) => settings.SetActive(on);
 
-	private void Update()
-	{
-		// Handle mouse click on the close button manually since there is no InputModule for pointer events.
-		if (!settings.activeSelf) return;
-		if (closeButton == null) return;
-		if (Mouse.current == null || !Mouse.current.leftButton.wasPressedThisFrame) return;
+    // --- Event Subscriptions ---
+    private void OnEnable()
+    {
+        // Delegate horizontal navigation: the controller will dynamically check if the selected target is a slider
+        if (inputHandler != null && sliderController != null)
+            inputHandler.OnCustomNavigation += sliderController.HandleNavigationInput;
+    }
 
-		Vector2 mousePos = Mouse.current.position.ReadValue();
-		RectTransform closeRect = closeButton.GetComponent<RectTransform>();
+    private void OnDisable()
+    {
+        if (inputHandler != null && sliderController != null)
+            inputHandler.OnCustomNavigation -= sliderController.HandleNavigationInput;
+    }
 
-		if (RectTransformUtility.RectangleContainsScreenPoint(closeRect, mousePos))
-			Close();
-	}
+    public void Open(PlayerInput playerInput)
+    {
+        currentPlayer = playerInput;
+        if (!settingsFader.FadedIn) settingsFader.Fade();
 
-	/// <summary>
-	/// Opens the settings menu and binds input to the given player.
-	/// </summary>
-	public void Open(PlayerInput playerInput)
-	{
-		settings.SetActive(true);
-		inputHandler.Bind(playerInput, eventSystem, this);
-	}
+        // Bind the generic input handler using our 2D Row Grid
+        inputHandler.Bind(playerInput, eventSystem, Close, menuRows, lastSelectedButton);
+    }
 
-	/// <summary>
-	/// Closes the settings menu and unbinds input.
-	/// </summary>
-	public void Close()
-	{
-		// Make sure credits panel is closed
-		if (credits.FadedIn)
-			credits.Fade();
-
+    public void GoToNetworkMenu()
+    {
+        lastSelectedButton = eventSystem.currentSelectedGameObject;
         inputHandler.Unbind();
-		eventSystem.SetSelectedGameObject(null);
-		settings.SetActive(false);
-		Closed?.Invoke();
-	}
+
+        if (settingsFader.FadedIn) settingsFader.Fade();
+        networkMenu.Open(currentPlayer, this);
+    }
+
+    public void Close()
+    {
+        inputHandler.Unbind();
+        eventSystem.SetSelectedGameObject(null);
+
+        if (creditsFader.FadedIn) creditsFader.Fade();
+        if (networkFader.FadedIn) networkFader.Fade();
+        if (settingsFader.FadedIn) settingsFader.Fade();
+
+        Closed?.Invoke();
+    }
 }

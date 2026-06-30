@@ -13,7 +13,7 @@ public class EndScreen : MonoBehaviour
 
     private void Start()
     {
-        LevelManager.Instance.GameEnded += OnGameEnded;
+        LevelManager.GameEndedWithResults += OnGameEnded;
     }
 
     private void OnGameEnded() => StartCoroutine(OnGameEndedCoroutine());
@@ -37,12 +37,12 @@ public class EndScreen : MonoBehaviour
         //TowerCard.gameObject.SetActive(false); already done within StatsCard
         StatsCard.gameObject.SetActive(false);
 
-        LevelManager.Instance.SetGameStateToLobby();
+        LevelManager.Instance.ForceReturnToLobby();
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         StopAllCoroutines();
-        LevelManager.Instance.GameEnded -= OnGameEnded;
+        LevelManager.GameEndedWithResults -= OnGameEnded;
     }
 }

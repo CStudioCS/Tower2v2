@@ -5,62 +5,87 @@ using LitMotion;
 public class MapSign: Sign
 {
 	[SerializeField] private WorldPhysicsActivator[] worldPrefabs;
-	private int currentWorldIndex = 0;
-	private WorldPhysicsActivator CurrentWorldPrefab => worldPrefabs[currentWorldIndex];
 	private int WorldCount => worldPrefabs.Length;
 	[SerializeField] private WorldPhysicsActivator firstMapInstance;
 	private WorldPhysicsActivator currentWorldInstance;
 	[SerializeField] private float worldWidth = 20;
 	[SerializeField] private float transitionDuration = 1f;
 	private bool transitioning;
+    private int currentWorldIndex = 0;
 
-	protected override void Awake()
+    protected override void Awake()
 	{
 		base.Awake();
 		if (firstMapInstance == null)
-			SpawnCurrentWorld(Vector2.zero);
+			SpawnCurrentWorld(Vector2.zero, 0);
 		else
 			currentWorldInstance = firstMapInstance;
 	}
 
-	public override void Interact(Player player)
+    private void OnEnable() => LobbyManager.OnMapChangedEvent += HandleMapChanged;
+    private void OnDisable() => LobbyManager.OnMapChangedEvent -= HandleMapChanged;
+
+    public override void Interact(Player player)
 	{
 		if (transitioning)
 			return;
-		
-		NextWorld();
+
+        if (LobbyManager.Instance != null && LobbyManager.Instance.HasStateAuthority)
+            LobbyManager.Instance.CurrentMapIndex = (LobbyManager.Instance.CurrentMapIndex + 1) % WorldCount;
 	}
 
-	private void NextWorld()
-	{
-		transitioning = true;
-		currentWorldIndex = (currentWorldIndex + 1) % WorldCount;
-		if (currentWorldInstance != null)
-		{
-			WorldPhysicsActivator oldWorld = currentWorldInstance;
-			oldWorld.DisablePhysics();
-			TransitionOldWorld(oldWorld);
-		}
+    private void HandleMapChanged(int newMapIndex, bool animate)
+    {
+        if (currentWorldIndex == newMapIndex) return;
 
-		SpawnCurrentWorld(Vector2.right * worldWidth);
-		if (currentWorldInstance == null)
+        currentWorldIndex = newMapIndex;
+
+        if (animate)
+            TransitionToNewWorld(newMapIndex);
+        else
+            InstantSnapToNewWorld(newMapIndex); // For late joiners
+    }
+
+    private void TransitionToNewWorld(int newIndex)
+    {
+        transitioning = true;
+
+        if (currentWorldInstance != null)
+        {
+            WorldPhysicsActivator oldWorld = currentWorldInstance;
+            oldWorld.DisablePhysics();
+            TransitionOldWorld(oldWorld);
+        }
+
+        SpawnCurrentWorld(Vector2.right * worldWidth, newIndex);
+
+        if (currentWorldInstance == null)
+        {
+            transitioning = false;
+            return;
+        }
+
+        currentWorldInstance.DisablePhysics();
+        TransitionCurrentWorld();
+    }
+
+    private void InstantSnapToNewWorld(int newIndex)
+    {
+        if (currentWorldInstance != null)
+            Destroy(currentWorldInstance.gameObject);
+
+        SpawnCurrentWorld(Vector2.zero, newIndex);
+    }
+
+    private void SpawnCurrentWorld(Vector2 position, int index)
+	{
+		if (worldPrefabs[index] == null)
 		{
-			transitioning = false;
+			Debug.LogError($"[MapSign] worldPrefabs[{index}] is null! Make sure all slots are assigned in the inspector.");
 			return;
 		}
-		currentWorldInstance.DisablePhysics();
-		TransitionCurrentWorld();
-	}
-
-	private void SpawnCurrentWorld(Vector2 position)
-	{
-		if (CurrentWorldPrefab == null)
-		{
-			Debug.LogError($"[MapSign] worldPrefabs[{currentWorldIndex}] is null! Make sure all slots are assigned in the inspector.");
-			return;
-		}
-		currentWorldInstance = Instantiate(CurrentWorldPrefab, position, Quaternion.identity);
-	}
+        currentWorldInstance = Instantiate(worldPrefabs[index], position, Quaternion.identity);
+    }
 
 	private void TransitionOldWorld(WorldPhysicsActivator oldWorld) => TransitionWorld(oldWorld, Vector2.left * worldWidth, () => Destroy(oldWorld.gameObject));
 	private void TransitionCurrentWorld() => TransitionWorld(currentWorldInstance, Vector2.zero, () =>

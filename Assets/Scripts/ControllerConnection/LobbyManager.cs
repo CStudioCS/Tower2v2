@@ -1,24 +1,205 @@
+using Fusion;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class LobbyManager : MonoBehaviour
+public class LobbyManager : NetworkBehaviour, IPlayerLeft
 {
+    public static readonly string[] MapNames = new string[]
+    {
+        "Pigs Apart",
+        "Happy Pig Town",
+        "Pig Drama",
+        "Flooded Farm",
+        "Valhalla Pigs"
+    };
+
     [Header("Setup")]
-    [SerializeField] private PlayerInputManager playerInputManager;
-    
-    public event Action<PlayerInput> PlayerJoined;
-    public event Action<PlayerInput> PlayerLeft;
-    
+    [SerializeField] private GameObject localInputProxyPrefab;
+
+    [Header("Network")]
+    [SerializeField] private NetworkPrefabRef playerAvatarPrefab;
+
+    [Header("Local & Session Data")]
+    public string LocalPlayerName { get; private set; }
+
+    // Queue to link the PlayerInput to the avatar.
+    public static Queue<PlayerInput> UnlinkedLocalInputs = new Queue<PlayerInput>();
+    public static HashSet<string> ActiveKeyboardSchemes = new HashSet<string>();
+    public static HashSet<InputDevice> ActiveDevices = new HashSet<InputDevice>();
+
+    private Dictionary<PlayerInput, NetworkObject> activeAvatars = new Dictionary<PlayerInput, NetworkObject>();
+
+    private PlayerInputManager playerInputManager;
+
+    private Coroutine sessionSyncCoroutine;
+
+    [Networked, OnChangedRender(nameof(OnTotalPlayersChanged))]
+    public int TotalPlayers { get; set; }
+
+    [Networked, OnChangedRender(nameof(OnMapIndexChanged))]
+    public int CurrentMapIndex { get; set; }
+
+    [Networked, Capacity(64), OnChangedRender(nameof(OnSessionNameNetworked))]
+    public string CustomSessionName { get; set; }
+
+    public static event Action<int, bool> OnMapChangedEvent;
     public static LobbyManager Instance;
 
-    public void Awake()
+    private void Awake()
     {
-        if(Instance != null)
-            Destroy(Instance);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         Instance = this;
+
+        playerInputManager = PlayerInputManager.instance;
+
+        ActiveKeyboardSchemes.Clear();
+        ActiveDevices.Clear();
+        UnlinkedLocalInputs.Clear();
+        activeAvatars.Clear();
+
+        foreach (PlayerInput pi in PlayerInput.all)
+        {
+            if (pi.devices.Count > 0)
+            {
+                ActiveDevices.Add(pi.devices[0]);
+                if (pi.devices[0] is Keyboard)
+                    ActiveKeyboardSchemes.Add(pi.currentControlScheme);
+            }
+        }
+
+        if (playerInputManager != null && localInputProxyPrefab != null)
+            playerInputManager.playerPrefab = localInputProxyPrefab;
+
+        LocalPlayerName = NetworkManager.Instance.IsSinglePlayer ? "Piggy" : PlayerPrefs.GetString("LocalPlayerName", "Piggy");
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
+    public override void Spawned()
+    {
+        if (HasStateAuthority)
+        {
+            TotalPlayers = 0;
+            CustomSessionName = "";
+        }
+
+        Player.PlayerSpawned += OnPlayerCountChanged;
+        Player.PlayerDespawned += OnPlayerCountChanged;
+
+        LevelManager.GameAboutToStart += SessionInfoSync;
+        LevelManager.ReturnedToLobby += SessionInfoSync;
+
+        LevelManager.ReturnedToLobby += UpdateLocalPlayerNames;
+        NetworkManager.OnUnexpectedDisconnect += UnsubscribeFromNetworkEvents;
+
+        // Restore the avatars of the players who were in the lobby before the reload
+        List<PlayerInput> connectedInputs = new List<PlayerInput>(PlayerInput.all);
+        activeAvatars.Clear();
+        UnlinkedLocalInputs.Clear();
+
+        // Put them back in the queue so that they can be linked to the new avatars when they spawn
+        foreach (PlayerInput input in connectedInputs)
+        {
+            if (!UnlinkedLocalInputs.Contains(input) && CanAddPlayer())
+                UnlinkedLocalInputs.Enqueue(input);
+        }
+
+        PlayerInput[] pendingArray = UnlinkedLocalInputs.ToArray();
+
+        foreach (PlayerInput input in pendingArray)
+        {
+            Vector2 targetPosition = default;
+
+            if (NetworkManager.Instance.UseSavedPositionsForNextSpawn && NetworkManager.Instance.SavedPositions.TryGetValue(input, out Vector3 savedPos))
+                targetPosition = savedPos;
+
+            SpawnAvatar(targetPosition);
+        }
+
+        NetworkManager.Instance.UseSavedPositionsForNextSpawn = false;
+
+        if (connectedInputs.Count > 0 && UnlinkedLocalInputs.Count == 0 && activeAvatars.Count == 0)
+        {
+            NetworkManager.Instance.UseSavedPositionsForNextSpawn = true;
+            _ = NetworkManager.Instance.JoinLobby();
+        }
+
+        OnMapChangedEvent?.Invoke(CurrentMapIndex, false);
+    }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        Player.PlayerSpawned -= OnPlayerCountChanged;
+        Player.PlayerDespawned -= OnPlayerCountChanged;
+
+        LevelManager.GameAboutToStart -= SessionInfoSync;
+        LevelManager.ReturnedToLobby -= SessionInfoSync;
+
+        LevelManager.ReturnedToLobby -= UpdateLocalPlayerNames;
+        NetworkManager.OnUnexpectedDisconnect -= UnsubscribeFromNetworkEvents;
+    }
+
+    private void UnsubscribeFromNetworkEvents()
+    {
+        LevelManager.ReturnedToLobby -= SessionInfoSync;
+        LevelManager.ReturnedToLobby -= UpdateLocalPlayerNames;
+    }
+
+    public void SetLocalPlayerName(string newName)
+    {
+        if (string.IsNullOrWhiteSpace(newName)) return;
+        LocalPlayerName = newName;
+        PlayerPrefs.SetString("LocalPlayerName", newName);
+
+        UpdateLocalPlayerNames();
+    }
+
+    public void UpdateLocalPlayerNames()
+    {
+        if (Runner?.IsRunning != true) return;
+
+        int index = 1;
+        foreach (Player player in PlayerRegistry.All)
+        {
+            if (player.HasInputAuthority)
+            {
+                string assignedName = activeAvatars.Count > 1 ? $"{LocalPlayerName} {index}" : LocalPlayerName;
+                player.RPC_SetPlayerName(assignedName);
+                index++;
+            }
+        }
+    }
+
+    private void OnSessionNameNetworked() => SessionInfoSync();
+
+    public void SetCustomSessionName(string newName)
+    {
+        if (!HasStateAuthority || string.IsNullOrWhiteSpace(newName)) return;
+        CustomSessionName = newName;
+    }
+
+    private void OnPlayerCountChanged(Player player)
+    {
+        if (HasStateAuthority)
+        {
+            TotalPlayers = PlayerRegistry.All.Count;
+            SessionInfoSync();
+        }
+
+        // ALL local clients update their names every time the network confirms a spawn/despawn.
+        UpdateLocalPlayerNames();
     }
 
     private void Update()
@@ -35,28 +216,34 @@ public class LobbyManager : MonoBehaviour
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null) return;
 
+        foreach (PlayerInput player in PlayerInput.all)
+        {
+            if (player.currentActionMap?.name == "UI")
+                 return;
+        }
+
         if (keyboard.eKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame || keyboard.aKey.wasPressedThisFrame ||
             keyboard.sKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame || keyboard.qKey.wasPressedThisFrame)
         {
-            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.WASD);
+            JoinKeyboardPlayer(PlayerBadge.ControlSchemes.WASD);
         }
 
         if (keyboard.yKey.wasPressedThisFrame || keyboard.tKey.wasPressedThisFrame || keyboard.fKey.wasPressedThisFrame ||
             keyboard.gKey.wasPressedThisFrame || keyboard.hKey.wasPressedThisFrame || keyboard.rKey.wasPressedThisFrame)
         {
-            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.TFGH);
+            JoinKeyboardPlayer(PlayerBadge.ControlSchemes.TFGH);
         }
 
         if (keyboard.oKey.wasPressedThisFrame || keyboard.iKey.wasPressedThisFrame || keyboard.jKey.wasPressedThisFrame ||
             keyboard.kKey.wasPressedThisFrame || keyboard.lKey.wasPressedThisFrame || keyboard.uKey.wasPressedThisFrame)
         {
-            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.IJKL);
+            JoinKeyboardPlayer(PlayerBadge.ControlSchemes.IJKL);
         }
 
         if (keyboard.enterKey.wasPressedThisFrame || keyboard.upArrowKey.wasPressedThisFrame || keyboard.downArrowKey.wasPressedThisFrame ||
             keyboard.leftArrowKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame)
         {
-            JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes.ArrowKeys);
+            JoinKeyboardPlayer(PlayerBadge.ControlSchemes.ArrowKeys);
         }
     }
 
@@ -87,12 +274,13 @@ public class LobbyManager : MonoBehaviour
     
     private void JoinGamepadPlayer(Gamepad gamepad)
     {
-        if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
-        {
-            //This kept triggering on accident everytime I maximized Unity so I commented it (why ?)
-            //Debug.Log("An extra gamepad player tried to connect but player limit has been reached");
+        if (ActiveDevices.Contains(gamepad))
             return;
-        }
+
+        if (!CanAddPlayer())
+            return;
+
+        ActiveDevices.Add(gamepad);
 
         // Check if THIS specific controller is already assigned to a player
         foreach (var player in PlayerInput.all)
@@ -115,7 +303,7 @@ public class LobbyManager : MonoBehaviour
             playerInputManager.JoinPlayer(
             playerIndex: -1,
             splitScreenIndex: -1,
-            controlScheme: (PlayerControlBadge.ControlSchemes.Switch).ToString(),
+            controlScheme: (PlayerBadge.ControlSchemes.Switch).ToString(),
             pairWithDevice: gamepad
             );
         }
@@ -124,7 +312,7 @@ public class LobbyManager : MonoBehaviour
             playerInputManager.JoinPlayer(
             playerIndex: -1,
             splitScreenIndex: -1,
-            controlScheme: (PlayerControlBadge.ControlSchemes.PlayStation).ToString(),
+            controlScheme: (PlayerBadge.ControlSchemes.PlayStation).ToString(),
             pairWithDevice: gamepad
             );
         }
@@ -133,11 +321,12 @@ public class LobbyManager : MonoBehaviour
             playerInputManager.JoinPlayer(
             playerIndex: -1,
             splitScreenIndex: -1,
-            controlScheme: PlayerControlBadge.ControlSchemes.Xbox.ToString(),
+            controlScheme: PlayerBadge.ControlSchemes.Xbox.ToString(),
             pairWithDevice: gamepad
             );
         }
     }
+
     bool IsSwitchController(string name, string product, string manufacturer)
     {
         return name.Contains("switch") ||
@@ -157,15 +346,18 @@ public class LobbyManager : MonoBehaviour
                manufacturer.Contains("sony");
     }
 
-    private PlayerInput JoinKeyboardPlayer(PlayerControlBadge.ControlSchemes controlSchemeName)
+    private PlayerInput JoinKeyboardPlayer(PlayerBadge.ControlSchemes controlSchemeName)
     {
-        // 1. Check if we are already at the player limit
-        if (PlayerInput.all.Count >= playerInputManager.maxPlayerCount)
-        {
-            //This kept triggering on accident everytime I maximized Unity so I commented it (why ?)
-            //Debug.Log("An extra keyboard tried to connect but player limit has been reached");
+        string scheme  = controlSchemeName.ToString();
+
+        if (ActiveKeyboardSchemes.Contains(scheme))
             return null;
-        }
+
+        // 1. Check if we are already at the player limit
+        if (!CanAddPlayer())
+            return null;
+
+        ActiveKeyboardSchemes.Add(scheme);
 
         // 2. Check if a player is already using this specific scheme
         foreach (PlayerInput playerInput in PlayerInput.all)
@@ -184,25 +376,134 @@ public class LobbyManager : MonoBehaviour
         );
     }
 
+    private bool CanAddPlayer()
+    {
+        // This is used if the runner is not yet running or if we are in single player mode
+        int maxPlayers = playerInputManager.maxPlayerCount;
+
+        if (Runner != null &&
+            Runner.IsRunning &&
+            Runner.GameMode != GameMode.Single &&
+            Runner.SessionInfo.IsValid)
+            maxPlayers = Runner.SessionInfo.MaxPlayers;
+
+        // This is a security check for fast clickers 
+        // UnlinkedLocalInputs.Count (The local players who just pressed but whose avatar is still loading)
+        return (TotalPlayers + UnlinkedLocalInputs.Count) < maxPlayers;
+    }
+
     public void OnPlayerJoined(PlayerInput playerInput)
     {
         if (playerInput == null) return;
 
-        InputDevice device = playerInput.devices[0];
-        if(!Enum.TryParse(playerInput.currentControlScheme, out PlayerControlBadge.ControlSchemes controlScheme))
+        if (!CanAddPlayer())
         {
-            Debug.LogError("Player control scheme not recognized, make sure it was made with a PlayerControlBadge.ControlSchemes enum value");
+            Debug.LogWarning("[Lobby] Limit reached. Local player rejected.");
+            Destroy(playerInput.gameObject); // Destroy the created Player Proxy
             return;
         }
 
-        playerInput.transform.position = CalculateSpawnPosition();
+        // Enqueue the PlayerInput so that the PlayerInputPoller can link it to the avatar when it spawns.
+        UnlinkedLocalInputs.Enqueue(playerInput);
 
-        PlayerControlBadge badge = playerInput.GetComponent<Player>().PlayerControlBadge;
-        if (badge != null)
-            badge.Initialize(playerInput.playerIndex, controlScheme);
+        if (Runner != null && Runner.IsRunning)
+            SpawnAvatar();
+    }
 
-        Debug.Log($"Player Joined! Device: {device.name} | Scheme: {controlScheme}");
-        PlayerJoined?.Invoke(playerInput);
+    //<summary>
+    // Called by the new Avatar to claim its local proxy
+    //</summary>
+    public void LinkPendingProxyToAvatar(NetworkObject newAvatar)
+    {
+        if (UnlinkedLocalInputs.Count == 0)
+            return;
+
+        PlayerInput pendingInput = UnlinkedLocalInputs.Dequeue();
+
+        string previousActionMap = pendingInput.currentActionMap?.name;
+
+        activeAvatars.Add(pendingInput, newAvatar);
+
+        PlayerInputPoller poller = newAvatar.GetComponent<PlayerInputPoller>();
+        if (poller == null)
+            return;
+
+        poller.AssignLocalInput(pendingInput);
+
+        if (previousActionMap == "UI")
+        {
+            pendingInput.SwitchCurrentActionMap("UI");
+
+            Player player = newAvatar.GetComponent<Player>();
+            player.PlayerBadge.ShowReadyLabel(false);
+        }
+    }
+
+    private void SpawnAvatar(Vector2 spawnPosition = default)
+    {
+        if (UnlinkedLocalInputs.Count == 0) return;
+        
+        if (spawnPosition == Vector2.zero)
+            spawnPosition = CalculateSpawnPosition();
+        
+
+        if (Runner.IsServer)
+            ExecuteSpawn(Runner.LocalPlayer, spawnPosition);
+
+        else
+            RPC_RequestSpawnAvatar(Runner.LocalPlayer, spawnPosition);
+    }
+
+    // <summary>
+    // Only used by the server to spawn avatars
+    // </summary>
+    private void ExecuteSpawn(PlayerRef playerRef, Vector2 spawnPosition)
+    {
+        int maxPlayers = playerInputManager.maxPlayerCount;
+
+        if (Runner.GameMode != GameMode.Single && Runner.SessionInfo.IsValid)
+            maxPlayers = Runner.SessionInfo.MaxPlayers;
+
+        if (TotalPlayers >= maxPlayers)
+        {
+            // No space for another player
+            RPC_SpawnRejected(playerRef);
+            return;
+        }
+
+        Runner.Spawn(playerAvatarPrefab, spawnPosition, Quaternion.identity, playerRef);
+    }
+
+    // <summary>
+    // Only used by the server to despawn avatars
+    // </summary>
+    private void ExecuteDespawn(PlayerRef playerRef, NetworkObject avatar)
+    {
+        if (avatar != null)
+            Runner.Despawn(avatar);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_RequestSpawnAvatar(PlayerRef playerRef, Vector2 spawnPosition) => ExecuteSpawn(playerRef, spawnPosition);
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_RequestDespawnAvatar(PlayerRef playerRef, NetworkObject avatar) => ExecuteDespawn(playerRef, avatar);
+
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SpawnRejected(PlayerRef targetClient)
+    {
+        // Only the targeted client executes this code
+        if (Runner.LocalPlayer != targetClient)
+            return;
+
+        if (UnlinkedLocalInputs.Count > 0)
+        {
+            PlayerInput rejectedInput = UnlinkedLocalInputs.Dequeue();
+            Debug.LogWarning($"[Lobby] Spawn rejected by server for player {rejectedInput.playerIndex}.");
+
+            NotificationManager.Instance?.ShowNotification("Join request rejected. The lobby is full.");
+        }
     }
 
     private Vector2 CalculateSpawnPosition()
@@ -211,9 +512,7 @@ public class LobbyManager : MonoBehaviour
         int startPointCount = startPoints.Length;
         bool[] startPointOccupied = new bool[startPointCount];
 
-        List<PlayerInput> players = GameStartManager.Instance.Players;
-
-        foreach (PlayerInput player in players)
+        foreach (Player player in PlayerRegistry.All)
         {
             float minDistance = Mathf.Infinity;
             int closestStartPointIndex = 0;
@@ -251,9 +550,124 @@ public class LobbyManager : MonoBehaviour
 
     public void OnPlayerLeft(PlayerInput playerInput)
     {
-        if (playerInput == null) return;
+        if (playerInput == null || playerInput.devices.Count == 0) return;
+
+        InputDevice primaryDevice = playerInput.devices[0];
+
+        if (primaryDevice is Gamepad gamepad)
+            ActiveDevices.Remove(gamepad);
+        
+        else if (primaryDevice is Keyboard && !string.IsNullOrEmpty(playerInput.currentControlScheme))
+            ActiveKeyboardSchemes.Remove(playerInput.currentControlScheme);
+
+        if (activeAvatars.TryGetValue(playerInput, out NetworkObject avatarToDestroy))
+        {
+            activeAvatars.Remove(playerInput);
+
+            if (Runner != null && Runner.IsRunning)
+            {
+                if (Runner.IsServer)
+                    ExecuteDespawn(Runner.LocalPlayer, avatarToDestroy);
+                else
+                    RPC_RequestDespawnAvatar(Runner.LocalPlayer, avatarToDestroy);
+            }
+        }
 
         Debug.Log($"Player {playerInput.playerIndex} left the lobby.");
-        PlayerLeft?.Invoke(playerInput);
+    }
+
+    public void RespawnLocalPlayers(bool useSavedPositions)
+    {
+        if (Runner == null || !Runner.IsRunning) return;
+
+        List<PlayerInput> connectedInputs = new List<PlayerInput>(activeAvatars.Keys);
+        activeAvatars.Clear();
+
+        foreach (PlayerInput input in connectedInputs)
+        {
+            Vector3 targetPosition;
+
+            if (useSavedPositions && NetworkManager.Instance.SavedPositions.TryGetValue(input, out Vector3 savedPos))
+                targetPosition = savedPos;
+            else
+                targetPosition = CalculateSpawnPosition();
+
+            // Enqueue the input again for linking after respawn
+            if (!UnlinkedLocalInputs.Contains(input))
+                UnlinkedLocalInputs.Enqueue(input);
+
+            SpawnAvatar(targetPosition);
+        }
+    }
+
+    // <summary>
+    // This is called when a machine disconnects, it is different from OnPlayerLeft
+    // </summary>
+    public void PlayerLeft(PlayerRef playerRef)
+    {
+        if (!HasStateAuthority) return;
+
+        foreach (Player avatar in PlayerRegistry.All.ToArray())
+        {
+            if (avatar.Object?.InputAuthority == playerRef)
+                Runner.Despawn(avatar.Object);
+        }
+    }
+
+    // <summary>
+    // This is called on clients when the TotalPlayers property changes
+    // </summary>
+    private void OnTotalPlayersChanged() => NetworkManager.Instance.TriggerPlayersCountChanged();
+
+    private void OnMapIndexChanged()
+    {
+        OnMapChangedEvent?.Invoke(CurrentMapIndex, true);
+        SessionInfoSync();
+    }
+
+    private void SessionInfoSync()
+    {
+        if (Runner?.IsRunning != true || !HasStateAuthority) return;
+
+        if (sessionSyncCoroutine != null)
+            StopCoroutine(sessionSyncCoroutine);
+
+        sessionSyncCoroutine = StartCoroutine(DelayedSessionInfoSynch());
+    }
+
+    private IEnumerator DelayedSessionInfoSynch()
+    {
+        yield return new WaitForSeconds(1f);
+
+        if (Runner?.SessionInfo.IsValid == true)
+        {
+            var newProps = new Dictionary<string, SessionProperty>();
+            newProps["TotalPlayers"] = TotalPlayers;
+            newProps["MapName"] = MapNames[CurrentMapIndex];
+            newProps["DisplayName"] = string.IsNullOrWhiteSpace(CustomSessionName) ? Runner.SessionInfo.Name : CustomSessionName;
+
+            Runner.SessionInfo.UpdateCustomProperties(newProps);
+            Runner.SessionInfo.IsOpen = (TotalPlayers < Runner.SessionInfo.MaxPlayers) 
+                && (LevelManager.Instance.GameState == LevelManager.State.Lobby);
+        }
+    }
+
+    public void SetBadgeVisibility(PlayerInput playerInput, bool isVisible)
+    {
+        if (activeAvatars.TryGetValue(playerInput, out NetworkObject avatar))
+        {
+            Player player = avatar.GetComponent<Player>();
+            player?.PlayerBadge?.ShowReadyLabel(isVisible);
+        }
+    }
+
+    public void SaveCurrentPositions()
+    {
+        NetworkManager.Instance.SavedPositions.Clear();
+        foreach (var kvp in activeAvatars)
+        {
+            if (kvp.Value != null)
+                NetworkManager.Instance.SavedPositions[kvp.Key] = kvp.Value.transform.position;
+        }
     }
 }

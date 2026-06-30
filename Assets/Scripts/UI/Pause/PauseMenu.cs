@@ -35,7 +35,10 @@ public class PauseMenu: MonoBehaviour
 			SelectFirstSelectable();
 	}
 
-	private void LateUpdate() => toggledPauseThisFrame = false;
+	private void OnEnable() =>  LevelManager.FewSecondsBeforeGameEnded += Resume;
+    private void OnDisable() => LevelManager.FewSecondsBeforeGameEnded -= Resume;
+
+    private void LateUpdate() => toggledPauseThisFrame = false;
 
 	public void TogglePause()
 	{
@@ -52,10 +55,18 @@ public class PauseMenu: MonoBehaviour
 
 	public void Resume(bool fireEvent)
 	{
-		Cursor.visible = false;
+		if(!IsPaused) return;
+
+        Cursor.visible = false;
 		pausePanel.SetActive(false);
-		Time.timeScale = 1f;
-		IsPaused = false;
+
+        if (NetworkManager.Instance?.IsSinglePlayer == true)
+		{
+			Time.timeScale = 1f;
+			LevelManager.Instance.PauseTimer(false);
+        }
+            
+        IsPaused = false;
 		if (fireEvent)
 			Resumed?.Invoke();
 	}
@@ -64,8 +75,14 @@ public class PauseMenu: MonoBehaviour
 	{
 		pausePanel.SetActive(true);
 		SelectFirstSelectable();
-		Time.timeScale = 0f;
-		IsPaused = true;
+
+        if (NetworkManager.Instance?.IsSinglePlayer == true)
+		{
+			Time.timeScale = 0f;
+			LevelManager.Instance.PauseTimer(true);
+		}
+
+        IsPaused = true;
 		Paused?.Invoke();
 	}
 

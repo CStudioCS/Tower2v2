@@ -40295,6 +40295,10 @@ PrefabInstance:
       value: Trashcan2
       objectReference: {fileID: 0}
     - target: {fileID: 7407042636727153949, guid: 77b296169d3690845bafacdeec71ea24, type: 3}
+      propertyPath: uniqueId
+      value: 46a10375-f7ad-428e-90e6-7c27a0888850
+      objectReference: {fileID: 0}
+    - target: {fileID: 7407042636727153949, guid: 77b296169d3690845bafacdeec71ea24, type: 3}
       propertyPath: outlineThickness
       value: 5
       objectReference: {fileID: 0}
@@ -56187,6 +56191,10 @@ PrefabInstance:
     - target: {fileID: 335387519981302483, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
       propertyPath: m_Name
       value: StrawCollector2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1633924575972390374, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
+      propertyPath: uniqueId
+      value: 447ca12b-17bd-4e0b-bdf4-ce01326e0d80
       objectReference: {fileID: 0}
     - target: {fileID: 3741958281370567377, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -75940,6 +75948,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5974925066944890287}
     m_Modifications:
+    - target: {fileID: 1024563188220789476, guid: 11abec8ee898e3749a2c2b1dc0b0ffcc, type: 3}
+      propertyPath: uniqueId
+      value: 8d67f3a0-9026-4196-93bc-944baa964ee3
+      objectReference: {fileID: 0}
     - target: {fileID: 1024563188220789476, guid: 11abec8ee898e3749a2c2b1dc0b0ffcc, type: 3}
       propertyPath: outlineThickness
       value: 5
@@ -120586,6 +120598,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8595839900183137525, guid: 61fd38d46f820924d907ebc03ba24a45, type: 3}
+      propertyPath: uniqueId
+      value: 7bd4f0a6-b24b-4234-857c-faaa760fe40e
+      objectReference: {fileID: 0}
     - target: {fileID: 8670501294339299365, guid: 61fd38d46f820924d907ebc03ba24a45, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.25
@@ -128448,6 +128464,10 @@ PrefabInstance:
       value: Trashcan1
       objectReference: {fileID: 0}
     - target: {fileID: 7407042636727153949, guid: 77b296169d3690845bafacdeec71ea24, type: 3}
+      propertyPath: uniqueId
+      value: ba09be97-484d-4e77-9cae-c3f5331cc151
+      objectReference: {fileID: 0}
+    - target: {fileID: 7407042636727153949, guid: 77b296169d3690845bafacdeec71ea24, type: 3}
       propertyPath: outlineThickness
       value: 5
       objectReference: {fileID: 0}
@@ -128522,6 +128542,10 @@ PrefabInstance:
     - target: {fileID: 4912289950411926326, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
+      propertyPath: uniqueId
+      value: b6dce170-151b-4c54-a78d-c7fec5d04afa
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -147513,6 +147537,10 @@ PrefabInstance:
       value: Furnace1
       objectReference: {fileID: 0}
     - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
+      propertyPath: uniqueId
+      value: b6380279-8a97-4a23-a670-4c30f21f71d3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: outlineThickness
       value: 5
       objectReference: {fileID: 0}
@@ -161799,6 +161827,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5974925066944890287}
     m_Modifications:
+    - target: {fileID: 5685357826094600367, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
+      propertyPath: uniqueId
+      value: 5204b438-6b7a-4bf0-b374-11e876e31390
+      objectReference: {fileID: 0}
     - target: {fileID: 6696050279962630042, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
       propertyPath: m_Name
       value: WoodCollector1
@@ -182786,6 +182818,10 @@ PrefabInstance:
     - target: {fileID: 8366255749302360399, guid: ba61e012505b9ba43be1930e19b96f6c, type: 3}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8595839900183137525, guid: ba61e012505b9ba43be1930e19b96f6c, type: 3}
+      propertyPath: uniqueId
+      value: 3075c92e-3845-49bb-be3c-6c47682188af
       objectReference: {fileID: 0}
     - target: {fileID: 8670501294339299365, guid: ba61e012505b9ba43be1930e19b96f6c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -220780,6 +220816,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5974925066944890287}
     m_Modifications:
+    - target: {fileID: 5685357826094600367, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
+      propertyPath: uniqueId
+      value: 60c95e93-29b8-4eab-996f-e8567f8037fb
+      objectReference: {fileID: 0}
     - target: {fileID: 6696050279962630042, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
       propertyPath: m_Name
       value: WoodCollector2
@@ -302580,6 +302620,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
+      propertyPath: uniqueId
+      value: 569e0f17-8fda-4f22-beb7-09d2db3fbfe5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -314327,6 +314371,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StrawCollector1
       objectReference: {fileID: 0}
+    - target: {fileID: 1633924575972390374, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
+      propertyPath: uniqueId
+      value: b9ed731e-150d-4313-86ce-4dd4bdb3957a
+      objectReference: {fileID: 0}
     - target: {fileID: 3741958281370567377, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.875
@@ -317301,6 +317349,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6959916797422613540}
     m_Modifications:
+    - target: {fileID: 542380952816547598, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
+      propertyPath: uniqueId
+      value: b260f16f-8054-4800-ad47-5f28c0b2b162
+      objectReference: {fileID: 0}
+    - target: {fileID: 2524274420942803842, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
+      propertyPath: uniqueId
+      value: 3038e74b-1b18-4b92-bf15-c84d8c331e4c
+      objectReference: {fileID: 0}
     - target: {fileID: 3069344166632325334, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.5

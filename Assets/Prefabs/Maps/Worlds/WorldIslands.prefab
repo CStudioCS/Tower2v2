@@ -15672,6 +15672,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StrawCollector4
       objectReference: {fileID: 0}
+    - target: {fileID: 1633924575972390374, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
+      propertyPath: uniqueId
+      value: b94ed9e6-259f-465c-aa43-79169d0b17f4
+      objectReference: {fileID: 0}
     - target: {fileID: 3741958281370567377, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.375
@@ -40684,6 +40688,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StrawCollector2
       objectReference: {fileID: 0}
+    - target: {fileID: 1633924575972390374, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
+      propertyPath: uniqueId
+      value: 3f9ba55e-3425-4302-bae7-8fc2d2d3e5c0
+      objectReference: {fileID: 0}
     - target: {fileID: 3741958281370567377, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.375
@@ -55230,6 +55238,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5974925066944890287}
     m_Modifications:
+    - target: {fileID: 1024563188220789476, guid: 11abec8ee898e3749a2c2b1dc0b0ffcc, type: 3}
+      propertyPath: uniqueId
+      value: fdf7282a-fff3-4ead-8b72-f2c344fd56ed
+      objectReference: {fileID: 0}
     - target: {fileID: 1024563188220789476, guid: 11abec8ee898e3749a2c2b1dc0b0ffcc, type: 3}
       propertyPath: outlineThickness
       value: 5
@@ -89118,6 +89130,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
+      propertyPath: uniqueId
+      value: 5241fa82-3a50-48d1-af3e-4754cf9e7811
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -102712,6 +102728,10 @@ PrefabInstance:
       value: Furnace1
       objectReference: {fileID: 0}
     - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
+      propertyPath: uniqueId
+      value: 130e4339-5efc-4161-8d4f-6e6c792cfce7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: outlineThickness
       value: 5
       objectReference: {fileID: 0}
@@ -112589,6 +112609,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 5974925066944890287}
     m_Modifications:
     - target: {fileID: 1024563188220789476, guid: 11abec8ee898e3749a2c2b1dc0b0ffcc, type: 3}
+      propertyPath: uniqueId
+      value: 2be4b9ab-0564-421e-b151-67082a0daf7c
+      objectReference: {fileID: 0}
+    - target: {fileID: 1024563188220789476, guid: 11abec8ee898e3749a2c2b1dc0b0ffcc, type: 3}
       propertyPath: outlineThickness
       value: 5
       objectReference: {fileID: 0}
@@ -113106,6 +113130,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5974925066944890287}
     m_Modifications:
+    - target: {fileID: 5685357826094600367, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
+      propertyPath: uniqueId
+      value: 0164fbae-5f16-450a-bedc-e35f37822800
+      objectReference: {fileID: 0}
     - target: {fileID: 6696050279962630042, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
       propertyPath: m_Name
       value: WoodCollector1
@@ -153578,6 +153606,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5974925066944890287}
     m_Modifications:
+    - target: {fileID: 5685357826094600367, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
+      propertyPath: uniqueId
+      value: f4322e30-2468-4617-9fcf-c26cf138ef7b
+      objectReference: {fileID: 0}
     - target: {fileID: 6696050279962630042, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
       propertyPath: m_Name
       value: WoodCollector2
@@ -174562,6 +174594,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StrawCollector3
       objectReference: {fileID: 0}
+    - target: {fileID: 1633924575972390374, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
+      propertyPath: uniqueId
+      value: fea2a17e-7df5-481e-a6b2-108babd18c5f
+      objectReference: {fileID: 0}
     - target: {fileID: 3741958281370567377, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.375
@@ -191040,6 +191076,10 @@ PrefabInstance:
       value: Furnace4
       objectReference: {fileID: 0}
     - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
+      propertyPath: uniqueId
+      value: 4494b5bd-72ce-43ef-bf26-ae54fd9a0a39
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: outlineThickness
       value: 5
       objectReference: {fileID: 0}
@@ -195127,6 +195167,10 @@ PrefabInstance:
       value: Furnace2
       objectReference: {fileID: 0}
     - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
+      propertyPath: uniqueId
+      value: c23e5455-609d-4823-b8a7-1dd66fd2bb3d
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: outlineThickness
       value: 5
       objectReference: {fileID: 0}
@@ -197440,6 +197484,10 @@ PrefabInstance:
     - target: {fileID: 4953477675540137239, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: m_Name
       value: Furnace3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
+      propertyPath: uniqueId
+      value: 785e1724-ab5f-461d-a8ec-5eafbf9764db
       objectReference: {fileID: 0}
     - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: outlineThickness
@@ -210566,6 +210614,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
+      propertyPath: uniqueId
+      value: 8b927673-094d-4757-a25e-b89b4dd9d51e
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -218889,6 +218941,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StrawCollector1
       objectReference: {fileID: 0}
+    - target: {fileID: 1633924575972390374, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
+      propertyPath: uniqueId
+      value: 0fc35fbc-b77f-4267-b2e9-15edae819830
+      objectReference: {fileID: 0}
     - target: {fileID: 3741958281370567377, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.375
@@ -221355,6 +221411,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6959916797422613540}
     m_Modifications:
+    - target: {fileID: 542380952816547598, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
+      propertyPath: uniqueId
+      value: c4823c73-b07a-4dfd-bd83-12e54ea34864
+      objectReference: {fileID: 0}
+    - target: {fileID: 2524274420942803842, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
+      propertyPath: uniqueId
+      value: faa5a8be-2fc2-4edd-8489-549213b7e5c9
+      objectReference: {fileID: 0}
     - target: {fileID: 3069344166632325334, guid: 0dedafbd43d969b44a09571fbf794c39, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.75

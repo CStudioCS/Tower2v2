@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using UnityEngine.InputSystem;
+using Fusion;
 
-public class GameStartManager : MonoBehaviour
+public class GameStartManager : NetworkBehaviour
 {
     public static GameStartManager Instance;
     public enum WaitState
@@ -14,8 +13,10 @@ public class GameStartManager : MonoBehaviour
         PlayersNotReady,
         GameStarting
     }
-    private WaitState waitState = WaitState.Logo;
-    
+
+    [Networked, OnChangedRender(nameof(OnWaitStateChanged))]
+    public WaitState waitState { get; set; }
+
     private Dictionary<WaitState, string> waitingMessages;
     private Dictionary<WaitState, string> WaitingMessages
     {
@@ -34,77 +35,75 @@ public class GameStartManager : MonoBehaviour
         }
     }
 
-    private readonly List<PlayerInput> players = new();
-    public List<PlayerInput> Players => players;
+    private readonly List<Player> players = new();
+    public List<Player> Players => players;
 
     public int PlayerCount => players.Count;
     // Player Balance counts +1 for right team and -1 for left team. If sum is 0, teams are balanced.
-    public int PlayerBalance =>
-        players.Sum(playerInput => {
-            Player player = playerInput.GetComponent<Player>();
-            return player.PlayerTeam.CurrentTeam == PlayerTeam.Team.Right ? 1 : -1;
-        });
+    public int PlayerBalance => players.Sum(
+        player => player.PlayerTeam.CurrentTeam == PlayerTeam.Team.Right ? 1 : -1);
     private bool TeamsBalanced => PlayerBalance == 0;
-    
-    private bool AllPlayersReady =>
-        players.All(playerInput => {
-            Player player = playerInput.GetComponent<Player>();
-            return player.PlayerControlBadge.IsReady;
-        });
-    
+
+    private bool AllPlayersReady => players.Count == 4 && players.All(player => player.PlayerControlBadge.IsReady);
+
     private void Awake()
     {
-        if (Instance != null)
-            Destroy(Instance);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         Instance = this;
     }
 
+    private void OnWaitStateChanged() => UpdateWaitingText();
     private void UpdateWaitingText() => CanvasLinker.Instance.waitingText.text = WaitingMessages[waitState];
     
     private void TryChangeWaitState(WaitState newWaitState)
     {
+        if (!HasStateAuthority) return;
         if (waitState == newWaitState) return;
-        ChangeWaitState(newWaitState);
-    }
-    private void ChangeWaitState(WaitState newWaitState)
-    {
+
         waitState = newWaitState;
-        UpdateWaitingText();
     }
 
-    void Start()
+    public override void Spawned()
     {
-        LobbyManager.Instance.PlayerJoined += OnPlayerJoined;
-        LobbyManager.Instance.PlayerLeft += OnPlayerLeft;
-        LevelManager.Instance.GameEndedOrReturnedToLobby += OnGameEndedOrReturnedToLobby;
-        ChangeWaitState(WaitState.Logo);
-    }
+        LevelManager.ReturnedToLobby += ResetPlayers;
+        Player.PlayerSpawned += AddPlayer;
+        Player.PlayerDespawned += RemovePlayer;
 
-    private void OnGameEndedOrReturnedToLobby() => ResetPlayers();
+        if (HasStateAuthority)
+            waitState = WaitState.Logo;
+    }
 
     private void ResetPlayers()
     {
-        foreach (PlayerInput playerInput in players)
+        if (!HasStateAuthority) return;
+
+        foreach (Player player in players)
         {
-            Player player = playerInput.GetComponent<Player>();
-            player.ConsumeCurrentItem();
-            player.PlayerTeam.LobbyUpdate();
-            player.PlayerControlBadge.SetUnready();
+            player?.ConsumeCurrentItem();
+            player?.PlayerTeam.LobbyUpdate();
+            player?.PlayerControlBadge.SetUnready();
         }
-        ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
+        TryChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
     }
 
-    private void OnPlayerJoined(PlayerInput playerInput)
+    public void AddPlayer(Player player)
     {
+        if (!players.Contains(player))
+            players.Add(player);
+
         SoundManager.instance.PlaySound("PlayerConnect");
-        players.Add(playerInput);
-        Player player = playerInput.GetComponent<Player>();
+
         player.PlayerTeam.InitializeTeam();
-        player.PlayerTeam.TeamChanged += OnPlayerTeamChanged;
-        player.PlayerControlBadge.ReadyChanged += OnPlayerReadyChanged;
-        playerInput.GetComponent<PlayerInitPosition>().Initialize();
-        
+        player.PlayerTeam.ServerTeamChanged += OnPlayerTeamChanged;
+        player.PlayerControlBadge.ServerReadyChanged += OnPlayerReadyChanged;
+
+        if (!HasStateAuthority) return;
+
         if (PlayerCount != 4)
             return;
 
@@ -113,11 +112,13 @@ public class GameStartManager : MonoBehaviour
             StartGame();
         else
 #endif
-            ChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
+        TryChangeWaitState(TeamsBalanced ? WaitState.PlayersNotReady : WaitState.UnbalancedTeams);
     }
     
     private void OnPlayerTeamChanged()
     {
+        if (!HasStateAuthority) return;
+
         if (waitState == WaitState.UnbalancedTeams)
         {
             if (TeamsBalanced)
@@ -125,69 +126,73 @@ public class GameStartManager : MonoBehaviour
                 if (AllPlayersReady)
                     StartGame();
                 else
-                    ChangeWaitState(WaitState.PlayersNotReady);
+                    TryChangeWaitState(WaitState.PlayersNotReady);
             }
         }
         else if (waitState == WaitState.PlayersNotReady)
         {
             if (!TeamsBalanced)
-                ChangeWaitState(WaitState.UnbalancedTeams);
+                TryChangeWaitState(WaitState.UnbalancedTeams);
         }
     }
 
-    private void OnPlayerReadyChanged()
+    private void OnPlayerReadyChanged(bool isReady)
     {
-        if (waitState == WaitState.PlayersNotReady)
-        {
-            if (AllPlayersReady)
-            {
-                StartGame();
-            }
-        }
+        if (HasStateAuthority && waitState == WaitState.PlayersNotReady && AllPlayersReady)
+            StartGame();
     }
-    
-    private void OnPlayerLeft(PlayerInput playerInput)
+
+    public void RemovePlayer(Player player)
     {
-        players.Remove(playerInput);
-        Player player = playerInput.GetComponent<Player>();
-        player.PlayerTeam.TeamChanged -= OnPlayerTeamChanged;
-        player.PlayerControlBadge.ReadyChanged -= OnPlayerReadyChanged;
-        TryChangeWaitState(WaitState.NotEnoughPlayers);
+        players.Remove(player);
+        player.PlayerTeam.ServerTeamChanged -= OnPlayerTeamChanged;
+        player.PlayerControlBadge.ServerReadyChanged -= OnPlayerReadyChanged;
+
+        if (HasStateAuthority)
+            TryChangeWaitState(WaitState.NotEnoughPlayers);
     }
 
     private void StartGame()
     {
-        ChangeWaitState(WaitState.GameStarting);
+        if (!HasStateAuthority) return;
+
+        TryChangeWaitState(WaitState.GameStarting);
         InitializeTeamPlayerIndices();
+
+        foreach (Player player in players)
+        {
+            if (player.PlayerTeam.TeamPlayerIndex == 0)
+                player.PlayerInitPosition.TeleportToStartPoint();
+        }
+
         LevelManager.Instance.StartGameDelayed();
         SoundManager.instance.PlaySound("Countdown");
     }
 
     private void Update()
     {
+        if (!HasStateAuthority) return;
+
         if (waitState != WaitState.Logo)
             return;
 
-        if (!InputUtility.AnyInputPressed)
-            return;
-        
-        ChangeWaitState(WaitState.NotEnoughPlayers);
+        if (InputUtility.AnyInputPressed)
+            TryChangeWaitState(WaitState.NotEnoughPlayers);
     }
-    
-    private void OnDisable()
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
     {
-        LobbyManager.Instance.PlayerJoined -= OnPlayerJoined;
-        LobbyManager.Instance.PlayerLeft -= OnPlayerLeft;
-        LevelManager.Instance.GameEndedOrReturnedToLobby -= OnGameEndedOrReturnedToLobby;
+        LevelManager.ReturnedToLobby -= ResetPlayers;
+        Player.PlayerSpawned -= AddPlayer;
+        Player.PlayerDespawned -= RemovePlayer;
     }
 
     private void InitializeTeamPlayerIndices()
     {
         int leftTeamCounter = 0;
         int rightTeamCounter = 0;
-        foreach (PlayerInput playerInput in players)
+        foreach (Player player in players)
         {
-            Player player = playerInput.GetComponent<Player>();
             PlayerTeam playerTeam = player.PlayerTeam;
             PlayerTeam.Team currentTeam = playerTeam.CurrentTeam;
             switch (currentTeam)

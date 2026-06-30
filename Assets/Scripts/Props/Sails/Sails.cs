@@ -9,7 +9,7 @@ public class Sails : MonoBehaviour
     private void Start()
     {
         towerHeightReachedActivator.HeightReached += OnHeightReached;
-        LevelManager.Instance.GameAboutToStart += OnGameAboutToStart;
+        LevelManager.GameAboutToStart += OnGameAboutToStart;
     }
 
     private void OnHeightReached()
@@ -25,6 +25,6 @@ public class Sails : MonoBehaviour
     private void OnDisable()
     {
         towerHeightReachedActivator.HeightReached -= OnHeightReached;
-        LevelManager.Instance.GameAboutToStart -= OnGameAboutToStart;
+        LevelManager.GameAboutToStart -= OnGameAboutToStart;
     }
 }

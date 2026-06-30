@@ -236,7 +236,15 @@ PrefabInstance:
       value: -89.958
       objectReference: {fileID: 0}
     - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
+      propertyPath: uniqueId
+      value: e496271b-13e1-4c7d-b8b9-70a6627bcf8a
+      objectReference: {fileID: 0}
+    - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
       propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
+      propertyPath: 'spriteRenderers.Array.data[0]'
       value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -338,6 +346,10 @@ PrefabInstance:
     - target: {fileID: 335387519981302483, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
       propertyPath: m_Name
       value: StrawCollector
+      objectReference: {fileID: 0}
+    - target: {fileID: 1633924575972390374, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
+      propertyPath: uniqueId
+      value: 50e6332e-2671-434f-a360-cd497eb10bad
       objectReference: {fileID: 0}
     - target: {fileID: 3741958281370567377, guid: 7349ab879b4c8bf4d8e976990a4113f6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -441,6 +453,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -89.958
       objectReference: {fileID: 0}
+    - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
+      propertyPath: uniqueId
+      value: 31c01209-3a08-42aa-ae0b-07892ec6d674
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -504,7 +520,15 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
+      propertyPath: uniqueId
+      value: 71201fa6-78c7-4d1c-84d4-94afcd1f3c93
+      objectReference: {fileID: 0}
+    - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
       propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6151044016105498136, guid: bfcce5a2a7ac7f148bfb9741179ea8f0, type: 3}
+      propertyPath: 'spriteRenderers.Array.data[0]'
       value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -647,6 +671,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RightTower
       objectReference: {fileID: 0}
+    - target: {fileID: 8641540001414929147, guid: 045fbd1b20f9aca49b145e267433ae9e, type: 3}
+      propertyPath: uniqueId
+      value: 4bf72c0c-7dbd-4428-92ec-e07f23219ce5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -676,6 +704,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7923352654412035281}
     m_Modifications:
+    - target: {fileID: 5685357826094600367, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
+      propertyPath: uniqueId
+      value: 979ea13a-54ea-4c78-a0d4-a947ec3ad091
+      objectReference: {fileID: 0}
     - target: {fileID: 6696050279962630042, guid: e1c3ca5de9268cb49a30046044a6eddd, type: 3}
       propertyPath: m_Name
       value: WoodCollector (1)
@@ -790,6 +822,10 @@ PrefabInstance:
       propertyPath: m_FlipX
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8641540001414929147, guid: 045fbd1b20f9aca49b145e267433ae9e, type: 3}
+      propertyPath: uniqueId
+      value: ac61b590-1a93-4abf-b7c7-26626712632f
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -900,6 +936,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Furnace
       objectReference: {fileID: 0}
+    - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
+      propertyPath: uniqueId
+      value: ee02d20d-1f8d-46d8-ba35-3030c0701cf7
+      objectReference: {fileID: 0}
     - target: {fileID: 7989610107362915503, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.15
@@ -961,6 +1001,10 @@ PrefabInstance:
     - target: {fileID: 4953477675540137239, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: m_Name
       value: Furnace (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059828004140064895, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
+      propertyPath: uniqueId
+      value: 3c95e0eb-06eb-4456-b891-47cb8b8fd89e
       objectReference: {fileID: 0}
     - target: {fileID: 7989610107362915503, guid: 90b2c48ba534ea04ba9c729c6e4a79c8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1063,6 +1107,10 @@ PrefabInstance:
     - target: {fileID: 7303502663413401449, guid: 77b296169d3690845bafacdeec71ea24, type: 3}
       propertyPath: m_Name
       value: Trashcan (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7407042636727153949, guid: 77b296169d3690845bafacdeec71ea24, type: 3}
+      propertyPath: uniqueId
+      value: 2e7b5e27-de2f-471d-8da1-710a971e2a5c
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

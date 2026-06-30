@@ -1,3 +1,4 @@
+using Fusion;
 using UnityEngine;
 
 public class WorkbenchItemCatcher : MonoBehaviour
@@ -8,7 +9,11 @@ public class WorkbenchItemCatcher : MonoBehaviour
     {
         if (collision == null || !collision.gameObject.TryGetComponent(out Item item))
             return;
-        
+
+        NetworkObject netObj = item.GetComponent<NetworkObject>();
+        if (netObj == null || !netObj.HasStateAuthority)
+            return;
+
         if (item.ItemType != Item.Type.WoodLog)
             return;
 
@@ -19,6 +24,6 @@ public class WorkbenchItemCatcher : MonoBehaviour
             return;
 
         workbench.PutWoodLog();
-        Destroy(collision.gameObject);
+        netObj.Runner.Despawn(netObj);
     }
 }

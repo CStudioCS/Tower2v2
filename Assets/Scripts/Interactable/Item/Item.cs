@@ -1,6 +1,9 @@
+using Fusion;
+using Fusion.Addons.Physics;
 using System;
-using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Item : Interactable
@@ -23,6 +26,11 @@ public class Item : Interactable
     [SerializeField] private float rotationSpeedVariance;
     [SerializeField] private float minimumEjectionSpeedRatio;
     [SerializeField] private float grabbingTime;
+
+    [Header("Network")]
+    [SerializeField] private NetworkItem networkItem;
+    [SerializeField] private NetworkRigidbody2D netRb;
+    public NetworkItem NetworkItem => networkItem;
     public enum ItemState { Held, Dropped, Transitioning };
     public ItemState State { get; set; }
 
@@ -34,12 +42,18 @@ public class Item : Interactable
 
     protected override void Awake()
     {
-        base.Awake(); // Initialize highlight system
+        InitializeHighlight();
+
         itemCollider.enabled = false;
         State = ItemState.Dropped;
-        LevelManager.Instance.GameEndedOrReturnedToLobby += Disappear;
         trailRenderer.emitting = false;
         SetSilhouetteColor(silhouetteColor);
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        LevelManager.GameEnded += Disappear;
     }
 
     private void SetSilhouetteColor(Color color)
@@ -56,9 +70,11 @@ public class Item : Interactable
     public override bool CanInteract(Player player) => !player.IsHolding && State == ItemState.Dropped && LevelManager.InGame;
     public override void Interact(Player player)
     {
-        State = ItemState.Transitioning;
-        player.GrabItem(this, true);
-        Grabbed?.Invoke();
+        if (player.HasStateAuthority)
+        {
+            networkItem.Grab(player, true);
+            Grabbed?.Invoke();
+        }
     }
 
     public override float GetInteractionTime() => 0;
@@ -73,23 +89,62 @@ public class Item : Interactable
     }
 
     public void Drop() => Drop(Vector2.zero);
+ 
     public void Drop(Vector2 throwSpeed)
     {
+        if (!networkItem.HasStateAuthority) return;
+
+        // Open to any different idea, Fusion and Unity are just so annoying that I had to do this
+        StartCoroutine(HideGraphicsDuringLoading());
+
+        networkItem.Drop();
         transform.SetParent(null);
         rb.simulated = true;
         itemCollider.enabled = true;
+        netRb.enabled = true;
 
         rb.linearVelocity = throwSpeed;
         velocitySqrMagnitudeForTowerItemCatcher = throwSpeed.sqrMagnitude;
         float rotationDeviation = Random.Range(1 - rotationSpeedVariance, 1 + rotationSpeedVariance);
         rb.angularVelocity = new List<int> { -1, 1 }[Random.Range(0, 2)] * rotationSpeed * rotationDeviation;
-
-        trailRenderer.emitting = true;
-        State = ItemState.Dropped;
-        Dropped?.Invoke();
-        SoundManager.instance.PlaySound("ItemDrop");
     }
-    
+
+    public void ApplyNetworkState(ItemState newState, Player newOwner, PlayerTeam.Team originalTeam)
+    {
+        if (newState == ItemState.Held && newOwner != null && (State != ItemState.Held || LastOwner != newOwner))
+        {
+            State = ItemState.Transitioning;
+
+            if (LastOwner != null && LastOwner != newOwner && LastOwner.HeldItem == this)
+                LastOwner.HeldItem = null;
+
+            LastOwner = newOwner;
+            originallyCollectedByTeam = originalTeam;
+            Immobilize();
+            netRb.enabled = false;
+
+            // GrabItem function in Player.cs sets item.State = Held at the end
+            newOwner.GrabItem(this, networkItem.SyncAnimateGrab);
+        }
+        else if (newState == ItemState.Dropped)
+        {
+            State = ItemState.Dropped;
+            transform.SetParent(null);
+            rb.simulated = true;
+            netRb.enabled = true;
+            itemCollider.enabled = true;
+
+            trailRenderer.Clear();
+            trailRenderer.emitting = true;
+
+            if (LastOwner != null && LastOwner.HeldItem == this)
+                LastOwner.HeldItem = null;
+
+            Dropped?.Invoke();
+            SoundManager.instance.PlaySound("ItemDrop");
+        }
+    }
+
     public void SetFlipX(bool flipped) => graphics.transform.localScale = new Vector2(flipped ? -1f : 1f, 1f);
 
     private void FixedUpdate()
@@ -99,11 +154,30 @@ public class Item : Interactable
 
     private void Disappear()
     {
-        Destroy(gameObject);
+        NetworkObject networkObject = GetComponent<NetworkObject>();
+        if (networkObject == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        if (networkObject.HasStateAuthority && networkObject.Runner != null)
+            networkObject.Runner.Despawn(networkObject);
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
-        LevelManager.Instance.GameEndedOrReturnedToLobby -= Disappear;
+        base.OnDestroy();
+        LevelManager.GameEnded -= Disappear;
+    }
+
+    private IEnumerator HideGraphicsDuringLoading()
+    {
+        trailRenderer.emitting = false;
+        graphics.SetActive(false);
+
+        yield return null;
+        graphics.SetActive(true);
+        trailRenderer.Clear();
+        trailRenderer.emitting = true;
     }
 }
